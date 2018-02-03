@@ -11,3 +11,4 @@ gradlew.bat
 /build
 /captures
 .externalNativeBuild
+testOutput
