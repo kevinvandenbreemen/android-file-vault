@@ -5,13 +5,14 @@ import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime;
 
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
  *
  * @author kevin
  */
-public class FAT {
+public class FAT implements Serializable {
 
     /**
      *
@@ -39,7 +40,7 @@ public class FAT {
     /**
      * Access lockdown
      */
-    private transient ReentrantReadWriteLock accessLock;
+    private transient ReentrantLock accessLock;
 
     /**
      * Total number of units on the file system
@@ -57,7 +58,7 @@ public class FAT {
     private Map<String, List<Long>> fileAllocations;
 
     public FAT() {
-        this.accessLock = new ReentrantReadWriteLock();
+        this.accessLock = new ReentrantLock();
         this.freeUnitIndexes = new LinkedList<>();
         this.fileAllocations = new HashMap<>();
         this.totalUnits = 0;
@@ -70,7 +71,7 @@ public class FAT {
      * Initialize FAT for use after recovery from a file
      */
     final void initialize() {
-        this.accessLock = new ReentrantReadWriteLock();
+        this.accessLock = new ReentrantLock();
     }
 
     /**
@@ -80,7 +81,7 @@ public class FAT {
      */
     final void _addUnitFor(String fileName, long unitIndex) {
         try {
-            accessLock.writeLock().lock();
+            accessLock.lock();
             if (!fileAllocations.containsKey(fileName)) {
                 List<Long> indexes = new ArrayList<>();
                 fileAllocations.put(fileName, indexes);
@@ -100,7 +101,7 @@ public class FAT {
             if (unitIndex > totalUnits)
                 totalUnits = unitIndex;
         } finally {
-            accessLock.writeLock().unlock();
+            accessLock.unlock();
         }
     }
 
@@ -111,12 +112,12 @@ public class FAT {
      */
     final void _touch(String fileName) {
         try {
-            accessLock.writeLock().lock();
+            accessLock.lock();
             if (!fileAllocations.containsKey(fileName)) {
                 fileAllocations.put(fileName, new ArrayList<Long>());
             }
         } finally {
-            accessLock.writeLock().unlock();
+            accessLock.unlock();
         }
     }
 
@@ -146,10 +147,10 @@ public class FAT {
      */
     final boolean _exists(String fileName) {
         try {
-            accessLock.readLock().lock();
+            accessLock.lock();
             return fileAllocations.containsKey(fileName);
         } finally {
-            accessLock.readLock().unlock();
+            accessLock.unlock();
         }
     }
 
@@ -161,7 +162,7 @@ public class FAT {
      */
     final List<Long> _unitsAllocated(String fileName) {
         try {
-            accessLock.readLock().lock();
+            accessLock.lock();
             if (!fileAllocations.containsKey(fileName))
                 throw new MSSRuntime("Unexpected:  No file named '" + fileName + "' found on the system");
 
@@ -170,7 +171,7 @@ public class FAT {
             return ret;
 
         } finally {
-            accessLock.readLock().unlock();
+            accessLock.unlock();
         }
     }
 
@@ -182,7 +183,7 @@ public class FAT {
      */
     final long nextAvailableUnitIndex() {
         try {
-            accessLock.readLock().lock();
+            accessLock.lock();
 
             if (CollectionUtils.isEmpty(freeUnitIndexes))
                 return totalUnits + 1;
@@ -192,7 +193,7 @@ public class FAT {
             }
 
         } finally {
-            accessLock.readLock().unlock();
+            accessLock.unlock();
         }
     }
 
@@ -214,14 +215,14 @@ public class FAT {
      * Acquire access lock to the FAT
      */
     final void accessLock() {
-        accessLock.writeLock().lock();
+        accessLock.lock();
     }
 
     /**
      * Release the access lock to the FAT
      */
     final void releaseAccessLock() {
-        accessLock.writeLock().unlock();
+        accessLock.unlock();
     }
 
     /**
@@ -268,7 +269,7 @@ public class FAT {
 
     void _rename(String currentName, String newName) {
         try {
-            accessLock.writeLock().lock();
+            accessLock.lock();
             if (!fileAllocations.containsKey(currentName))
                 throw new MSSRuntime("Unexpected:  No such file as '" + currentName + "' exists on the system!");
 
@@ -276,7 +277,7 @@ public class FAT {
             fileAllocations.put(newName, allocations);
 
         } finally {
-            accessLock.writeLock().unlock();
+            accessLock.unlock();
         }
     }
 
