@@ -1,5 +1,11 @@
 package com.vandenbreemen.mobilesecurestorage.security;
 
+import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
+import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime;
+
+import java.io.File;
+import java.io.FileInputStream;
+
 /**
  * <h2>Intro</h2>
  * <p>Helper for working with raw bytes in memory
@@ -42,6 +48,26 @@ public class Bytes {
         int hash = 0;
         for (int i = 0; i < data.length; i++) {
             hash = hash * 31 + (int) data[i];
+        }
+    }
+
+    /**
+     * Load all the bytes in the given file.  If an error occurs this method will log it in
+     * the system log and then throw a runtime error
+     *
+     * @param openedFile
+     * @return
+     */
+    public static byte[] loadBytesFromFile(File openedFile) {
+        try (FileInputStream fis = new FileInputStream(openedFile)) {
+            byte[] bytesFromFile = new byte[(int) openedFile.length()];
+
+            //	Load in the bytes from the file
+            fis.read(bytesFromFile);
+            return bytesFromFile;
+        } catch (Exception ex) {
+            SystemLog.get().error("Unable to load data from file", ex);
+            throw new MSSRuntime("Unexpected error loading from file", ex);
         }
     }
 
