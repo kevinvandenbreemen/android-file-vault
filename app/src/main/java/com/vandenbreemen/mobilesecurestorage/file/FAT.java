@@ -2,7 +2,6 @@ package com.vandenbreemen.mobilesecurestorage.file;
 
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
 import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime;
-import com.vandenbreemen.mobilesecurestorage.security.Entropy;
 
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -56,13 +55,6 @@ public class FAT {
      * Mapping from file name to list of units allocated to that file.
      */
     private Map<String, List<Long>> fileAllocations;
-
-    /**
-     * Whether {@link #freeUnitIndexes} should be allocated at random.  In cases where the file system is encrypted this
-     * can add a layer of security by making it more difficult for an attacker to see where a particular file is actually
-     * allocated.
-     */
-    private transient boolean randomizedFreeBlockAllocation;
 
     public FAT() {
         this.accessLock = new ReentrantReadWriteLock();
@@ -195,27 +187,13 @@ public class FAT {
             if (CollectionUtils.isEmpty(freeUnitIndexes))
                 return totalUnits + 1;
 
-            else {//	Otherwise return the first free/available unit
-                if (randomizedFreeBlockAllocation) {
-                    return freeUnitIndexes.get(Entropy.get().nextInt(freeUnitIndexes.size()));
-                }
+            else {
                 return freeUnitIndexes.get(0);
             }
 
         } finally {
             accessLock.readLock().unlock();
         }
-    }
-
-
-    /**
-     * Whether {@link #freeUnitIndexes} should be allocated at random.  In cases where the file system is encrypted this
-     * can add a layer of security by making it more difficult for an attacker to see where a particular file is actually
-     * allocated.
-     */
-    public final void setRandomizedFreeBlockAllocation(
-            boolean randomizedFreeBlockAllocation) {
-        this.randomizedFreeBlockAllocation = randomizedFreeBlockAllocation;
     }
 
     /**
