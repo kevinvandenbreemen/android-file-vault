@@ -281,7 +281,7 @@ public class BytesToBits {
         try {
             return key.getBytes("UTF-8");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            SystemLog.get().error("Error getting bytes", ex);
             return null;
         }
     }
