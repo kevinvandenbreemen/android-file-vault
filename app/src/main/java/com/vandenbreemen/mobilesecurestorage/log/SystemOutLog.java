@@ -12,7 +12,7 @@ import java.util.Date;
 public class SystemOutLog implements CurrentSystemLog {
 
     private void printMsg(String message) {
-        System.out.println(new Date().toString() + " - " + message);
+        System.out.println(new Date().toString() + " - " + message);    //  NOSONAR Uses system out AS the logger
     }
 
     @Override
@@ -23,7 +23,7 @@ public class SystemOutLog implements CurrentSystemLog {
     @Override
     public void error(String message, Throwable throwable) {
         printMsg("ERROR - " + message);
-        throwable.printStackTrace();
+        throwable.printStackTrace();    //  NOSONAR Basic logging using system.err
     }
 
     @Override
