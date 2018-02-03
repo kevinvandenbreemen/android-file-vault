@@ -29,19 +29,23 @@ public class ChunkedFile {
     private long cursor;
 
     /**
-     * Create a new {@link ChunkedFile} at the given location.  Note that the cursor will be set to the first byte of the file.  If you want
-     * to append to the file please call {@link #moveToEnd()}.
+     * Create a new {@link ChunkedFile} at the given location.  Note that the cursor will be set to the first byte of the file.
      *
      * @param location
      */
-    public ChunkedFile(File location) throws Exception {
+    public ChunkedFile(File location) {
         if (location == null)
             throw new MSSRuntime("Unexpected:  Null file ref");
         if (!location.exists()) {
-            if (!location.createNewFile())
-                throw new MSSRuntime("Unable to create file at '" + location.getAbsolutePath() + "'");
-            else
-                SystemLog.get().info("Successfully created file '" + location.getAbsolutePath() + "'");
+            try {
+                if (!location.createNewFile())
+                    throw new MSSRuntime("Unable to create file at '" + location.getAbsolutePath() + "'");
+                else
+                    SystemLog.get().info("Successfully created file '" + location.getAbsolutePath() + "'");
+            } catch (IOException ioex) {
+                SystemLog.get().error("Failed to create file", ioex);
+                throw new MSSRuntime("Unable to create file at '" + location.getAbsolutePath() + "'", ioex);
+            }
         }
         this.location = location;
         this.cursor = 0;
@@ -67,7 +71,7 @@ public class ChunkedFile {
      * @param location
      * @return
      */
-    public ChunkedFile setCursor(long location) throws IllegalArgumentException {
+    public ChunkedFile setCursor(long location) {
         try (RandomAccessFile raf = get(true)) {
             raf.seek(location);
             cursor = location;
