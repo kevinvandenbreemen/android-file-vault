@@ -28,7 +28,7 @@ public class BlowFishTextEncryptionService implements EncryptionService, ObjectE
         return new BytesToBits().padTo(key, 256);
     }
 
-    private byte[] encryptSpongy(byte[] key, byte[] clear) {
+    private byte[] doEncrypt(byte[] key, byte[] clear) {
 
         List<SecureString> keyStrings = new ArrayList<SecureString>();
 
@@ -64,7 +64,7 @@ public class BlowFishTextEncryptionService implements EncryptionService, ObjectE
         return new byte[0];
     }
 
-    private byte[] decryptSpongy(byte[] key, byte[] encrypted) {
+    private byte[] doDecrypt(byte[] key, byte[] encrypted) {
 
         List<SecureString> keyStrings = new ArrayList<SecureString>();
 
@@ -112,12 +112,12 @@ public class BlowFishTextEncryptionService implements EncryptionService, ObjectE
 
     @Override
     public final byte[] decrypt(byte[] ciphertext, SecureString password) {
-        return decryptSpongy(password.getBytes(), ciphertext);
+        return doDecrypt(password.getBytes(), ciphertext);
     }
 
     @Override
     public final byte[] encrypt(byte[] plaintext, SecureString password) {
-        return encryptSpongy(password.getBytes(), plaintext);
+        return doEncrypt(password.getBytes(), plaintext);
     }
 
 
