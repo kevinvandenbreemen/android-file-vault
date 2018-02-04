@@ -3,7 +3,6 @@ package com.vandenbreemen.mobilesecurestorage.security.crypto.persistence;
 import com.vandenbreemen.mobilesecurestorage.TestConstants;
 import com.vandenbreemen.mobilesecurestorage.data.Pair;
 import com.vandenbreemen.mobilesecurestorage.file.ChunkedMediumException;
-import com.vandenbreemen.mobilesecurestorage.file.DefaultFileSystemTestListener;
 import com.vandenbreemen.mobilesecurestorage.file.ImportedFileData;
 import com.vandenbreemen.mobilesecurestorage.file.IndexedFile;
 import com.vandenbreemen.mobilesecurestorage.patterns.ProgressListener;
@@ -44,13 +43,12 @@ public class SecureFileSystemTest {
     @Test
     public void testSavingAFileOneUnit() {
 
-        DefaultFileSystemTestListener listener = new DefaultFileSystemTestListener();
 
         File tempFile = TestConstants.getTestFile(("test_single_unit" + System.currentTimeMillis() + ".dat"));
         tempFile.deleteOnExit();
         try {
             IndexedFile idf = getNewSecureFileSystem(tempFile);
-            idf.setFileSystemTestListener(listener);
+
             idf.storeObject("testfile", new ArrayList<String>(Arrays.asList("LARRY", "CURLY", "MOE")));
 
         } catch (Exception ex) {
@@ -94,17 +92,16 @@ public class SecureFileSystemTest {
     @Test
     public void testSavingAFileOneUnitAndThenRecovering() {
 
-        DefaultFileSystemTestListener listener = new DefaultFileSystemTestListener();
 
         File tempFile = TestConstants.getTestFile(("test_rw_single_unit" + System.currentTimeMillis() + ".dat"));
         tempFile.deleteOnExit();
         try {
             IndexedFile idf = getNewSecureFileSystem(tempFile);
-            idf.setFileSystemTestListener(listener);
+
             idf.storeObject("testfile", new ArrayList<String>(Arrays.asList("LARRY", "CURLY", "MOE")));
 
             idf = getNewSecureFileSystem(tempFile);
-            idf.setFileSystemTestListener(listener);
+
             List<String> files = idf.listFiles();
 
             assertEquals("Single file expected", 1, files.size());
@@ -117,7 +114,6 @@ public class SecureFileSystemTest {
 
             assertEquals("Possible data corruption", "CURLY", recovered.get(1));
 
-            System.out.println(listener.getAverageTimesReport());
         } catch (Exception ex) {
             ex.printStackTrace();
             fail("Error");
@@ -130,13 +126,12 @@ public class SecureFileSystemTest {
 
         int maxItem = 10000;    //	Make a huge object with list with this many items
 
-        DefaultFileSystemTestListener listener = new DefaultFileSystemTestListener();
 
         File tempFile = TestConstants.getTestFile(("test_rw_multi_unit" + System.currentTimeMillis() + ".dat"));
         tempFile.deleteOnExit();
         try {
             IndexedFile idf = getNewSecureFileSystem(tempFile);
-            idf.setFileSystemTestListener(listener);
+
 
             ArrayList<String> reallyLongList = new ArrayList<String>();
 
@@ -151,7 +146,7 @@ public class SecureFileSystemTest {
             idf.storeObject("testfile", reallyLongList);
 
             idf = getNewSecureFileSystem(tempFile);
-            idf.setFileSystemTestListener(listener);
+
             List<String> files = idf.listFiles();
 
             assertEquals("Single file expected", 1, files.size());
@@ -166,7 +161,6 @@ public class SecureFileSystemTest {
                 assertEquals("Possible data corruption", expectedItems.get(i), recovered.get(i));
             }
 
-            System.out.println(listener.getAverageTimesReport());
         } catch (Exception ex) {
             ex.printStackTrace();
             fail("Error");
@@ -387,8 +381,6 @@ public class SecureFileSystemTest {
     @Test
     public void testAllocateAccrossMultipleFilesAndThenDeleteOne() {
 
-        DefaultFileSystemTestListener listener = new DefaultFileSystemTestListener();
-
 
         int maxItem = 10000;    //	Make a huge object with list with this many items
 
@@ -402,7 +394,7 @@ public class SecureFileSystemTest {
 
         try {
             IndexedFile idf = getNewSecureFileSystem(tempFile);
-            idf.setFileSystemTestListener(listener);
+
 
             ArrayList<String> list1 = new ArrayList<String>();
             ArrayList<String> list2 = new ArrayList<String>();
@@ -425,7 +417,7 @@ public class SecureFileSystemTest {
 
             //	Now try to load it all
             idf = getNewSecureFileSystem(tempFile);
-            idf.setFileSystemTestListener(listener);
+
 
             assertEquals("There should be 2 files in the system", 2, idf.listFiles().size());
 
@@ -438,7 +430,7 @@ public class SecureFileSystemTest {
 
             //
             idf = getNewSecureFileSystem(tempFile);
-            idf.setFileSystemTestListener(listener);
+
             assertEquals("Only 1 file expected now", 1, idf.listFiles().size());
 
 
@@ -450,7 +442,7 @@ public class SecureFileSystemTest {
 
             idf.storeObject(file2, toUpdate);
             idf = getNewSecureFileSystem(tempFile);
-            idf.setFileSystemTestListener(listener);
+
             assertEquals("Only 1 file expected now", 1, idf.listFiles().size());
 
             List<String> rec2 = (List<String>) idf.loadFile(file2);
@@ -469,7 +461,6 @@ public class SecureFileSystemTest {
                 }
             }
 
-            System.out.println(listener.getAverageTimesReport());
         } catch (Exception ex) {
             ex.printStackTrace();
             fail("Error");
@@ -569,7 +560,6 @@ public class SecureFileSystemTest {
     @Test
     public void testImportFile() {
 
-        DefaultFileSystemTestListener listener = new DefaultFileSystemTestListener();
 
         File tempFile = TestConstants.getTestFile(("test_jpgimport" + System.currentTimeMillis() + ".dat"));
         tempFile.deleteOnExit();
@@ -580,11 +570,11 @@ public class SecureFileSystemTest {
                     Bytes.loadBytesFromFile(TestConstants.TEST_RES_IMG_1);
 
             IndexedFile idf = getNewSecureFileSystem(tempFile);
-            idf.setFileSystemTestListener(listener);
+
             idf.importFile(TestConstants.TEST_RES_IMG_1, null);
 
             idf = getNewSecureFileSystem(tempFile);
-            idf.setFileSystemTestListener(listener);
+
             assertEquals("Single file expected", 1, idf.listFiles().size());
             assertEquals("Imported file name should be same as name on disk", TestConstants.TEST_RES_IMG_1.getName(), idf.listFiles().get(0));
 
@@ -600,7 +590,6 @@ public class SecureFileSystemTest {
                 assertEquals("Data corruption at byte " + i, expectedBytes[i], data.getFileData()[i]);
             }
 
-            System.out.println(listener.getAverageTimesReport());
         } catch (Exception ex) {
             ex.printStackTrace();
             fail("Unexpected error importing");

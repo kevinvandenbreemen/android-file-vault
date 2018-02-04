@@ -812,7 +812,6 @@ public class IndexedFileTest {
 
         try {
             IndexedFile idf = new IndexedFile(tempFile);
-            idf.setFileSystemTestListener(listener);
 
             ArrayList<String> list1 = new ArrayList<String>();
             ArrayList<String> list2 = new ArrayList<String>();
@@ -835,7 +834,6 @@ public class IndexedFileTest {
 
             //	Now try to load it all
             idf = new IndexedFile(tempFile);
-            idf.setFileSystemTestListener(listener);
             idf.testMode = true;
             assertEquals("There should be 2 files in the system", 2, idf.listFiles().size());
 
@@ -850,7 +848,6 @@ public class IndexedFileTest {
 
             //	
             idf = new IndexedFile(tempFile);
-            idf.setFileSystemTestListener(listener);
             idf.testMode = true;
             assertEquals(" 2 files still expected ", 2, idf.listFiles().size());
 
@@ -864,7 +861,6 @@ public class IndexedFileTest {
 
             idf.storeObject(file2, toUpdate);
             idf = new IndexedFile(tempFile);
-            idf.setFileSystemTestListener(listener);
             idf.testMode = true;
             assertEquals(" 2 files still expected ", 2, idf.listFiles().size());
 
@@ -886,10 +882,6 @@ public class IndexedFileTest {
 
             assertEquals("Next available index should be 11 since all units used", 5, idf.fat.nextAvailableUnitIndex());
 
-            System.out.println(listener.getAverageTimesReport());
-
-            assertTrue("Performance:  Avg write time > 50 ms", listener.getAverageWriteTime() < 50);
-            assertTrue("Performance:  Avg read time > 50 ms", listener.getAverageReadTime() < 50);
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -974,13 +966,11 @@ public class IndexedFileTest {
                     Bytes.loadBytesFromFile(TestConstants.TEST_RES_IMG_1);
 
             IndexedFile idf = new IndexedFile(tempFile);
-            idf.setFileSystemTestListener(listener);
             assertEquals(
                     "System should return filename generated during import",
                     TestConstants.TEST_RES_IMG_1.getName(), idf.importFile(TestConstants.TEST_RES_IMG_1, null));
 
             idf = new IndexedFile(tempFile);
-            idf.setFileSystemTestListener(listener);
             assertEquals("Single file expected", 1, idf.listFiles().size());
             assertEquals("Imported file name should be same as name on disk", TestConstants.TEST_RES_IMG_1.getName(), idf.listFiles().get(0));
 
@@ -996,7 +986,6 @@ public class IndexedFileTest {
                 assertEquals("Data corruption at byte " + i, expectedBytes[i], data.getFileData()[i]);
             }
 
-            System.out.println(listener.getAverageTimesReport());
         } catch (Exception ex) {
             ex.printStackTrace();
             fail("Unexpected error importing");

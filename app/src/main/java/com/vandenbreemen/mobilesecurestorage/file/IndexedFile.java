@@ -75,11 +75,6 @@ public class IndexedFile {
     protected boolean testMode = false;
 
     /**
-     * Provide for monitoring IO times / performance
-     */
-    private FileSystemTestListener testListener;
-
-    /**
      * Desired size of each unit written
      */
     private int unitSize = CHUNK_SIZE;
@@ -451,11 +446,7 @@ public class IndexedFile {
             fileSystem.toIndex(startChunk);
 
             List<ChainedUnit> units = new ArrayList<>();
-            if (fileSystem.testListener != null)
-                fileSystem.testListener.logReadStart();
             ChainedUnit unit = fileSystem.readDataUnit();
-            if (fileSystem.testListener != null)
-                fileSystem.testListener.logReadEnd();
 
             units.add(unit);
 
@@ -467,9 +458,7 @@ public class IndexedFile {
 
                 fileSystem.toIndex((int) unit.getLocationOfNextUnit());
 
-                if (fileSystem.testListener != null) fileSystem.testListener.logReadStart();
                 unit = fileSystem.readDataUnit();
-                if (fileSystem.testListener != null) fileSystem.testListener.logReadEnd();
                 units.add(unit);
             }
 
@@ -562,10 +551,7 @@ public class IndexedFile {
                 throw new IllegalArgumentException("Unit '" + index + "' not allocated to file '" + fileName + "'!");
 
             toIndex(index);
-
-            if (testListener != null) testListener.logWriteStart();
             writeDataUnit(unit);
-            if (testListener != null) testListener.logWriteEnd();
 
         } catch (InterruptedException in) {
             errorOutOnLockTimeout();
@@ -593,9 +579,7 @@ public class IndexedFile {
         if (CollectionUtils.isEmpty(fat._unitsAllocated(fileName))) {
             toIndex(nextUnit);
 
-            if (testListener != null) testListener.logWriteStart();
             writeDataUnit(unit);
-            if (testListener != null) testListener.logWriteEnd();
 
             fat._addUnitFor(fileName, nextUnit);
             storeFAT();
@@ -612,9 +596,7 @@ public class IndexedFile {
         latestUnit.setLocationOfNextUnit(nextUnit);
 
         //	Update the last unit in the FS so the FS knows about the arrangement of units for the file
-        if (testListener != null) testListener.logWriteStart();
         writeDataUnit(latestUnit);
-        if (testListener != null) testListener.logWriteEnd();
 
         //	Reserve the new unit in the FAT
         fat._addUnitFor(fileName, nextUnit);
@@ -701,9 +683,7 @@ public class IndexedFile {
             fat._addUnitFor(fileName, nextAvailUnit);
             nextAvailUnit = determineNextAvailUnit(bytes, unitsToAllocate, nextAvailUnit, unit, i);
 
-            if (testListener != null) testListener.logWriteStart();
             writeDataUnit(unit);
-            if (testListener != null) testListener.logWriteEnd();
 
             //			Keep going as long as remaining bytes size is greater than max chunk size
             if (bytes.length - i > maxChunkLength)
@@ -783,9 +763,7 @@ public class IndexedFile {
 
         fat._addUnitFor(fileName, nextAvailUnit);
 
-        if (testListener != null) testListener.logWriteStart();
         writeDataUnit(unit);
-        if (testListener != null) testListener.logWriteEnd();
     }
 
     /**
@@ -802,9 +780,7 @@ public class IndexedFile {
         unit = getChainedDataUnit();
         unit.setData(bytes);
 
-        if (testListener != null) testListener.logWriteStart();
         writeDataUnit(unit);
-        if (testListener != null) testListener.logWriteEnd();
 
         fat._addUnitFor(fileName, unitIndex);
     }
@@ -1124,15 +1100,6 @@ public class IndexedFile {
         } finally {
             accessLock.unlock();
         }
-    }
-
-    /**
-     * For testing purposes only, sets listener for monitoring file system IO
-     *
-     * @param listener
-     */
-    public final void setFileSystemTestListener(FileSystemTestListener listener) {
-        this.testListener = listener;
     }
 
     /**
