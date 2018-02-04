@@ -51,7 +51,7 @@ public class IndexedFile {
      * Maximum wait time in milliseconds before ejecting the medium and killing the app
      * when lock failure occurs
      */
-    private static final long maxLockWaitMillis = 20000;
+    private static final long MAX_LOCK_WAIT_MILLIS = 20000;
 
     private static int emptySecMSSize;
     /**
@@ -342,7 +342,7 @@ public class IndexedFile {
         public final long addUnit(ChainedUnit unit) {
             try {
 
-                if (!fileSystem.accessLock.tryLock(maxLockWaitMillis, TimeUnit.MILLISECONDS))
+                if (!fileSystem.accessLock.tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
                     fileSystem.errorOutOnLockTimeout();
 
                 long ret = fileSystem.addDataUnit(fileName, unit);
@@ -354,6 +354,7 @@ public class IndexedFile {
                 return ret;
             } catch (InterruptedException inter) {
                 fileSystem.errorOutOnLockTimeout();
+                Thread.currentThread().interrupt();
                 return 0;
             } finally {
                 fileSystem.accessLock.unlock();
@@ -412,7 +413,7 @@ public class IndexedFile {
 
             try {
 
-                if (!fileSystem.accessLock.tryLock(maxLockWaitMillis, TimeUnit.MILLISECONDS))
+                if (!fileSystem.accessLock.tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
                     fileSystem.errorOutOnLockTimeout();
 
                 if (!unitIndexes.contains(index))
@@ -422,6 +423,7 @@ public class IndexedFile {
                 return fileSystem.readDataUnit();
             } catch (InterruptedException in) {
                 fileSystem.errorOutOnLockTimeout();
+                Thread.currentThread().interrupt();
                 return null;
             } finally {
                 fileSystem.accessLock.unlock();
@@ -588,7 +590,7 @@ public class IndexedFile {
      */
     final void updateDataUnit(String fileName, long index, ChainedUnit unit) {
         try {
-            if (!accessLock.tryLock(maxLockWaitMillis, TimeUnit.MILLISECONDS))
+            if (!accessLock.tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
                 errorOutOnLockTimeout();
 
             if (!fat._unitsAllocated(fileName).contains(index))
@@ -602,6 +604,7 @@ public class IndexedFile {
 
         } catch (InterruptedException in) {
             errorOutOnLockTimeout();
+            Thread.currentThread().interrupt();
         } finally {
             accessLock.unlock();
         }
@@ -640,19 +643,17 @@ public class IndexedFile {
         ChainedUnit latestUnit = readDataUnit();
 
 
-        //	And now mark that index for use by the file
-        {
-            //	Tell the last unit used for the file about the new unit we're about to allocated
-            latestUnit.setLocationOfNextUnit(nextUnit);
+        //	Tell the last unit used for the file about the new unit we're about to allocated
+        latestUnit.setLocationOfNextUnit(nextUnit);
 
-            //	Update the last unit in the FS so the FS knows about the arrangement of units for the file
-            if (testListener != null) testListener.logWriteStart();
-            writeDataUnit(latestUnit);
-            if (testListener != null) testListener.logWriteEnd();
+        //	Update the last unit in the FS so the FS knows about the arrangement of units for the file
+        if (testListener != null) testListener.logWriteStart();
+        writeDataUnit(latestUnit);
+        if (testListener != null) testListener.logWriteEnd();
 
-            //	Reserve the new unit in the FAT
-            fat._addUnitFor(fileName, nextUnit);
-        }
+        //	Reserve the new unit in the FAT
+        fat._addUnitFor(fileName, nextUnit);
+
         //	And finally write the unit!
         toIndex(nextUnit);
         writeDataUnit(unit);
@@ -675,7 +676,7 @@ public class IndexedFile {
 
         try {
 
-            if (!accessLock.tryLock(maxLockWaitMillis, TimeUnit.MILLISECONDS)) {
+            if (!accessLock.tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS)) {
                 errorOutOnLockTimeout();
             }
 
@@ -691,109 +692,162 @@ public class IndexedFile {
                     fat.nextAvailableUnitIndex();
 
 
-            //	Two possibilities:
-
-            ChainedUnit unit;
-
-            //	1:  Bytes will fit into one chunk
             if (bytes.length <= maxChunkLength) {
-                toIndex(nextAvailUnit.longValue());
-
-                unit = getChainedDataUnit();
-                unit.setData(bytes);
-
-                if (testListener != null) testListener.logWriteStart();
-                writeDataUnit(unit);
-                if (testListener != null) testListener.logWriteEnd();
-
-                fat._addUnitFor(fileName, nextAvailUnit);
+                writeToSingleChunk(fileName, bytes, nextAvailUnit);
             } else {
 
-                if (testMode)
-                    SystemLog.get().debug("file:  " + fileName + ":  data spans multiple chunks");
-
-                boolean keepAddingChunks = true;
-                int i = 0;    //	Current byte index
-                byte[] unitData;    //	Bytes to store to a single unit
-                do {
-                    unitData = new byte[(int) maxChunkLength];
-                    System.arraycopy(bytes, i, unitData, 0, (int) maxChunkLength);
-
-                    if (testMode)
-                        SystemLog.get().debug("file:  " + fileName + ":  allocating to unit " + nextAvailUnit.longValue());
-
-                    toIndex(nextAvailUnit.longValue());
-
-                    unit = getChainedDataUnit();
-                    unit.setData(unitData);
-
-                    fat._addUnitFor(fileName, nextAvailUnit);
-                    if ((long) (bytes.length - i) > 0 /* If from the current position along the original bytes array is still within the array */) {
-                        //	Determine next available unit
-                        nextAvailUnit = !CollectionUtils.isEmpty(unitsToAllocate) ? unitsToAllocate.remove(0) :
-                                fat.nextAvailableUnitIndex();
-                        unit.setLocationOfNextUnit(nextAvailUnit);
-                    }
-
-                    if (testListener != null) testListener.logWriteStart();
-                    writeDataUnit(unit);
-                    if (testListener != null) testListener.logWriteEnd();
-
-                    //			Keep going as long as remaining bytes size is greater than max chunk size
-                    if (bytes.length - i > maxChunkLength)
-                        i += maxChunkLength;    //	Move another chunk segment along the array
-
-                    //	If after moving up one segment we're now one chunk or less from the end then stop.
-                    if (bytes.length - i <= maxChunkLength)
-                        keepAddingChunks = false;    //	Otherwise stop
-                } while (keepAddingChunks);
-
-                //	Now store the remainder
-                if (bytes.length - i > 0) {    //	If there are residual bytes
-                    int residueVectorSize = bytes.length - i;
-                    unitData = new byte[residueVectorSize];
-                    System.arraycopy(bytes, i, unitData, 0, residueVectorSize);
-
-                    if (testMode)
-                        SystemLog.get().debug("file:  " + fileName + ":  allocating to unit " + nextAvailUnit.longValue());
-
-                    toIndex(nextAvailUnit.longValue());
-
-                    unit = getChainedDataUnit();
-                    unit.setData(unitData);
-
-                    fat._addUnitFor(fileName, nextAvailUnit);
-
-                    if (testListener != null) testListener.logWriteStart();
-                    writeDataUnit(unit);
-                    if (testListener != null) testListener.logWriteEnd();
-                }
+                doMultiUnitDataWrite(fileName, maxChunkLength, bytes, unitsToAllocate, nextAvailUnit);
             }
 
             //	Now that we've finished writing the data update the units that are usable in case the file was shortened
-            if (!CollectionUtils.isEmpty(unitsToAllocate)) {
-                try {
-                    fat.accessLock();
-                    unitsToAllocate.forEach(u -> fat._removeUnitFor(fileName, u));
-                } finally {
-                    fat.releaseAccessLock();
-                }
-            }
+            removeUnusedUnits(fileName, unitsToAllocate);
 
             if (!FAT.FILENAME.equals(fileName))    //	Write the updated FAT table now that everything has been written.
                 storeFAT();
 
         } catch (InterruptedException inter) {
             errorOutOnLockTimeout();
+            Thread.currentThread().interrupt();
         } finally {
             accessLock.unlock();
         }
     }
 
+    private void doMultiUnitDataWrite(String fileName, long maxChunkLength, byte[] bytes, List<Long> unitsToAllocate, Long nextAvailUnit) {
+        ChainedUnit unit;
+        if (testMode)
+            SystemLog.get().debug("file:  " + fileName + ":  data spans multiple chunks");
+
+        boolean keepAddingChunks = true;
+        int i = 0;    //	Current byte index
+        byte[] unitData;    //	Bytes to store to a single unit
+        do {
+            unitData = new byte[(int) maxChunkLength];
+            System.arraycopy(bytes, i, unitData, 0, (int) maxChunkLength);
+
+            if (testMode)
+                SystemLog.get().debug("file:  " + fileName + ":  allocating to unit " + nextAvailUnit.longValue());
+
+            toIndex(nextAvailUnit.longValue());
+
+            unit = getChainedDataUnit();
+            unit.setData(unitData);
+
+            fat._addUnitFor(fileName, nextAvailUnit);
+            nextAvailUnit = determineNextAvailUnit(bytes, unitsToAllocate, nextAvailUnit, unit, i);
+
+            if (testListener != null) testListener.logWriteStart();
+            writeDataUnit(unit);
+            if (testListener != null) testListener.logWriteEnd();
+
+            //			Keep going as long as remaining bytes size is greater than max chunk size
+            if (bytes.length - i > maxChunkLength)
+                i += maxChunkLength;    //	Move another chunk segment along the array
+
+            //	If after moving up one segment we're now one chunk or less from the end then stop.
+            if (bytes.length - i <= maxChunkLength)
+                keepAddingChunks = false;    //	Otherwise stop
+        } while (keepAddingChunks);
+
+        //	Now store the remainder
+        if (bytes.length - i > 0) {    //	If there are residual bytes
+            writeRemainingData(fileName, bytes, nextAvailUnit, i);
+        }
+    }
+
+    /**
+     * Given unit to be created, works out next avail unit and updates it
+     *
+     * @param bytes
+     * @param unitsToAllocate
+     * @param nextAvailUnit
+     * @param unit             Unit being written
+     * @param currentByteIndex
+     * @return
+     */
+    private Long determineNextAvailUnit(byte[] bytes, List<Long> unitsToAllocate, Long nextAvailUnit, ChainedUnit unit, int currentByteIndex) {
+        if ((long) (bytes.length - currentByteIndex) > 0 /* If from the current position along the original bytes array is still within the array */) {
+            //	Determine next available unit
+            nextAvailUnit = !CollectionUtils.isEmpty(unitsToAllocate) ? unitsToAllocate.remove(0) :
+                    fat.nextAvailableUnitIndex();
+            unit.setLocationOfNextUnit(nextAvailUnit);
+        }
+        return nextAvailUnit;
+    }
+
+    /**
+     * Given known list of units that were allocated, remove these from file.
+     *
+     * @param fileName
+     * @param noLongerNeededUnits
+     */
+    private void removeUnusedUnits(String fileName, List<Long> noLongerNeededUnits) {
+        if (!CollectionUtils.isEmpty(noLongerNeededUnits)) {
+            try {
+                fat.accessLock();
+                noLongerNeededUnits.forEach(u -> fat._removeUnitFor(fileName, u));
+            } finally {
+                fat.releaseAccessLock();
+            }
+        }
+    }
+
+    /**
+     * Write out remaining data when multiple units/chunks were required to store the data
+     * Write out remaining data when multiple units/chunks were required to store the data
+     *
+     * @param fileName
+     * @param bytes
+     * @param nextAvailUnit
+     * @param currentByteIndex
+     */
+    private void writeRemainingData(String fileName, byte[] bytes, Long nextAvailUnit, int currentByteIndex) {
+        byte[] unitData;
+        ChainedUnit unit;
+        int residueVectorSize = bytes.length - currentByteIndex;
+        unitData = new byte[residueVectorSize];
+        System.arraycopy(bytes, currentByteIndex, unitData, 0, residueVectorSize);
+
+        if (testMode)
+            SystemLog.get().debug("file:  " + fileName + ":  allocating to unit " + nextAvailUnit.longValue());
+
+        toIndex(nextAvailUnit.longValue());
+
+        unit = getChainedDataUnit();
+        unit.setData(unitData);
+
+        fat._addUnitFor(fileName, nextAvailUnit);
+
+        if (testListener != null) testListener.logWriteStart();
+        writeDataUnit(unit);
+        if (testListener != null) testListener.logWriteEnd();
+    }
+
+    /**
+     * Write the given data to specified chunk/unit
+     *
+     * @param fileName
+     * @param bytes
+     * @param unitIndex
+     */
+    private void writeToSingleChunk(String fileName, byte[] bytes, Long unitIndex) {
+        ChainedUnit unit;
+        toIndex(unitIndex.longValue());
+
+        unit = getChainedDataUnit();
+        unit.setData(bytes);
+
+        if (testListener != null) testListener.logWriteStart();
+        writeDataUnit(unit);
+        if (testListener != null) testListener.logWriteEnd();
+
+        fat._addUnitFor(fileName, unitIndex);
+    }
+
     public final void storeObject(String fileName, Serializable object) {
 
         byte[] serialized = Serialization.toBytes(object);
-        parseAndWriteBytes(fileName, getMaxPayloadSize() - 2048/* Padding for encryption type stuff */, serialized);
+        parseAndWriteBytes(fileName, getMaxPayloadSize() - 2048l/* Padding for encryption type stuff */, serialized);
     }
 
     /**
@@ -981,7 +1035,7 @@ public class IndexedFile {
         byte[] data;
         try {
 
-            if (!accessLock.tryLock(maxLockWaitMillis, TimeUnit.MILLISECONDS))
+            if (!accessLock.tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
                 errorOutOnLockTimeout();
 
             if (!fat._exists(fileName))
@@ -994,7 +1048,8 @@ public class IndexedFile {
             data = onTheSystem.getData();
         } catch (InterruptedException inte) {
             errorOutOnLockTimeout();
-            return null;
+            Thread.currentThread().interrupt();
+            throw new ChunkedMediumException("Interrupted", inte);
         } finally {
             accessLock.unlock();
         }
@@ -1051,13 +1106,14 @@ public class IndexedFile {
         }
 
         try {
-            if (!accessLock.tryLock(maxLockWaitMillis, TimeUnit.MILLISECONDS))
+            if (!accessLock.tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
                 errorOutOnLockTimeout();
             fat.accessLock();
             Arrays.stream(fileNames).forEach(fat::_delete);
             storeFAT();
         } catch (InterruptedException e) {
             errorOutOnLockTimeout();
+            Thread.currentThread().interrupt();
         } finally {
             fat.releaseAccessLock();
             accessLock.unlock();
@@ -1104,7 +1160,7 @@ public class IndexedFile {
     public final byte[] loadBytesFromFile(String fileName) throws ChunkedMediumException {
 
         try {
-            if (!accessLock.tryLock(maxLockWaitMillis, TimeUnit.MILLISECONDS))
+            if (!accessLock.tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
                 errorOutOnLockTimeout();
 
             if (!fat._exists(fileName))
@@ -1118,7 +1174,8 @@ public class IndexedFile {
                 throw new ChunkedMediumException("File is not an " + ImportedFileData.class.getSimpleName() + " but is instead a " + obj.getClass());
         } catch (InterruptedException inter) {
             errorOutOnLockTimeout();
-            return null;
+            Thread.currentThread().interrupt();
+            throw new ChunkedMediumException("Interrupted", inter);
         } finally {
             accessLock.unlock();
         }
@@ -1154,7 +1211,7 @@ public class IndexedFile {
     public final void visitDataUnits(Consumer<Pair<Long, ChainedUnit>> visitor) {
         long totalUnits = getTotalUnits();
         try {
-            if (!accessLock.tryLock(maxLockWaitMillis, TimeUnit.MILLISECONDS))
+            if (!accessLock.tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
                 errorOutOnLockTimeout();
             for (long i = 0; i < totalUnits; i++) {
                 toIndex(i);
@@ -1163,6 +1220,7 @@ public class IndexedFile {
             }
         } catch (InterruptedException in) {
             errorOutOnLockTimeout();
+            Thread.currentThread().interrupt();
         } finally {
             accessLock.unlock();
         }

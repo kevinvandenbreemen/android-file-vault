@@ -34,7 +34,6 @@ public class CloningFactory {
 
         registerCloner(Boolean.class, Boolean.TRUE::equals);
 
-        //	June 29th:  Support byte array cloning
         registerCloner(BYTE_ARRAY_TYPE, (ICloner) object -> {
             byte[] original = (byte[]) object;
             byte[] ret = new byte[original.length];
@@ -43,7 +42,6 @@ public class CloningFactory {
             }
             return ret;
         });
-        //	End June 29th:  Support byte array cloning
     }
 
     private CloningFactory() {
