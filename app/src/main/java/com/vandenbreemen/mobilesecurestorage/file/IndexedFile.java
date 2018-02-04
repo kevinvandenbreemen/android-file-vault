@@ -133,26 +133,16 @@ public class IndexedFile {
         }
     }
 
-    /**
-     * Indexed file with a custom size in bytes per chunk.
-     *
-     * @param desiredFile
-     * @param chunkSizeBytes
-     */
-    public IndexedFile(File desiredFile, int chunkSizeBytes) throws ChunkedMediumException {
-        this(desiredFile, true, chunkSizeBytes);
-    }
 
     public IndexedFile(File desiredFile, boolean loadFatHack) throws ChunkedMediumException {
-        this(desiredFile, loadFatHack, 0);
+        this(desiredFile, 0);
     }
 
     /**
      * Proper constructor to use.  This constructor will always load the fat
      *
-     * @param loadFatHack
      */
-    public IndexedFile(File desiredFile, boolean loadFatHack, int chunkSizeBytes) throws ChunkedMediumException {
+    public IndexedFile(File desiredFile, int chunkSizeBytes) throws ChunkedMediumException {
         this(desiredFile);
 
         if (chunkSizeBytes > 0) {
