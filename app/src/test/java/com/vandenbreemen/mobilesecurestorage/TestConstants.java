@@ -17,6 +17,11 @@ public class TestConstants {
      */
     public static final String TEST_DIR = "testOutput";
 
+    //  Images for testing file imports
+    public static final File TEST_RES_IMG_1 = new File("testResources" + File.separator + "bright-red-sunset.jpg");
+    public static final File TEST_RES_IMG_2 = new File("testResources" + File.separator + "night-fog.jpg");
+    public static final File TEST_RES_IMG_3 = new File("testResources" + File.separator + "tractor.jpg");
+
     /**
      * Gets a new test file.  The file will be deleted on program completion.
      *

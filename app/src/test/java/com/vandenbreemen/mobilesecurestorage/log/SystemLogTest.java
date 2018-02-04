@@ -13,7 +13,7 @@ public class SystemLogTest {
 
     //  Validate the system can log using system out by default (to make it easier to debug our tests)
     @Test
-    public void sanityTestUsesSystemOutByDefault(){
+    public void sanityTestUsesSystemOutByDefault() {
         SystemLog.get().info("This is a test"); //  This will crash the test if it defers to Android/is not set
     }
 

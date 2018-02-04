@@ -37,6 +37,12 @@ public class LimitedMap<K, V> implements Map<K, V> {
      */
     private int maxSize;
 
+    public LimitedMap(int maxSize) {
+        this.maxSize = maxSize;
+        this.contents = new HashMap<>();
+        this.keys = new LinkedList<>();
+    }
+
     /**
      * Obtains a thread-safe version of this map
      *
@@ -70,12 +76,6 @@ public class LimitedMap<K, V> implements Map<K, V> {
         ret.contents = new ConcurrentHashMap<>();
         ret.keys = new Vector<>();
         return ret;
-    }
-
-    public LimitedMap(int maxSize) {
-        this.maxSize = maxSize;
-        this.contents = new HashMap<>();
-        this.keys = new LinkedList<>();
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.vandenbreemen.mobilesecurestorage.file;
 
+import java.io.Serializable;
+
 /**
  * <h2>Intro</h2>
  * <p>A unit of data that references another unit and contains data
@@ -7,7 +9,7 @@ package com.vandenbreemen.mobilesecurestorage.file;
  *
  * @author kevin
  */
-public interface ChainedUnit {
+public interface ChainedUnit extends Serializable {
     /**
      * If this has a value then the data encoded using these units spans more than unit
      *

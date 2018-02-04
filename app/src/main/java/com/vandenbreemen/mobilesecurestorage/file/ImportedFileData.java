@@ -5,6 +5,7 @@ import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime;
 import com.vandenbreemen.mobilesecurestorage.security.Bytes;
 
 import java.io.File;
+import java.io.Serializable;
 
 /**
  * <h2>Intro</h2>
@@ -13,7 +14,7 @@ import java.io.File;
  *
  * @author kevin
  */
-public class ImportedFileData {
+public class ImportedFileData implements Serializable {
     /**
      *
      */

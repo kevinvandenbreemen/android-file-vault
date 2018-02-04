@@ -17,17 +17,17 @@ import org.robolectric.RobolectricTestRunner;
 public class AndroidSystemLogTest {
 
     @BeforeClass
-    public static void setup(){
+    public static void setup() {
         SystemLog.setGlobalSystemLog(new AndroidSystemLog());
     }
 
     @AfterClass
-    public static void tearDown(){
+    public static void tearDown() {
         SystemLog.setGlobalSystemLog(new SystemOutLog());
     }
 
     @Test
-    public void testLog(){
+    public void testLog() {
         SystemLog.get().info("This is a test");
     }
 
