@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 /**
@@ -40,7 +40,7 @@ public class FAT implements Serializable {
     /**
      * Access lockdown
      */
-    private transient ReentrantLock accessLock;
+    private transient ReentrantReadWriteLock accessLock;
 
     /**
      * Total number of units on the file system
@@ -58,7 +58,7 @@ public class FAT implements Serializable {
     private Map<String, List<Long>> fileAllocations;
 
     public FAT() {
-        this.accessLock = new ReentrantLock();
+        this.accessLock = new ReentrantReadWriteLock();
         this.freeUnitIndexes = new LinkedList<>();
         this.fileAllocations = new HashMap<>();
         this.totalUnits = 0;
@@ -71,7 +71,7 @@ public class FAT implements Serializable {
      * Initialize FAT for use after recovery from a file
      */
     final void initialize() {
-        this.accessLock = new ReentrantLock();
+        this.accessLock = new ReentrantReadWriteLock();
     }
 
     /**
@@ -81,7 +81,7 @@ public class FAT implements Serializable {
      */
     final void _addUnitFor(String fileName, long unitIndex) {
         try {
-            accessLock.lock();
+            accessLock.writeLock().lock();
             if (!fileAllocations.containsKey(fileName)) {
                 List<Long> indexes = new ArrayList<>();
                 fileAllocations.put(fileName, indexes);
@@ -101,7 +101,7 @@ public class FAT implements Serializable {
             if (unitIndex > totalUnits)
                 totalUnits = unitIndex;
         } finally {
-            accessLock.unlock();
+            accessLock.writeLock().unlock();
         }
     }
 
@@ -112,12 +112,12 @@ public class FAT implements Serializable {
      */
     final void _touch(String fileName) {
         try {
-            accessLock.lock();
+            accessLock.writeLock().lock();
             if (!fileAllocations.containsKey(fileName)) {
                 fileAllocations.put(fileName, new ArrayList<Long>());
             }
         } finally {
-            accessLock.unlock();
+            accessLock.writeLock().unlock();
         }
     }
 
@@ -147,10 +147,10 @@ public class FAT implements Serializable {
      */
     final boolean _exists(String fileName) {
         try {
-            accessLock.lock();
+            accessLock.readLock().lock();
             return fileAllocations.containsKey(fileName);
         } finally {
-            accessLock.unlock();
+            accessLock.readLock().unlock();
         }
     }
 
@@ -162,7 +162,7 @@ public class FAT implements Serializable {
      */
     final List<Long> _unitsAllocated(String fileName) {
         try {
-            accessLock.lock();
+            accessLock.readLock().lock();
             if (!fileAllocations.containsKey(fileName))
                 throw new MSSRuntime("Unexpected:  No file named '" + fileName + "' found on the system");
 
@@ -171,7 +171,7 @@ public class FAT implements Serializable {
             return ret;
 
         } finally {
-            accessLock.unlock();
+            accessLock.readLock().unlock();
         }
     }
 
@@ -183,7 +183,7 @@ public class FAT implements Serializable {
      */
     final long nextAvailableUnitIndex() {
         try {
-            accessLock.lock();
+            accessLock.readLock().lock();
 
             if (CollectionUtils.isEmpty(freeUnitIndexes))
                 return totalUnits + 1;
@@ -193,7 +193,7 @@ public class FAT implements Serializable {
             }
 
         } finally {
-            accessLock.unlock();
+            accessLock.readLock().unlock();
         }
     }
 
@@ -203,26 +203,26 @@ public class FAT implements Serializable {
      * @return
      */
     final List<String> listFiles() {
-        accessLock();
+        accessLock.readLock().lock();
         try {
             return fileAllocations.entrySet().stream().filter(e -> !FILENAME.equals(e.getKey())).map(Map.Entry::getKey).collect(Collectors.toList());
         } finally {
-            releaseAccessLock();
+            accessLock.readLock().unlock();
         }
     }
 
     /**
-     * Acquire access lock to the FAT
+     * Acquire read/write access lock to the FAT
      */
     final void accessLock() {
-        accessLock.lock();
+        accessLock.writeLock().lock();
     }
 
     /**
-     * Release the access lock to the FAT
+     * Release the read/write access lock to the FAT
      */
     final void releaseAccessLock() {
-        accessLock.unlock();
+        accessLock.writeLock().unlock();
     }
 
     /**
@@ -269,7 +269,7 @@ public class FAT implements Serializable {
 
     void _rename(String currentName, String newName) {
         try {
-            accessLock.lock();
+            accessLock.writeLock().lock();
             if (!fileAllocations.containsKey(currentName))
                 throw new MSSRuntime("Unexpected:  No such file as '" + currentName + "' exists on the system!");
 
@@ -277,7 +277,7 @@ public class FAT implements Serializable {
             fileAllocations.put(newName, allocations);
 
         } finally {
-            accessLock.unlock();
+            accessLock.writeLock().unlock();
         }
     }
 
