@@ -30,7 +30,7 @@ public abstract class SecureFileSystem extends IndexedFile {
      */
     public SecureFileSystem(File desiredFile, boolean loadFatHack)
             throws ChunkedMediumException {
-        super(desiredFile, loadFatHack);
+        super(desiredFile);
     }
 
     /**

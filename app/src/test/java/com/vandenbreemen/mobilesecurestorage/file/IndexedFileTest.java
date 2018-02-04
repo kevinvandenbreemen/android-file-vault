@@ -38,7 +38,7 @@ public class IndexedFileTest {
     private SecureString password = DualLayerEncryptionService.generateKeys(new SecureString("Password123".getBytes()));
 
     @Test
-    public void testEncodeChunk() {
+    public void testEncodeChunk() throws Exception {
         byte[] toEncode = "this is a test".getBytes();
         byte[] encoded = new IndexedFile().encodeChunk(toEncode);
         assertEquals("Start of medium expected as first byte", ControlBytes.START_OF_MEDIUM, encoded[0]);
@@ -48,7 +48,7 @@ public class IndexedFileTest {
     }
 
     @Test
-    public void testReadChunk() {
+    public void testReadChunk() throws Exception {
         byte[] toEncode = "this is a test".getBytes();
         byte[] encoded = new IndexedFile().encodeChunk(toEncode);
         byte[] decoded = new IndexedFile().readChunk(encoded);
@@ -63,7 +63,7 @@ public class IndexedFileTest {
     }
 
     @Test
-    public void testWriteChunkToFile() {
+    public void testWriteChunkToFile() throws Exception {
 
         File tempFile = TestConstants.getTestFile(("test_" + System.currentTimeMillis() + ".dat"));
 
@@ -82,7 +82,7 @@ public class IndexedFileTest {
     }
 
     @Test
-    public void testTwoChunks() {
+    public void testTwoChunks() throws Exception {
 
         File tempFile = TestConstants.getTestFile(("test_1_" + System.currentTimeMillis() + ".dat"));
 
@@ -116,7 +116,7 @@ public class IndexedFileTest {
     }
 
     @Test
-    public void testMaxChunkSize() {
+    public void testMaxChunkSize() throws Exception {
         //	Density test.  Validate that the system can handle two totally full chunks
         File tempFile = TestConstants.getTestFile(("test_1_dense_" + System.currentTimeMillis() + ".dat"));
 
@@ -151,7 +151,7 @@ public class IndexedFileTest {
     }
 
     @Test
-    public void testOverwriteAChunk() {
+    public void testOverwriteAChunk() throws Exception {
         File tempFile = TestConstants.getTestFile(("test_1_" + System.currentTimeMillis() + ".dat"));
 
 
@@ -196,7 +196,7 @@ public class IndexedFileTest {
     }
 
     @Test
-    public void testStoreSerializedObjectChunk() {
+    public void testStoreSerializedObjectChunk() throws Exception {
         File tempFile = TestConstants.getTestFile(("test_ser_" + System.currentTimeMillis() + ".dat"));
 
 
@@ -224,7 +224,7 @@ public class IndexedFileTest {
 
     //	Ultimate test:  Can we encrypt a chunk of data?
     @Test
-    public void testEncryptedChunk() {
+    public void testEncryptedChunk() throws Exception {
 
         File tempFile = TestConstants.getTestFile(("test_ser_enc" + System.currentTimeMillis() + ".dat"));
 
@@ -251,13 +251,13 @@ public class IndexedFileTest {
 
     //	This is a smoke test.  No verification is performed
     @Test
-    public void testSavingAFileOneUnit() {
+    public void testSavingAFileOneUnit() throws Exception {
 
         File tempFile = TestConstants.getTestFile(("test_single_unit" + System.currentTimeMillis() + ".dat"));
 
 
         try {
-            IndexedFile idf = new IndexedFile(tempFile, false);
+            IndexedFile idf = new IndexedFile(tempFile);
             idf.storeObject("testfile", new ArrayList<String>(Arrays.asList("LARRY", "CURLY", "MOE")));
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -266,15 +266,15 @@ public class IndexedFileTest {
     }
 
     @Test
-    public void testSavingAFileOneUnitAndThenRecovering() {
+    public void testSavingAFileOneUnitAndThenRecovering() throws Exception {
         File tempFile = TestConstants.getTestFile(("test_rw_single_unit" + System.currentTimeMillis() + ".dat"));
 
 
         try {
-            IndexedFile idf = new IndexedFile(tempFile, false);
+            IndexedFile idf = new IndexedFile(tempFile);
             idf.storeObject("testfile", new ArrayList<String>(Arrays.asList("LARRY", "CURLY", "MOE")));
 
-            idf = new IndexedFile(tempFile, false);
+            idf = new IndexedFile(tempFile);
             List<String> files = idf.listFiles();
 
             assertEquals("Single file expected", 1, files.size());
@@ -299,7 +299,7 @@ public class IndexedFileTest {
         File tempFile = TestConstants.getTestFile(("test_view_rw_multi_unit_add_" + System.currentTimeMillis() + ".dat"));
 
         try {
-            IndexedFile idf = new IndexedFile(tempFile, true);
+            IndexedFile idf = new IndexedFile(tempFile);
             idf.touch("test");
 
 
@@ -318,12 +318,12 @@ public class IndexedFileTest {
             newUnit.setData(Serialization.toBytes(testList));
 
             //	Force file re-load so we can throw more variables at the scenario!
-            idf = new IndexedFile(tempFile, true);
+            idf = new IndexedFile(tempFile);
             view = idf.getFileView("test");
 
             view.addUnit(newUnit);
 
-            idf = new IndexedFile(tempFile, true);
+            idf = new IndexedFile(tempFile);
             view = idf.getFileView("test");
 
             assertFalse("Units allocated expected", CollectionUtils.isEmpty(view.getUnits()));
@@ -342,14 +342,14 @@ public class IndexedFileTest {
     }
 
     @Test
-    public void testAllocateMultipleChunksBecauseObjectTooLarge() {
+    public void testAllocateMultipleChunksBecauseObjectTooLarge() throws Exception {
 
         int maxItem = 10000;    //	Make a huge object with list with this many items
 
         File tempFile = TestConstants.getTestFile(("test_rw_multi_unit" + System.currentTimeMillis() + ".dat"));
 
         try {
-            IndexedFile idf = new IndexedFile(tempFile, false);
+            IndexedFile idf = new IndexedFile(tempFile);
 
             ArrayList<String> reallyLongList = new ArrayList<String>();
 
@@ -363,7 +363,7 @@ public class IndexedFileTest {
 
             idf.storeObject("testfile", reallyLongList);
 
-            idf = new IndexedFile(tempFile, false);
+            idf = new IndexedFile(tempFile);
             List<String> files = idf.listFiles();
 
             assertEquals("Single file expected", 1, files.size());
@@ -393,7 +393,7 @@ public class IndexedFileTest {
         File tempFile = TestConstants.getTestFile(("test_rw_multi_unit" + System.currentTimeMillis() + ".dat"));
 
         try {
-            IndexedFile idf = new IndexedFile(tempFile, false);
+            IndexedFile idf = new IndexedFile(tempFile);
 
             ArrayList<String> reallyLongList = new ArrayList<String>();
 
@@ -409,7 +409,7 @@ public class IndexedFileTest {
                 idf.storeObject("testfile" + i, reallyLongList);
             }
 
-            idf = new IndexedFile(tempFile, false);
+            idf = new IndexedFile(tempFile);
             List<String> files = idf.listFiles();
 
             assertEquals("Single file expected", 1, files.size());
@@ -430,7 +430,7 @@ public class IndexedFileTest {
     }
 
     @Test
-    public void testAllocateMultipleChunksCustomFileSizeBecauseObjectTooLarge() {
+    public void testAllocateMultipleChunksCustomFileSizeBecauseObjectTooLarge() throws Exception {
 
         int maxItem = 10000;    //	Make a huge object with list with this many items
 
@@ -473,7 +473,7 @@ public class IndexedFileTest {
 
     //	This test causes blocks from two files to criss-cross
     @Test
-    public void testAllocateAccrossMultipleFiles() {
+    public void testAllocateAccrossMultipleFiles() throws Exception {
 
 
         int maxItem = 10000;    //	Make a huge object with list with this many items
@@ -485,7 +485,7 @@ public class IndexedFileTest {
         String file2 = "file2";
 
         try {
-            IndexedFile idf = new IndexedFile(tempFile, false);
+            IndexedFile idf = new IndexedFile(tempFile);
 
             ArrayList<String> list1 = new ArrayList<String>();
             ArrayList<String> list2 = new ArrayList<String>();
@@ -507,7 +507,7 @@ public class IndexedFileTest {
             }
 
             //	Now try to load it all
-            idf = new IndexedFile(tempFile, false);
+            idf = new IndexedFile(tempFile);
             idf.testMode = true;
             assertEquals("There should be 2 files in the system", 2, idf.listFiles().size());
 
@@ -533,7 +533,7 @@ public class IndexedFileTest {
     }
 
     @Test
-    public void testAllocateAccrossMultipleFilesCustomFileSize() {
+    public void testAllocateAccrossMultipleFilesCustomFileSize() throws Exception {
 
 
         int maxItem = 10000;    //	Make a huge object with list with this many items
@@ -593,7 +593,7 @@ public class IndexedFileTest {
     }
 
     @Test
-    public void testAllocateAccrossMultipleFilesAndThenDeleteOne() {
+    public void testAllocateAccrossMultipleFilesAndThenDeleteOne() throws Exception {
 
 
         int maxItem = 10000;    //	Make a huge object with list with this many items
@@ -607,7 +607,7 @@ public class IndexedFileTest {
         AtomicInteger unitCounter = new AtomicInteger(1);
 
         try {
-            IndexedFile idf = new IndexedFile(tempFile, false);
+            IndexedFile idf = new IndexedFile(tempFile);
 
             ArrayList<String> list1 = new ArrayList<String>();
             ArrayList<String> list2 = new ArrayList<String>();
@@ -629,7 +629,7 @@ public class IndexedFileTest {
             }
 
             //	Now try to load it all
-            idf = new IndexedFile(tempFile, false);
+            idf = new IndexedFile(tempFile);
             idf.testMode = true;
             assertEquals("There should be 2 files in the system", 2, idf.listFiles().size());
 
@@ -643,7 +643,7 @@ public class IndexedFileTest {
             assertEquals("Only 1 file expected now", 1, idf.listFiles().size());
 
             //	
-            idf = new IndexedFile(tempFile, false);
+            idf = new IndexedFile(tempFile);
             idf.testMode = true;
             assertEquals("Only 1 file expected now", 1, idf.listFiles().size());
 
@@ -656,7 +656,7 @@ public class IndexedFileTest {
             }
 
             idf.storeObject(file2, toUpdate);
-            idf = new IndexedFile(tempFile, false);
+            idf = new IndexedFile(tempFile);
             idf.testMode = true;
             assertEquals("Only 1 file expected now", 1, idf.listFiles().size());
 
@@ -686,7 +686,7 @@ public class IndexedFileTest {
     }
 
     @Test
-    public void testMiniOverrunFirstFATBlock() {
+    public void testMiniOverrunFirstFATBlock() throws Exception {
 
         String jibberish;
         byte[] jibberishBytes = new byte[10240];
@@ -739,7 +739,7 @@ public class IndexedFileTest {
 
 
     @Test
-    public void testMiniOverrunFirstFATBlockAndRenameFilesDuringThis() {
+    public void testMiniOverrunFirstFATBlockAndRenameFilesDuringThis() throws Exception {
 
         String jibberish;
         byte[] jibberishBytes = new byte[10240];
@@ -795,7 +795,7 @@ public class IndexedFileTest {
 
     //	Simulate reducing a file in size.  The medium should in turn reclaim previous units for storage
     @Test
-    public void testAllocateAccrossMultipleFilesAndThenTruncateOne() {
+    public void testAllocateAccrossMultipleFilesAndThenTruncateOne() throws Exception {
 
         FileSystemTestListener listener = new DefaultFileSystemTestListener();
 
@@ -811,7 +811,7 @@ public class IndexedFileTest {
         AtomicInteger unitCounter = new AtomicInteger(1);
 
         try {
-            IndexedFile idf = new IndexedFile(tempFile, false);
+            IndexedFile idf = new IndexedFile(tempFile);
             idf.setFileSystemTestListener(listener);
 
             ArrayList<String> list1 = new ArrayList<String>();
@@ -834,7 +834,7 @@ public class IndexedFileTest {
             }
 
             //	Now try to load it all
-            idf = new IndexedFile(tempFile, false);
+            idf = new IndexedFile(tempFile);
             idf.setFileSystemTestListener(listener);
             idf.testMode = true;
             assertEquals("There should be 2 files in the system", 2, idf.listFiles().size());
@@ -849,7 +849,7 @@ public class IndexedFileTest {
             assertEquals(" 2 files still expected ", 2, idf.listFiles().size());
 
             //	
-            idf = new IndexedFile(tempFile, false);
+            idf = new IndexedFile(tempFile);
             idf.setFileSystemTestListener(listener);
             idf.testMode = true;
             assertEquals(" 2 files still expected ", 2, idf.listFiles().size());
@@ -863,7 +863,7 @@ public class IndexedFileTest {
             }
 
             idf.storeObject(file2, toUpdate);
-            idf = new IndexedFile(tempFile, false);
+            idf = new IndexedFile(tempFile);
             idf.setFileSystemTestListener(listener);
             idf.testMode = true;
             assertEquals(" 2 files still expected ", 2, idf.listFiles().size());
@@ -905,7 +905,7 @@ public class IndexedFileTest {
         tempFile.deleteOnExit();
         tempFile.deleteOnExit();
 
-        IndexedFile idf = new IndexedFile(tempFile, false);
+        IndexedFile idf = new IndexedFile(tempFile);
         idf.importFile(TestConstants.TEST_RES_IMG_1, "1.jpg");
         idf.importFile(TestConstants.TEST_RES_IMG_2, "2.jpg");
         idf.importFile(TestConstants.TEST_RES_IMG_3, "3.jpg");
@@ -926,7 +926,7 @@ public class IndexedFileTest {
         byte[] expectedBytes =
                 Bytes.loadBytesFromFile(TestConstants.TEST_RES_IMG_3);
 
-        IndexedFile idf = new IndexedFile(tempFile, false);
+        IndexedFile idf = new IndexedFile(tempFile);
         idf.importFile(TestConstants.TEST_RES_IMG_1, "1.jpg");
         idf.importFile(TestConstants.TEST_RES_IMG_2, "2.jpg");
         idf.importFile(TestConstants.TEST_RES_IMG_3, "3.jpg");
@@ -946,7 +946,7 @@ public class IndexedFileTest {
         tempFile.deleteOnExit();
         tempFile.deleteOnExit();
 
-        IndexedFile idf = new IndexedFile(tempFile, false);
+        IndexedFile idf = new IndexedFile(tempFile);
         idf.importFile(TestConstants.TEST_RES_IMG_1, "1.jpg");
         idf.importFile(TestConstants.TEST_RES_IMG_2, "2.jpg");
         idf.importFile(TestConstants.TEST_RES_IMG_3, "3.jpg");
@@ -961,7 +961,7 @@ public class IndexedFileTest {
 
     //	Validate importing files from disk into an indexed file
     @Test
-    public void testImportFile() {
+    public void testImportFile() throws Exception {
 
         FileSystemTestListener listener = new DefaultFileSystemTestListener();
 
@@ -973,13 +973,13 @@ public class IndexedFileTest {
             byte[] expectedBytes =
                     Bytes.loadBytesFromFile(TestConstants.TEST_RES_IMG_1);
 
-            IndexedFile idf = new IndexedFile(tempFile, false);
+            IndexedFile idf = new IndexedFile(tempFile);
             idf.setFileSystemTestListener(listener);
             assertEquals(
                     "System should return filename generated during import",
                     TestConstants.TEST_RES_IMG_1.getName(), idf.importFile(TestConstants.TEST_RES_IMG_1, null));
 
-            idf = new IndexedFile(tempFile, false);
+            idf = new IndexedFile(tempFile);
             idf.setFileSystemTestListener(listener);
             assertEquals("Single file expected", 1, idf.listFiles().size());
             assertEquals("Imported file name should be same as name on disk", TestConstants.TEST_RES_IMG_1.getName(), idf.listFiles().get(0));

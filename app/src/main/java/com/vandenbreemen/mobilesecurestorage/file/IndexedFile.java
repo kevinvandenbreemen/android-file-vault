@@ -119,22 +119,8 @@ public class IndexedFile {
         this.bytesToBits = new BytesToBits();
     }
 
-    /**
-     * Indexed file at the given location.  ONLY USE FOR TESTING!
-     *
-     * @param desiredFile File to store data.  Note that any existing file will be overwritten!
-     */
-    protected IndexedFile(File desiredFile) {
-        this();
-        try {
-            this.file = new ChunkedFile(desiredFile);
-        } catch (Exception ex) {
-            throw new MSSRuntime("Unexpected error creating backing file", ex);
-        }
-    }
 
-
-    public IndexedFile(File desiredFile, boolean loadFatHack) throws ChunkedMediumException {
+    public IndexedFile(File desiredFile) throws ChunkedMediumException {
         this(desiredFile, 0);
     }
 
@@ -143,7 +129,14 @@ public class IndexedFile {
      *
      */
     public IndexedFile(File desiredFile, int chunkSizeBytes) throws ChunkedMediumException {
-        this(desiredFile);
+
+        this();
+
+        try {
+            this.file = new ChunkedFile(desiredFile);
+        } catch (Exception ex) {
+            throw new MSSRuntime("Unexpected error creating backing file", ex);
+        }
 
         if (chunkSizeBytes > 0) {
             if (chunkSizeBytes - MIN_FAT_INDEX < 1024)
