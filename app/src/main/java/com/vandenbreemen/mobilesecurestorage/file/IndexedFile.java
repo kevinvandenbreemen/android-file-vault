@@ -29,7 +29,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * <h2>Intro</h2>
@@ -41,7 +40,6 @@ import java.util.stream.Collectors;
 public class IndexedFile {
 
     private static final int MIN_FAT_INDEX = 2048;
-    private static final String METAINFO_FILENAME = "__**boppabubba_metainf";
     /**
      * Measuring sticks for making sure too many bytes don't get stored!
      */
@@ -85,12 +83,6 @@ public class IndexedFile {
      * Desired size of each unit written
      */
     private int unitSize = CHUNK_SIZE;
-
-    /**
-     * Prefix for a file that is reserved for use by framework code and should not be explicitly made visible
-     * when {@link #listFiles() listing the files in this SFS}
-     */
-    private static final String RESERVED_PREFIX = "._reservedFile";
 
     static {
         secureMeasuringStick = new SecureDataUnit();
@@ -978,10 +970,7 @@ public class IndexedFile {
      * List all files on this file system
      */
     public final List<String> listFiles() {
-        return fat.listFiles().stream().filter(fileName ->
-                !METAINFO_FILENAME.equals(fileName) &&
-                        !RESERVED_PREFIX.equals(fileName)
-        ).collect(Collectors.toList());
+        return fat.listFiles();
     }
 
 
