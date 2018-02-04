@@ -13,6 +13,7 @@ import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureD
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Test;
+import org.spongycastle.pqc.math.linearalgebra.ByteUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -991,6 +992,26 @@ public class IndexedFileTest {
             fail("Unexpected error importing");
         }
 
+    }
+
+    @Test
+    public void testUpdateDataUnit() throws Exception {
+        IndexedFile indexedFile = new IndexedFile(TestConstants.getTestFile("updateUnit"));
+        ChainedDataUnit cdu = new ChainedDataUnit();
+        cdu.setData(new byte[]{1, 2, 3, 4});
+
+        indexedFile.touch("test");
+        indexedFile.addDataUnit("test", cdu);
+
+        Long unitIdx = indexedFile.fat._unitsAllocated("test").get(0);
+        cdu = new ChainedDataUnit();
+        cdu.setData(new byte[]{2, 5, 0, 1});
+        indexedFile.updateDataUnit("test", unitIdx, cdu);
+
+        byte[] data = indexedFile.getFileView("test").readUnit(unitIdx).getData();
+
+
+        assertTrue("Updated unit expected", ByteUtils.equals(new byte[]{2, 5, 0, 1}, data));
     }
 
 }
