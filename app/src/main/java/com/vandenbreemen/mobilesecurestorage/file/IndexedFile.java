@@ -169,7 +169,7 @@ public class IndexedFile {
      * Perform any emergency cleanup operations needed
      */
     protected void emergencyCleanup() {
-
+        //  To be executed by sub-types with security data
     }
 
     //	Allow visibility into this to allow for frawmework code to decide whether to allocate objects to other files
@@ -1130,6 +1130,7 @@ public class IndexedFile {
      * Close the file system
      */
     public void close() {
+        //  To be implemented by subtypes
     }
 
     @Override
