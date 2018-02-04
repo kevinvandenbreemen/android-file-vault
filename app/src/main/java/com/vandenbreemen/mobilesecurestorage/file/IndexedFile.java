@@ -900,17 +900,12 @@ public class IndexedFile {
         if (bytes[2] == ControlBytes.START_OF_CONTENT)
             throw new MSSRuntime("Unexpected.  Size bytes should appear after length indicator.");
 
-        List<Byte> sizeBytes = new ArrayList<>();
+        byte[] szBytes = new byte[Long.BYTES];
 
         int idxStartOfContent = 2;
         for (int i = 0; i < Long.BYTES; i++) {
-            sizeBytes.add(bytes[2 + i]);
+            szBytes[i] = (bytes[2 + i]);
             idxStartOfContent = 2 + i;
-        }
-
-        byte[] szBytes = new byte[sizeBytes.size()];
-        for (int i = 0; i < sizeBytes.size(); i++) {
-            szBytes[i] = sizeBytes.get(i);
         }
 
         //  Read in the length
