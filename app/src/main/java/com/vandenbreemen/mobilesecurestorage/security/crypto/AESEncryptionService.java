@@ -67,7 +67,7 @@ public class AESEncryptionService implements EncryptionService, ObjectEncryptor 
                 ss.finalize();
             }
         }
-        return null;
+        return new byte[0];
     }
 
     private byte[] doDecryption(byte[] key, byte[] encrypted) {
@@ -100,7 +100,7 @@ public class AESEncryptionService implements EncryptionService, ObjectEncryptor 
                 ss.finalize();
             }
         }
-        return null;
+        return new byte[0];
     }
 
     @Override

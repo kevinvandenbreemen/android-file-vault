@@ -61,7 +61,7 @@ public class BlowFishTextEncryptionService implements EncryptionService, ObjectE
                 ss.finalize();
             }
         }
-        return null;
+        return new byte[0];
     }
 
     private byte[] decryptSpongy(byte[] key, byte[] encrypted) {
@@ -91,7 +91,7 @@ public class BlowFishTextEncryptionService implements EncryptionService, ObjectE
                 ss.finalize();
             }
         }
-        return null;
+        return new byte[0];
     }
 
     /**
