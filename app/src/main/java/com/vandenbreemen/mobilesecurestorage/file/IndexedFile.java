@@ -643,7 +643,7 @@ public class IndexedFile {
         ChainedUnit latestUnit = readDataUnit();
 
 
-        //	Tell the last unit used for the file about the new unit we're about to allocated
+        //	Tell the last unit used for the file about the new unit we're about to allocate
         latestUnit.setLocationOfNextUnit(nextUnit);
 
         //	Update the last unit in the FS so the FS knows about the arrangement of units for the file
@@ -686,7 +686,7 @@ public class IndexedFile {
                 if (fat._exists(fileName))
                     unitsToAllocate = fat._unitsAllocated(fileName);
             } else    //	If the file is the FAT file then it most certainly DOES exist!
-                unitsToAllocate = fat._unitsAllocated(fileName);    //	Otherwise it IS the FAT so we can get its unitws
+                unitsToAllocate = fat._unitsAllocated(fileName);    //	Otherwise it IS the FAT so we can get its units
 
             Long nextAvailUnit = !CollectionUtils.isEmpty(unitsToAllocate) ? unitsToAllocate.remove(0) :
                     fat.nextAvailableUnitIndex();
@@ -994,23 +994,6 @@ public class IndexedFile {
                 !METAINFO_FILENAME.equals(fileName) &&
                         !RESERVED_PREFIX.equals(fileName)
         ).collect(Collectors.toList());
-    }
-
-
-    /**
-     * Obtains a new filename for a file you can use to store information.  It is your logic's responsibility
-     * to maintain a reference to this filename somewhere as this file system will NOT include it when
-     * {@link #listFiles()}.
-     * <br/>Note that calling this method is not the same thing as touching the file
-     *
-     * @return
-     */
-    public final String getNewReservedFileName() {
-        String ret = RESERVED_PREFIX + System.nanoTime();
-        while (exists(ret)) {    //	99.999% of the time this should NEVER happen!
-            ret = RESERVED_PREFIX + System.nanoTime();
-        }
-        return ret;
     }
 
 
