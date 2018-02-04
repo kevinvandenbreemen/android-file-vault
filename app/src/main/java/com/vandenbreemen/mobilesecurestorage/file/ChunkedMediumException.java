@@ -1,5 +1,7 @@
 package com.vandenbreemen.mobilesecurestorage.file;
 
+import com.vandenbreemen.mobilesecurestorage.log.slf4j.MessageFormatter;
+
 /**
  * <h2>Intro</h2>
  * <p>Error arising from logic using {@link IndexedFile}s
@@ -17,7 +19,7 @@ public class ChunkedMediumException extends Exception {
         super(detailMessage, throwable);
     }
 
-    public ChunkedMediumException(String detailMessage) {
-        super(detailMessage);
+    public ChunkedMediumException(String detailMessage, Object... args) {
+        super(MessageFormatter.arrayFormat(detailMessage, args).getMessage());
     }
 }

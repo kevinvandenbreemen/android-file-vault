@@ -4,6 +4,7 @@ import com.vandenbreemen.mobilesecurestorage.data.ControlBytes;
 import com.vandenbreemen.mobilesecurestorage.data.Pair;
 import com.vandenbreemen.mobilesecurestorage.data.Serialization;
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
+import com.vandenbreemen.mobilesecurestorage.log.slf4j.MessageFormatter;
 import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime;
 import com.vandenbreemen.mobilesecurestorage.security.BytesToBits;
 import com.vandenbreemen.mobilesecurestorage.security.SecureString;
@@ -186,8 +187,6 @@ public class IndexedFile {
             //	Immediately persist the fat
             storeFAT();
         }
-
-        onLoadFAT(fat);
     }
 
     /**
@@ -369,7 +368,7 @@ public class IndexedFile {
          */
         public final void updateUnit(long index, ChainedUnit unit) {
             if (!unitIndexes.contains(index))
-                throw new IllegalArgumentException("Unit index '" + index + "' not allocated to the file");
+                throw new IllegalArgumentException(MessageFormatter.arrayFormat("Unit index '{}' not allocated to the file", new Object[]{Long.toString(index)}).getMessage());
 
             fileSystem.updateDataUnit(fileName, index, unit);
         }
@@ -555,15 +554,6 @@ public class IndexedFile {
     }
 
     /**
-     * Operations sub-types can perform on the {@link FAT} once it has been loaded
-     *
-     * @param fat
-     */
-    protected void onLoadFAT(FAT fat) {
-
-    }
-
-    /**
      * Store the FAT table to the file system
      *
      * @return
@@ -716,7 +706,7 @@ public class IndexedFile {
     private void doMultiUnitDataWrite(String fileName, long maxChunkLength, byte[] bytes, List<Long> unitsToAllocate, Long nextAvailUnit) {
         ChainedUnit unit;
         if (testMode)
-            SystemLog.get().debug("file:  " + fileName + ":  data spans multiple chunks");
+            SystemLog.get().debug("file:  {}:  data spans multiple chunks", fileName);
 
         boolean keepAddingChunks = true;
         int i = 0;    //	Current byte index
@@ -726,7 +716,7 @@ public class IndexedFile {
             System.arraycopy(bytes, i, unitData, 0, (int) maxChunkLength);
 
             if (testMode)
-                SystemLog.get().debug("file:  " + fileName + ":  allocating to unit " + nextAvailUnit.longValue());
+                SystemLog.get().debug("file:  {}:  allocating to unit {}", fileName, nextAvailUnit.longValue());
 
             toIndex(nextAvailUnit.longValue());
 
@@ -1020,7 +1010,7 @@ public class IndexedFile {
                 errorOutOnLockTimeout();
 
             if (!fat._exists(fileName))
-                throw new ChunkedMediumException("No such file as '" + fileName + "' exists on the medium");
+                throw new ChunkedMediumException("No such file as '{}' exists on the medium", fileName);
 
 
             List<Long> unitsAllocated = fat._unitsAllocated(fileName);
