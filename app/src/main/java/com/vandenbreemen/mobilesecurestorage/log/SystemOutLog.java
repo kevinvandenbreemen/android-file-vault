@@ -1,5 +1,7 @@
 package com.vandenbreemen.mobilesecurestorage.log;
 
+import com.vandenbreemen.mobilesecurestorage.log.slf4j.MessageFormatter;
+
 import java.util.Date;
 
 /**
@@ -9,35 +11,36 @@ import java.util.Date;
  *
  * @author kevin
  */
-public class SystemOutLog implements CurrentSystemLog {
+public class SystemOutLog extends CurrentSystemLog {
 
-    private void printMsg(String message) {
-        System.out.println(new Date().toString() + " - " + message);    //  NOSONAR Uses system out AS the logger
+    private void printMsg(String message, Object... args) {
+        String msg = MessageFormatter.arrayFormat(message, args).getMessage();
+        System.out.println(new Date().toString() + " - " + msg);    //  NOSONAR Uses system out AS the logger
     }
 
     @Override
-    public void info(String message) {
-        printMsg("INFO - " + message);
+    public void info(String message, Object... args) {
+        printMsg("INFO - " + message, args);
     }
 
     @Override
-    public void error(String message, Throwable throwable) {
-        printMsg("ERROR - " + message);
+    public void error(String message, Throwable throwable, Object... args) {
+        printMsg("ERROR - " + message, args);
         throwable.printStackTrace();    //  NOSONAR Basic logging using system.err
     }
 
     @Override
-    public void error(String message) {
-        printMsg("ERROR - " + message);
+    public void error(String message, Object... args) {
+        printMsg("ERROR - " + message, args);
     }
 
     @Override
-    public void debug(String message) {
-        printMsg("DEBUG - " + message);
+    public void debug(String message, Object... args) {
+        printMsg("DEBUG - " + message, args);
     }
 
     @Override
-    public void warn(String message) {
-        printMsg("WARN - " + message);
+    public void warn(String message, Object... args) {
+        printMsg("WARN - " + message, args);
     }
 }

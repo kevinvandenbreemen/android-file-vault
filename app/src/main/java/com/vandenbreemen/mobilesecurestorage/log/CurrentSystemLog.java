@@ -4,14 +4,15 @@ package com.vandenbreemen.mobilesecurestorage.log;
  * API for logging into various subsystems
  * Created by kevin
  */
-public interface CurrentSystemLog {
-    void info(String message);
+public abstract class CurrentSystemLog {
 
-    void error(String message, Throwable throwable);
+    public abstract void info(String message, Object... args);
 
-    void error(String message);
+    public abstract void error(String message, Throwable throwable, Object... args);
 
-    void debug(String message);
+    public abstract void error(String message, Object... args);
 
-    void warn(String message);
+    public abstract void debug(String message, Object... args);
+
+    public abstract void warn(String message, Object... args);
 }

@@ -17,4 +17,29 @@ public class SystemLogTest {
         SystemLog.get().info("This is a test"); //  This will crash the test if it defers to Android/is not set
     }
 
+    @Test
+    public void testInfoLogFormattedString() {
+        SystemLog.get().info("This is a {}", "test");
+    }
+
+    @Test
+    public void testDebugLogFormattedString() {
+        SystemLog.get().debug("This is a {}", "test");
+    }
+
+    @Test
+    public void testWarnLogFormattedString() {
+        SystemLog.get().warn("This is a {}", "test");
+    }
+
+    @Test
+    public void testErrorLogFormattedString() {
+        SystemLog.get().error("This is a {}", "test");
+    }
+
+    @Test
+    public void testErrorLogFormattedStringWithThrowable() {
+        SystemLog.get().error("This is a {}", new Throwable(), "test");
+    }
+
 }
