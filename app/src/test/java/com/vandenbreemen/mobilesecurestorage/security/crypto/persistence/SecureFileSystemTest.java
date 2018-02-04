@@ -6,6 +6,7 @@ import com.vandenbreemen.mobilesecurestorage.file.ChunkedMediumException;
 import com.vandenbreemen.mobilesecurestorage.file.DefaultFileSystemTestListener;
 import com.vandenbreemen.mobilesecurestorage.file.ImportedFileData;
 import com.vandenbreemen.mobilesecurestorage.file.IndexedFile;
+import com.vandenbreemen.mobilesecurestorage.patterns.ProgressListener;
 import com.vandenbreemen.mobilesecurestorage.security.Bytes;
 import com.vandenbreemen.mobilesecurestorage.security.SecureString;
 
@@ -311,7 +312,7 @@ public class SecureFileSystemTest {
         tempFile.deleteOnExit();
         tempFile.deleteOnExit();
 
-        IndexedFile idf = new IndexedFile(tempFile, false);
+        IndexedFile idf = getNewSecureFileSystem(tempFile);
         idf.importFile(TestConstants.TEST_RES_IMG_1, "1.jpg");
         idf.importFile(TestConstants.TEST_RES_IMG_2, "2.jpg");
         idf.importFile(TestConstants.TEST_RES_IMG_3, "3.jpg");
@@ -320,6 +321,43 @@ public class SecureFileSystemTest {
 
         assertEquals("Single file remaining expected", 1, idf.listFiles().size());
 
+    }
+
+    @Test
+    public void testChangePassword() throws Exception {
+        File tempFile = TestConstants.getTestFile(("test_jpgimport" + System.currentTimeMillis() + ".dat"));
+        tempFile.deleteOnExit();
+        tempFile.deleteOnExit();
+
+        SecureFileSystem idf = getNewSecureFileSystem(tempFile);
+        idf.importFile(TestConstants.TEST_RES_IMG_1, "1.jpg");
+        idf.importFile(TestConstants.TEST_RES_IMG_2, "2.jpg");
+        idf.importFile(TestConstants.TEST_RES_IMG_3, "3.jpg");
+
+        SecureString secureString = SecureFileSystem.generatePassword(new SecureString("password123".getBytes()));
+
+        idf.changePassword(
+                new ProgressListener<Long>() {
+                    @Override
+                    public void setMax(Long progressMax) {
+                        System.out.println("max=" + progressMax);
+                    }
+
+                    @Override
+                    public void update(Long aLong) {
+                        System.out.println("Progress=" + aLong);
+
+                    }
+                }, secureString);
+
+        SecureFileSystem newlyLoaded = new SecureFileSystem(tempFile, false) {
+
+            @Override
+            protected SecureString getPassword() {
+                return secureString;
+            }
+        };
+        assertEquals("Files expected", 3, newlyLoaded.listFiles().size());
     }
 
     @Test
@@ -332,7 +370,7 @@ public class SecureFileSystemTest {
         byte[] expectedBytes =
                 Bytes.loadBytesFromFile(TestConstants.TEST_RES_IMG_3);
 
-        IndexedFile idf = new IndexedFile(tempFile, false);
+        IndexedFile idf = getNewSecureFileSystem(tempFile);
         idf.importFile(TestConstants.TEST_RES_IMG_1, "1.jpg");
         idf.importFile(TestConstants.TEST_RES_IMG_2, "2.jpg");
         idf.importFile(TestConstants.TEST_RES_IMG_3, "3.jpg");
