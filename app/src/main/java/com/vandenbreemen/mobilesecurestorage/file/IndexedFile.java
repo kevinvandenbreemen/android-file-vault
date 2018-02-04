@@ -19,7 +19,7 @@ import java.io.File;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.nio.charset.Charset;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -857,8 +857,11 @@ public class IndexedFile {
         //	Total size of byte array that will be written out as a chunk
         int totalSize = 3;    //	At least control bytes.
 
-        String length = Long.toString(bytes.length);
-        byte[] lengthBytes = length.getBytes(Charset.forName("UTF-8"));
+        //  Convert the length to bytes
+        Long lengthLong = Long.valueOf(bytes.length);
+        ByteBuffer lenBuffer = ByteBuffer.allocate(Long.BYTES);
+        lenBuffer.putLong(lengthLong);
+        byte[] lengthBytes = lenBuffer.array();
 
         totalSize += lengthBytes.length;
         totalSize += bytes.length;
@@ -900,9 +903,9 @@ public class IndexedFile {
         List<Byte> sizeBytes = new ArrayList<>();
 
         int idxStartOfContent = 2;
-        for (int i = 2; i < bytes.length && bytes[i] != ControlBytes.START_OF_CONTENT; i++) {
-            sizeBytes.add(bytes[i]);
-            idxStartOfContent = i;
+        for (int i = 0; i < Long.BYTES; i++) {
+            sizeBytes.add(bytes[2 + i]);
+            idxStartOfContent = 2 + i;
         }
 
         byte[] szBytes = new byte[sizeBytes.size()];
@@ -910,7 +913,11 @@ public class IndexedFile {
             szBytes[i] = sizeBytes.get(i);
         }
 
-        Long length = Long.parseLong(new String(szBytes));
+        //  Read in the length
+        ByteBuffer lengthBuf = ByteBuffer.allocate(Long.BYTES);
+        lengthBuf.put(szBytes);
+        lengthBuf.flip();
+        Long length = lengthBuf.getLong();
 
         //	Add 1 for the start of content byte itself and then 1 to get to the first byte of content!
         idxStartOfContent += 2;
