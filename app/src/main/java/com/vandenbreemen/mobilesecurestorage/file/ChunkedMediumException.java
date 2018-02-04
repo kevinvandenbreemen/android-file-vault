@@ -10,10 +10,21 @@ import com.vandenbreemen.mobilesecurestorage.log.slf4j.MessageFormatter;
  * @author kevin
  */
 public class ChunkedMediumException extends Exception {
+
+
     /**
      *
      */
     private static final long serialVersionUID = -4252769573744072208L;
+
+    /**
+     * Type of error
+     */
+    public enum TYPE {
+        FILE_NOT_FOUND,
+    }
+
+    private TYPE type;
 
     public ChunkedMediumException(String detailMessage, Throwable throwable) {
         super(detailMessage, throwable);
@@ -21,5 +32,14 @@ public class ChunkedMediumException extends Exception {
 
     public ChunkedMediumException(String detailMessage, Object... args) {
         super(MessageFormatter.arrayFormat(detailMessage, args).getMessage());
+    }
+
+    public TYPE getType() {
+        return type;
+    }
+
+    public ChunkedMediumException setType(TYPE type) {
+        this.type = type;
+        return this;
     }
 }

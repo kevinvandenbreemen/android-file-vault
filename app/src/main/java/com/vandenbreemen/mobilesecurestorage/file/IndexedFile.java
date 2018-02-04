@@ -984,7 +984,7 @@ public class IndexedFile {
                 errorOutOnLockTimeout();
 
             if (!fat._exists(fileName))
-                throw new ChunkedMediumException("No such file as '{}' exists on the medium", fileName);
+                throw new ChunkedMediumException("No such file as '{}' exists on the medium", fileName).setType(ChunkedMediumException.TYPE.FILE_NOT_FOUND);
 
 
             List<Long> unitsAllocated = fat._unitsAllocated(fileName);

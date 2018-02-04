@@ -683,6 +683,7 @@ public class SecureFileSystemTest {
                             sfs.listFiles().forEach(file -> {
                                 try {
                                     sfs.deleteFile(file);
+                                    System.out.println("Deleted " + file);
                                 } catch (Exception ex) {
                                     throw new RuntimeException("Failed to delete " + file, ex);
                                 }
@@ -702,13 +703,23 @@ public class SecureFileSystemTest {
             public void run() {
                 try {
                     if (Thread.currentThread().equals(this)) {
-                        sfs.listFiles().forEach(file -> {
-                            try {
-                                sfs.loadFile(file);
-                            } catch (Exception ex) {
-                                throw new RuntimeException("Failed to load " + file, ex);
-                            }
-                        });
+                        while (true) {
+                            sfs.listFiles().forEach(file -> {
+                                try {
+                                    sfs.loadFile(file);
+                                    System.out.println("Read file " + file);
+                                } catch (Exception ex) {
+                                    if (ex instanceof ChunkedMediumException &&
+                                            ChunkedMediumException.TYPE.FILE_NOT_FOUND.equals(((ChunkedMediumException) ex).getType())) {
+                                        //  Can be safely ignored
+                                        System.out.println("File " + file + " no longer exists");
+                                    } else {
+                                        throw new RuntimeException("Failed to load " + file, ex);
+                                    }
+
+                                }
+                            });
+                        }
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
