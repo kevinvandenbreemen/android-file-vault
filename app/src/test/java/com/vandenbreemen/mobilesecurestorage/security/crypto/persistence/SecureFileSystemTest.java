@@ -607,9 +607,11 @@ public class SecureFileSystemTest {
     private SecureFileSystem getNewSecureFileSystem(File tempFile)
             throws ChunkedMediumException {
 
+        SecureString password = SecureFileSystem.generatePassword(new SecureString("password123".getBytes()));
+
         SecureFileSystem fs = new SecureFileSystem(tempFile, false) {
             protected SecureString getPassword() {
-                return SecureFileSystem.generatePassword(new SecureString("password123".getBytes()));
+                return password;
             }
 
         };
