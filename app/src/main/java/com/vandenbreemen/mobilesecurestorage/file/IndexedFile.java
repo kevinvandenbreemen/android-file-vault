@@ -27,7 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Consumer;
 
 /**
@@ -101,13 +101,13 @@ public class IndexedFile {
     /**
      * Lock to prevent concurrent modification of the file system
      */
-    private ReentrantLock accessLock;
+    private ReentrantReadWriteLock accessLock;
 
     /**
      * Use this only for testing.
      */
     IndexedFile() {
-        this.accessLock = new ReentrantLock();
+        this.accessLock = new ReentrantReadWriteLock();
         this.bytesToBits = new BytesToBits();
     }
 
@@ -296,7 +296,7 @@ public class IndexedFile {
         public final long addUnit(ChainedUnit unit) {
             try {
 
-                if (!fileSystem.accessLock.tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
+                if (!fileSystem.accessLock.writeLock().tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
                     fileSystem.errorOutOnLockTimeout();
 
                 long ret = fileSystem.addDataUnit(fileName, unit);
@@ -311,7 +311,7 @@ public class IndexedFile {
                 Thread.currentThread().interrupt();
                 return 0;
             } finally {
-                fileSystem.accessLock.unlock();
+                fileSystem.accessLock.writeLock().unlock();
             }
         }
 
@@ -367,7 +367,7 @@ public class IndexedFile {
 
             try {
 
-                if (!fileSystem.accessLock.tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
+                if (!fileSystem.accessLock.readLock().tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
                     fileSystem.errorOutOnLockTimeout();
 
                 if (!unitIndexes.contains(index))
@@ -379,7 +379,7 @@ public class IndexedFile {
                 Thread.currentThread().interrupt();
                 return null;
             } finally {
-                fileSystem.accessLock.unlock();
+                fileSystem.accessLock.readLock().unlock();
             }
         }
 
@@ -525,7 +525,7 @@ public class IndexedFile {
      */
     final void updateDataUnit(String fileName, long index, ChainedUnit unit) {
         try {
-            if (!accessLock.tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
+            if (!accessLock.writeLock().tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
                 errorOutOnLockTimeout();
 
             if (!fat._unitsAllocated(fileName).contains(index))
@@ -537,7 +537,7 @@ public class IndexedFile {
             errorOutOnLockTimeout();
             Thread.currentThread().interrupt();
         } finally {
-            accessLock.unlock();
+            accessLock.writeLock().unlock();
         }
     }
 
@@ -600,7 +600,7 @@ public class IndexedFile {
 
         try {
 
-            if (!accessLock.tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS)) {
+            if (!accessLock.writeLock().tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS)) {
                 errorOutOnLockTimeout();
             }
 
@@ -633,7 +633,7 @@ public class IndexedFile {
             errorOutOnLockTimeout();
             Thread.currentThread().interrupt();
         } finally {
-            accessLock.unlock();
+            accessLock.writeLock().unlock();
         }
     }
 
@@ -928,7 +928,7 @@ public class IndexedFile {
         byte[] data;
         try {
 
-            if (!accessLock.tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
+            if (!accessLock.readLock().tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
                 errorOutOnLockTimeout();
 
             if (!fat._exists(fileName))
@@ -944,7 +944,7 @@ public class IndexedFile {
             Thread.currentThread().interrupt();
             throw new ChunkedMediumException("Interrupted", inte);
         } finally {
-            accessLock.unlock();
+            accessLock.readLock().unlock();
         }
 
         return Serialization.deserializeBytes(data);
@@ -999,7 +999,7 @@ public class IndexedFile {
         }
 
         try {
-            if (!accessLock.tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
+            if (!accessLock.writeLock().tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
                 errorOutOnLockTimeout();
             fat.accessLock();
             Arrays.stream(fileNames).forEach(fat::_delete);
@@ -1009,7 +1009,7 @@ public class IndexedFile {
             Thread.currentThread().interrupt();
         } finally {
             fat.releaseAccessLock();
-            accessLock.unlock();
+            accessLock.writeLock().unlock();
         }
 
     }
@@ -1053,7 +1053,7 @@ public class IndexedFile {
     public final byte[] loadBytesFromFile(String fileName) throws ChunkedMediumException {
 
         try {
-            if (!accessLock.tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
+            if (!accessLock.readLock().tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
                 errorOutOnLockTimeout();
 
             if (!fat._exists(fileName))
@@ -1070,7 +1070,7 @@ public class IndexedFile {
             Thread.currentThread().interrupt();
             throw new ChunkedMediumException("Interrupted", inter);
         } finally {
-            accessLock.unlock();
+            accessLock.readLock().unlock();
         }
     }
 
@@ -1095,7 +1095,7 @@ public class IndexedFile {
     public final void visitDataUnits(Consumer<Pair<Long, ChainedUnit>> visitor) {
         long totalUnits = getTotalUnits();
         try {
-            if (!accessLock.tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
+            if (!accessLock.writeLock().tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
                 errorOutOnLockTimeout();
             for (long i = 0; i < totalUnits; i++) {
                 ChainedUnit unit = readDataUnit(i);
@@ -1105,7 +1105,7 @@ public class IndexedFile {
             errorOutOnLockTimeout();
             Thread.currentThread().interrupt();
         } finally {
-            accessLock.unlock();
+            accessLock.writeLock().unlock();
         }
     }
 
