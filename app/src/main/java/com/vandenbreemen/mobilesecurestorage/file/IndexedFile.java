@@ -866,20 +866,18 @@ public class IndexedFile {
      * this method will be necessary in order to encrypt data units!  This method is NOT thread-safe.  Before calling this ensure you have
      * locked the {@link #accessLock}'s write lock first!
      */
-    protected final void writeBytes(byte[] bytes, boolean destructively) {
+    protected final void writeBytes(byte[] bytes) {
         file.setCursor(chunkIndex * unitSize);
-        file.writeBytes(encodeChunk(bytes, destructively));
+        file.writeBytes(encodeChunk(bytes));
     }
 
     /**
      * Encodes a chunk of data with a descriptor for its length
      *
      * @param bytes         bytes to encode
-     * @param destructively Whether you would like to destroy the original bytes for security reasons.  This will render
-     *                      the contents of the original bytes array useless
      * @return
      */
-    protected final byte[] encodeChunk(byte[] bytes, boolean destructively) {
+    protected final byte[] encodeChunk(byte[] bytes) {
 
         if (bytes.length > getMaxPayloadSize())
             throw new MSSRuntime("Size of bytes exceeds maximum size of " + (unitSize - (7 + 3))).setAttribute(ATTR_NEW_UNIT_RQD, "RQD");
@@ -970,7 +968,7 @@ public class IndexedFile {
      * @param dataUnit
      */
     protected void writeDataUnit(ChainedUnit dataUnit) {
-        writeBytes(Serialization.toBytes(dataUnit), true);
+        writeBytes(Serialization.toBytes(dataUnit));
     }
 
     protected final void toIndex(long chunkNumber) {

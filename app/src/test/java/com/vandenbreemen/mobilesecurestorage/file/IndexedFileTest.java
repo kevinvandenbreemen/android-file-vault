@@ -40,7 +40,7 @@ public class IndexedFileTest {
     @Test
     public void testEncodeChunk() {
         byte[] toEncode = "this is a test".getBytes();
-        byte[] encoded = new IndexedFile().encodeChunk(toEncode, false);
+        byte[] encoded = new IndexedFile().encodeChunk(toEncode);
         assertEquals("Start of medium expected as first byte", ControlBytes.START_OF_MEDIUM, encoded[0]);
         assertEquals("length index expected as next byte", ControlBytes.LENGTH_IND, encoded[1]);
 
@@ -50,7 +50,7 @@ public class IndexedFileTest {
     @Test
     public void testReadChunk() {
         byte[] toEncode = "this is a test".getBytes();
-        byte[] encoded = new IndexedFile().encodeChunk(toEncode, false);
+        byte[] encoded = new IndexedFile().encodeChunk(toEncode);
         byte[] decoded = new IndexedFile().readChunk(encoded);
 
         byte[] expected = "this is a test".getBytes();
@@ -69,7 +69,7 @@ public class IndexedFileTest {
 
 
         IndexedFile idf = new IndexedFile(tempFile);
-        idf.writeBytes("this is a test".getBytes(), true);
+        idf.writeBytes("this is a test".getBytes());
         Chunk chunk = idf.readChunk();
 
         byte[] decoded = chunk.getBytes();
@@ -88,10 +88,10 @@ public class IndexedFileTest {
 
 
         IndexedFile idf = new IndexedFile(tempFile);
-        idf.writeBytes("this is a test".getBytes(), true);
+        idf.writeBytes("this is a test".getBytes());
 
         idf.toIndex(1);
-        idf.writeBytes("Second chunk".getBytes(), true);
+        idf.writeBytes("Second chunk".getBytes());
 
         Chunk chunk = idf.readChunk();
         byte[] decoded = chunk.getBytes();
@@ -129,9 +129,9 @@ public class IndexedFileTest {
         Arrays.fill(secondChunk, ControlBytes.END_OF_MEDIUM);
 
 
-        idf.writeBytes(firstChunk, true);
+        idf.writeBytes(firstChunk);
         idf.toIndex(1);
-        idf.writeBytes(secondChunk, true);
+        idf.writeBytes(secondChunk);
 
         idf.toIndex(0);
         Chunk chunk = idf.readChunk();
@@ -156,10 +156,10 @@ public class IndexedFileTest {
 
 
         IndexedFile idf = new IndexedFile(tempFile);
-        idf.writeBytes("this is a test".getBytes(), true);
+        idf.writeBytes("this is a test".getBytes());
 
         idf.toIndex(1);
-        idf.writeBytes("Second chunk".getBytes(), true);
+        idf.writeBytes("Second chunk".getBytes());
 
         Chunk chunk = idf.readChunk();
         byte[] decoded = chunk.getBytes();
@@ -184,7 +184,7 @@ public class IndexedFileTest {
         //	Now overwrite the first chunk!
         idf.toIndex(0);
         String newString = "Overwrite the first chunk with a totally new string";
-        idf.writeBytes(newString.getBytes(), true);
+        idf.writeBytes(newString.getBytes());
         chunk = idf.readChunk();
         decoded = chunk.getBytes();
         expected = newString.getBytes();
@@ -206,7 +206,7 @@ public class IndexedFileTest {
         sda.setData(Serialization.toBytes(secureList));
 
         IndexedFile idf = new IndexedFile(tempFile);
-        idf.writeBytes(Serialization.toBytes(sda), true);
+        idf.writeBytes(Serialization.toBytes(sda));
         IndexedFile.Chunk chunk = idf.readChunk();
 
         byte[] decoded = chunk.getBytes();
@@ -237,7 +237,7 @@ public class IndexedFileTest {
 
 
         IndexedFile idf = new IndexedFile(tempFile);
-        idf.writeBytes(encrypted, true);
+        idf.writeBytes(encrypted);
         IndexedFile.Chunk chunk = idf.readChunk();
 
         byte[] cipherText = chunk.getBytes();

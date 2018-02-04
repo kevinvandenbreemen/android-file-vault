@@ -92,7 +92,7 @@ public abstract class SecureFileSystem extends IndexedFile {
     @Override
     protected final void writeDataUnit(ChainedUnit dataUnit) {
         byte[] cipherText = getEncryptionService().encryptObject(getPassword(), dataUnit);
-        super.writeBytes(cipherText, true);
+        super.writeBytes(cipherText);
     }
 
     /**
@@ -128,7 +128,7 @@ public abstract class SecureFileSystem extends IndexedFile {
 
             //	And now re-store it with the new password!
             byte[] cipherText = getEncryptionService().encryptObject(newPassword, currentUnit);
-            writeBytes(cipherText, true);
+            writeBytes(cipherText);
 
             progress.update(object.first());
         };
