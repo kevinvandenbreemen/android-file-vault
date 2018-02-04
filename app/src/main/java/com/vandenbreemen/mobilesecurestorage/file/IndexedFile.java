@@ -60,10 +60,7 @@ public class IndexedFile {
      */
     private ChunkedFile file;
     private BytesToBits bytesToBits;
-    /**
-     * Current chunk index
-     */
-    private long chunkIndex;
+
     /**
      * File allocation table
      */
@@ -114,16 +111,11 @@ public class IndexedFile {
         this.bytesToBits = new BytesToBits();
     }
 
-
-    public IndexedFile(File desiredFile) throws ChunkedMediumException {
-        this(desiredFile, 0);
-    }
-
     /**
      * Proper constructor to use.  This constructor will always load the fat
      *
      */
-    public IndexedFile(File desiredFile, int chunkSizeBytes) throws ChunkedMediumException {
+    public IndexedFile(File desiredFile) throws ChunkedMediumException {
 
         this();
 
@@ -131,12 +123,6 @@ public class IndexedFile {
             this.file = new ChunkedFile(desiredFile);
         } catch (Exception ex) {
             throw new MSSRuntime("Unexpected error creating backing file", ex);
-        }
-
-        if (chunkSizeBytes > 0) {
-            if (chunkSizeBytes - MIN_FAT_INDEX < 1024)
-                throw new MSSRuntime("Cannot support chunk size of less than " + (MIN_FAT_INDEX + 1024));
-            this.unitSize = chunkSizeBytes;
         }
 
         //	Now try and load up the FAT
@@ -293,8 +279,7 @@ public class IndexedFile {
 
         @Override
         public final ChainedUnit next() {
-            fileSystem.toIndex(unitIndexItr.next());
-            return fileSystem.readDataUnit();
+            return fileSystem.readDataUnit(unitIndexItr.next());
         }
 
         @Override
@@ -388,8 +373,7 @@ public class IndexedFile {
                 if (!unitIndexes.contains(index))
                     throw new IllegalArgumentException("Unit index '" + index + "' not allocated to the file");
 
-                fileSystem.toIndex(index);
-                return fileSystem.readDataUnit();
+                return fileSystem.readDataUnit(index);
             } catch (InterruptedException in) {
                 fileSystem.errorOutOnLockTimeout();
                 Thread.currentThread().interrupt();
@@ -443,22 +427,19 @@ public class IndexedFile {
         }
 
         private final byte[] getData() {
-            fileSystem.toIndex(startChunk);
 
             List<ChainedUnit> units = new ArrayList<>();
-            ChainedUnit unit = fileSystem.readDataUnit();
+            ChainedUnit unit = fileSystem.readDataUnit(startChunk);
 
             units.add(unit);
 
             while (!NumberUtils.empty(unit.getLocationOfNextUnit())) {
 
                 if (fileSystem.testMode) {
-                    SystemLog.get().debug("File " + fileName.toString() + ":  next chunk idx:  " + unit.getLocationOfNextUnit());
+                    SystemLog.get().debug("File {}:  next chunk idx:  {}", fileName.toString(), unit.getLocationOfNextUnit());
                 }
 
-                fileSystem.toIndex((int) unit.getLocationOfNextUnit());
-
-                unit = fileSystem.readDataUnit();
+                unit = fileSystem.readDataUnit(unit.getLocationOfNextUnit());
                 units.add(unit);
             }
 
@@ -550,8 +531,7 @@ public class IndexedFile {
             if (!fat._unitsAllocated(fileName).contains(index))
                 throw new IllegalArgumentException("Unit '" + index + "' not allocated to file '" + fileName + "'!");
 
-            toIndex(index);
-            writeDataUnit(unit);
+            writeDataUnit(index, unit);
 
         } catch (InterruptedException in) {
             errorOutOnLockTimeout();
@@ -577,9 +557,8 @@ public class IndexedFile {
 
         //	If the file has no units (ie touch() was called to create it rather than one of the store() methods)
         if (CollectionUtils.isEmpty(fat._unitsAllocated(fileName))) {
-            toIndex(nextUnit);
 
-            writeDataUnit(unit);
+            writeDataUnit(nextUnit, unit);
 
             fat._addUnitFor(fileName, nextUnit);
             storeFAT();
@@ -588,22 +567,20 @@ public class IndexedFile {
 
         //	First get the last unit allocated to the file
         List<Long> currentlyAllocated = fat._unitsAllocated(fileName);
-        toIndex(currentlyAllocated.get(currentlyAllocated.size() - 1));
-        ChainedUnit latestUnit = readDataUnit();
+        ChainedUnit latestUnit = readDataUnit(currentlyAllocated.get(currentlyAllocated.size() - 1));
 
 
         //	Tell the last unit used for the file about the new unit we're about to allocate
         latestUnit.setLocationOfNextUnit(nextUnit);
 
         //	Update the last unit in the FS so the FS knows about the arrangement of units for the file
-        writeDataUnit(latestUnit);
+        writeDataUnit(currentlyAllocated.get(currentlyAllocated.size() - 1), latestUnit);
 
         //	Reserve the new unit in the FAT
         fat._addUnitFor(fileName, nextUnit);
 
         //	And finally write the unit!
-        toIndex(nextUnit);
-        writeDataUnit(unit);
+        writeDataUnit(nextUnit, unit);
 
         //	And finally write out the FAT changes
         storeFAT();
@@ -675,15 +652,16 @@ public class IndexedFile {
             if (testMode)
                 SystemLog.get().debug("file:  {}:  allocating to unit {}", fileName, nextAvailUnit.longValue());
 
-            toIndex(nextAvailUnit.longValue());
-
             unit = getChainedDataUnit();
             unit.setData(unitData);
 
             fat._addUnitFor(fileName, nextAvailUnit);
-            nextAvailUnit = determineNextAvailUnit(bytes, unitsToAllocate, nextAvailUnit, unit, i);
 
-            writeDataUnit(unit);
+            long locationToWrite = nextAvailUnit.longValue();
+            nextAvailUnit = determineNextAvailUnit(bytes, unitsToAllocate, nextAvailUnit, unit, i);
+            writeDataUnit(locationToWrite, unit);
+
+
 
             //			Keep going as long as remaining bytes size is greater than max chunk size
             if (bytes.length - i > maxChunkLength)
@@ -701,7 +679,8 @@ public class IndexedFile {
     }
 
     /**
-     * Given unit to be created, works out next avail unit and updates it
+     * Given unit to be created, works out next avail unit if one is needed.  Note that this method will also update
+     * the given ChainedUnit with that next unit.
      *
      * @param bytes
      * @param unitsToAllocate
@@ -756,14 +735,12 @@ public class IndexedFile {
         if (testMode)
             SystemLog.get().debug("file:  " + fileName + ":  allocating to unit " + nextAvailUnit.longValue());
 
-        toIndex(nextAvailUnit.longValue());
-
         unit = getChainedDataUnit();
         unit.setData(unitData);
 
         fat._addUnitFor(fileName, nextAvailUnit);
 
-        writeDataUnit(unit);
+        writeDataUnit(nextAvailUnit.longValue(), unit);
     }
 
     /**
@@ -775,12 +752,11 @@ public class IndexedFile {
      */
     private void writeToSingleChunk(String fileName, byte[] bytes, Long unitIndex) {
         ChainedUnit unit;
-        toIndex(unitIndex.longValue());
 
         unit = getChainedDataUnit();
         unit.setData(bytes);
 
-        writeDataUnit(unit);
+        writeDataUnit(unitIndex.longValue(), unit);
 
         fat._addUnitFor(fileName, unitIndex);
     }
@@ -807,7 +783,7 @@ public class IndexedFile {
      * this method will be necessary in order to encrypt data units!  This method is NOT thread-safe.  Before calling this ensure you have
      * locked the {@link #accessLock}'s write lock first!
      */
-    protected final void writeBytes(byte[] bytes) {
+    protected final void writeBytes(long chunkIndex, byte[] bytes) {
         file.setCursor(chunkIndex * unitSize);
         file.writeBytes(encodeChunk(bytes));
     }
@@ -900,8 +876,8 @@ public class IndexedFile {
      *
      * @return
      */
-    protected ChainedUnit readDataUnit() {
-        Chunk chunk = readChunk();
+    protected ChainedUnit readDataUnit(long chunkIndex) {
+        Chunk chunk = readChunk(chunkIndex);
         return (ChainedUnit) Serialization.deserializeBytes(chunk.getBytes());
     }
 
@@ -910,18 +886,14 @@ public class IndexedFile {
      *
      * @param dataUnit
      */
-    protected void writeDataUnit(ChainedUnit dataUnit) {
-        writeBytes(Serialization.toBytes(dataUnit));
-    }
-
-    protected final void toIndex(long chunkNumber) {
-        this.chunkIndex = chunkNumber;
+    protected void writeDataUnit(long chunkIndex, ChainedUnit dataUnit) {
+        writeBytes(chunkIndex, Serialization.toBytes(dataUnit));
     }
 
     /**
      * Reads the current chunk from the file
      */
-    protected final Chunk readChunk() {
+    protected final Chunk readChunk(long chunkIndex) {
         file.setCursor(chunkIndex * unitSize);
         byte[] bytes = file.readBytes(unitSize);
         return new Chunk(this, readChunk(bytes));
@@ -1126,8 +1098,7 @@ public class IndexedFile {
             if (!accessLock.tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
                 errorOutOnLockTimeout();
             for (long i = 0; i < totalUnits; i++) {
-                toIndex(i);
-                ChainedUnit unit = readDataUnit();
+                ChainedUnit unit = readDataUnit(i);
                 visitor.accept(new Pair<Long, ChainedUnit>(i, unit));
             }
         } catch (InterruptedException in) {

@@ -40,7 +40,7 @@ public abstract class SecureFileSystem extends IndexedFile {
      * @param chunkSize
      */
     public SecureFileSystem(File desiredFile, int chunkSize) throws ChunkedMediumException {
-        super(desiredFile, chunkSize);
+        super(desiredFile);
     }
 
     /**
@@ -71,8 +71,8 @@ public abstract class SecureFileSystem extends IndexedFile {
      * Read in the encrypted data unit at the current location
      */
     @Override
-    protected final ChainedUnit readDataUnit() {
-        Chunk chunk = readChunk();
+    protected final ChainedUnit readDataUnit(long unitIndex) {
+        Chunk chunk = readChunk(unitIndex);
         byte[] cipherText = chunk.getBytes();
 
         return (ChainedUnit) getEncryptionService().decryptObject(cipherText, getPassword());
@@ -90,9 +90,9 @@ public abstract class SecureFileSystem extends IndexedFile {
     }
 
     @Override
-    protected final void writeDataUnit(ChainedUnit dataUnit) {
+    protected final void writeDataUnit(long chunkIndex, ChainedUnit dataUnit) {
         byte[] cipherText = getEncryptionService().encryptObject(getPassword(), dataUnit);
-        super.writeBytes(cipherText);
+        super.writeBytes(chunkIndex, cipherText);
     }
 
     /**
@@ -128,7 +128,7 @@ public abstract class SecureFileSystem extends IndexedFile {
 
             //	And now re-store it with the new password!
             byte[] cipherText = getEncryptionService().encryptObject(newPassword, currentUnit);
-            writeBytes(cipherText);
+            writeBytes(object.first(), cipherText);
 
             progress.update(object.first());
         };

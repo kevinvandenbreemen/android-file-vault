@@ -5,7 +5,6 @@ import com.vandenbreemen.mobilesecurestorage.data.ControlBytes;
 import com.vandenbreemen.mobilesecurestorage.data.Serialization;
 import com.vandenbreemen.mobilesecurestorage.file.IndexedFile.Chunk;
 import com.vandenbreemen.mobilesecurestorage.security.Bytes;
-import com.vandenbreemen.mobilesecurestorage.security.Entropy;
 import com.vandenbreemen.mobilesecurestorage.security.SecureString;
 import com.vandenbreemen.mobilesecurestorage.security.crypto.DualLayerEncryptionService;
 import com.vandenbreemen.mobilesecurestorage.security.crypto.EncryptionService;
@@ -26,6 +25,10 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.iterableWithSize;
 
 /**
  * <h2>Intro</h2>
@@ -70,8 +73,8 @@ public class IndexedFileTest {
 
 
         IndexedFile idf = new IndexedFile(tempFile);
-        idf.writeBytes("this is a test".getBytes());
-        Chunk chunk = idf.readChunk();
+        idf.writeBytes(1, "this is a test".getBytes());
+        Chunk chunk = idf.readChunk(1);
 
         byte[] decoded = chunk.getBytes();
         byte[] expected = "this is a test".getBytes();
@@ -89,12 +92,11 @@ public class IndexedFileTest {
 
 
         IndexedFile idf = new IndexedFile(tempFile);
-        idf.writeBytes("this is a test".getBytes());
+        idf.writeBytes(0, "this is a test".getBytes());
 
-        idf.toIndex(1);
-        idf.writeBytes("Second chunk".getBytes());
+        idf.writeBytes(1, "Second chunk".getBytes());
 
-        Chunk chunk = idf.readChunk();
+        Chunk chunk = idf.readChunk(1);
         byte[] decoded = chunk.getBytes();
         byte[] expected = "Second chunk".getBytes();
         assertEquals("Resultant chunk size not same as encoded", expected.length, decoded.length);
@@ -104,8 +106,7 @@ public class IndexedFileTest {
         }
 
         //	Validate we can go back a chunk
-        idf.toIndex(0);
-        chunk = idf.readChunk();
+        chunk = idf.readChunk(0);
         decoded = chunk.getBytes();
         expected = "this is a test".getBytes();
         assertEquals("Resultant chunk size not same as encoded", expected.length, decoded.length);
@@ -130,20 +131,17 @@ public class IndexedFileTest {
         Arrays.fill(secondChunk, ControlBytes.END_OF_MEDIUM);
 
 
-        idf.writeBytes(firstChunk);
-        idf.toIndex(1);
-        idf.writeBytes(secondChunk);
+        idf.writeBytes(0, firstChunk);
+        idf.writeBytes(1, secondChunk);
 
-        idf.toIndex(0);
-        Chunk chunk = idf.readChunk();
+        Chunk chunk = idf.readChunk(0);
         byte[] data = chunk.getBytes();
         assertEquals("Chunk size preservation expected", idf.getMaxPayloadSize(), data.length);
         for (byte b : data) {
             assertEquals("Byte should be control 'new page'", ControlBytes.NEW_PAGE, b);
         }
 
-        idf.toIndex(1);
-        chunk = idf.readChunk();
+        chunk = idf.readChunk(1);
         data = chunk.getBytes();
         assertEquals("Chunk size preservation expected", idf.getMaxPayloadSize(), data.length);
         for (byte b : data) {
@@ -157,12 +155,11 @@ public class IndexedFileTest {
 
 
         IndexedFile idf = new IndexedFile(tempFile);
-        idf.writeBytes("this is a test".getBytes());
+        idf.writeBytes(0, "this is a test".getBytes());
 
-        idf.toIndex(1);
-        idf.writeBytes("Second chunk".getBytes());
+        idf.writeBytes(1, "Second chunk".getBytes());
 
-        Chunk chunk = idf.readChunk();
+        Chunk chunk = idf.readChunk(1);
         byte[] decoded = chunk.getBytes();
         byte[] expected = "Second chunk".getBytes();
         assertEquals("Resultant chunk size not same as encoded", expected.length, decoded.length);
@@ -172,8 +169,7 @@ public class IndexedFileTest {
         }
 
         //	Validate we can go back a chunk
-        idf.toIndex(0);
-        chunk = idf.readChunk();
+        chunk = idf.readChunk(0);
         decoded = chunk.getBytes();
         expected = "this is a test".getBytes();
         assertEquals("Resultant chunk size not same as encoded", expected.length, decoded.length);
@@ -183,10 +179,9 @@ public class IndexedFileTest {
         }
 
         //	Now overwrite the first chunk!
-        idf.toIndex(0);
         String newString = "Overwrite the first chunk with a totally new string";
-        idf.writeBytes(newString.getBytes());
-        chunk = idf.readChunk();
+        idf.writeBytes(0, newString.getBytes());
+        chunk = idf.readChunk(0);
         decoded = chunk.getBytes();
         expected = newString.getBytes();
         assertEquals("Resultant chunk size not same as encoded", expected.length, decoded.length);
@@ -207,8 +202,8 @@ public class IndexedFileTest {
         sda.setData(Serialization.toBytes(secureList));
 
         IndexedFile idf = new IndexedFile(tempFile);
-        idf.writeBytes(Serialization.toBytes(sda));
-        IndexedFile.Chunk chunk = idf.readChunk();
+        idf.writeBytes(1, Serialization.toBytes(sda));
+        IndexedFile.Chunk chunk = idf.readChunk(1);
 
         byte[] decoded = chunk.getBytes();
 
@@ -238,8 +233,8 @@ public class IndexedFileTest {
 
 
         IndexedFile idf = new IndexedFile(tempFile);
-        idf.writeBytes(encrypted);
-        IndexedFile.Chunk chunk = idf.readChunk();
+        idf.writeBytes(1, encrypted);
+        IndexedFile.Chunk chunk = idf.readChunk(1);
 
         byte[] cipherText = chunk.getBytes();
         Object decrypted = new DualLayerEncryptionService().decryptObject(cipherText, password);
@@ -430,47 +425,6 @@ public class IndexedFileTest {
         }
     }
 
-    @Test
-    public void testAllocateMultipleChunksCustomFileSizeBecauseObjectTooLarge() throws Exception {
-
-        int maxItem = 10000;    //	Make a huge object with list with this many items
-
-        File tempFile = TestConstants.getTestFile(("test_rw_multi_unit" + System.currentTimeMillis() + ".dat"));
-
-        try {
-            IndexedFile idf = new IndexedFile(tempFile, 4096);
-
-            ArrayList<String> reallyLongList = new ArrayList<String>();
-
-            List<String> expectedItems = new ArrayList<String>();
-
-            for (int i = 0; i < maxItem; i++) {
-                String str = "TEST_" + System.nanoTime();
-                reallyLongList.add(str);
-                expectedItems.add(str);
-            }
-
-            idf.storeObject("testfile", reallyLongList);
-
-            idf = new IndexedFile(tempFile, 4096);
-            List<String> files = idf.listFiles();
-
-            assertEquals("Single file expected", 1, files.size());
-            assertEquals("File name should be 'testfile'", "testfile", files.get(0));
-
-            List<String> recovered = (List<String>)
-                    idf.loadFile(files.get(0));
-
-            assertEquals("Size of items not same", maxItem, recovered.size());
-
-            for (int i = 0; i < maxItem; i++) {
-                assertEquals("Possible data corruption", expectedItems.get(i), recovered.get(i));
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            fail("Error");
-        }
-    }
 
     //	This test causes blocks from two files to criss-cross
     @Test
@@ -533,65 +487,6 @@ public class IndexedFileTest {
 
     }
 
-    @Test
-    public void testAllocateAccrossMultipleFilesCustomFileSize() throws Exception {
-
-
-        int maxItem = 10000;    //	Make a huge object with list with this many items
-
-        File tempFile = TestConstants.getTestFile(("test_rw_multi_crisscross_unit" + System.currentTimeMillis() + ".dat"));
-
-
-        String file1 = "file1";
-        String file2 = "file2";
-
-        try {
-            IndexedFile idf = new IndexedFile(tempFile, 4096);
-
-            ArrayList<String> list1 = new ArrayList<String>();
-            ArrayList<String> list2 = new ArrayList<String>();
-
-            for (int i = 0; i < 4; i++) {
-
-                for (int j = 0; j < maxItem; j++) {
-                    if (i % 2 == 0)
-                        list1.add("LST1_" + System.nanoTime());
-                    else
-                        list2.add("LST2_" + System.nanoTime());
-                }
-
-                if (i % 2 == 0) {
-                    idf.storeObject(file1, list1);
-                } else
-                    idf.storeObject(file2, list2);
-
-            }
-
-            //	Now try to load it all
-            idf = new IndexedFile(tempFile, 4096);
-            idf.testMode = true;
-            assertEquals("There should be 2 files in the system", 2, idf.listFiles().size());
-
-            List<String> rec1 = (List<String>) idf.loadFile(file1);
-            List<String> rec2 = (List<String>) idf.loadFile(file2);
-
-            assertEquals("2000 recs expected", 2 * maxItem, rec1.size());
-            assertEquals("2000 recs expected", 2 * maxItem, rec2.size());
-
-            for (String r1 : rec1) {
-                assertTrue("POSSIBLE DATA CORRUPTION", r1.startsWith("LST1_"));
-            }
-
-            for (String r2 : rec2) {
-                assertTrue("POSSIBLE DATA CORRUPTION", r2.startsWith("LST2_"));
-            }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            fail("Error");
-        }
-
-    }
 
     @Test
     public void testAllocateAccrossMultipleFilesAndThenDeleteOne() throws Exception {
@@ -629,25 +524,28 @@ public class IndexedFileTest {
 
             }
 
+            assertEquals("Expected length  vs algorithm", 20000, list2.size());
+
+            List<String> forCheck = (List<String>) idf.loadFile(file2);
+            assertEquals("Length of stored", 20000, forCheck.size());
+
             //	Now try to load it all
             idf = new IndexedFile(tempFile);
             idf.testMode = true;
-            assertEquals("There should be 2 files in the system", 2, idf.listFiles().size());
 
+            assertEquals("There should be 2 files in the system", 2, idf.listFiles().size());
             assertEquals("No units should be available on the file (system should have to create new ones)", 0, idf.fat.numFreeAllocations());
 
             //	Delete the first file
             idf.deleteFile(file1);
 
             assertTrue("Should be units available on the file system after deletion!", idf.fat.numFreeAllocations() > 0);
-
             assertEquals("Only 1 file expected now", 1, idf.listFiles().size());
 
             //	
             idf = new IndexedFile(tempFile);
             idf.testMode = true;
             assertEquals("Only 1 file expected now", 1, idf.listFiles().size());
-
             assertTrue("Should be units available on the file system after deletion!", idf.fat.numFreeAllocations() > 0);
 
             //	Try and overwrite existing blocks with another full 20k items
@@ -686,113 +584,8 @@ public class IndexedFileTest {
 
     }
 
-    @Test
-    public void testMiniOverrunFirstFATBlock() throws Exception {
-
-        String jibberish;
-        byte[] jibberishBytes = new byte[10240];
-        Entropy.get().fillBytes(jibberishBytes);
-        jibberish = new String(jibberishBytes);
 
 
-        int maxItem = 100;    //	Make a huge object with list with this many items
-
-        File tempFile = TestConstants.getTestFile(("test_rw_force_fat_expansion" + System.currentTimeMillis() + ".dat"));
-
-
-        try {
-            IndexedFile idf = new IndexedFile(tempFile, 4096);
-
-            int numJunkDataItems = 2;
-            for (int k = 0; k < maxItem; k++) {    //	Store junk data 1000 times
-                ArrayList<String> reallyLongList = new ArrayList<String>();
-                for (int i = 0; i < numJunkDataItems; i++) {
-                    String str = "TEST_" + System.nanoTime() + "_______________" + System.nanoTime() + jibberish;
-                    reallyLongList.add(str);
-
-                }
-
-                idf.storeObject("testfile_____________" + k, reallyLongList);
-            }
-
-            idf = new IndexedFile(tempFile, 4096);
-            List<String> files = idf.listFiles();
-
-            assertEquals(maxItem + " files expected", maxItem, files.size());
-
-            for (int i = 0; i < maxItem; i++) {
-                List<String> recovered = (List<String>)
-                        idf.loadFile(files.get(i));
-
-                assertEquals("Size of items not same", numJunkDataItems, recovered.size());
-            }
-
-            FAT fat = (FAT) idf.loadFile(FAT.FILENAME);
-            fat.initialize();
-            assertTrue("Illegitimate test.  FAT cannot be shown to span multiple units!", fat._unitsAllocated(FAT.FILENAME).size() > 1);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            fail("Error");
-        }
-
-    }
-
-
-    @Test
-    public void testMiniOverrunFirstFATBlockAndRenameFilesDuringThis() throws Exception {
-
-        String jibberish;
-        byte[] jibberishBytes = new byte[10240];
-        Entropy.get().fillBytes(jibberishBytes);
-        jibberish = new String(jibberishBytes);
-
-
-        int maxItem = 100;    //	Make a huge object with list with this many items
-
-        File tempFile = TestConstants.getTestFile(("test_rw_force_fat_expansion" + System.currentTimeMillis() + ".dat"));
-
-
-        try {
-            IndexedFile idf = new IndexedFile(tempFile, 4096);
-
-            int numJunkDataItems = 2;
-            for (int k = 0; k < maxItem; k++) {    //	Store junk data 1000 times
-                ArrayList<String> reallyLongList = new ArrayList<String>();
-                for (int i = 0; i < numJunkDataItems; i++) {
-                    String str = "TEST_" + System.nanoTime() + "_______________" + System.nanoTime() + jibberish;
-                    reallyLongList.add(str);
-
-                }
-
-                idf.storeObject("testfile_____________" + k, reallyLongList);
-
-                idf.rename("testfile_____________" + k, "renamed_" + k);
-            }
-
-            idf = new IndexedFile(tempFile, 4096);
-            List<String> files = idf.listFiles();
-
-            assertEquals(maxItem + " files expected", maxItem, files.size());
-
-            for (int i = 0; i < maxItem; i++) {
-                assertFalse("One or more files was not properly renamed!", files.get(i).startsWith("testfile"));
-                List<String> recovered = (List<String>)
-                        idf.loadFile(files.get(i));
-
-                assertEquals("Size of items not same", numJunkDataItems, recovered.size());
-            }
-
-            FAT fat = (FAT) idf.loadFile(FAT.FILENAME);
-            fat.initialize();
-            assertTrue("Illegitimate test.  FAT cannot be shown to span multiple units!", fat._unitsAllocated(FAT.FILENAME).size() > 1);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            fail("Error");
-        }
-
-    }
 
     //	Simulate reducing a file in size.  The medium should in turn reclaim previous units for storage
     @Test
@@ -992,6 +785,73 @@ public class IndexedFileTest {
             fail("Unexpected error importing");
         }
 
+    }
+
+    @Test
+    public void testLoadObjectAcrossMultiChunks() throws Exception {
+        int maxItem = 10000;    //	Make a huge object with list with this many items
+
+        File tempFile = TestConstants.getTestFile(("test_rw_multi_crisscross_delete_unit" + System.currentTimeMillis() + ".dat"));
+        String file2 = "file2";
+
+        AtomicInteger unitCounter = new AtomicInteger(1);
+
+        IndexedFile idf = new IndexedFile(tempFile);
+        ArrayList<String> list2 = new ArrayList<String>();
+
+        for (int i = 0; i < 2 * maxItem; i++) {
+            list2.add("LST2_" + System.nanoTime() + "_UNIT_" + unitCounter.getAndIncrement());
+        }
+
+        assertEquals("Expected length  vs algorithm", 20000, list2.size());
+
+        idf.storeObject(file2, list2);
+
+        List<String> forCheck = (List<String>) idf.loadFile(file2);
+        assertEquals("Length of stored", 20000, forCheck.size());
+    }
+
+    @Test
+    public void testLoadObject() throws Exception {
+        IndexedFile indexedFile = new IndexedFile(TestConstants.getTestFile("loadObject"));
+        ArrayList<String> testStrings = new ArrayList<>(Arrays.asList("Larry", "Curly", "Moe"));
+
+        indexedFile.storeObject("test", testStrings);
+
+        indexedFile = new IndexedFile(TestConstants.getTestFile("loadObject"));
+        testStrings = (ArrayList<String>) indexedFile.loadFile("test");
+
+        assertThat(testStrings, allOf(
+                iterableWithSize(3),
+                hasItem("Larry"),
+                hasItem("Curly"),
+                hasItem("Moe")
+        ));
+    }
+
+    @Test
+    public void testUpdateObject() throws Exception {
+        IndexedFile indexedFile = new IndexedFile(TestConstants.getTestFile("updateObject"));
+        ArrayList<String> testStrings = new ArrayList<>(Arrays.asList("Larry", "Curly", "Moe"));
+
+        indexedFile.storeObject("test", testStrings);
+
+        indexedFile = new IndexedFile(TestConstants.getTestFile("updateObject"));
+        testStrings = (ArrayList<String>) indexedFile.loadFile("test");
+        testStrings.add("Dragon");
+
+        indexedFile.storeObject("test", testStrings);
+
+        indexedFile = new IndexedFile(TestConstants.getTestFile("updateObject"));
+        testStrings = (ArrayList<String>) indexedFile.loadFile("test");
+
+        assertThat(testStrings, allOf(
+                iterableWithSize(4),
+                hasItem("Larry"),
+                hasItem("Curly"),
+                hasItem("Moe"),
+                hasItem("Dragon")
+        ));
     }
 
     @Test
