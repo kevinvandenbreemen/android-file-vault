@@ -1246,7 +1246,7 @@ public class IndexedFile {
     /**
      * Close the file system
      */
-    public final void close() {
+    public void close() {
     }
 
     @Override
