@@ -25,7 +25,7 @@ public class SFSAccessTask extends AsyncTask<SFSCredentials, Void, AsyncResult<S
         SecureString password = SecureFileSystem.copyPassword(credentials.getPassword());
 
         try{
-            return new AsyncResult<SecureFileSystem>(new SecureFileSystem(sfsCredentials[0].getFileLocation()){
+            return new AsyncResult<>(new SecureFileSystem(sfsCredentials[0].getFileLocation()){
                 @Override
                 protected SecureString getPassword() {
                     return password;
@@ -33,7 +33,7 @@ public class SFSAccessTask extends AsyncTask<SFSCredentials, Void, AsyncResult<S
             });
         }catch(Exception ex){
             SystemLog.get().error("Failed to load SFS at {}", ex, credentials.getFileLocation());
-            return new AsyncResult<SecureFileSystem>(ex);
+            return new AsyncResult<>(ex);
         }
     }
 
