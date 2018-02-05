@@ -830,6 +830,32 @@ public class IndexedFileTest {
     }
 
     @Test
+    public void testRenameFile() throws Exception {
+        IndexedFile indexedFile = new IndexedFile(TestConstants.getTestFile("loadObject"));
+        ArrayList<String> testStrings = new ArrayList<>(Arrays.asList("Larry", "Curly", "Moe"));
+
+        indexedFile.storeObject("test", testStrings);
+        indexedFile.rename("test", "newName");
+
+        indexedFile = new IndexedFile(TestConstants.getTestFile("loadObject"));
+
+        List<String> files = indexedFile.listFiles();
+        assertThat(files, allOf(
+                iterableWithSize(1),
+                hasItem("newName")
+        ));
+
+        testStrings = (ArrayList<String>) indexedFile.loadFile("newName");
+
+        assertThat(testStrings, allOf(
+                iterableWithSize(3),
+                hasItem("Larry"),
+                hasItem("Curly"),
+                hasItem("Moe")
+        ));
+    }
+
+    @Test
     public void testUpdateObject() throws Exception {
         IndexedFile indexedFile = new IndexedFile(TestConstants.getTestFile("updateObject"));
         ArrayList<String> testStrings = new ArrayList<>(Arrays.asList("Larry", "Curly", "Moe"));
@@ -867,6 +893,26 @@ public class IndexedFileTest {
         cdu = new ChainedDataUnit();
         cdu.setData(new byte[]{2, 5, 0, 1});
         indexedFile.updateDataUnit("test", unitIdx, cdu);
+
+        byte[] data = indexedFile.getFileView("test").readUnit(unitIdx).getData();
+
+
+        assertTrue("Updated unit expected", ByteUtils.equals(new byte[]{2, 5, 0, 1}, data));
+    }
+
+    @Test
+    public void testUpdateDataUnitWithUpdater() throws Exception {
+        IndexedFile indexedFile = new IndexedFile(TestConstants.getTestFile("updateUnit"));
+        ChainedDataUnit cdu = new ChainedDataUnit();
+        cdu.setData(new byte[]{1, 2, 3, 4});
+
+        indexedFile.touch("test");
+        indexedFile.addDataUnit("test", cdu);
+
+        Long unitIdx = indexedFile.fat._unitsAllocated("test").get(0);
+        cdu = new ChainedDataUnit();
+        cdu.setData(new byte[]{2, 5, 0, 1});
+        indexedFile.getFileView("test").getUnitUpdater(unitIdx).update(cdu);
 
         byte[] data = indexedFile.getFileView("test").readUnit(unitIdx).getData();
 

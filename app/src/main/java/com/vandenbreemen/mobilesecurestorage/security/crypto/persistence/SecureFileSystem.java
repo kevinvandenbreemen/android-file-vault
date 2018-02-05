@@ -175,4 +175,15 @@ public abstract class SecureFileSystem extends IndexedFile {
     final void setTestMode(boolean testMode) {
         super.testMode = testMode;
     }
+
+    //  Provide this method in order to expose the logic for testing.  Do NOT modify
+    //  this code
+
+    /**
+     * Kill the app and close the SFS
+     */
+    @Override
+    protected final void errorOutOnLockTimeout() {
+        super.errorOutOnLockTimeout();
+    }
 }

@@ -729,4 +729,36 @@ public class SecureFileSystemTest {
         assertTrue("Error occurred", error.get() == null);
     }
 
+    //  System needs to make itself unusable if a thread using it is unexpectedly interrupted
+    //  This is to protect against loss of an indexed file that was created locally
+    @Test
+    public void testEmergencyCloseOnInterrupt() throws Exception {
+        File tempFile = TestConstants.getTestFile(("test_jpgimport" + System.currentTimeMillis() + ".dat"));
+        tempFile.deleteOnExit();
+
+        SecureFileSystem idf = getNewSecureFileSystem(tempFile);
+
+        idf.importFile(TestConstants.TEST_RES_IMG_1, null);
+
+        try {
+            idf.errorOutOnLockTimeout();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        try {
+            idf.listFiles();
+            fail("SFS operations should not be allowed anymore");
+        } catch (Exception ex) {
+
+        }
+
+        try {
+            idf.loadFile(TestConstants.TEST_RES_IMG_1.getName());
+            fail("SFS operations should not be allowed anymore");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
 }

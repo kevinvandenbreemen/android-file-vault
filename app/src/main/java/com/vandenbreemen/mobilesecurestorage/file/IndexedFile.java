@@ -148,13 +148,11 @@ public class IndexedFile {
     /**
      * Kill the app and close the SFS
      */
-    private void errorOutOnLockTimeout() {
+    protected void errorOutOnLockTimeout() {
 
         this.close();
 
-        String threadName = Thread.currentThread().getName();
-
-        SystemLog.get().error("THREAD=" + threadName + "  -  PERFORMING EMERGENCY CLEANUP.  HARD KILLING MEDIUM ACCESS", new Throwable());
+        SystemLog.get().error("THREAD={}  -  PERFORMING EMERGENCY CLEANUP.  HARD KILLING MEDIUM ACCESS", new Throwable(), Thread.currentThread().getName());
         try {
             emergencyCleanup();
         } catch (Exception ex) {
@@ -339,18 +337,14 @@ public class IndexedFile {
                 throw new IllegalArgumentException("Unit index '" + index + "' not allocated to the file");
 
             //	Otherwise return an adapter that allows for updating
-            return new UnitUpdateAdapter() {
-
-                @Override
-                public void update(ChainedUnit unit) throws NewUnitNeededException {
-                    try {
-                        updateUnit(index, unit);
-                    } catch (MSSRuntime krx) {
-                        if (krx.getAttribute(ATTR_NEW_UNIT_RQD) != null)    //	Send client code instruction to ask for a new unit
-                            throw new NewUnitNeededException();
-                        else    //	Otherwise send the error up the stack as a regular runtime error
-                            throw krx;
-                    }
+            return unit -> {
+                try {
+                    updateUnit(index, unit);
+                } catch (MSSRuntime krx) {
+                    if (krx.getAttribute(ATTR_NEW_UNIT_RQD) != null)    //	Send client code instruction to ask for a new unit
+                        throw new NewUnitNeededException();
+                    else    //	Otherwise send the error up the stack as a regular runtime error
+                        throw krx;
                 }
             };
         }
@@ -1130,7 +1124,10 @@ public class IndexedFile {
      * Close the file system
      */
     public void close() {
-        //  To be implemented by subtypes
+        if (this.fat != null) {
+            this.fat.close();
+            this.fat = null;
+        }
     }
 
     @Override

@@ -281,4 +281,11 @@ public class FAT implements Serializable {
         }
     }
 
+    /**
+     * Close the FAT
+     */
+    void close() {
+
+    }
+
 }
