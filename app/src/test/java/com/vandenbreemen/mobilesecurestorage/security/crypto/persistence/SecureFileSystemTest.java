@@ -193,7 +193,7 @@ public class SecureFileSystemTest {
                 File tempFile = TestConstants.getTestFile(("opti" + System.currentTimeMillis() + ".dat"));
                 tempFile.deleteOnExit();
 
-                SecureFileSystem idf = new SecureFileSystem(tempFile, chunkSize) {
+                SecureFileSystem idf = new SecureFileSystem(tempFile) {
 
                     @Override
                     protected SecureString getPassword() {
@@ -344,7 +344,7 @@ public class SecureFileSystemTest {
                     }
                 }, secureString);
 
-        SecureFileSystem newlyLoaded = new SecureFileSystem(tempFile, false) {
+        SecureFileSystem newlyLoaded = new SecureFileSystem(tempFile) {
 
             @Override
             protected SecureString getPassword() {
@@ -609,7 +609,7 @@ public class SecureFileSystemTest {
 
         SecureString password = SecureFileSystem.generatePassword(new SecureString("password123".getBytes()));
 
-        SecureFileSystem fs = new SecureFileSystem(tempFile, false) {
+        SecureFileSystem fs = new SecureFileSystem(tempFile) {
             protected SecureString getPassword() {
                 return password;
             }

@@ -26,21 +26,10 @@ public abstract class SecureFileSystem extends IndexedFile {
 
     /**
      * @param desiredFile
-     * @param loadFatHack
      * @throws ChunkedMediumException
      */
-    public SecureFileSystem(File desiredFile, boolean loadFatHack)
+    public SecureFileSystem(File desiredFile)
             throws ChunkedMediumException {
-        super(desiredFile);
-    }
-
-    /**
-     * Create a secure file system with a custom unit size
-     *
-     * @param desiredFile
-     * @param chunkSize
-     */
-    public SecureFileSystem(File desiredFile, int chunkSize) throws ChunkedMediumException {
         super(desiredFile);
     }
 
