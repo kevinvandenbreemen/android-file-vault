@@ -1,6 +1,7 @@
 package com.vandenbreemen.mobilesecurestorage.security.crypto;
 
 import com.vandenbreemen.mobilesecurestorage.data.Serialization;
+import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
 import com.vandenbreemen.mobilesecurestorage.security.BytesToBits;
 import com.vandenbreemen.mobilesecurestorage.security.SecureString;
 
@@ -30,7 +31,7 @@ public class AESEncryptionService implements EncryptionService, ObjectEncryptor 
 
     private byte[] doEncryption(byte[] key, byte[] clear) {
 
-        List<SecureString> keyBuckets = new ArrayList<SecureString>();
+        List<SecureString> keyBuckets = new ArrayList<>();
 
         //  Hash the key
         key = BytesToBits.secureHash(key);
@@ -61,7 +62,7 @@ public class AESEncryptionService implements EncryptionService, ObjectEncryptor 
 
             return outBuf2;
         } catch (Exception e) {
-            e.printStackTrace();
+            SystemLog.get().error("Error encrypting", e);
         } finally {
             for (SecureString ss : keyBuckets) {
                 ss.finalize();
@@ -71,7 +72,7 @@ public class AESEncryptionService implements EncryptionService, ObjectEncryptor 
     }
 
     private byte[] doDecryption(byte[] key, byte[] encrypted) {
-        List<SecureString> keyBuckets = new ArrayList<SecureString>();
+        List<SecureString> keyBuckets = new ArrayList<>();
 
         //  Hash the password
         key = BytesToBits.secureHash(key);
@@ -94,7 +95,7 @@ public class AESEncryptionService implements EncryptionService, ObjectEncryptor 
 
             return clear;
         } catch (Exception e) {
-            e.printStackTrace();
+            SystemLog.get().error("Error decryption", e);
         } finally {
             for (SecureString ss : keyBuckets) {
                 ss.finalize();

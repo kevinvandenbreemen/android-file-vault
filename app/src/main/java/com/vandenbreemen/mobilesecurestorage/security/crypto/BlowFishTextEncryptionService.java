@@ -1,6 +1,7 @@
 package com.vandenbreemen.mobilesecurestorage.security.crypto;
 
 import com.vandenbreemen.mobilesecurestorage.data.Serialization;
+import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
 import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime;
 import com.vandenbreemen.mobilesecurestorage.security.BytesToBits;
 import com.vandenbreemen.mobilesecurestorage.security.SecureString;
@@ -30,7 +31,7 @@ public class BlowFishTextEncryptionService implements EncryptionService, ObjectE
 
     private byte[] doEncrypt(byte[] key, byte[] clear) {
 
-        List<SecureString> keyStrings = new ArrayList<SecureString>();
+        List<SecureString> keyStrings = new ArrayList<>();
 
         key = getCorrectKeyLength(key);
         keyStrings.add(new SecureString(key));
@@ -55,7 +56,7 @@ public class BlowFishTextEncryptionService implements EncryptionService, ObjectE
 
             return outBuf2;
         } catch (Exception e) {
-            e.printStackTrace();
+            SystemLog.get().error("Error encrypting", e);
         } finally {
             for (SecureString ss : keyStrings) {    //	Dump temp keys from memory
                 ss.finalize();
@@ -66,7 +67,7 @@ public class BlowFishTextEncryptionService implements EncryptionService, ObjectE
 
     private byte[] doDecrypt(byte[] key, byte[] encrypted) {
 
-        List<SecureString> keyStrings = new ArrayList<SecureString>();
+        List<SecureString> keyStrings = new ArrayList<>();
 
         key = getCorrectKeyLength(key);
         keyStrings.add(new SecureString(key));
@@ -85,7 +86,7 @@ public class BlowFishTextEncryptionService implements EncryptionService, ObjectE
 
             return clear;
         } catch (Exception e) {
-            e.printStackTrace();
+            SystemLog.get().error("Error decrypting", e);
         } finally {
             for (SecureString ss : keyStrings) {    //	Dump temp keys from memory
                 ss.finalize();
