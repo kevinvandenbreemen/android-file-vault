@@ -5,6 +5,7 @@ import com.vandenbreemen.mobilesecurestorage.file.ChainedUnit;
 import com.vandenbreemen.mobilesecurestorage.file.ChunkedMediumException;
 import com.vandenbreemen.mobilesecurestorage.file.IndexedFile;
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
+import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime;
 import com.vandenbreemen.mobilesecurestorage.patterns.ProgressListener;
 import com.vandenbreemen.mobilesecurestorage.security.SecureString;
 import com.vandenbreemen.mobilesecurestorage.security.crypto.DualLayerEncryptionService;
@@ -46,6 +47,7 @@ public abstract class SecureFileSystem extends IndexedFile {
     /**
      * Perform any emergency cleanup operations needed
      */
+    @Override
     protected final void emergencyCleanup() {
         try {
             getPassword().finalize();
@@ -142,6 +144,7 @@ public abstract class SecureFileSystem extends IndexedFile {
     /**
      * Destroys the password and closes this SFS.  Calling this will make this object useless
      */
+    @Override
     public final void close() {
         super.close();
         this.getPassword().randomFinalize();
@@ -155,7 +158,7 @@ public abstract class SecureFileSystem extends IndexedFile {
      */
     public static SecureString copyPassword(SecureString password) {
         if (!(password instanceof KeySet)) {
-            throw new RuntimeException("Incompatible key types");
+            throw new MSSRuntime("Incompatible key types");
         }
 
         //	Cheesy but will have to be enough for now
