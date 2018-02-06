@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
@@ -133,6 +134,26 @@ public class FileSelectModelTest {
         sut.select(sut.listFiles().get(0));
 
         assertEquals("Selected file", fileInSubDir, selFile.get());
+    }
+
+    @Test
+    public void testAutoselect() {
+        app.grantPermissions(Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        AtomicReference<File> selFile = new AtomicReference<>(null);
+        FileSelectModel.FileSelectListener listener = selectedFile -> {
+            selFile.set(selectedFile);
+        };
+
+        sut.setListener(listener);
+        sut.setAutoSelect(false);
+
+        File directory = sut.listFiles().stream().filter(f -> f.isDirectory()).findFirst().get();
+        sut.select(directory);
+
+        sut.select(sut.listFiles().get(0));
+
+        assertNull("Autoselect off - no select", selFile.get());
     }
 
 }

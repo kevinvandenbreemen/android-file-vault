@@ -38,6 +38,7 @@ public class FileSelectModel {
      * Listener for file selection
      */
     private FileSelectListener listener;
+    private boolean autoSelect;
 
     /**
      * Initialize new file selector
@@ -45,6 +46,7 @@ public class FileSelectModel {
      */
     public FileSelectModel(Context context) {
         this.context = context;
+        this.autoSelect = true;
     }
 
     /**
@@ -81,11 +83,30 @@ public class FileSelectModel {
     public void select(File file) {
         if(file.isDirectory()){
             this.pwd = file;
-        } else if (listener != null) {
+        } else if (listener != null && autoSelect) {
             listener.onSelectFile(file);
         } else {
             SystemLog.get().warn("Selected file {} but no listener present", new Throwable(), file);
         }
+    }
+
+    /**
+     * Whether selection of a file will trigger app to continue
+     *
+     * @return
+     */
+    public boolean isAutoSelect() {
+        return autoSelect;
+    }
+
+    /**
+     * Tell the model to automatically continue app flow when file selected.  By default
+     * auto-selection IS enabled
+     *
+     * @param autoSelect
+     */
+    public void setAutoSelect(boolean autoSelect) {
+        this.autoSelect = autoSelect;
     }
 
     /**
