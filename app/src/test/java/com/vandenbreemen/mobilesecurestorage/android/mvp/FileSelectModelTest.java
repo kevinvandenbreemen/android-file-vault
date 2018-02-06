@@ -18,7 +18,9 @@ import org.robolectric.shadows.ShadowApplication;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -111,6 +113,26 @@ public class FileSelectModelTest {
                 iterableWithSize(1),
                 hasItem(fileInSubDir)
         ));
+    }
+
+    //  Selecting a file as opposed to a directory
+    @Test
+    public void testSelectFile() {
+        app.grantPermissions(Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        AtomicReference<File> selFile = new AtomicReference<>(null);
+        FileSelectModel.FileSelectListener listener = selectedFile -> {
+            selFile.set(selectedFile);
+        };
+
+        sut.setListener(listener);
+
+        File directory = sut.listFiles().stream().filter(f -> f.isDirectory()).findFirst().get();
+        sut.select(directory);
+
+        sut.select(sut.listFiles().get(0));
+
+        assertEquals("Selected file", fileInSubDir, selFile.get());
     }
 
 }

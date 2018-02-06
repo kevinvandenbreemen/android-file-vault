@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 
+import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,16 +26,18 @@ public class FileSelectModel {
      * App context in which this model is running
      */
     private Context context;
-
     /**
      * Indicate that we're selecting a directory
      */
     private boolean isSelectDirectory;
-
     /**
      * Current selected directory (present working dir)
      */
     private File pwd;
+    /**
+     * Listener for file selection
+     */
+    private FileSelectListener listener;
 
     /**
      * Initialize new file selector
@@ -41,6 +45,15 @@ public class FileSelectModel {
      */
     public FileSelectModel(Context context) {
         this.context = context;
+    }
+
+    /**
+     * Set listener for when user selects a file
+     *
+     * @param listener
+     */
+    public void setListener(FileSelectListener listener) {
+        this.listener = listener;
     }
 
     /**
@@ -68,6 +81,24 @@ public class FileSelectModel {
     public void select(File file) {
         if(file.isDirectory()){
             this.pwd = file;
+        } else if (listener != null) {
+            listener.onSelectFile(file);
+        } else {
+            SystemLog.get().warn("Selected file {} but no listener present", new Throwable(), file);
         }
+    }
+
+    /**
+     * Listener for selecting a file (not a directory)
+     */
+    static interface FileSelectListener {
+
+        /**
+         * Actions to perform when a file has been selected
+         *
+         * @param file
+         */
+        void onSelectFile(File file);
+
     }
 }
