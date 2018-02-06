@@ -31,6 +31,11 @@ public class FileSelectModel {
     private boolean isSelectDirectory;
 
     /**
+     * Current selected directory (present working dir)
+     */
+    private File pwd;
+
+    /**
      * Initialize new file selector
      * @param context
      */
@@ -44,7 +49,8 @@ public class FileSelectModel {
      */
     public List<File> listFiles() {
         if(ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
-            return Arrays.asList(Environment.getExternalStorageDirectory().listFiles(
+            File thePwd = pwd != null ? pwd : Environment.getExternalStorageDirectory();
+            return Arrays.asList(thePwd.listFiles(
                     file -> isSelectDirectory ? file.isDirectory() : true
             ));
         }
@@ -53,5 +59,15 @@ public class FileSelectModel {
 
     public void setSelectDirectories(boolean selectDirectoriesOnly) {
         this.isSelectDirectory = selectDirectoriesOnly;
+    }
+
+    /**
+     * Select the given file/directory
+     * @param file
+     */
+    public void select(File file) {
+        if(file.isDirectory()){
+            this.pwd = file;
+        }
     }
 }

@@ -46,6 +46,10 @@ public class FileSelectModelTest {
 
     private File subDir;
 
+    /**
+     * File inside the {@link #subDir}
+     */
+    private File fileInSubDir;
 
     @Before
     public void setup() throws Exception{
@@ -58,8 +62,10 @@ public class FileSelectModelTest {
         new File(Environment.getExternalStorageDirectory()+File.separator+"test").createNewFile();
         subDir = new File(Environment.getExternalStorageDirectory()+File.separator+"subdir");
         subDir.mkdir();
-        new File(Environment.getExternalStorageDirectory()+File.separator+"subdir"
-            +File.separator+"subFile").createNewFile();
+        fileInSubDir = new File(Environment.getExternalStorageDirectory()+File.separator+"subdir"
+            +File.separator+"subFile");
+        fileInSubDir.createNewFile();
+
     }
 
     @Test
@@ -87,6 +93,24 @@ public class FileSelectModelTest {
                 hasItem(subDir)
         ));
 
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void testOpenDirectory(){
+        app.grantPermissions(Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        File directory = sut.listFiles().stream().filter(f->f.isDirectory()).findFirst().get();
+        sut.select(directory);
+
+        List<File> files = sut.listFiles();
+        assertThat(files, allOf(
+                iterableWithSize(1),
+                hasItem(fileInSubDir)
+        ));
     }
 
 }
