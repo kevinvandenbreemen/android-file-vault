@@ -17,6 +17,7 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getTargetContext()
-        assertEquals("com.vandenbreemen.mobilesecurestorage", appContext.packageName)
+        println(appContext.packageName)
+        assertEquals("com.vandenbreemen.mobilesecurestorage.test", appContext.packageName)
     }
 }

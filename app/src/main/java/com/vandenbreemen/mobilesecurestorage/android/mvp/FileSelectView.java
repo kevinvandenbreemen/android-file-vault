@@ -7,5 +7,5 @@ package com.vandenbreemen.mobilesecurestorage.android.mvp;
  *
  * @author kevin
  */
-public class FileSelectView {
+public interface FileSelectView {
 }

@@ -8,4 +8,13 @@ package com.vandenbreemen.mobilesecurestorage.android.mvp;
  * @author kevin
  */
 public class FileSelectController {
+
+    private FileSelectModel model;
+
+    private FileSelectView view;
+
+    public FileSelectController(FileSelectModel model, FileSelectView view) {
+        this.model = model;
+        this.view = view;
+    }
 }
