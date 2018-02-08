@@ -14,6 +14,13 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    //  Test Orchestrator (TODO Keeping this inside this module for now but it sounds like
+    //  it might be smart to use it in all modules?)
+    testOptions {
+        execution 'ANDROID_TEST_ORCHESTRATOR'
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -35,10 +42,14 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
     compile 'com.madgag.spongycastle:core:1.53.0.0'
     compile 'com.madgag.spongycastle:prov:1.53.0.0'
+
+    //  Testing dependencies
     testImplementation 'junit:junit:4.12'
     testCompile group: 'org.robolectric', name: 'robolectric', version: '3.6.1'
     testCompile group: 'org.hamcrest', name: 'java-hamcrest', version: '2.0.0.0'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
+    androidTestUtil 'com.android.support.test:orchestrator:1.0.1'
+
 }
