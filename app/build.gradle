@@ -19,6 +19,7 @@ android {
     //  it might be smart to use it in all modules?)
     testOptions {
         execution 'ANDROID_TEST_ORCHESTRATOR'
+        testOptions.unitTests.includeAndroidResources = true
     }
 
     buildTypes {
