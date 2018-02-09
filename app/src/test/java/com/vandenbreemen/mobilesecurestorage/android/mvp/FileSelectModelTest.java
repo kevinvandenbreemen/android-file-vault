@@ -3,7 +3,6 @@ package com.vandenbreemen.mobilesecurestorage.android.mvp;
 import android.Manifest;
 import android.os.Environment;
 
-import com.vandenbreemen.mobilesecurestorage.BuildConfig;
 import com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -13,7 +12,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.Shadows;
-import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowApplication;
 
 import java.io.File;
@@ -37,7 +35,6 @@ import static org.hamcrest.Matchers.iterableWithSize;
  * @author kevin
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class)
 public class FileSelectModelTest {
 
     private FileSelectModel sut;
