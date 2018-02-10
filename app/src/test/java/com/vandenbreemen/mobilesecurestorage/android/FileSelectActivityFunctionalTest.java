@@ -100,16 +100,48 @@ public class FileSelectActivityFunctionalTest {
         ShadowListView shadow = Shadows.shadowOf(listView);
         shadow.populateItems();
 
-        List<File> files = new ArrayList<>();
-        for (int i = 0; i < listView.getAdapter().getCount(); i++) {
-            files.add((File) listView.getAdapter().getItem(i));
-        }
+        List<File> files = getDisplayedFiles(listView);
 
         assertThat(files, allOf(
                 hasItem(subDir),
                 hasItem(fileInExtStorageDir),
                 not(hasItem(fileInSubDir))
         ));
+    }
+
+    //  Validate directory selector
+    @Test
+    public void testSelectDirectory() {
+        ListView listView = sut.findViewById(R.id.fileList);
+
+        ShadowListView shadow = Shadows.shadowOf(listView);
+        shadow.populateItems();
+
+        int directoryIndex = 0;
+        for (int i = 0; i < listView.getAdapter().getCount(); i++) {
+            if (((File) listView.getAdapter().getItem(i)).isDirectory()) {
+                directoryIndex = i;
+                break;
+            }
+        }
+
+        shadow.performItemClick(directoryIndex);
+
+        List<File> files = getDisplayedFiles(listView);
+
+        assertThat(files, allOf(
+                not(hasItem(subDir)),
+                hasItem(fileInSubDir)
+        ));
+
+    }
+
+    private List<File> getDisplayedFiles(ListView listView) {
+        List<File> files = new ArrayList<>();
+        for (int i = 0; i < listView.getAdapter().getCount(); i++) {
+            files.add((File) listView.getAdapter().getItem(i));
+        }
+        return files;
     }
 
 }

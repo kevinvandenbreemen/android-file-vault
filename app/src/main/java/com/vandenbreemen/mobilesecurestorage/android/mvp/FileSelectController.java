@@ -1,5 +1,9 @@
 package com.vandenbreemen.mobilesecurestorage.android.mvp;
 
+import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+
 /**
  * <h2>Intro
  * <p>
@@ -20,5 +24,12 @@ public class FileSelectController {
 
     public void start() {
         this.view.listFiles(model.listFiles());
+    }
+
+    public void select(@Nullable File selected) {
+        this.model.select(selected);
+        if (selected.isDirectory()) {
+            view.listFiles(model.listFiles());
+        }
     }
 }

@@ -76,6 +76,12 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
                 return super.getView(position, convertView, parent)
             }
         }
+
+        listView.setOnItemClickListener { parent, view, position, id ->
+            val selected = adapter.getItem(position)
+            controller.select(selected)
+        }
+
         adapter.addAll(files)
 
         listView.adapter = adapter
