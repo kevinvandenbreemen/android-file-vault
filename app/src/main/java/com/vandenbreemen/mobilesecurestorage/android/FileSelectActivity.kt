@@ -19,6 +19,13 @@ import java.io.File
 
 class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestPermissionsResultCallback {
 
+    /**
+     * Callback - usually for testing only
+     */
+    interface FileSelectListener {
+        fun onFileSelect(file: File?)
+    }
+
     companion object {
         /**
          * Permissions for file IO
@@ -31,12 +38,23 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
      */
     private lateinit var controller: FileSelectController
 
+    private lateinit var listener: FileSelectListener
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_file_select)
 
         val model = FileSelectModel(this)
         controller = FileSelectController(model, this)
+
+
+    }
+
+    /**
+     * Set listener for testing
+     */
+    protected fun setListener(listener: FileSelectListener) {
+        this.listener = listener;
     }
 
     override fun onResume() {
@@ -64,6 +82,12 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
         }
     }
 
+    override fun select(selected: File?) {
+        if (::listener.isInitialized) {
+            listener.onFileSelect(selected)
+        }
+    }
+
     override fun listFiles(files: MutableList<File>?) {
         val listView = findViewById<ListView>(R.id.fileList);
 
@@ -86,5 +110,9 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
 
         listView.adapter = adapter
 
+    }
+
+    fun onOkay(view: View?) {
+        controller.confirm()
     }
 }

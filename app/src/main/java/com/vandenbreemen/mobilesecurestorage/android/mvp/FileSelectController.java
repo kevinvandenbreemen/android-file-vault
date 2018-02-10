@@ -32,4 +32,11 @@ public class FileSelectController {
             view.listFiles(model.listFiles());
         }
     }
+
+    /**
+     * Confirm file selection (for when the model is not auto-select)
+     */
+    public void confirm() {
+        view.select(model.getSelectedFile());
+    }
 }

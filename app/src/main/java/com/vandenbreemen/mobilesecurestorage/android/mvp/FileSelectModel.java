@@ -6,8 +6,6 @@ import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 
-import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,6 +37,7 @@ public class FileSelectModel {
      */
     private FileSelectListener listener;
     private boolean autoSelect;
+    private File selected;
 
     /**
      * Initialize new file selector
@@ -86,7 +85,7 @@ public class FileSelectModel {
         } else if (listener != null && autoSelect) {
             listener.onSelectFile(file);
         } else {
-            SystemLog.get().warn("Selected file {} but no listener present", new Throwable(), file);
+            this.selected = file;
         }
     }
 
@@ -107,6 +106,10 @@ public class FileSelectModel {
      */
     public void setAutoSelect(boolean autoSelect) {
         this.autoSelect = autoSelect;
+    }
+
+    public File getSelectedFile() {
+        return selected;
     }
 
     /**

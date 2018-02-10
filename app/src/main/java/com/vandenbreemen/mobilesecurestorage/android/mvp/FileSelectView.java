@@ -19,4 +19,10 @@ public interface FileSelectView {
      */
     void listFiles(List<File> files);
 
+    /**
+     * When file has been selected/confirmed
+     *
+     * @param selected
+     */
+    void select(File selected);
 }

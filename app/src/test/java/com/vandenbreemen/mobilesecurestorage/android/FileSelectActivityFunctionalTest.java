@@ -19,7 +19,9 @@ import org.robolectric.shadows.ShadowLog;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotSame;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -160,6 +162,55 @@ public class FileSelectActivityFunctionalTest {
                 hasItem(fileInExtStorageDir),
                 not(hasItem(fileInSubDir))
         ));
+    }
+
+    @Test
+    public void testConfirmFile() {
+
+        AtomicReference<File> selectedFile = new AtomicReference<>(null);
+        FileSelectActivity.FileSelectListener listener = selectedFile::set;
+        sut.setListener(listener);
+
+        ListView listView = sut.findViewById(R.id.fileList);
+
+        ShadowListView shadow = Shadows.shadowOf(listView);
+        shadow.populateItems();
+
+        int fileIndex = 0;
+        for (int i = 0; i < listView.getAdapter().getCount(); i++) {
+            if (!((File) listView.getAdapter().getItem(i)).isDirectory()) {
+                fileIndex = i;
+                break;
+            }
+        }
+
+        shadow.performItemClick(fileIndex);
+
+        sut.findViewById(R.id.ok).performClick();
+
+        assertEquals("Selected file", fileInExtStorageDir, selectedFile.get());
+    }
+
+    //  System should gracefully act when no listener/intent/etc set up for confirmed file
+    @Test
+    public void sanityConfirmFile() {
+
+        ListView listView = sut.findViewById(R.id.fileList);
+
+        ShadowListView shadow = Shadows.shadowOf(listView);
+        shadow.populateItems();
+
+        int fileIndex = 0;
+        for (int i = 0; i < listView.getAdapter().getCount(); i++) {
+            if (!((File) listView.getAdapter().getItem(i)).isDirectory()) {
+                fileIndex = i;
+                break;
+            }
+        }
+
+        shadow.performItemClick(fileIndex);
+
+        sut.findViewById(R.id.ok).performClick();
     }
 
     private List<File> getDisplayedFiles(ListView listView) {
