@@ -35,15 +35,22 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_file_select)
 
+        val model = FileSelectModel(this)
+        controller = FileSelectController(model, this)
+    }
+
+    override fun onResume() {
+
+        super.onResume()
+
         //  Check for file IO permissions
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE),
-             PERM_REQUEST_ID)
+                    PERM_REQUEST_ID)
+        } else {
+            controller.start()
         }
-
-        val model = FileSelectModel(this)
-        controller = FileSelectController(model, this)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>,
@@ -60,7 +67,7 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
     override fun listFiles(files: MutableList<File>?) {
         val listView = findViewById<ListView>(R.id.fileList);
 
-        val adapter = object : ArrayAdapter<File>(this, R.layout.layout_file_item) {
+        val adapter = object : ArrayAdapter<File>(this, android.R.layout.simple_list_item_1) {
             override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
                 val group = layoutInflater.inflate(R.layout.layout_file_item, parent, false)
