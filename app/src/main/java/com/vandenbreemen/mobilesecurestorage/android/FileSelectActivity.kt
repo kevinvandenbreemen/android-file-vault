@@ -12,9 +12,9 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.TextView
 import com.vandenbreemen.mobilesecurestorage.R
-import com.vandenbreemen.mobilesecurestorage.android.mvp.FileSelectController
-import com.vandenbreemen.mobilesecurestorage.android.mvp.FileSelectModel
-import com.vandenbreemen.mobilesecurestorage.android.mvp.FileSelectView
+import com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect.FileSelectController
+import com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect.FileSelectModel
+import com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect.FileSelectView
 import java.io.File
 
 class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestPermissionsResultCallback {

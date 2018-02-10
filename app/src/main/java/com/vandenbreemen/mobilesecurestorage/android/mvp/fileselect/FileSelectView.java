@@ -1,4 +1,4 @@
-package com.vandenbreemen.mobilesecurestorage.android.mvp;
+package com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect;
 
 import java.io.File;
 import java.util.List;

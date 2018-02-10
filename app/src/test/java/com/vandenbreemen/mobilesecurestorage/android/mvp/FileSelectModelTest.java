@@ -4,6 +4,7 @@ import android.Manifest;
 import android.os.Environment;
 
 import com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity;
+import com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect.FileSelectModel;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Before;

@@ -1,4 +1,4 @@
-package com.vandenbreemen.mobilesecurestorage.android.mvp;
+package com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect;
 
 import android.Manifest;
 import android.content.Context;
@@ -118,7 +118,7 @@ public class FileSelectModel {
     /**
      * Listener for selecting a file (not a directory)
      */
-    static interface FileSelectListener {
+    public static interface FileSelectListener {
 
         /**
          * Actions to perform when a file has been selected
