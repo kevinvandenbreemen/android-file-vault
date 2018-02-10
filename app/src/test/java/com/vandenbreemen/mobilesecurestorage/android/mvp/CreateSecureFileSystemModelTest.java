@@ -11,11 +11,9 @@ import org.awaitility.Awaitility;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.shadows.ShadowLog;
 
-import java.io.File;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -33,11 +31,6 @@ import static junit.framework.TestCase.assertNotNull;
  */
 @RunWith(RobolectricTestRunner.class)
 public class CreateSecureFileSystemModelTest {
-
-    /**
-     * File we are going to try to create
-     */
-    private File toCreate;
     ;
     /**
      * Listener for success
@@ -47,7 +40,6 @@ public class CreateSecureFileSystemModelTest {
     @Before
     public void setup() {
         ShadowLog.stream = System.out;
-        toCreate = new File(Environment.getExternalStorageDirectory() + File.separator + "toCreate");
         this.listener = new SecureFileSystemCreated();
 
         //  This is a workaround to deal with issue in which
@@ -67,8 +59,6 @@ public class CreateSecureFileSystemModelTest {
         model.setPassword(password, password);
 
         model.create();
-
-        Robolectric.flushBackgroundThreadScheduler();
 
         Awaitility.await().atMost(10, TimeUnit.MINUTES).until(() -> listener.created != null);
 
