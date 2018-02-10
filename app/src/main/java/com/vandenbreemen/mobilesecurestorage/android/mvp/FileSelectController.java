@@ -17,4 +17,8 @@ public class FileSelectController {
         this.model = model;
         this.view = view;
     }
+
+    public void start() {
+        this.view.listFiles(model.listFiles());
+    }
 }
