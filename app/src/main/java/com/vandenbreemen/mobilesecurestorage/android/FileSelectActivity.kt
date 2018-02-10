@@ -50,9 +50,7 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
         setContentView(R.layout.activity_file_select)
 
         val model = FileSelectModel(this)
-        if (intent.getBooleanExtra(PARM_DIR_ONLY, false)) {
-            model.setSelectDirectories(true)
-        }
+        model.setSelectDirectories(intent.getBooleanExtra(PARM_DIR_ONLY, false))
 
         controller = FileSelectController(model, this)
 
