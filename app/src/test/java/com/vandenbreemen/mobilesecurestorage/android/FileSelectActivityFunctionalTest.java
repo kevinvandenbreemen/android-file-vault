@@ -136,6 +136,32 @@ public class FileSelectActivityFunctionalTest {
 
     }
 
+    @Test
+    public void testSelectFile() {
+        ListView listView = sut.findViewById(R.id.fileList);
+
+        ShadowListView shadow = Shadows.shadowOf(listView);
+        shadow.populateItems();
+
+        int fileIndex = 0;
+        for (int i = 0; i < listView.getAdapter().getCount(); i++) {
+            if (!((File) listView.getAdapter().getItem(i)).isDirectory()) {
+                fileIndex = i;
+                break;
+            }
+        }
+
+        shadow.performItemClick(fileIndex);
+
+        List<File> files = getDisplayedFiles(listView);
+
+        assertThat(files, allOf(
+                hasItem(subDir),
+                hasItem(fileInExtStorageDir),
+                not(hasItem(fileInSubDir))
+        ));
+    }
+
     private List<File> getDisplayedFiles(ListView listView) {
         List<File> files = new ArrayList<>();
         for (int i = 0; i < listView.getAdapter().getCount(); i++) {
