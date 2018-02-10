@@ -31,6 +31,11 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
          * Permissions for file IO
          */
         const val PERM_REQUEST_ID = 2501
+
+        /**
+         * Indicates that we're selecting a directory only
+         */
+        const val PARM_DIR_ONLY = "DIR_ONLY"
     }
 
     /**
@@ -45,6 +50,10 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
         setContentView(R.layout.activity_file_select)
 
         val model = FileSelectModel(this)
+        if (intent.getBooleanExtra(PARM_DIR_ONLY, false)) {
+            model.setSelectDirectories(true)
+        }
+
         controller = FileSelectController(model, this)
 
 

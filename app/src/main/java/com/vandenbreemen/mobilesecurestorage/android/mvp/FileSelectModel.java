@@ -82,6 +82,9 @@ public class FileSelectModel {
     public void select(File file) {
         if(file.isDirectory()){
             this.pwd = file;
+            if (isSelectDirectory) {
+                this.selected = file;
+            }
         } else if (listener != null && autoSelect) {
             listener.onSelectFile(file);
         } else {

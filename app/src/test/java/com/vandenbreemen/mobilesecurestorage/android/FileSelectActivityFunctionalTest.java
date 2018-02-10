@@ -1,6 +1,7 @@
 package com.vandenbreemen.mobilesecurestorage.android;
 
 import android.Manifest;
+import android.content.Intent;
 import android.os.Environment;
 import android.widget.ListView;
 
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity.PARM_DIR_ONLY;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotSame;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -37,7 +39,6 @@ import static org.hamcrest.core.AllOf.allOf;
  */
 @RunWith(RobolectricTestRunner.class)
 public class FileSelectActivityFunctionalTest {
-
     /**
      * App.  Using this to simulate having/not having permissions
      */
@@ -211,6 +212,67 @@ public class FileSelectActivityFunctionalTest {
         shadow.performItemClick(fileIndex);
 
         sut.findViewById(R.id.ok).performClick();
+    }
+
+    @Test
+    public void testSelectDirectoryOnly() {
+
+        Intent startFileSelect = new Intent(sut.getApplication(), FileSelectActivity.class);
+        startFileSelect.putExtra(PARM_DIR_ONLY, Boolean.TRUE);
+
+        sut = Robolectric.buildActivity(FileSelectActivity.class, startFileSelect)
+                .create()
+                .get();
+
+        sut.onResume();
+
+        ListView listView = sut.findViewById(R.id.fileList);
+
+        ShadowListView shadow = Shadows.shadowOf(listView);
+        shadow.populateItems();
+
+        List<File> files = getDisplayedFiles(listView);
+
+        assertThat(files, allOf(
+                hasItem(subDir),
+                not(hasItem(fileInExtStorageDir))
+        ));
+    }
+
+    @Test
+    public void testConfirmDirectorySelection() {
+
+        Intent startFileSelect = new Intent(sut.getApplication(), FileSelectActivity.class);
+        startFileSelect.putExtra(PARM_DIR_ONLY, Boolean.TRUE);
+
+        sut = Robolectric.buildActivity(FileSelectActivity.class, startFileSelect)
+                .create()
+                .get();
+
+        sut.onResume();
+
+        AtomicReference<File> selectedFile = new AtomicReference<>(null);
+        FileSelectActivity.FileSelectListener listener = selectedFile::set;
+        sut.setListener(listener);
+
+        ListView listView = sut.findViewById(R.id.fileList);
+
+        ShadowListView shadow = Shadows.shadowOf(listView);
+        shadow.populateItems();
+
+        int fileIndex = 0;
+        for (int i = 0; i < listView.getAdapter().getCount(); i++) {
+            if (((File) listView.getAdapter().getItem(i)).isDirectory()) {
+                fileIndex = i;
+                break;
+            }
+        }
+
+        shadow.performItemClick(fileIndex);
+
+        sut.findViewById(R.id.ok).performClick();
+
+        assertEquals("Selected file", subDir, selectedFile.get());
     }
 
     private List<File> getDisplayedFiles(ListView listView) {
