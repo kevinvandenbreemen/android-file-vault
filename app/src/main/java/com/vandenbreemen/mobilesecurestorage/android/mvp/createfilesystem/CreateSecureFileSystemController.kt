@@ -1,5 +1,6 @@
 package com.vandenbreemen.mobilesecurestorage.android.mvp.createfilesystem
 
+import android.util.Log
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.android.task.AsyncResult
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog
@@ -34,11 +35,20 @@ class CreateSecureFileSystemController(val model: CreateSecureFileSystemModel, v
         })
     }
 
-    fun submitNewSFSDetails(fileName: String?, password: String?, confirmPassword: String?) {
-        model.setFileName(fileName)
-        model.setPassword(SecureFileSystem.generatePassword(SecureString(Base64.encode(password?.toByteArray(Charsets.UTF_8)))),
-                SecureFileSystem.generatePassword(SecureString(Base64.encode(confirmPassword?.toByteArray(Charsets.UTF_8))))
-        )
+    fun submitNewSFSDetails(fileName: String?, password: String, confirmPassword: String) {
+        try {
+            model.setFileName(fileName)
+            if (password?.isBlank() || confirmPassword?.isBlank()) {
+                throw ApplicationError("Password and confirm password are required");
+            }
+            model.setPassword(SecureFileSystem.generatePassword(SecureString(Base64.encode(password?.toByteArray(Charsets.UTF_8)))),
+                    SecureFileSystem.generatePassword(SecureString(Base64.encode(confirmPassword?.toByteArray(Charsets.UTF_8))))
+            )
+        } catch (err: ApplicationError) {
+            Log.w("CreateFileSystemUserErr", "Error setting password or filename", err);
+            view.display(err)
+            return
+        }
         model.create()
     }
 

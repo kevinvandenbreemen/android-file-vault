@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.shadows.ShadowToast;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -24,6 +25,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.plugins.RxJavaPlugins;
 
+import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
 
@@ -94,6 +96,59 @@ public class CreateSecureFileSystemFunctionalTest {
         createSecureFileSystem.findViewById(R.id.ok).performClick();
 
         Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> expectedFile.exists());
+    }
+
+    @Test
+    public void testMissingFilename() {
+
+        CreateSecureFileSystem createSecureFileSystem = Robolectric.buildActivity(CreateSecureFileSystem.class, startCreateSFS)
+                .create()
+                .get();
+
+        EditText password = createSecureFileSystem.findViewById(R.id.password);
+        password.setText("password");
+
+        password = createSecureFileSystem.findViewById(R.id.confirmPassword);
+        password.setText("password");
+
+        createSecureFileSystem.findViewById(R.id.ok).performClick();
+
+        assertNotNull("Error toast", ShadowToast.getLatestToast());
+    }
+
+    @Test
+    public void testnconsistentPassword() {
+
+        CreateSecureFileSystem createSecureFileSystem = Robolectric.buildActivity(CreateSecureFileSystem.class, startCreateSFS)
+                .create()
+                .get();
+
+        EditText fileName = createSecureFileSystem.findViewById(R.id.fileName);
+        fileName.setText("filename");
+
+        EditText password = createSecureFileSystem.findViewById(R.id.password);
+        password.setText("password");
+
+        password = createSecureFileSystem.findViewById(R.id.confirmPassword);
+        password.setText("password1");
+
+        createSecureFileSystem.findViewById(R.id.ok).performClick();
+
+        assertNotNull("Error toast", ShadowToast.getLatestToast());
+    }
+
+    @Test
+    public void testPasswordMissing() {
+        CreateSecureFileSystem createSecureFileSystem = Robolectric.buildActivity(CreateSecureFileSystem.class, startCreateSFS)
+                .create()
+                .get();
+
+        EditText fileName = createSecureFileSystem.findViewById(R.id.fileName);
+        fileName.setText("filename");
+
+        createSecureFileSystem.findViewById(R.id.ok).performClick();
+
+        assertNotNull("Error toast", ShadowToast.getLatestToast());
     }
 
     /**

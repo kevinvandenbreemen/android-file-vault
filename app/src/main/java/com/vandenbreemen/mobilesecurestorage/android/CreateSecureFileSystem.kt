@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import com.vandenbreemen.mobilesecurestorage.R
 import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow
 import com.vandenbreemen.mobilesecurestorage.android.mvp.createfilesystem.CreateSecureFileSystemController
@@ -25,7 +26,7 @@ class CreateSecureFileSystem : Activity(), CreateSecureFileSystemView {
     }
 
     override fun display(error: ApplicationError) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Toast.makeText(this, error.localizedMessage, Toast.LENGTH_SHORT).show()
     }
 
     private lateinit var controller: CreateSecureFileSystemController

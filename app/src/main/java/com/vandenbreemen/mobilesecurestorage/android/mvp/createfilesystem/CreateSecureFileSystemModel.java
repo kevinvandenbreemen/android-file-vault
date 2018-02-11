@@ -9,6 +9,8 @@ import com.vandenbreemen.mobilesecurestorage.message.ApplicationError;
 import com.vandenbreemen.mobilesecurestorage.security.SecureString;
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.File;
 import java.util.function.Consumer;
 
@@ -59,12 +61,18 @@ public class CreateSecureFileSystemModel {
         return this;
     }
 
-    public void setFileName(String fileName) {
+    public void setFileName(String fileName) throws ApplicationError {
+        if (StringUtils.isBlank(fileName)) {
+            throw new ApplicationError("Filename is required");
+        }
         this.fileName = fileName;
     }
 
 
     public void setPassword(SecureString password, SecureString confirmPassword) throws ApplicationError {
+        if (!password.equals(confirmPassword)) {
+            throw new ApplicationError("Passwords not same");
+        }
         this.password = password;
     }
 
