@@ -59,7 +59,7 @@ public class CreateSecureFileSystemFunctionalTest {
         workflow.setFileOrDirectory(directory);
 
         Intent startCreateSFS = new Intent(activity, CreateSecureFileSystem.class);
-        startCreateSFS.putExtra("Workflow", workflow);
+        startCreateSFS.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
 
         CreateSecureFileSystem createSecureFileSystem = Robolectric.buildActivity(CreateSecureFileSystem.class, startCreateSFS)
                 .create()
@@ -81,7 +81,7 @@ public class CreateSecureFileSystemFunctionalTest {
         workflow.setFileOrDirectory(directory);
 
         Intent startCreateSFS = new Intent(activity, CreateSecureFileSystem.class);
-        startCreateSFS.putExtra("Workflow", workflow);
+        startCreateSFS.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
 
         CreateSecureFileSystem createSecureFileSystem = Robolectric.buildActivity(CreateSecureFileSystem.class, startCreateSFS)
                 .create()
@@ -118,7 +118,7 @@ public class CreateSecureFileSystemFunctionalTest {
         workflow.setFileOrDirectory(directory);
 
         Intent startCreateSFS = new Intent(activity, CreateSecureFileSystem.class);
-        startCreateSFS.putExtra("Workflow", workflow);
+        startCreateSFS.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
 
         CreateSecureFileSystem createSecureFileSystem = Robolectric.buildActivity(CreateSecureFileSystem.class, startCreateSFS)
                 .create()

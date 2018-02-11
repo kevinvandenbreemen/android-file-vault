@@ -27,6 +27,11 @@ public class FileWorkflow implements Parcelable {
             return new FileWorkflow[0];
         }
     };
+
+    /**
+     * Name of workflow for moving this around
+     */
+    public static final String PARM_WORKFLOW_NAME = "FileWorkflow";
     private File fileOrDirectory;
 
     @Override
