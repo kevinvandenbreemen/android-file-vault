@@ -41,9 +41,23 @@ public class CreateSecureFileSystemModel {
      */
     private SecureString password;
 
+    /**
+     * Constructor for use in production code
+     *
+     * @param location
+     */
+    public CreateSecureFileSystemModel(File location) {
+        this.location = location;
+    }
+
     public CreateSecureFileSystemModel(File location, Consumer<AsyncResult<SecureFileSystem>> resultListener) {
         this.location = location;
         this.secureFileSystemConsumer = resultListener;
+    }
+
+    public CreateSecureFileSystemModel setSecureFileSystemConsumer(Consumer<AsyncResult<SecureFileSystem>> secureFileSystemConsumer) {
+        this.secureFileSystemConsumer = secureFileSystemConsumer;
+        return this;
     }
 
     public void setFileName(String fileName) {

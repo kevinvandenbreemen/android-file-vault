@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPassword"
-        tools:layout_editor_absoluteX="84dp"
-        tools:layout_editor_absoluteY="74dp" />
+        tools:layout_editor_absoluteX="85dp"
+        tools:layout_editor_absoluteY="172dp" />
 
     <EditText
         android:id="@+id/confirmPassword"
@@ -20,8 +20,8 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPassword"
-        tools:layout_editor_absoluteX="84dp"
-        tools:layout_editor_absoluteY="207dp" />
+        tools:layout_editor_absoluteX="85dp"
+        tools:layout_editor_absoluteY="305dp" />
 
     <Button
         android:id="@+id/cancel"
@@ -35,7 +35,18 @@
         android:id="@+id/ok"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="onOkay"
         android:text="@string/ok"
         tools:layout_editor_absoluteX="238dp"
         tools:layout_editor_absoluteY="432dp" />
+
+    <EditText
+        android:id="@+id/fileName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        tools:layout_editor_absoluteX="84dp"
+        tools:layout_editor_absoluteY="35dp" />
 </android.support.constraint.ConstraintLayout>
