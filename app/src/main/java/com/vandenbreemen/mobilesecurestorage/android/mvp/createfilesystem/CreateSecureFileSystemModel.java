@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.vandenbreemen.mobilesecurestorage.android.task.AsyncResult;
+import com.vandenbreemen.mobilesecurestorage.file.ChunkedMediumException;
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError;
 import com.vandenbreemen.mobilesecurestorage.security.SecureString;
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem;
@@ -67,7 +68,7 @@ public class CreateSecureFileSystemModel {
         this.password = password;
     }
 
-    private SecureFileSystem createSecureFileSystem() throws Exception {
+    private SecureFileSystem createSecureFileSystem() throws ChunkedMediumException {
         return new SecureFileSystem(generateFile()) {
             @Override
             protected SecureString getPassword() {
@@ -91,7 +92,7 @@ public class CreateSecureFileSystemModel {
             Log.i("Testing", "Creating the secure file sys");
             try {
                 e.onSuccess(createSecureFileSystem());
-            } catch (Exception ex) {
+            } catch (ChunkedMediumException ex) {
                 Log.e("CreateFileSystem", "Failed to create new secure file system", ex);
                 e.onError(ex);
             }
