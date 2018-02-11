@@ -39,6 +39,10 @@ public class CreateSecureFileSystemFunctionalTest {
 
     private File directory;
 
+    private FileWorkflow workflow;
+
+    private Intent startCreateSFS;
+
     @Before
     public void setup() {
         this.directory = new File(Environment.getExternalStorageDirectory() + File.separator + "dir");
@@ -48,18 +52,17 @@ public class CreateSecureFileSystemFunctionalTest {
         //  the success callback never gets called
         //  https://github.com/robolectric/robolectric/issues/2534
         RxJavaPlugins.setIoSchedulerHandler(scheduler -> AndroidSchedulers.mainThread());
+
+        this.workflow = new FileWorkflow();
+        this.workflow.setFileOrDirectory(directory);
+
+        FileSelectActivity activity = Robolectric.setupActivity(FileSelectActivity.class);
+        this.startCreateSFS = new Intent(activity, CreateSecureFileSystem.class);
+        this.startCreateSFS.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
     }
 
     @Test
     public void sanityTestStartActivity() {
-
-        FileSelectActivity activity = Robolectric.setupActivity(FileSelectActivity.class);
-
-        FileWorkflow workflow = new FileWorkflow();
-        workflow.setFileOrDirectory(directory);
-
-        Intent startCreateSFS = new Intent(activity, CreateSecureFileSystem.class);
-        startCreateSFS.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
 
         CreateSecureFileSystem createSecureFileSystem = Robolectric.buildActivity(CreateSecureFileSystem.class, startCreateSFS)
                 .create()
@@ -74,14 +77,6 @@ public class CreateSecureFileSystemFunctionalTest {
 
         String expectedFileName = "expectedFile";
         File expectedFile = new File(directory.getAbsolutePath() + File.separator + expectedFileName);
-
-        FileSelectActivity activity = Robolectric.setupActivity(FileSelectActivity.class);
-
-        FileWorkflow workflow = new FileWorkflow();
-        workflow.setFileOrDirectory(directory);
-
-        Intent startCreateSFS = new Intent(activity, CreateSecureFileSystem.class);
-        startCreateSFS.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
 
         CreateSecureFileSystem createSecureFileSystem = Robolectric.buildActivity(CreateSecureFileSystem.class, startCreateSFS)
                 .create()
@@ -111,14 +106,6 @@ public class CreateSecureFileSystemFunctionalTest {
 
         String expectedFileName = "expectedFile";
         File expectedFile = new File(directory.getAbsolutePath() + File.separator + expectedFileName);
-
-        FileSelectActivity activity = Robolectric.setupActivity(FileSelectActivity.class);
-
-        FileWorkflow workflow = new FileWorkflow();
-        workflow.setFileOrDirectory(directory);
-
-        Intent startCreateSFS = new Intent(activity, CreateSecureFileSystem.class);
-        startCreateSFS.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
 
         CreateSecureFileSystem createSecureFileSystem = Robolectric.buildActivity(CreateSecureFileSystem.class, startCreateSFS)
                 .create()
