@@ -6,6 +6,7 @@ import android.os.Environment;
 import android.widget.ListView;
 
 import com.vandenbreemen.mobilesecurestorage.R;
+import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +15,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.Shadows;
 import org.robolectric.shadows.ShadowApplication;
+import org.robolectric.shadows.ShadowIntent;
 import org.robolectric.shadows.ShadowListView;
 import org.robolectric.shadows.ShadowLog;
 
@@ -237,6 +239,48 @@ public class FileSelectActivityFunctionalTest {
                 hasItem(subDir),
                 not(hasItem(fileInExtStorageDir))
         ));
+    }
+
+    //  See https://stackoverflow.com/a/39674693
+    @Test
+    public void testStartNextActivity() {
+
+        FileWorkflow workflow = new FileWorkflow();
+        workflow.setTargetActivity(CreateSecureFileSystem.class);
+
+        Intent startFileSelect = new Intent(sut.getApplication(), FileSelectActivity.class);
+        startFileSelect.putExtra(PARM_DIR_ONLY, Boolean.TRUE);
+        startFileSelect.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
+
+        sut = Robolectric.buildActivity(FileSelectActivity.class, startFileSelect)
+                .create()
+                .get();
+
+        sut.onResume();
+
+        ListView listView = sut.findViewById(R.id.fileList);
+
+        ShadowListView shadow = Shadows.shadowOf(listView);
+        shadow.populateItems();
+
+        int fileIndex = 0;
+        for (int i = 0; i < listView.getAdapter().getCount(); i++) {
+            if (((File) listView.getAdapter().getItem(i)).isDirectory()) {
+                fileIndex = i;
+                break;
+            }
+        }
+
+        shadow.performItemClick(fileIndex);
+
+        sut.findViewById(R.id.ok).performClick();
+
+        //  Validate activity started
+        //  https://stackoverflow.com/a/39674693
+        Intent nextActivity = Shadows.shadowOf(sut).getNextStartedActivity();
+        ShadowIntent nxtActivityIntent = Shadows.shadowOf(nextActivity);
+
+        assertEquals("Next Activity", CreateSecureFileSystem.class, nxtActivityIntent.getIntentClass());
     }
 
     @Test

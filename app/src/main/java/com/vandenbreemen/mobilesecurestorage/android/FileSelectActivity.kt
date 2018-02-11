@@ -2,16 +2,19 @@ package com.vandenbreemen.mobilesecurestorage.android
 
 import android.Manifest
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.TextView
 import com.vandenbreemen.mobilesecurestorage.R
+import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow
 import com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect.FileSelectController
 import com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect.FileSelectModel
 import com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect.FileSelectView
@@ -23,7 +26,7 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
      * Callback - usually for testing only
      */
     interface FileSelectListener {
-        fun onFileSelect(file: File?)
+        fun onFileSelect(file: File)
     }
 
     companion object {
@@ -43,7 +46,14 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
      */
     private lateinit var controller: FileSelectController
 
-    private lateinit var listener: FileSelectListener
+    private var listener: FileSelectListener = object : FileSelectListener {
+        override fun onFileSelect(file: File) {
+            onSelectedFile(file)
+        }
+
+    }
+
+    private var workflow: FileWorkflow = FileWorkflow()  //  Default value for null safety...
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +64,10 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
 
         controller = FileSelectController(model, this)
 
-
+        this.workflow =
+                if (intent.getParcelableExtra(FileWorkflow.PARM_WORKFLOW_NAME) as? FileWorkflow != null)
+                    intent.getParcelableExtra(FileWorkflow.PARM_WORKFLOW_NAME) as FileWorkflow
+                else FileWorkflow()
     }
 
     /**
@@ -89,9 +102,18 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
         }
     }
 
-    override fun select(selected: File?) {
-        if (::listener.isInitialized) {
-            listener.onFileSelect(selected)
+    override fun select(selected: File) {
+        listener.onFileSelect(selected)
+    }
+
+    private fun onSelectedFile(selected: File) {
+        if (workflow.targetActivity != null) {
+            val intent = Intent(this, workflow.targetActivity)
+            intent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
+            startActivity(intent)
+            finish()
+        } else {
+            Log.w("NextStepInFileSelect", "No target activity found!  Did you forget to include a ${FileWorkflow::class.java.simpleName} in your intent?")
         }
     }
 
