@@ -7,7 +7,6 @@ import com.vandenbreemen.mobilesecurestorage.log.SystemLog
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
-import org.spongycastle.util.encoders.Base64
 import java.util.function.Consumer
 
 /**
@@ -41,8 +40,8 @@ class CreateSecureFileSystemController(val model: CreateSecureFileSystemModel, v
             if (password?.isBlank() || confirmPassword?.isBlank()) {
                 throw ApplicationError("Password and confirm password are required");
             }
-            model.setPassword(SecureFileSystem.generatePassword(SecureString(Base64.encode(password?.toByteArray(Charsets.UTF_8)))),
-                    SecureFileSystem.generatePassword(SecureString(Base64.encode(confirmPassword?.toByteArray(Charsets.UTF_8))))
+            model.setPassword(SecureFileSystem.generatePassword(SecureString.fromPassword(password)),
+                    SecureFileSystem.generatePassword(SecureString.fromPassword(confirmPassword))
             )
         } catch (err: ApplicationError) {
             Log.w("CreateFileSystemUserErr", "Error setting password or filename", err);
