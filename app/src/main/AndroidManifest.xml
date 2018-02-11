@@ -20,7 +20,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".android.FileSelectActivity" />
-        <activity android:name=".android.CreateSecureFileSystem"></activity>
+        <activity android:name=".android.CreateSecureFileSystem" />
+        <activity android:name=".android.LoadSecureFileSystem"></activity>
     </application>
 
 </manifest>

@@ -46,7 +46,6 @@ dependencies {
     compile 'com.madgag.spongycastle:prov:1.53.0.0'
     compile group: 'io.reactivex.rxjava2', name: 'rxandroid', version: '2.0.1'
 
-
     //  Testing dependencies
     testImplementation 'junit:junit:4.12'
     testCompile group: 'org.robolectric', name: 'robolectric', version: '3.6.1'
