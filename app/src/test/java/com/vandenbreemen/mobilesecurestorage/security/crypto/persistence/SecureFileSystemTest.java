@@ -630,7 +630,8 @@ public class SecureFileSystemTest {
     /**
      * Validate concurrent access to the SFS, loading and saving files
      */
-    @Test
+    //  This test is disabled as it is used only during development/troubleshooting
+    //@Test
     public void testConcurrentSFSAccess() throws Exception {
 
         File img1 = TestConstants.TEST_RES_IMG_1;
