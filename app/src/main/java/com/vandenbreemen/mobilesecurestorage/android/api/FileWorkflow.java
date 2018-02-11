@@ -1,7 +1,11 @@
 package com.vandenbreemen.mobilesecurestorage.android.api;
 
+import android.app.Activity;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 
@@ -18,7 +22,19 @@ public class FileWorkflow implements Parcelable {
         @Override
         public FileWorkflow createFromParcel(Parcel source) {
             FileWorkflow ret = new FileWorkflow();
-            ret.fileOrDirectory = new File(source.readString());
+
+            String className = source.readString();
+            try {
+                ret.targetActivity = (Class<? extends Activity>) Class.forName(className);
+            } catch (Exception ex) {
+                Log.e("FileWorkflowError", "Failed to get target activity class", ex);
+            }
+
+            String filePath = source.readString();
+            if (!StringUtils.isBlank(filePath)) {
+                ret.fileOrDirectory = new File(filePath);
+            }
+
             return ret;
         }
 
@@ -33,6 +49,7 @@ public class FileWorkflow implements Parcelable {
      */
     public static final String PARM_WORKFLOW_NAME = "FileWorkflow";
     private File fileOrDirectory;
+    private Class<? extends Activity> targetActivity;
 
     @Override
     public int describeContents() {
@@ -41,7 +58,8 @@ public class FileWorkflow implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(fileOrDirectory.getAbsolutePath());
+        dest.writeString(this.targetActivity != null ? this.targetActivity.getName() : "");
+        dest.writeString(this.fileOrDirectory != null ? fileOrDirectory.getAbsolutePath() : "");
     }
 
     public File getFileOrDirectory() {
@@ -50,5 +68,13 @@ public class FileWorkflow implements Parcelable {
 
     public void setFileOrDirectory(File fileOrDirectory) {
         this.fileOrDirectory = fileOrDirectory;
+    }
+
+    public Class<? extends Activity> getTargetActivity() {
+        return targetActivity;
+    }
+
+    public void setTargetActivity(Class<? extends Activity> targetActivity) {
+        this.targetActivity = targetActivity;
     }
 }

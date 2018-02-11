@@ -3,12 +3,15 @@ package com.vandenbreemen.mobilesecurestorage.android.api;
 import android.os.Environment;
 import android.os.Parcel;
 
+import com.vandenbreemen.mobilesecurestorage.android.CreateSecureFileSystem;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
 import java.io.File;
 
+import static junit.framework.TestCase.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -45,6 +48,22 @@ public class FileWorkflowTest {
                 is(expected)
         ));
 
+    }
+
+    //  File workflow must provide activity to go to next with the data collected
+    @Test
+    public void testWriteTargetActivity() {
+        FileWorkflow workflow = new FileWorkflow();
+        workflow.setTargetActivity(CreateSecureFileSystem.class);
+
+        Parcel parcel = Parcel.obtain();
+
+        workflow.writeToParcel(parcel, workflow.describeContents());
+        parcel.setDataPosition(0);
+
+        FileWorkflow fromParcel = FileWorkflow.CREATOR.createFromParcel(parcel);
+
+        assertEquals("Target activity", CreateSecureFileSystem.class, fromParcel.getTargetActivity());
     }
 
 }
