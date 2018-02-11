@@ -1,5 +1,6 @@
 package com.vandenbreemen.mobilesecurestorage.android.mvp.createfilesystem;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.vandenbreemen.mobilesecurestorage.android.task.AsyncResult;
@@ -25,21 +26,18 @@ import io.reactivex.schedulers.Schedulers;
 public class CreateSecureFileSystemModel {
 
     /**
+     * Password to be used
+     */
+    SecureString password;
+    /**
      * What to do once the secure file system has been created
      */
     private Consumer<AsyncResult<SecureFileSystem>> secureFileSystemConsumer;
-
     /**
      * Location to create
      */
     private File location;
-
     private String fileName;
-
-    /**
-     * Password to be used
-     */
-    private SecureString password;
 
     /**
      * Constructor for use in production code
@@ -70,12 +68,22 @@ public class CreateSecureFileSystemModel {
     }
 
     private SecureFileSystem createSecureFileSystem() throws Exception {
-        return new SecureFileSystem(new File(location + File.separator + fileName)) {
+        return new SecureFileSystem(generateFile()) {
             @Override
             protected SecureString getPassword() {
                 return password;
             }
         };
+    }
+
+    /**
+     * Creates File based on the user's specified filename
+     *
+     * @return
+     */
+    @NonNull
+    File generateFile() {
+        return new File(location + File.separator + fileName);
     }
 
     public void create() {

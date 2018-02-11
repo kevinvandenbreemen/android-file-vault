@@ -1,7 +1,7 @@
 package com.vandenbreemen.mobilesecurestorage.android.mvp.createfilesystem;
 
 import com.vandenbreemen.mobilesecurestorage.android.api.ErrorDisplay;
-import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem;
+import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials;
 
 /**
  * <h2>Intro</h2>
@@ -15,8 +15,8 @@ public interface CreateSecureFileSystemView extends ErrorDisplay {
     /**
      * Completed creation
      *
-     * @param sfs
+     * @param credentials - credentials for newly created SFS
      */
-    void onComplete(SecureFileSystem sfs);
+    void onComplete(SFSCredentials credentials);
 
 }

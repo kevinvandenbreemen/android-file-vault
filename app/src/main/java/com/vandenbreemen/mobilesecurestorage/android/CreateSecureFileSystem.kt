@@ -9,12 +9,19 @@ import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow
 import com.vandenbreemen.mobilesecurestorage.android.mvp.createfilesystem.CreateSecureFileSystemController
 import com.vandenbreemen.mobilesecurestorage.android.mvp.createfilesystem.CreateSecureFileSystemModel
 import com.vandenbreemen.mobilesecurestorage.android.mvp.createfilesystem.CreateSecureFileSystemView
+import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
-import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
+import java.util.function.Consumer
 
 class CreateSecureFileSystem : Activity(), CreateSecureFileSystemView {
-    override fun onComplete(sfs: SecureFileSystem?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+    /**
+     * Capture created secure file system
+     */
+    private var onCompleteListener: Consumer<SFSCredentials> = Consumer { doNextStep(it) }
+
+    override fun onComplete(credentials: SFSCredentials) {
+        onCompleteListener.accept(credentials)
     }
 
     override fun display(error: ApplicationError) {
@@ -44,5 +51,16 @@ class CreateSecureFileSystem : Activity(), CreateSecureFileSystemView {
                 pass.text.toString(),
                 cPass.text.toString()
         )
+    }
+
+    private fun doNextStep(credentials: SFSCredentials) {
+
+    }
+
+    /**
+     * For testing only - override what happens when sfs created successfully
+     */
+    protected fun setOnCompleteListener(listener: Consumer<SFSCredentials>) {
+        this.onCompleteListener = listener
     }
 }

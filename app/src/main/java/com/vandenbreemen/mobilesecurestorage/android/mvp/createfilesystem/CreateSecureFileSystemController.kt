@@ -1,6 +1,8 @@
 package com.vandenbreemen.mobilesecurestorage.android.mvp.createfilesystem
 
+import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.android.task.AsyncResult
+import com.vandenbreemen.mobilesecurestorage.log.SystemLog
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
@@ -18,9 +20,14 @@ class CreateSecureFileSystemController(val model: CreateSecureFileSystemModel, v
     init {
         model.setSecureFileSystemConsumer(object : Consumer<AsyncResult<SecureFileSystem>> {
             override fun accept(t: AsyncResult<SecureFileSystem>) {
-                t.error.ifPresent(Consumer { view.display(it as ApplicationError) })
+                t.error.ifPresent(Consumer {
+                    SystemLog.get().error("Error creating SFS at {}", it, model.generateFile())
+                    view.display(it as ApplicationError)
+                })
                 if (t.result != null) {
-                    view.onComplete(t.result)
+                    SystemLog.get().info("Created SFS at {}", model.generateFile())
+                    val credentials: SFSCredentials = SFSCredentials(model.generateFile(), model.password)
+                    view.onComplete(credentials)
                 }
             }
 
