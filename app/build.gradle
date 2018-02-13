@@ -4,6 +4,10 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+//  Jitpack stuff:
+apply plugin: 'com.github.dcendents.android-maven'
+group 'com.github.kevinvandenbreemen'
+
 android {
     compileSdkVersion 26
     defaultConfig {
