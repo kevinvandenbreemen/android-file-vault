@@ -3,4 +3,7 @@
     <string name="select_file_folder">Select a File or Folder</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
+    <string name="file_name">Specify file name</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
 </resources>
