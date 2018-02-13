@@ -77,6 +77,7 @@ public class CreateSecureFileSystemModel {
     }
 
     private SecureFileSystem createSecureFileSystem() throws ChunkedMediumException {
+        Log.i("Create SFS", "Creating SFS at path " + generateFile());
         return new SecureFileSystem(generateFile()) {
             @Override
             protected SecureString getPassword() {
@@ -102,6 +103,9 @@ public class CreateSecureFileSystemModel {
                 e.onSuccess(createSecureFileSystem());
             } catch (ChunkedMediumException ex) {
                 Log.e("CreateFileSystem", "Failed to create new secure file system", ex);
+                e.onError(ex);
+            } catch (Exception ex) {
+                Log.e("CreateFileSystem", "Unexpected error occurred", ex);
                 e.onError(ex);
             }
         })
