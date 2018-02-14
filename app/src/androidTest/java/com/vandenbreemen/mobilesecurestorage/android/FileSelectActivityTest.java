@@ -1,6 +1,7 @@
 package com.vandenbreemen.mobilesecurestorage.android;
 
 import android.Manifest;
+import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -9,6 +10,7 @@ import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiSelector;
 
 import com.vandenbreemen.mobilesecurestorage.R;
+import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -18,9 +20,11 @@ import org.junit.runner.RunWith;
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.TestCase.assertTrue;
 
 /**
@@ -36,6 +40,17 @@ public class FileSelectActivityTest {
     @Rule
     public ActivityTestRule<FileSelectActivity> rule =
             new ActivityTestRule<FileSelectActivity>(FileSelectActivity.class);
+    FileWorkflow workflow;
+
+    @Before
+    public void setup() {
+        workflow = new FileWorkflow();
+        workflow.setTargetActivity(CreateSecureFileSystem.class);
+
+        Intent startActivity = new Intent();
+        startActivity.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
+        rule.launchActivity(startActivity);
+    }
 
     //  Sadly I've not been able to reset permissions between tests
     //  One promising lead on this is https://blog.egorand.me/testing-runtime-permissions-lessons-learned/,
@@ -61,6 +76,10 @@ public class FileSelectActivityTest {
         onView(withId(R.id.fileList)).check(matches(isDisplayed()));
     }
 
+    @Test
+    public void testSelectDirectory() throws Exception {
+        onView(withText("Download")).perform(click());
+    }
 
     //  Not stable
     //  @Test

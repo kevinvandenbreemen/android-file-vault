@@ -125,9 +125,9 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
             override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
 
                 val group = layoutInflater.inflate(R.layout.layout_file_item, parent, false)
-                group.findViewById<TextView>(R.id.itemLabel).text = (files!![position].absolutePath)
+                group.findViewById<TextView>(R.id.itemLabel).text = (files!![position].name)
 
-                return super.getView(position, convertView, parent)
+                return group
             }
         }
 
