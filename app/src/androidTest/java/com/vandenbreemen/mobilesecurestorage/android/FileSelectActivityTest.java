@@ -77,7 +77,18 @@ public class FileSelectActivityTest {
     }
 
     @Test
+    public void testSelectDirectoryAndNoFile() throws Exception {
+        onView(withText("Download")).perform(click());
+        onView(withText("OK")).perform(click());
+    }
+
+    @Test
     public void testSelectDirectory() throws Exception {
+        Intent startActivity = new Intent();
+        startActivity.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
+        startActivity.putExtra(FileSelectActivity.PARM_DIR_ONLY, true);
+        rule.launchActivity(startActivity);
+
         onView(withText("Download")).perform(click());
         onView(withText("OK")).perform(click());
     }
