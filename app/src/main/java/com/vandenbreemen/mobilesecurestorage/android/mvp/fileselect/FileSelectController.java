@@ -1,5 +1,7 @@
 package com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect;
 
+import com.vandenbreemen.mobilesecurestorage.message.ApplicationError;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -37,6 +39,12 @@ public class FileSelectController {
      * Confirm file selection (for when the model is not auto-select)
      */
     public void confirm() {
+        try {
+            model.validateSelectedFile();
+        } catch (ApplicationError apex) {
+            view.display(apex);
+            return;
+        }
         view.select(model.getSelectedFile());
     }
 }

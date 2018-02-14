@@ -1,5 +1,7 @@
 package com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect;
 
+import com.vandenbreemen.mobilesecurestorage.android.api.ErrorDisplay;
+
 import java.io.File;
 import java.util.List;
 
@@ -10,7 +12,7 @@ import java.util.List;
  *
  * @author kevin
  */
-public interface FileSelectView {
+public interface FileSelectView extends ErrorDisplay {
 
     /**
      * Display all files

@@ -13,14 +13,19 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import com.vandenbreemen.mobilesecurestorage.R
 import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow
 import com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect.FileSelectController
 import com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect.FileSelectModel
 import com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect.FileSelectView
+import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import java.io.File
 
 class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestPermissionsResultCallback {
+    override fun display(error: ApplicationError) {
+        Toast.makeText(this, error.localizedMessage, Toast.LENGTH_SHORT)
+    }
 
     /**
      * Callback - usually for testing only

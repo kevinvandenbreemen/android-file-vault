@@ -79,6 +79,7 @@ public class FileSelectActivityTest {
     @Test
     public void testSelectDirectory() throws Exception {
         onView(withText("Download")).perform(click());
+        onView(withText("OK")).perform(click());
     }
 
     //  Not stable

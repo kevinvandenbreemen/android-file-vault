@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 
+import com.vandenbreemen.mobilesecurestorage.message.ApplicationError;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
@@ -113,6 +115,12 @@ public class FileSelectModel {
 
     public File getSelectedFile() {
         return selected;
+    }
+
+    void validateSelectedFile() throws ApplicationError {
+        if (!isSelectDirectory && selected == null) {
+            throw new ApplicationError("File selection is required");
+        }
     }
 
     /**
