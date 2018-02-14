@@ -35,7 +35,7 @@ class CreateSecureFileSystem : Activity(), CreateSecureFileSystemView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_secure_file_system)
 
-        val newFileWorkflow: FileWorkflow? = intent.getParcelableExtra(FileWorkflow.PARM_WORKFLOW_NAME) as FileWorkflow?
+        val newFileWorkflow: FileWorkflow? = intent.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME) as FileWorkflow?
         val model = CreateSecureFileSystemModel(newFileWorkflow!!.fileOrDirectory)
 
         this.controller = CreateSecureFileSystemController(model, this)
