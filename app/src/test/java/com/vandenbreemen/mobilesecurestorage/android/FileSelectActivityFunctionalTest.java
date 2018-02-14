@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity.PARM_DIR_ONLY;
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNotSame;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -281,6 +282,10 @@ public class FileSelectActivityFunctionalTest {
         ShadowIntent nxtActivityIntent = Shadows.shadowOf(nextActivity);
 
         assertEquals("Next Activity", CreateSecureFileSystem.class, nxtActivityIntent.getIntentClass());
+
+        FileWorkflow workflowParcel = nextActivity.getParcelableExtra(FileWorkflow.PARM_WORKFLOW_NAME);
+        assertNotNull("workflow", workflowParcel);
+        assertEquals("Selected directory", subDir, workflowParcel.getFileOrDirectory());
     }
 
     @Test

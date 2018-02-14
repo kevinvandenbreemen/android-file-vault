@@ -65,8 +65,8 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
         controller = FileSelectController(model, this)
 
         this.workflow =
-                if (intent.getParcelableExtra(FileWorkflow.PARM_WORKFLOW_NAME) as? FileWorkflow != null)
-                    intent.getParcelableExtra(FileWorkflow.PARM_WORKFLOW_NAME) as FileWorkflow
+                if (intent.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME) as? FileWorkflow != null)
+                    intent.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME) as FileWorkflow
                 else FileWorkflow()
     }
 
@@ -110,6 +110,7 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
         if (workflow.targetActivity != null) {
             val intent = Intent(this, workflow.targetActivity)
             intent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
+            workflow.fileOrDirectory = selected //  Pass the selected file/directory on to the next activity
             startActivity(intent)
             finish()
         } else {
