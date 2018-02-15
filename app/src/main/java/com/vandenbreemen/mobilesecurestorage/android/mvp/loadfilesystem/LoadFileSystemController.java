@@ -33,14 +33,18 @@ public class LoadFileSystemController {
             try {
                 e.onSuccess(model.providePassword(password));
             } catch (ApplicationError err) {
-                view.display(err);
+                Log.e("LoadFail", "Failed to Load", err);
                 e.onError(err);
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         view::onLoadSuccess,
-                        e -> Log.e("LoadFail", "Failed to Load", e)
+                        e -> {
+                            if (e instanceof ApplicationError) {
+                                view.display((ApplicationError) e);
+                            }
+                        }
                 );
     }
 }
