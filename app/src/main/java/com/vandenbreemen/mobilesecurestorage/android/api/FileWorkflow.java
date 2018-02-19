@@ -35,6 +35,15 @@ public class FileWorkflow implements Parcelable {
                 ret.fileOrDirectory = new File(filePath);
             }
 
+            className = source.readString();
+            if (!StringUtils.isBlank(className)) {
+                try {
+                    ret.onFinishTargetActivity = (Class<? extends Activity>) Class.forName(className);
+                } catch (Exception ex) {
+                    Log.e("FileWorkflowError", "Failed to get onFinishTargetActivity", ex);
+                }
+            }
+
             return ret;
         }
 
@@ -50,6 +59,7 @@ public class FileWorkflow implements Parcelable {
     public static final String PARM_WORKFLOW_NAME = "FileWorkflow";
     private File fileOrDirectory;
     private Class<? extends Activity> targetActivity;
+    private Class<? extends Activity> onFinishTargetActivity;
 
     @Override
     public int describeContents() {
@@ -60,6 +70,7 @@ public class FileWorkflow implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.targetActivity != null ? this.targetActivity.getName() : "");
         dest.writeString(this.fileOrDirectory != null ? fileOrDirectory.getAbsolutePath() : "");
+        dest.writeString(this.onFinishTargetActivity != null ? this.onFinishTargetActivity.getName() : "");
     }
 
     public File getFileOrDirectory() {
@@ -76,5 +87,13 @@ public class FileWorkflow implements Parcelable {
 
     public void setTargetActivity(Class<? extends Activity> targetActivity) {
         this.targetActivity = targetActivity;
+    }
+
+    public Class<? extends Activity> getOnFinishTargetActivity() {
+        return onFinishTargetActivity;
+    }
+
+    public void setOnFinishTargetActivity(Class<? extends Activity> onFinishTargetActivity) {
+        this.onFinishTargetActivity = onFinishTargetActivity;
     }
 }
