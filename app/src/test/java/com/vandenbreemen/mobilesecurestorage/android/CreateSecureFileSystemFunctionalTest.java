@@ -6,6 +6,7 @@ import android.widget.EditText;
 
 import com.vandenbreemen.mobilesecurestorage.R;
 import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow;
+import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials;
 import com.vandenbreemen.mobilesecurestorage.file.ChunkedMediumException;
 import com.vandenbreemen.mobilesecurestorage.security.SecureString;
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem;
@@ -16,15 +17,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.Shadows;
+import org.robolectric.shadows.ShadowIntent;
 import org.robolectric.shadows.ShadowToast;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.plugins.RxJavaPlugins;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
@@ -196,6 +201,45 @@ public class CreateSecureFileSystemFunctionalTest {
         Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> expectedFile.exists() && tested.get());
 
         assertTrue("SFS loadable using credentials", tested.get());
+    }
+
+    @Test
+    public void testGoToFinalActivity() {
+
+        String expectedFileName = "expectedFile";
+
+        workflow.setActivityToStartAfterTargetActivityFinished(SecureFileSystemDetails.class);
+
+        FileSelectActivity activity = Robolectric.setupActivity(FileSelectActivity.class);
+        this.startCreateSFS = new Intent(activity, CreateSecureFileSystem.class);
+        this.startCreateSFS.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
+
+        CreateSecureFileSystem createSecureFileSystem = Robolectric.buildActivity(CreateSecureFileSystem.class, startCreateSFS)
+                .create()
+                .get();
+
+        EditText fileName = createSecureFileSystem.findViewById(R.id.fileName);
+        fileName.setText(expectedFileName);
+
+        EditText password = createSecureFileSystem.findViewById(R.id.password);
+        password.setText("password");
+
+        password = createSecureFileSystem.findViewById(R.id.confirmPassword);
+        password.setText("password");
+
+        AtomicReference<Intent> nxtActivityRef = new AtomicReference<>(null);
+        createSecureFileSystem.findViewById(R.id.ok).performClick();
+
+        Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> {
+            nxtActivityRef.set(Shadows.shadowOf(createSecureFileSystem).getNextStartedActivity());
+            return nxtActivityRef.get() != null;
+        });
+
+        Intent nextActivity = nxtActivityRef.get();
+        ShadowIntent nxtActivityIntent = Shadows.shadowOf(nextActivity);
+
+        assertEquals("Next activity", SecureFileSystemDetails.class, nxtActivityIntent.getIntentClass());
+        assertNotNull("Credentials", nextActivity.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS));
     }
 
 }

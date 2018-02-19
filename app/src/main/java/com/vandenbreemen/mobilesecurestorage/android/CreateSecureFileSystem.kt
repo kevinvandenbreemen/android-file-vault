@@ -1,7 +1,9 @@
 package com.vandenbreemen.mobilesecurestorage.android
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -55,7 +57,15 @@ class CreateSecureFileSystem : Activity(), CreateSecureFileSystemView {
     }
 
     private fun doNextStep(credentials: SFSCredentials) {
-
+        val newFileWorkflow: FileWorkflow? = intent.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME) as FileWorkflow?
+        if (newFileWorkflow!!.activityToStartAfterTargetActivityFinished != null) {
+            val nextActivity = Intent(this, newFileWorkflow!!.activityToStartAfterTargetActivityFinished)
+            nextActivity.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
+            startActivity(nextActivity)
+            finish()
+            return
+        }
+        Log.w("CreateSecureFileSystem", "No final activity once SFS created")
     }
 
     /**
