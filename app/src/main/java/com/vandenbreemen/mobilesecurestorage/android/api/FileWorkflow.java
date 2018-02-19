@@ -89,11 +89,11 @@ public class FileWorkflow implements Parcelable {
         this.targetActivity = targetActivity;
     }
 
-    public Class<? extends Activity> getOnFinishTargetActivity() {
+    public Class<? extends Activity> getActivityToStartAfterTargetActivityFinished() {
         return onFinishTargetActivity;
     }
 
-    public void setOnFinishTargetActivity(Class<? extends Activity> onFinishTargetActivity) {
+    public void setActivityToStartAfterTargetActivityFinished(Class<? extends Activity> onFinishTargetActivity) {
         this.onFinishTargetActivity = onFinishTargetActivity;
     }
 }

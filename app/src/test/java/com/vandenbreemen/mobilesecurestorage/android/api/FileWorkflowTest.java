@@ -71,7 +71,7 @@ public class FileWorkflowTest {
     public void testOnFinishTargetActivity() {
         FileWorkflow workflow = new FileWorkflow();
         workflow.setTargetActivity(CreateSecureFileSystem.class);
-        workflow.setOnFinishTargetActivity(LoadSecureFileSystem.class);
+        workflow.setActivityToStartAfterTargetActivityFinished(LoadSecureFileSystem.class);
 
         Parcel parcel = Parcel.obtain();
 
@@ -80,7 +80,7 @@ public class FileWorkflowTest {
 
         FileWorkflow fromParcel = FileWorkflow.CREATOR.createFromParcel(parcel);
 
-        assertEquals("On Finish Target Activity", LoadSecureFileSystem.class, fromParcel.getOnFinishTargetActivity());
+        assertEquals("On Finish Target Activity", LoadSecureFileSystem.class, fromParcel.getActivityToStartAfterTargetActivityFinished());
     }
 
 }
