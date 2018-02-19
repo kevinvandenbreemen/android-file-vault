@@ -17,6 +17,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.Shadows;
+import org.robolectric.shadows.ShadowIntent;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +27,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.plugins.RxJavaPlugins;
 
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
 /**
@@ -103,4 +107,34 @@ public class LoadSecureFileSystemFunctionalTest {
         assertTrue("Password",
                 SecureFileSystem.generatePassword(SecureString.fromPassword(password)).equals(credentials.get().getPassword()));
     }
+
+    @Test
+    public void testGoToFinalActivity() {
+        FileSelectActivity activity = Robolectric.setupActivity(FileSelectActivity.class);
+        workflow.setActivityToStartAfterTargetActivityFinished(SecureFileSystemDetails.class);
+        startLoadSFS = new Intent(activity, LoadSecureFileSystem.class);
+        this.startLoadSFS.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
+
+        LoadSecureFileSystem load = Robolectric.buildActivity(LoadSecureFileSystem.class, startLoadSFS)
+                .create()
+                .get();
+
+        TextView textView = load.findViewById(R.id.password);
+        textView.setText(password);
+
+        AtomicReference<Intent> nxtActivityRef = new AtomicReference<>(null);
+        load.findViewById(R.id.ok).performClick();
+        Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> {
+            nxtActivityRef.set(Shadows.shadowOf(load).getNextStartedActivity());
+            return nxtActivityRef.get() != null;
+        });
+
+        //  Validate activity started
+        //  https://stackoverflow.com/a/39674693
+        Intent nextActivity = nxtActivityRef.get();
+        ShadowIntent nxtActivityIntent = Shadows.shadowOf(nextActivity);
+        assertEquals("Next activity", SecureFileSystemDetails.class, nxtActivityIntent.getIntentClass());
+        assertNotNull("Credentials", nextActivity.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS));
+    }
+
 }

@@ -1,7 +1,9 @@
 package com.vandenbreemen.mobilesecurestorage.android
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -43,7 +45,15 @@ class LoadSecureFileSystem : Activity(), LoadFileSystemView {
     }
 
     private fun onCredentialsEntered(credentials: SFSCredentials) {
-
+        val workflow = intent.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME)
+        if (workflow.activityToStartAfterTargetActivityFinished != null) {
+            val startNextActivity = Intent(this, workflow.activityToStartAfterTargetActivityFinished)
+            startNextActivity.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
+            startActivity(startNextActivity)
+            finish()
+            return
+        }
+        Log.w("LoadSecureFileSystem", "Credentials successfully provided but ${workflow.activityToStartAfterTargetActivityFinished} is null")
     }
 
     fun onOkay(view: View) {
