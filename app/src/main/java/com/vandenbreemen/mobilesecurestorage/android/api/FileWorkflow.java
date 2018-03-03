@@ -44,6 +44,15 @@ public class FileWorkflow implements Parcelable {
                 }
             }
 
+            className = source.readString();
+            if (!StringUtils.isBlank(className)) {
+                try {
+                    ret.cancelActivity = (Class<? extends Activity>) Class.forName(className);
+                } catch (Exception ex) {
+                    Log.e("FileWorkflowError", "Failed to get cancelActivity", ex);
+                }
+            }
+
             return ret;
         }
 
@@ -60,6 +69,7 @@ public class FileWorkflow implements Parcelable {
     private File fileOrDirectory;
     private Class<? extends Activity> targetActivity;
     private Class<? extends Activity> onFinishTargetActivity;
+    private Class<? extends Activity> cancelActivity;
 
     @Override
     public int describeContents() {
@@ -71,6 +81,7 @@ public class FileWorkflow implements Parcelable {
         dest.writeString(this.targetActivity != null ? this.targetActivity.getName() : "");
         dest.writeString(this.fileOrDirectory != null ? fileOrDirectory.getAbsolutePath() : "");
         dest.writeString(this.onFinishTargetActivity != null ? this.onFinishTargetActivity.getName() : "");
+        dest.writeString(this.cancelActivity != null ? this.cancelActivity.getName() : "");
     }
 
     public File getFileOrDirectory() {
@@ -95,5 +106,13 @@ public class FileWorkflow implements Parcelable {
 
     public void setActivityToStartAfterTargetActivityFinished(Class<? extends Activity> onFinishTargetActivity) {
         this.onFinishTargetActivity = onFinishTargetActivity;
+    }
+
+    public Class<? extends Activity> getCancelActivity() {
+        return cancelActivity;
+    }
+
+    public void setCancelActivity(Class<? extends Activity> cancelActivity) {
+        this.cancelActivity = cancelActivity;
     }
 }

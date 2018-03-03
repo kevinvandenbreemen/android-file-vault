@@ -4,6 +4,7 @@ import android.os.Environment;
 import android.os.Parcel;
 
 import com.vandenbreemen.mobilesecurestorage.android.CreateSecureFileSystem;
+import com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity;
 import com.vandenbreemen.mobilesecurestorage.android.LoadSecureFileSystem;
 
 import org.junit.Test;
@@ -81,6 +82,23 @@ public class FileWorkflowTest {
         FileWorkflow fromParcel = FileWorkflow.CREATOR.createFromParcel(parcel);
 
         assertEquals("On Finish Target Activity", LoadSecureFileSystem.class, fromParcel.getActivityToStartAfterTargetActivityFinished());
+    }
+
+    @Test
+    public void testCancelAction() {
+        FileWorkflow workflow = new FileWorkflow();
+        workflow.setTargetActivity(CreateSecureFileSystem.class);
+        workflow.setActivityToStartAfterTargetActivityFinished(LoadSecureFileSystem.class);
+        workflow.setCancelActivity(FileSelectActivity.class);
+
+        Parcel parcel = Parcel.obtain();
+
+        workflow.writeToParcel(parcel, workflow.describeContents());
+        parcel.setDataPosition(0);
+
+        FileWorkflow fromParcel = FileWorkflow.CREATOR.createFromParcel(parcel);
+
+        assertEquals("Cancel Activity", FileSelectActivity.class, fromParcel.getCancelActivity());
     }
 
 }
