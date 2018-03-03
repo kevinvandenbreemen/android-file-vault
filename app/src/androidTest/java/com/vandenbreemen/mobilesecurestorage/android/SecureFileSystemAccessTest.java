@@ -21,41 +21,46 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 /**
  * <h2>Intro
- * <p>Validate full workflow for creating a secure file system
+ * <p>
  * <h2>Other Details
  *
  * @author kevin
  */
 @RunWith(AndroidJUnit4.class)
-public class SecureFileSystemCreateTest {
+public class SecureFileSystemAccessTest {
 
     @Rule
-    public ActivityTestRule<FileSelectActivity> rule =
-            new ActivityTestRule<FileSelectActivity>(FileSelectActivity.class);
-    FileWorkflow workflow;
+    public ActivityTestRule<FileSelectActivity> rule = new
+            ActivityTestRule<FileSelectActivity>(FileSelectActivity.class);
+    private FileWorkflow worklfow;
 
     @Before
     public void setup() {
-        workflow = new FileWorkflow();
-        workflow.setTargetActivity(CreateSecureFileSystem.class);
+        worklfow = new FileWorkflow();
+        worklfow.setTargetActivity(LoadSecureFileSystem.class);
 
-        Intent startActivity = new Intent();
-        startActivity.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
-        startActivity.putExtra(FileSelectActivity.PARM_DIR_ONLY, true);
-        rule.launchActivity(startActivity);
+        Intent start = new Intent();
+        start.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, worklfow);
+        rule.launchActivity(start);
+
     }
 
-    //  Test straight up create new SFS
     @Test
     public void sanityTest() {
         onView(withText("Download")).perform(click());
-        onView(withText("OK")).perform(click());
-
-        onView(withId(R.id.fileName)).perform(typeText("testFile"));
-        closeSoftKeyboard();
+        onView(withText("testFile")).perform(click());
+        onView(withId(R.id.ok)).perform(click());
         onView(withId(R.id.password)).perform(typeText("password"));
         closeSoftKeyboard();
-        onView(withId(R.id.confirmPassword)).perform(typeText("password"));
+        onView(withId(R.id.ok)).perform(click());
+    }
+
+    @Test
+    public void testBadPassword() {
+        onView(withText("Download")).perform(click());
+        onView(withText("testFile")).perform(click());
+        onView(withId(R.id.ok)).perform(click());
+        onView(withId(R.id.password)).perform(typeText("password111"));
         closeSoftKeyboard();
         onView(withId(R.id.ok)).perform(click());
     }
