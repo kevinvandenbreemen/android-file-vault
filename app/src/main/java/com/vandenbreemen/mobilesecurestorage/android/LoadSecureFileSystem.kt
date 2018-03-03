@@ -29,11 +29,13 @@ class LoadSecureFileSystem : Activity(), LoadFileSystemView {
 
     private var listener: Consumer<SFSCredentials> = Consumer { onCredentialsEntered(it) }
 
+    private lateinit var workflow: FileWorkflow
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_load_secure_file_system)
 
-        val workflow = intent.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME)
+        this.workflow = intent.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME)
         controller = LoadFileSystemController(LoadFileSystemModel(workflow.fileOrDirectory), this)
     }
 
@@ -59,5 +61,9 @@ class LoadSecureFileSystem : Activity(), LoadFileSystemView {
     fun onOkay(view: View) {
         val passView = findViewById<TextView>(R.id.password)
         controller.providePassword(passView.text.toString())
+    }
+
+    fun onCancel(view: View) {
+        handleWorkflowCancel(this, workflow)
     }
 }

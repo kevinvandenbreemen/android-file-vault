@@ -122,6 +122,15 @@ public class CreateSecureFileSystemFunctionalTest {
     }
 
     @Test
+    public void testCancel() {
+        CreateSecureFileSystem createSecureFileSystem = Robolectric.buildActivity(CreateSecureFileSystem.class, startCreateSFS)
+                .create()
+                .get();
+
+        createSecureFileSystem.findViewById(R.id.cancel).performClick();
+    }
+
+    @Test
     public void testnconsistentPassword() {
 
         CreateSecureFileSystem createSecureFileSystem = Robolectric.buildActivity(CreateSecureFileSystem.class, startCreateSFS)

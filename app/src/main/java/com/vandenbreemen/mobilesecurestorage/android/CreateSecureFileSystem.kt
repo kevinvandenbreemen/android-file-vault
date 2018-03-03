@@ -23,6 +23,8 @@ class CreateSecureFileSystem : Activity(), CreateSecureFileSystemView {
      */
     private var onCompleteListener: Consumer<SFSCredentials> = Consumer { doNextStep(it) }
 
+    private lateinit var workflow: FileWorkflow
+
     override fun onComplete(credentials: SFSCredentials) {
         onCompleteListener.accept(credentials)
     }
@@ -39,8 +41,13 @@ class CreateSecureFileSystem : Activity(), CreateSecureFileSystemView {
 
         val newFileWorkflow: FileWorkflow? = intent.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME) as FileWorkflow?
         val model = CreateSecureFileSystemModel(newFileWorkflow!!.fileOrDirectory)
+        this.workflow = newFileWorkflow
 
         this.controller = CreateSecureFileSystemController(model, this)
+    }
+
+    fun onCancel(view: View) {
+        handleWorkflowCancel(this, workflow)
     }
 
     fun onOkay(view: View) {

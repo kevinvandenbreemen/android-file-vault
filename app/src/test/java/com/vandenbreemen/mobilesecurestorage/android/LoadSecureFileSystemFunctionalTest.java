@@ -87,6 +87,15 @@ public class LoadSecureFileSystemFunctionalTest {
     }
 
     @Test
+    public void testCancel() {
+        LoadSecureFileSystem load = Robolectric.buildActivity(LoadSecureFileSystem.class, startLoadSFS)
+                .create()
+                .get();
+
+        load.findViewById(R.id.cancel).performClick();
+    }
+
+    @Test
     public void testGetCredentails() {
 
         AtomicReference<SFSCredentials> credentials = new AtomicReference<>(null);
