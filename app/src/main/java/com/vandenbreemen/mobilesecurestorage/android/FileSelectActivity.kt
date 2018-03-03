@@ -150,4 +150,14 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
     fun onOkay(view: View?) {
         controller.confirm()
     }
+
+    fun onCancel(view: View?) {
+        workflow.cancelActivity?.let {
+            val cancelIntent = Intent(this, workflow.cancelActivity!!)
+            startActivity(cancelIntent)
+            finish()
+        } ?: run {
+            Log.w("FileSelectActivity", "No cancel action defined")
+        }
+    }
 }

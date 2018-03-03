@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.Shadows;
 import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowIntent;
 import org.robolectric.shadows.ShadowListView;
@@ -32,6 +31,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.AllOf.allOf;
+import static org.robolectric.Shadows.shadowOf;
 
 /**
  * <h2>Intro</h2>
@@ -81,7 +81,7 @@ public class FileSelectActivityFunctionalTest {
                 .create()
                 .get();
 
-        Shadows.shadowOf(sut.getApplication()).grantPermissions(Manifest.permission.READ_EXTERNAL_STORAGE,
+        shadowOf(sut.getApplication()).grantPermissions(Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         sut.onResume();
@@ -93,17 +93,43 @@ public class FileSelectActivityFunctionalTest {
     public void testListsFiles() {
         ListView listView = sut.findViewById(R.id.fileList);
 
-        ShadowListView shadow = Shadows.shadowOf(listView);
+        ShadowListView shadow = shadowOf(listView);
         shadow.populateItems();
 
         assertNotSame("File items displayed", 0, listView.getAdapter().getCount());
     }
 
     @Test
+    public void testGracefulCancelCancelUndefinedOnIntent() {
+        ShadowLog.stream = System.out;
+        sut.findViewById(R.id.cancel).performClick();
+    }
+
+    @Test
+    public void testCancelActivity() {
+        ShadowLog.stream = System.out;
+        Intent startFileSelect = new Intent(sut.getApplication(), FileSelectActivity.class);
+        startFileSelect.putExtra(PARM_DIR_ONLY, Boolean.TRUE);
+        FileWorkflow workflow = new FileWorkflow();
+        workflow.setCancelActivity(FileSelectActivity.class);
+        startFileSelect.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
+
+        sut = Robolectric.buildActivity(FileSelectActivity.class, startFileSelect)
+                .create()
+                .get();
+
+        sut.onResume();
+
+        sut.findViewById(R.id.cancel).performClick();
+        ShadowIntent intent = shadowOf(shadowOf(sut).getNextStartedActivity());
+        assertEquals("Next activity", FileSelectActivity.class, intent.getIntentClass());
+    }
+
+    @Test
     public void testListsCorrectFilesOnStart() {
         ListView listView = sut.findViewById(R.id.fileList);
 
-        ShadowListView shadow = Shadows.shadowOf(listView);
+        ShadowListView shadow = shadowOf(listView);
         shadow.populateItems();
 
         List<File> files = getDisplayedFiles(listView);
@@ -120,7 +146,7 @@ public class FileSelectActivityFunctionalTest {
     public void testSelectDirectory() {
         ListView listView = sut.findViewById(R.id.fileList);
 
-        ShadowListView shadow = Shadows.shadowOf(listView);
+        ShadowListView shadow = shadowOf(listView);
         shadow.populateItems();
 
         int directoryIndex = 0;
@@ -146,7 +172,7 @@ public class FileSelectActivityFunctionalTest {
     public void testSelectFile() {
         ListView listView = sut.findViewById(R.id.fileList);
 
-        ShadowListView shadow = Shadows.shadowOf(listView);
+        ShadowListView shadow = shadowOf(listView);
         shadow.populateItems();
 
         int fileIndex = 0;
@@ -177,7 +203,7 @@ public class FileSelectActivityFunctionalTest {
 
         ListView listView = sut.findViewById(R.id.fileList);
 
-        ShadowListView shadow = Shadows.shadowOf(listView);
+        ShadowListView shadow = shadowOf(listView);
         shadow.populateItems();
 
         int fileIndex = 0;
@@ -201,7 +227,7 @@ public class FileSelectActivityFunctionalTest {
 
         ListView listView = sut.findViewById(R.id.fileList);
 
-        ShadowListView shadow = Shadows.shadowOf(listView);
+        ShadowListView shadow = shadowOf(listView);
         shadow.populateItems();
 
         int fileIndex = 0;
@@ -231,7 +257,7 @@ public class FileSelectActivityFunctionalTest {
 
         ListView listView = sut.findViewById(R.id.fileList);
 
-        ShadowListView shadow = Shadows.shadowOf(listView);
+        ShadowListView shadow = shadowOf(listView);
         shadow.populateItems();
 
         List<File> files = getDisplayedFiles(listView);
@@ -261,7 +287,7 @@ public class FileSelectActivityFunctionalTest {
 
         ListView listView = sut.findViewById(R.id.fileList);
 
-        ShadowListView shadow = Shadows.shadowOf(listView);
+        ShadowListView shadow = shadowOf(listView);
         shadow.populateItems();
 
         int fileIndex = 0;
@@ -278,8 +304,8 @@ public class FileSelectActivityFunctionalTest {
 
         //  Validate activity started
         //  https://stackoverflow.com/a/39674693
-        Intent nextActivity = Shadows.shadowOf(sut).getNextStartedActivity();
-        ShadowIntent nxtActivityIntent = Shadows.shadowOf(nextActivity);
+        Intent nextActivity = shadowOf(sut).getNextStartedActivity();
+        ShadowIntent nxtActivityIntent = shadowOf(nextActivity);
 
         assertEquals("Next Activity", CreateSecureFileSystem.class, nxtActivityIntent.getIntentClass());
 
@@ -306,7 +332,7 @@ public class FileSelectActivityFunctionalTest {
 
         ListView listView = sut.findViewById(R.id.fileList);
 
-        ShadowListView shadow = Shadows.shadowOf(listView);
+        ShadowListView shadow = shadowOf(listView);
         shadow.populateItems();
 
         int fileIndex = 0;
