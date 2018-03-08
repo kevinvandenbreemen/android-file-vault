@@ -33,6 +33,9 @@ public class SecureDataUnit implements ChainedUnit {
         return data;
     }
 
+    public void setData(byte[] data) {
+        this.data = data;
+    }
 
     /**
      * If this has a value then the data encoded using these units spans more than one chunk
@@ -43,12 +46,10 @@ public class SecureDataUnit implements ChainedUnit {
         return locationOfNextUnit;
     }
 
-
     @Override
     public void setLocationOfNextUnit(long locationOfNextUnit) {
         this.locationOfNextUnit = locationOfNextUnit;
     }
-
 
     /**
      * Optional key for next unit.  If this is present the {@link #locationOfNextUnit next unit} will be encrypted
@@ -60,7 +61,6 @@ public class SecureDataUnit implements ChainedUnit {
         return keyForNextUnit;
     }
 
-
     /**
      * If there is a {@link #setLocationOfNextUnit(long) next unit in the stream for this object} then setting this will
      * cause that next unit to be encrypted using this key rather than default system-wide key
@@ -70,11 +70,6 @@ public class SecureDataUnit implements ChainedUnit {
     public SecureDataUnit setKeyForNextUnit(byte[] keyForNextUnit) {
         this.keyForNextUnit = keyForNextUnit;
         return this;
-    }
-
-
-    public void setData(byte[] data) {
-        this.data = data;
     }
 
 

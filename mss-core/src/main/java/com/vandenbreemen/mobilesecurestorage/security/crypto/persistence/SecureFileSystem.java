@@ -34,6 +34,36 @@ public abstract class SecureFileSystem extends IndexedFile {
     }
 
     /**
+     * Generates password suitable for use by a {@link SecureFileSystem}.
+     *
+     * @param rawPassword
+     * @return
+     */
+    public static SecureString generatePassword(SecureString rawPassword) {
+        return DualLayerEncryptionService.generateKeys(rawPassword);
+    }
+
+    /**
+     * Use this in cases where you wish to avoid GC destroying the original, say between activities
+     *
+     * @param password
+     * @return
+     */
+    public static SecureString copyPassword(SecureString password) {
+        if (!(password instanceof KeySet)) {
+            throw new MSSRuntime("Incompatible key types");
+        }
+
+        //	Cheesy but will have to be enough for now
+        KeySet original = (KeySet) password;
+        KeySet keySet = new KeySet();
+        keySet.setKey(KeySet.KEYNUM.Key1, new SecureString(original.getKey(KeySet.KEYNUM.Key1).copyBytes()));
+        keySet.setKey(KeySet.KEYNUM.Key2, new SecureString(original.getKey(KeySet.KEYNUM.Key2).copyBytes()));
+
+        return keySet;
+    }
+
+    /**
      * Perform any emergency cleanup operations needed
      */
     @Override
@@ -68,16 +98,6 @@ public abstract class SecureFileSystem extends IndexedFile {
 
         return (ChainedUnit) getEncryptionService().decryptObject(cipherText, getPassword());
 
-    }
-
-    /**
-     * Generates password suitable for use by a {@link SecureFileSystem}.
-     *
-     * @param rawPassword
-     * @return
-     */
-    public static SecureString generatePassword(SecureString rawPassword) {
-        return DualLayerEncryptionService.generateKeys(rawPassword);
     }
 
     @Override
@@ -137,26 +157,6 @@ public abstract class SecureFileSystem extends IndexedFile {
     public final void close() {
         super.close();
         this.getPassword().randomFinalize();
-    }
-
-    /**
-     * Use this in cases where you wish to avoid GC destroying the original, say between activities
-     *
-     * @param password
-     * @return
-     */
-    public static SecureString copyPassword(SecureString password) {
-        if (!(password instanceof KeySet)) {
-            throw new MSSRuntime("Incompatible key types");
-        }
-
-        //	Cheesy but will have to be enough for now
-        KeySet original = (KeySet) password;
-        KeySet keySet = new KeySet();
-        keySet.setKey(KeySet.KEYNUM.Key1, new SecureString(original.getKey(KeySet.KEYNUM.Key1).copyBytes()));
-        keySet.setKey(KeySet.KEYNUM.Key2, new SecureString(original.getKey(KeySet.KEYNUM.Key2).copyBytes()));
-
-        return keySet;
     }
 
     /**

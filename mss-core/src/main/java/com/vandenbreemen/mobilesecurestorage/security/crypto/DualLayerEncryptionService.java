@@ -18,6 +18,11 @@ public class DualLayerEncryptionService implements EncryptionService, ObjectEncr
     private EncryptionService firstLayer;
     private EncryptionService secondLayer;
 
+    public DualLayerEncryptionService() {
+        this.firstLayer = new BlowFishTextEncryptionService();        //	Blowfish
+        this.secondLayer = new AESEncryptionService();    //	Then AES
+    }
+
     /**
      * Generate a suitably strong set of two keys out of the given password.  The original password will be finalized after execution
      * of this method!
@@ -50,12 +55,6 @@ public class DualLayerEncryptionService implements EncryptionService, ObjectEncr
         return ret;
 
     }
-
-    public DualLayerEncryptionService() {
-        this.firstLayer = new BlowFishTextEncryptionService();        //	Blowfish
-        this.secondLayer = new AESEncryptionService();    //	Then AES
-    }
-
 
     @Override
     public final byte[] decrypt(byte[] ciphertext, SecureString password) {

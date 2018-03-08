@@ -15,26 +15,18 @@ import java.util.Map;
  */
 public class KeySet extends SecureString {
     /**
-     * Enumerated keys
-     *
-     * @author kevin
-     */
-    public static enum KEYNUM {
-        Key1,
-        Key2,
-        Key3,
-        Key4,
-    }
-
-    /**
      *
      */
     private static final long serialVersionUID = 3527894210537909494L;
-
     /**
      * The actual keys
      */
     Map<KEYNUM, SecureString> keyset;
+
+    public KeySet() {
+        super();
+        this.keyset = new HashMap<KEYNUM, SecureString>();
+    }
 
     /**
      * Sets the key for the given {@link KEYNUM}.
@@ -44,11 +36,6 @@ public class KeySet extends SecureString {
      */
     public final void setKey(KEYNUM keyNum, SecureString key) {
         this.keyset.put(keyNum, key);
-    }
-
-    public KeySet() {
-        super();
-        this.keyset = new HashMap<KEYNUM, SecureString>();
     }
 
     /**
@@ -111,5 +98,17 @@ public class KeySet extends SecureString {
         }
 
         return true;
+    }
+
+    /**
+     * Enumerated keys
+     *
+     * @author kevin
+     */
+    public static enum KEYNUM {
+        Key1,
+        Key2,
+        Key3,
+        Key4,
     }
 }

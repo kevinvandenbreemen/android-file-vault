@@ -16,14 +16,6 @@ public class ChunkedMediumException extends Exception {
      *
      */
     private static final long serialVersionUID = -4252769573744072208L;
-
-    /**
-     * Type of error
-     */
-    public enum TYPE {
-        FILE_NOT_FOUND,
-    }
-
     private TYPE type;
 
     public ChunkedMediumException(String detailMessage, Throwable throwable) {
@@ -41,5 +33,12 @@ public class ChunkedMediumException extends Exception {
     public ChunkedMediumException setType(TYPE type) {
         this.type = type;
         return this;
+    }
+
+    /**
+     * Type of error
+     */
+    public enum TYPE {
+        FILE_NOT_FOUND,
     }
 }

@@ -44,16 +44,6 @@ public class BytesToBits {
      */
     private BitGenerator bitGenerator = BitGenerator.DEFAULT_0;
 
-    /**
-     * Specify the bit generator you wish to use for padding
-     *
-     * @param generator
-     * @return
-     */
-    public void setBitGenerator(BitGenerator generator) {
-        this.bitGenerator = generator;
-    }
-
     public BytesToBits() {
     }
 
@@ -118,42 +108,6 @@ public class BytesToBits {
         }
         String ret = bld.toString();
         return ret.substring(0, ret.length() - ", ".length());
-    }
-
-    /**
-     * Given the array of bytes pads it so that the specified length of bits is satisfied.  For example pad 24 bytes to 32 bytes so that 256 bits satisfied
-     *
-     * @param bytes
-     * @param bitLength
-     * @return
-     */
-    public byte[] padTo(byte[] bytes, int bitLength) {
-        if (bitLength % 8 != 0)
-            throw new MSSRuntime("Cannot pad to a number of bits that is not divisible by 8.  You specified " + bitLength);
-
-        int diff = bitLength - getLength(bytes);
-        if (diff < 0) {
-            return bytes;
-        }
-
-        byte[] diffBytes = new byte[diff / 8];    //	Padding bytes
-        byte tempByte;
-        int nextBit;
-        for (int i = 0; i < diffBytes.length; i++) {
-            tempByte = 0;
-
-            for (int j = 0; j < 8; j++) {
-                nextBit = bitGenerator.getBit(j * (i + 1));
-                if (nextBit == 1)
-                    tempByte = (byte) (tempByte | (1 << j));
-                else
-                    tempByte = (byte) (tempByte & ~(1 << j));
-            }
-            diffBytes[i] = tempByte;
-        }
-
-        return Arrays.concatenate(bytes, diffBytes);
-
     }
 
     /**
@@ -243,7 +197,6 @@ public class BytesToBits {
                 bytes.length * 8 : 0;
     }
 
-
     /**
      * Generates a secure salt using secure prng
      *
@@ -284,6 +237,52 @@ public class BytesToBits {
             SystemLog.get().error("Error getting bytes", ex);
             return null;
         }
+    }
+
+    /**
+     * Specify the bit generator you wish to use for padding
+     *
+     * @param generator
+     * @return
+     */
+    public void setBitGenerator(BitGenerator generator) {
+        this.bitGenerator = generator;
+    }
+
+    /**
+     * Given the array of bytes pads it so that the specified length of bits is satisfied.  For example pad 24 bytes to 32 bytes so that 256 bits satisfied
+     *
+     * @param bytes
+     * @param bitLength
+     * @return
+     */
+    public byte[] padTo(byte[] bytes, int bitLength) {
+        if (bitLength % 8 != 0)
+            throw new MSSRuntime("Cannot pad to a number of bits that is not divisible by 8.  You specified " + bitLength);
+
+        int diff = bitLength - getLength(bytes);
+        if (diff < 0) {
+            return bytes;
+        }
+
+        byte[] diffBytes = new byte[diff / 8];    //	Padding bytes
+        byte tempByte;
+        int nextBit;
+        for (int i = 0; i < diffBytes.length; i++) {
+            tempByte = 0;
+
+            for (int j = 0; j < 8; j++) {
+                nextBit = bitGenerator.getBit(j * (i + 1));
+                if (nextBit == 1)
+                    tempByte = (byte) (tempByte | (1 << j));
+                else
+                    tempByte = (byte) (tempByte & ~(1 << j));
+            }
+            diffBytes[i] = tempByte;
+        }
+
+        return Arrays.concatenate(bytes, diffBytes);
+
     }
 
     /**

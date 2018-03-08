@@ -28,15 +28,13 @@ import java.util.stream.Collectors;
 public class FAT implements Serializable {
 
     /**
-     *
-     */
-    private static final long serialVersionUID = 7715454070438785854L;
-
-    /**
      * Special reserved filename
      */
     public static final String FILENAME = "____FAT%MMVDIRECTION_JIBBER";
-
+    /**
+     *
+     */
+    private static final long serialVersionUID = 7715454070438785854L;
     /**
      * Access lockdown
      */

@@ -39,6 +39,9 @@ public class ChainedDataUnit implements ChainedUnit {
         this.locationOfNextUnit = locationOfNextUnit;
     }
 
+    public byte[] getData() {
+        return data;
+    }
 
     /**
      * Populate data for this unit
@@ -48,9 +51,5 @@ public class ChainedDataUnit implements ChainedUnit {
      */
     public void setData(byte[] data) {
         this.data = data;
-    }
-
-    public byte[] getData() {
-        return data;
     }
 }

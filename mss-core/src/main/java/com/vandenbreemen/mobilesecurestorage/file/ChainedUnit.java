@@ -18,6 +18,14 @@ public interface ChainedUnit extends Serializable {
     public long getLocationOfNextUnit();
 
     /**
+     * Indicate the location of the next unit of the data
+     *
+     * @param locationOfNextUnit
+     * @return
+     */
+    public void setLocationOfNextUnit(long locationOfNextUnit);
+
+    /**
      * Data stored in this data unit
      *
      * @return
@@ -31,12 +39,4 @@ public interface ChainedUnit extends Serializable {
      * @return
      */
     public void setData(byte[] data);
-
-    /**
-     * Indicate the location of the next unit of the data
-     *
-     * @param locationOfNextUnit
-     * @return
-     */
-    public void setLocationOfNextUnit(long locationOfNextUnit);
 }

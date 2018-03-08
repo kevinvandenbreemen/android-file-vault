@@ -48,14 +48,14 @@ public class SecureString implements CharSequence, Serializable {
     }
 
     /**
-     * Completely obliterate the current content of this secure string and replace it
-     * with the given bytes
+     * Generate a new {@link SecureString} based on a known password string.  The contents will
+     * be the bytes resulting from getting the string's bytes in UTF-8.
      *
-     * @param bytes
+     * @param password
+     * @return
      */
-    public final void setBytes(byte[] bytes) {
-        Bytes.wipe(this.bytes);    //	Secure wipe the current content
-        this.bytes = bytes;                //	And replace it with the incoming
+    public static SecureString fromPassword(String password) {
+        return new SecureString(Base64.encode(password.getBytes()));
     }
 
     /**
@@ -134,6 +134,17 @@ public class SecureString implements CharSequence, Serializable {
     }
 
     /**
+     * Completely obliterate the current content of this secure string and replace it
+     * with the given bytes
+     *
+     * @param bytes
+     */
+    public final void setBytes(byte[] bytes) {
+        Bytes.wipe(this.bytes);    //	Secure wipe the current content
+        this.bytes = bytes;                //	And replace it with the incoming
+    }
+
+    /**
      * Use this only in cases where you want to be guaranteed garbage collection won't happen between
      * {@link #getBytes()} and using the value of {@link #getBytes()}.
      *
@@ -151,17 +162,6 @@ public class SecureString implements CharSequence, Serializable {
             ret.append((char) b);
         }
         return ret.toString();
-    }
-
-    /**
-     * Generate a new {@link SecureString} based on a known password string.  The contents will
-     * be the bytes resulting from getting the string's bytes in UTF-8.
-     *
-     * @param password
-     * @return
-     */
-    public static SecureString fromPassword(String password) {
-        return new SecureString(Base64.encode(password.getBytes()));
     }
 
     /**

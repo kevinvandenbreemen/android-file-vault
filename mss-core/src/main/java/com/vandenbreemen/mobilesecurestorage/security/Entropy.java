@@ -15,15 +15,14 @@ public class Entropy {
      * Zero byte for zeroing out data in memory
      */
     private static final byte ZERO = 0;
-
-    public static Entropy get() {
-        return new Entropy();
-    }
-
     private SecureRandom random;
 
     private Entropy() {
         this.random = new SecureRandom();
+    }
+
+    public static Entropy get() {
+        return new Entropy();
     }
 
     /**

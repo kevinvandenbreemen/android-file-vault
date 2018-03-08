@@ -14,6 +14,10 @@ public class SystemLog {
      */
     private static CurrentSystemLog currentSystemLog = new SystemOutLog();
 
+    private SystemLog() {
+
+    }
+
     /**
      * Sets the global system log
      *
@@ -21,10 +25,6 @@ public class SystemLog {
      */
     public static void setGlobalSystemLog(CurrentSystemLog current) {
         SystemLog.currentSystemLog = current;
-    }
-
-    private SystemLog() {
-
     }
 
     public static CurrentSystemLog get() {
