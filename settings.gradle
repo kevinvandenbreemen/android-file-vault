@@ -1,1 +1,1 @@
-include ':mss-core'
+include ':mss-core', ':secretcamera'

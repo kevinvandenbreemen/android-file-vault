@@ -6,4 +6,6 @@
     <string name="file_name">Specify file name</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
+    <string name="load_existing">Load Existing SFS</string>
+    <string name="create_new">Create new SFS</string>
 </resources>
