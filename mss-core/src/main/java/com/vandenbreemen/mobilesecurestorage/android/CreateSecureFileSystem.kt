@@ -68,6 +68,7 @@ class CreateSecureFileSystem : Activity(), CreateSecureFileSystemView {
         if (newFileWorkflow!!.activityToStartAfterTargetActivityFinished != null) {
             val nextActivity = Intent(this, newFileWorkflow!!.activityToStartAfterTargetActivityFinished)
             nextActivity.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
+            nextActivity.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
             startActivity(nextActivity)
             finish()
             return
