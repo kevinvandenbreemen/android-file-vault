@@ -144,6 +144,7 @@ public class LoadSecureFileSystemFunctionalTest {
         ShadowIntent nxtActivityIntent = Shadows.shadowOf(nextActivity);
         assertEquals("Next activity", SecureFileSystemDetails.class, nxtActivityIntent.getIntentClass());
         assertNotNull("Credentials", nextActivity.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS));
+        assertNotNull("FS workflow", nextActivity.getParcelableExtra(FileWorkflow.PARM_WORKFLOW_NAME));
     }
 
 }

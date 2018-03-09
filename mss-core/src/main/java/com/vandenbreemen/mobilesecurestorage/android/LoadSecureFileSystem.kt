@@ -51,6 +51,7 @@ class LoadSecureFileSystem : Activity(), LoadFileSystemView {
         if (workflow.activityToStartAfterTargetActivityFinished != null) {
             val startNextActivity = Intent(this, workflow.activityToStartAfterTargetActivityFinished)
             startNextActivity.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
+            startNextActivity.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
             startActivity(startNextActivity)
             finish()
             return
