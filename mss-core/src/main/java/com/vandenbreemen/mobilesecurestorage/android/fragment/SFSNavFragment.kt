@@ -26,7 +26,7 @@ class SFSNavFragment(): Fragment() {
     /**
      * Workflow for file access
      */
-    lateinit var workflow: FileWorkflow
+    var workflow: FileWorkflow = FileWorkflow()
 
     override fun setArguments(args: Bundle?) {
         this.workflow = args?.getParcelable(FileWorkflow.PARM_WORKFLOW_NAME)?: FileWorkflow()
