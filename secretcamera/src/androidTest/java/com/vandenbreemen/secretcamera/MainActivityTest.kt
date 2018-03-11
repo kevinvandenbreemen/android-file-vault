@@ -9,9 +9,12 @@ import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertD
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotExist
 import com.schibsted.spain.barista.interaction.BaristaClickInteractions.clickOn
 import com.schibsted.spain.barista.interaction.BaristaEditTextInteractions.writeTo
+import com.schibsted.spain.barista.interaction.BaristaScrollInteractions.scrollTo
 import org.junit.Before
+import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.junit.runners.MethodSorters
 
 /**
  * <h2>Intro</h2>
@@ -20,7 +23,12 @@ import org.junit.runner.RunWith
  * @author kevin
  */
 @RunWith(AndroidJUnit4::class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class MainActivityTest {
+
+    companion object {
+        val DEFAULT_LOCATION = "Music"
+    }
 
     val activityRule:ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
 
@@ -28,7 +36,7 @@ class MainActivityTest {
 
     @Before
     fun setup(){
-        fileName = "testFile_"+System.currentTimeMillis()
+        fileName = "unitTestFile"
     }
 
     @Test
@@ -44,10 +52,28 @@ class MainActivityTest {
         activityRule.launchActivity(null)
 
         //  Act
-        doStandardCreate()
+        doStandardCreate(null)
 
         //  Assert
         assertNotExist(R.id.sfsNavFrag)
+    }
+
+    @Test
+    fun shouldShowTakePictureAfterOpening(){
+        //  Arrange
+        activityRule.launchActivity(null)
+
+        //  Act
+        clickOn(R.id.loadExisting)
+
+        clickOn(DEFAULT_LOCATION)
+        clickOn(fileName)
+        clickOn(R.id.ok)
+        writeTo(R.id.password, "password")
+        clickOn(R.id.ok)
+
+        //  Assert
+        assertDisplayed(R.id.takePicture)
     }
 
     @Test
@@ -56,15 +82,15 @@ class MainActivityTest {
         activityRule.launchActivity(null)
 
         //  Act
-        doStandardCreate()
+        doStandardCreate(null)
 
         //  Assert
         assertDisplayed(R.id.takePicture)
     }
 
-    private fun doStandardCreate() {
+    private fun doStandardCreate(theFileName:String?) {
         clickOn(R.id.createNew)
-        clickOn("Download")
+        clickOn(DEFAULT_LOCATION)
 
         clickOn(R.id.ok)
         writeTo(R.id.fileName, fileName)
