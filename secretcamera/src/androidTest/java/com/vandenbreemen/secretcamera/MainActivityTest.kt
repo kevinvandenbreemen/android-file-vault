@@ -50,6 +50,18 @@ class MainActivityTest {
         assertNotExist(R.id.sfsNavFrag)
     }
 
+    @Test
+    fun shouldShowTakePictureAfterCreating(){
+        //  Arrange
+        activityRule.launchActivity(null)
+
+        //  Act
+        doStandardCreate()
+
+        //  Assert
+        assertDisplayed(R.id.takePicture)
+    }
+
     private fun doStandardCreate() {
         clickOn(R.id.createNew)
         clickOn("Download")
