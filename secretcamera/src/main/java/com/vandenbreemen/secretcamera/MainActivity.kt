@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow
 import com.vandenbreemen.mobilesecurestorage.android.fragment.SFSNavFragment
+import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 
 class MainActivity : Activity() {
 
@@ -11,6 +12,8 @@ class MainActivity : Activity() {
      * File access workflow (containing the file we're going to be working with)
      */
     var fsWorkflow: FileWorkflow? = null
+
+    var sfsCredentials:SFSCredentials? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,8 +28,8 @@ class MainActivity : Activity() {
 
         fsWorkflow = fsWorkflow?: FileWorkflow()
 
-        if(fsWorkflow?.fileOrDirectory != null && fsWorkflow?.fileOrDirectory!!.isFile){
-
+        if(fsWorkflow?.fileOrDirectory != null && intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS) != null){
+            sfsCredentials = intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)
         }
         else{   //  Otherwise show the FS select fragment!
             val frag = SFSNavFragment()
