@@ -70,7 +70,7 @@ class MainActivityTest {
         activityRule.launchActivity(null)
 
         //  Act
-        doStandardCreate(null)
+        doStandardCreate()
 
         //  Assert
         assertNotExist(R.id.sfsNavFrag)
@@ -82,6 +82,25 @@ class MainActivityTest {
         activityRule.launchActivity(null)
 
         //  Act
+        doStandardLoad()
+
+        //  Assert
+        assertDisplayed(R.id.takePicture)
+    }
+
+    @Test
+    fun shouldShowTakeNoteAfterOpening(){
+        //  Arrange
+        activityRule.launchActivity(null)
+
+        //  Act
+        doStandardLoad()
+
+        //  Assert
+        assertDisplayed(R.id.takeNote)
+    }
+
+    private fun doStandardLoad() {
         clickOn(R.id.loadExisting)
 
         clickOn(DEFAULT_LOCATION)
@@ -91,9 +110,6 @@ class MainActivityTest {
         clickOn(R.id.ok)
 
         IdlingRegistry.getInstance().register(getElapsedTimeIdlingResource())
-
-        //  Assert
-        assertDisplayed(R.id.takePicture)
     }
 
     @Test
@@ -102,13 +118,13 @@ class MainActivityTest {
         activityRule.launchActivity(null)
 
         //  Act
-        doStandardCreate(null)
+        doStandardCreate()
 
         //  Assert
         assertDisplayed(R.id.takePicture)
     }
 
-    private fun doStandardCreate(theFileName:String?) {
+    private fun doStandardCreate() {
         clickOn(R.id.createNew)
         clickOn(DEFAULT_LOCATION)
 
