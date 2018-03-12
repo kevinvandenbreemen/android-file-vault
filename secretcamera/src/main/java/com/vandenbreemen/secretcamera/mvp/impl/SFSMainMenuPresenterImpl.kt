@@ -9,6 +9,10 @@ import com.vandenbreemen.secretcamera.mvp.SFSMenuContract
  * @author kevin
  */
 class SFSMainMenuPresenterImpl(val mainMenuView: SFSMenuContract.SFSMainMenuView) : SFSMenuContract.SFSMainMenuPresenter {
+    override fun takeNote() {
+        mainMenuView.gotoTakeNote()
+    }
+
     override fun takePicture() {
         mainMenuView.gotoTakePicture()
     }

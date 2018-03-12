@@ -15,7 +15,13 @@ class SFSMenuContractTest {
 
     var takePicCalled:Boolean = false
 
+    var takeNoteCalled: Boolean = false
+
     val mainMenuView: SFSMenuContract.SFSMainMenuView = object :SFSMenuContract.SFSMainMenuView{
+        override fun gotoTakeNote() {
+            takeNoteCalled = true
+        }
+
         override fun gotoTakePicture() {
             takePicCalled = true
         }
@@ -28,6 +34,12 @@ class SFSMenuContractTest {
     fun shouldCallTakePicture(){
         sut.takePicture()
         assertTrue("Take picture", takePicCalled)
+    }
+
+    @Test
+    fun shouldCallTakeNote() {
+        sut.takeNote()
+        assertTrue("Take note", takeNoteCalled)
     }
 
 }

@@ -9,7 +9,7 @@ package com.vandenbreemen.secretcamera.mvp
 class SFSMenuContract{
     interface SFSMainMenuPresenter{
         fun takePicture()
-
+        fun takeNote()
 
     }
 
@@ -18,7 +18,7 @@ class SFSMenuContract{
      */
     interface SFSMainMenuView{
         fun gotoTakePicture()
-
+        fun gotoTakeNote()
     }
 }
 

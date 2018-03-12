@@ -10,9 +10,7 @@ import com.vandenbreemen.secretcamera.mvp.SFSMenuContract
 import com.vandenbreemen.secretcamera.mvp.impl.SFSMainMenuPresenterImpl
 
 class MainActivity : Activity(), SFSMenuContract.SFSMainMenuView {
-    override fun gotoTakePicture() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+
 
     /**
      * File access workflow (containing the file we're going to be working with)
@@ -57,5 +55,13 @@ class MainActivity : Activity(), SFSMenuContract.SFSMainMenuView {
         }
 
 
+    }
+
+    override fun gotoTakeNote() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun gotoTakePicture() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
