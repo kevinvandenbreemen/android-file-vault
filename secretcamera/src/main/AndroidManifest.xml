@@ -3,7 +3,7 @@
     package="com.vandenbreemen.secretcamera">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -22,6 +22,7 @@
         <activity android:name="com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity" />
         <activity android:name="com.vandenbreemen.mobilesecurestorage.android.CreateSecureFileSystem" />
         <activity android:name="com.vandenbreemen.mobilesecurestorage.android.LoadSecureFileSystem" />
+        <activity android:name=".TakeNoteActivity"></activity>
     </application>
 
 </manifest>

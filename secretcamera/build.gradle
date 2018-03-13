@@ -24,8 +24,9 @@ android {
         }
     }
 
-    testOptions{
+    testOptions {
         execution 'ANDROID_TEST_ORCHESTRATOR'
+        testOptions.unitTests.includeAndroidResources = true
     }
 
     compileOptions {
@@ -51,4 +52,7 @@ dependencies {
         exclude group: 'com.android.support'
         exclude group: 'org.jetbrains.kotlin'
     }
+    testImplementation 'junit:junit:4.12'
+    testCompile group: 'org.robolectric', name: 'robolectric', version: '3.6.1'
+    testCompile group: 'org.hamcrest', name: 'java-hamcrest', version: '2.0.0.0'
 }
