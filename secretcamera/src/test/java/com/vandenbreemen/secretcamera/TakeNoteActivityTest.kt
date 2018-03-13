@@ -7,8 +7,8 @@ import android.widget.TextView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
-import junit.framework.Assert
 import junit.framework.TestCase.assertFalse
+import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -83,7 +83,7 @@ class TakeNoteActivityTest {
         activity.findViewById<TextView>(R.id.content).setText("Testing creating a new new\nnote.  This is ultra secret\ninformation blablabla")
         activity.findViewById<Button>(R.id.cancel).performClick()
 
-        Assert.assertTrue("new note stored", secureFileSystem.listFiles().isEmpty())
+        assertTrue("new note stored", secureFileSystem.listFiles().isEmpty())
     }
 
 }
