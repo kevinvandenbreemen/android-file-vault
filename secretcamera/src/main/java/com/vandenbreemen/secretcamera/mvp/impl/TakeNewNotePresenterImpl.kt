@@ -11,6 +11,10 @@ import com.vandenbreemen.secretcamera.mvp.notes.TakeNewNoteView
  * @author kevin
  */
 class TakeNewNotePresenterImpl(val view: TakeNewNoteView, val model: TakeNewNoteModel) : TakeNewNotePresenter {
+    override fun close() {
+        view.close()
+    }
+
     override fun provideNoteDetails(title: String?, note: String?) {
         try {
             model.submitNewNote(title ?: "", note ?: "")

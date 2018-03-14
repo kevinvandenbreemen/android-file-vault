@@ -13,6 +13,7 @@ interface TakeNewNotePresenter {
     fun provideNoteDetails(title: String?, note: String?)
 
     fun onCancel()
+    fun close()
 
 }
 

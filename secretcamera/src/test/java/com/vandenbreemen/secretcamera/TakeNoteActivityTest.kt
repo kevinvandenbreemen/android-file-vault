@@ -108,4 +108,20 @@ class TakeNoteActivityTest {
         assertNotNull("Credentials", nextActivityIntent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS))
     }
 
+    @Test
+    fun shouldReturnToMainScreenOnSuccess() {
+        val activity = buildActivity(TakeNoteActivity::class.java, intent)
+                .create()
+                .get()
+
+        activity.findViewById<TextView>(R.id.title).setText("Test Note")
+        activity.findViewById<TextView>(R.id.content).setText("Testing creating a new new\nnote.  This is ultra secret\ninformation blablabla")
+        activity.findViewById<Button>(R.id.ok).performClick()
+
+        val nextActivityIntent = shadowOf(activity).nextStartedActivity
+        val intent = shadowOf(nextActivityIntent)
+        assertEquals("Go to main", MainActivity::class.java, intent.intentClass)
+        assertNotNull("Credentials", nextActivityIntent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS))
+    }
+
 }

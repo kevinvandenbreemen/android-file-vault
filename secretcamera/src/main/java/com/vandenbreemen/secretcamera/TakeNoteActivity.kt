@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
+import android.widget.Toast
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.mvp.impl.TakeNewNoteModel
@@ -19,7 +20,8 @@ class TakeNoteActivity : Activity(), TakeNewNoteView {
     }
 
     override fun onNoteSucceeded(message: String) {
-
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        presenter.close()
     }
 
     override fun close() {
