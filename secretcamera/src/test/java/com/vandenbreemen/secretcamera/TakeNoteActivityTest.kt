@@ -34,8 +34,6 @@ class TakeNoteActivityTest {
 
     lateinit var sfsFile: File
 
-    lateinit var secureFileSystem: SecureFileSystem
-
     @Before
     fun setup() {
         sfsFile = File(Environment.getExternalStorageDirectory().toString() + File.separator + "test")
@@ -43,11 +41,7 @@ class TakeNoteActivityTest {
         testPassword = SecureFileSystem.generatePassword(SecureString.fromPassword(tempPassword))
 
         //  Stand up SFS
-        secureFileSystem = object : SecureFileSystem(sfsFile) {
-            override fun getPassword(): SecureString {
-                return testPassword
-            }
-        }
+
 
         intent = Intent(ShadowApplication.getInstance().applicationContext, TakeNoteActivity::class.java)
         intent.putExtra(SFSCredentials.PARM_CREDENTIALS, SFSCredentials(sfsFile, testPassword))
@@ -70,6 +64,12 @@ class TakeNoteActivityTest {
         activity.findViewById<TextView>(R.id.content).setText("Testing creating a new new\nnote.  This is ultra secret\ninformation blablabla")
         activity.findViewById<Button>(R.id.ok).performClick()
 
+        val secureFileSystem = object : SecureFileSystem(sfsFile) {
+            override fun getPassword(): SecureString {
+                return testPassword
+            }
+        }
+
         assertFalse("new note stored", secureFileSystem.listFiles().isEmpty())
     }
 
@@ -82,6 +82,12 @@ class TakeNoteActivityTest {
         activity.findViewById<TextView>(R.id.title).setText("Test Note")
         activity.findViewById<TextView>(R.id.content).setText("Testing creating a new new\nnote.  This is ultra secret\ninformation blablabla")
         activity.findViewById<Button>(R.id.cancel).performClick()
+
+        val secureFileSystem = object : SecureFileSystem(sfsFile) {
+            override fun getPassword(): SecureString {
+                return testPassword
+            }
+        }
 
         assertTrue("new note stored", secureFileSystem.listFiles().isEmpty())
     }
