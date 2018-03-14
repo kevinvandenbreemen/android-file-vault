@@ -2,6 +2,7 @@ package com.vandenbreemen.secretcamera
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
@@ -22,7 +23,10 @@ class TakeNoteActivity : Activity(), TakeNewNoteView {
     }
 
     override fun close() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val backToMain = Intent(this, MainActivity::class.java)
+        backToMain.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
+        startActivity(backToMain)
+        finish()
     }
 
     lateinit var credentials: SFSCredentials
@@ -38,7 +42,7 @@ class TakeNoteActivity : Activity(), TakeNewNoteView {
     }
 
     fun onCancel(view: View) {
-
+        presenter.onCancel()
     }
 
     @SuppressLint("WrongViewCast")

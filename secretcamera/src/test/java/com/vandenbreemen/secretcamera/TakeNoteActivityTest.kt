@@ -7,13 +7,13 @@ import android.widget.TextView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
-import junit.framework.TestCase.assertFalse
-import junit.framework.TestCase.assertTrue
+import junit.framework.TestCase.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric.buildActivity
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowApplication
 import java.io.File
 
@@ -90,6 +90,22 @@ class TakeNoteActivityTest {
         }
 
         assertTrue("new note stored", secureFileSystem.listFiles().isEmpty())
+    }
+
+    @Test
+    fun shouldReturnToMainScreenOnCancel() {
+        val activity = buildActivity(TakeNoteActivity::class.java, intent)
+                .create()
+                .get()
+
+        activity.findViewById<TextView>(R.id.title).setText("Test Note")
+        activity.findViewById<TextView>(R.id.content).setText("Testing creating a new new\nnote.  This is ultra secret\ninformation blablabla")
+        activity.findViewById<Button>(R.id.cancel).performClick()
+
+        val nextActivityIntent = shadowOf(activity).nextStartedActivity
+        val intent = shadowOf(nextActivityIntent)
+        assertEquals("Go to main", MainActivity::class.java, intent.intentClass)
+        assertNotNull("Credentials", nextActivityIntent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS))
     }
 
 }
