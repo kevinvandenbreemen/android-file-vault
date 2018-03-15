@@ -1,10 +1,15 @@
 package com.vandenbreemen.secretcamera.mvp.impl
 
+import android.util.Log
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.secretcamera.api.Note
+import io.reactivex.Single
+import io.reactivex.SingleOnSubscribe
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 /**
@@ -21,7 +26,7 @@ class TakeNewNoteModel(credentials: SFSCredentials) {
         }
     }
 
-    fun submitNewNote(title: String, content: String) {
+    fun submitNewNote(title: String, content: String): Single<Unit> {
         if (title.isBlank()) {
             throw ApplicationError("Title is required")
         }
@@ -29,6 +34,15 @@ class TakeNewNoteModel(credentials: SFSCredentials) {
             throw ApplicationError("Note content is required")
         }
 
-        fileSystem.storeObject("newnote_" + Date() + "_" + System.nanoTime() % 1000, Note(title, content))
+        return Single.create(SingleOnSubscribe<Unit> {
+            try {
+                fileSystem.storeObject("newnote_" + Date() + "_" + System.nanoTime() % 1000, Note(title, content))
+                it.onSuccess(Unit)
+                Log.d("TakeNewNote", "New note stored successfully - ${Thread.currentThread()}")
+            } catch (exc: Exception) {
+                Log.e("TakeNewNoteFailure", "Error storing note", exc)
+                it.onError(exc)
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
     }
 }

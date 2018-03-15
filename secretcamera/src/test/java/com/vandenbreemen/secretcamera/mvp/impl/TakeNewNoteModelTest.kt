@@ -5,11 +5,14 @@ import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.plugins.RxJavaPlugins
 import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.shadows.ShadowLog
 import java.io.File
 
 /**
@@ -27,6 +30,10 @@ class TakeNewNoteModelTest {
 
     @Before
     fun setup() {
+
+        RxJavaPlugins.setIoSchedulerHandler { scheduler -> AndroidSchedulers.mainThread() }
+        ShadowLog.stream = System.out
+
         val sfsFile = File(Environment.getExternalStorageDirectory().toString() + File.separator + "test")
         val tempPassword = "password"
         val testPassword = SecureFileSystem.generatePassword(SecureString.fromPassword(tempPassword))
@@ -46,7 +53,7 @@ class TakeNewNoteModelTest {
 
     @Test
     fun testSavesNote() {
-        sut.submitNewNote("Test Title", "Content of the Note")
+        sut.submitNewNote("Test Title", "Content of the Note").subscribe()
         //  Stand up SFS
         val secureFileSystem = object : SecureFileSystem(credentials.fileLocation) {
             override fun getPassword(): SecureString {
@@ -58,8 +65,8 @@ class TakeNewNoteModelTest {
 
     @Test
     fun testSavesNoteWithUniqueFileName() {
-        sut.submitNewNote("Test Title", "Content of the Note")
-        sut.submitNewNote("Test Title", "Content of the Note")
+        sut.submitNewNote("Test Title", "Content of the Note").subscribe()
+        sut.submitNewNote("Test Title", "Content of the Note").subscribe()
         //  Stand up SFS
         val secureFileSystem = object : SecureFileSystem(credentials.fileLocation) {
             override fun getPassword(): SecureString {
