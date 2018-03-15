@@ -39,6 +39,8 @@ class TakeNewNoteModelTest {
         val testPassword = SecureFileSystem.generatePassword(SecureString.fromPassword(tempPassword))
         credentials = SFSCredentials(sfsFile, testPassword)
         sut = TakeNewNoteModel(credentials)
+
+        sut.initializeAsynchronously().subscribe()
     }
 
     @Test(expected = ApplicationError::class)

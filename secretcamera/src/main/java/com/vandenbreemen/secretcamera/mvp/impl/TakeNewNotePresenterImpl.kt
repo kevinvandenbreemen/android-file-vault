@@ -12,6 +12,13 @@ import com.vandenbreemen.secretcamera.mvp.notes.TakeNewNoteView
  * @author kevin
  */
 class TakeNewNotePresenterImpl(val view: TakeNewNoteView, val model: TakeNewNoteModel) : TakeNewNotePresenter {
+    override fun start() {
+        model.initializeAsynchronously().subscribe(
+                { view.onReady() },
+                { e -> view.showError(ApplicationError("Unexpected error:  ${e.localizedMessage}")) }
+        )
+    }
+
     override fun close() {
         view.close()
     }

@@ -2,6 +2,7 @@ package com.vandenbreemen.secretcamera.mvp.impl
 
 import android.util.Log
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.log.SystemLog
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
@@ -9,7 +10,9 @@ import com.vandenbreemen.secretcamera.api.Note
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.schedulers.Schedulers.io
 import java.util.*
 
 /**
@@ -18,12 +21,24 @@ import java.util.*
  * <h2>Other Details</h2>
  * @author kevin
  */
-class TakeNewNoteModel(credentials: SFSCredentials) {
+class TakeNewNoteModel(private val credentials: SFSCredentials) {
 
-    private val fileSystem: SecureFileSystem = object : SecureFileSystem(credentials.fileLocation) {
-        override fun getPassword(): SecureString {
-            return credentials.password
-        }
+    private lateinit var fileSystem: SecureFileSystem
+
+    fun initializeAsynchronously(): Single<Unit> {
+        return Single.create(SingleOnSubscribe<Unit> {
+            try {
+                fileSystem = object : SecureFileSystem(credentials.fileLocation) {
+                    override fun getPassword(): SecureString {
+                        return credentials.password
+                    }
+                }
+                it.onSuccess(Unit)
+            } catch (exception: Exception) {
+                SystemLog.get().error("Failed to load SFS", exception)
+                it.onError(exception)
+            }
+        }).subscribeOn(io()).observeOn(mainThread())
     }
 
     fun submitNewNote(title: String, content: String): Single<Unit> {

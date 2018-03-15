@@ -15,6 +15,10 @@ import com.vandenbreemen.secretcamera.mvp.notes.TakeNewNotePresenter
 import com.vandenbreemen.secretcamera.mvp.notes.TakeNewNoteView
 
 class TakeNoteActivity : Activity(), TakeNewNoteView {
+    override fun onReady() {
+
+    }
+
     override fun showError(error: ApplicationError) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -34,6 +38,11 @@ class TakeNoteActivity : Activity(), TakeNewNoteView {
     lateinit var credentials: SFSCredentials
 
     lateinit var presenter: TakeNewNotePresenter
+
+    override fun onResume() {
+        super.onResume()
+        presenter.start()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

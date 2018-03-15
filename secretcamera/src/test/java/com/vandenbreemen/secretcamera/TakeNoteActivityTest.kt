@@ -58,6 +58,7 @@ class TakeNoteActivityTest {
     fun sanityTestStart() {
         buildActivity(TakeNoteActivity::class.java, intent)
                 .create()
+                .resume()
                 .get()
     }
 
@@ -65,6 +66,7 @@ class TakeNoteActivityTest {
     fun shouldSaveNewFileWhenSavingANote() {
         val activity = buildActivity(TakeNoteActivity::class.java, intent)
                 .create()
+                .resume()
                 .get()
 
         activity.findViewById<TextView>(R.id.title).setText("Test Note")
@@ -84,6 +86,7 @@ class TakeNoteActivityTest {
     fun shouldNotSaveNewNoteWhenCancelling() {
         val activity = buildActivity(TakeNoteActivity::class.java, intent)
                 .create()
+                .resume()
                 .get()
 
         activity.findViewById<TextView>(R.id.title).setText("Test Note")
@@ -103,6 +106,7 @@ class TakeNoteActivityTest {
     fun shouldReturnToMainScreenOnCancel() {
         val activity = buildActivity(TakeNoteActivity::class.java, intent)
                 .create()
+                .resume()
                 .get()
 
         activity.findViewById<TextView>(R.id.title).setText("Test Note")
@@ -119,6 +123,7 @@ class TakeNoteActivityTest {
     fun shouldReturnToMainScreenOnSuccess() {
         val activity = buildActivity(TakeNoteActivity::class.java, intent)
                 .create()
+                .resume()
                 .get()
 
         activity.findViewById<TextView>(R.id.title).setText("Test Note")

@@ -10,6 +10,8 @@ import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
  */
 interface TakeNewNotePresenter {
 
+    fun start()
+
     fun provideNoteDetails(title: String?, note: String?)
 
     fun onCancel()
@@ -18,6 +20,8 @@ interface TakeNewNotePresenter {
 }
 
 interface TakeNewNoteView {
+    fun onReady()
+
     fun showError(error: ApplicationError)
 
     fun onNoteSucceeded(message: String)
