@@ -75,4 +75,8 @@ public class SFSCredentials implements Parcelable{
     public SecureString getPassword() {
         return password;
     }
+
+    public SFSCredentials copy() {
+        return new SFSCredentials(fileLocation, password.copy());
+    }
 }

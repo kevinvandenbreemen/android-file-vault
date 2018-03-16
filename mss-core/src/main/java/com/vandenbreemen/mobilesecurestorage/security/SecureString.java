@@ -156,6 +156,10 @@ public class SecureString implements CharSequence, Serializable {
         return ret;
     }
 
+    public SecureString copy() {
+        return new SecureString(copyBytes());
+    }
+
     public String toString() {
         StringBuilder ret = new StringBuilder();
         for (byte b : bytes) {

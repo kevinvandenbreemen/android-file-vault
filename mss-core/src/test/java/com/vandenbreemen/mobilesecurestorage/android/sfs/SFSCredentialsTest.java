@@ -7,12 +7,15 @@ import com.vandenbreemen.mobilesecurestorage.security.SecureString;
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ErrorCollector;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
 import java.io.File;
 
+import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
@@ -29,8 +32,9 @@ import static org.hamcrest.Matchers.notNullValue;
 @RunWith(RobolectricTestRunner.class)
 public class SFSCredentialsTest {
 
+    @Rule
+    public ErrorCollector collector = new ErrorCollector();
     private File file;
-
     private SecureString password;
 
     @Before
@@ -96,4 +100,14 @@ public class SFSCredentialsTest {
         assertTrue("Keyset match", password.equals(readPassword));
     }
 
+    @Test
+    public void shouldCreateCopy() {
+        password = SecureFileSystem.generatePassword(password);
+        SFSCredentials credentials = new SFSCredentials(file, password);
+        SFSCredentials copy = credentials.copy();
+
+        assertNotNull("Copy", copy);
+        collector.checkThat(copy.getPassword().equals(password), is(true));
+        collector.checkThat(copy.getFileLocation(), is(file));
+    }
 }

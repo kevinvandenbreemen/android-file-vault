@@ -80,6 +80,15 @@ public class KeySet extends SecureString {
     }
 
     @Override
+    public final SecureString copy() {
+        KeySet ret = new KeySet();
+        keyset.entrySet().forEach(entry -> {
+            ret.setKey(entry.getKey(), entry.getValue().copy());
+        });
+        return ret;
+    }
+
+    @Override
     public final boolean equals(SecureString anotherSet) {
         if (!(anotherSet instanceof KeySet))
             return false;
