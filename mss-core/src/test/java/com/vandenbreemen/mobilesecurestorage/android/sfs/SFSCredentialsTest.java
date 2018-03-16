@@ -110,4 +110,17 @@ public class SFSCredentialsTest {
         collector.checkThat(copy.getPassword().equals(password), is(true));
         collector.checkThat(copy.getFileLocation(), is(file));
     }
+
+    @Test
+    public void copyShouldSurviveDestroyOriginal() {
+        password = SecureFileSystem.generatePassword(password);
+        SecureString copyOfPass = password.copy();
+        SFSCredentials credentials = new SFSCredentials(file, password);
+        SFSCredentials copy = credentials.copy();
+
+        credentials.finalize();
+
+        collector.checkThat(copy.getPassword().equals(copyOfPass), is(true));
+        collector.checkThat(copy.getFileLocation(), is(file));
+    }
 }

@@ -79,4 +79,10 @@ public class SFSCredentials implements Parcelable{
     public SFSCredentials copy() {
         return new SFSCredentials(fileLocation, password.copy());
     }
+
+    @Override
+    public void finalize() {
+        this.password.finalize();
+        this.password = null;
+    }
 }
