@@ -1,7 +1,9 @@
 package com.vandenbreemen.secretcamera
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
 import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow
 import com.vandenbreemen.mobilesecurestorage.android.fragment.SFSNavFragment
@@ -54,11 +56,18 @@ class MainActivity : Activity(), SFSMenuContract.SFSMainMenuView {
             fragmentManager.beginTransaction().add(R.id.upperSection, frag).commit()
         }
 
+        mainMenuPresenter = SFSMainMenuPresenterImpl(this)
+    }
 
+    fun onTakeNote(view:View){
+        mainMenuPresenter!!.takeNote()
     }
 
     override fun gotoTakeNote() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val takeNote = Intent(this, TakeNoteActivity::class.java)
+        takeNote.putExtra(SFSCredentials.PARM_CREDENTIALS, sfsCredentials!!.copy())
+        startActivity(takeNote)
+        finish()
     }
 
     override fun gotoTakePicture() {
