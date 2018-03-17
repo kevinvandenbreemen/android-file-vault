@@ -36,12 +36,11 @@ class MainActivity : Activity(), SFSMenuContract.SFSMainMenuView {
 
         fsWorkflow = fsWorkflow?: FileWorkflow()
 
-        if(fsWorkflow?.fileOrDirectory != null && intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS) != null){
+        if(intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS) != null){
             sfsCredentials = intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)
 
             findViewById<ViewGroup>(R.id.mainSection).addView(
                 layoutInflater.inflate(R.layout.main_screen_selections, findViewById(R.id.mainSection), false))
-            mainMenuPresenter = SFSMainMenuPresenterImpl(this)
 
         }
         else{   //  Otherwise show the FS select fragment!
