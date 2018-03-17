@@ -1,6 +1,11 @@
 package com.vandenbreemen.mobilesecurestorage.file.api
 
-enum class FileTypes(val firstByte:Byte, val secondByte:Byte? = null) {
+interface FileType{
+    val firstByte:Byte
+    val secondByte:Byte?
+}
+
+enum class FileTypes(override val firstByte:Byte, override val secondByte:Byte? = null):FileType {
     SYSTEM(1),
     UNKNOWN(1,1),
     ;
@@ -10,21 +15,22 @@ enum class FileTypes(val firstByte:Byte, val secondByte:Byte? = null) {
         /**
          * All known file types
          */
-        val ALL_FILE_TYPES:ArrayList<Class<FileTypes>> = arrayListOf(FileTypes::class.java)
+        val ALL_FILE_TYPES:ArrayList<FileType> = arrayListOf(*FileTypes.values())
 
-        fun getFileTypes(bytes:Array<Byte?>):FileTypes?{
-            ALL_FILE_TYPES.forEach { definedFileType->definedFileType.enumConstants.forEach { enumConstant->
-                if(bytes[0]!! == enumConstant.firstByte!!){
-                    bytes[1]?.let { expectedSecondByte->
-                        if(expectedSecondByte == enumConstant.secondByte?:-1){
-                            return@getFileTypes enumConstant
+        fun getFileType(bytes:Array<Byte?>):FileType?{
+            ALL_FILE_TYPES.forEach { fileType->
+                if(fileType.firstByte == bytes[0]!!){
+                    fileType.secondByte?.let { secondByte->
+                        if(bytes.size == 2 && bytes[1] == secondByte){
+                            return@getFileType fileType
+                        }
+                    }?:run{
+                        if(bytes.size == 1) {
+                            return@getFileType fileType
                         }
                     }
-                    ?:run{
-                        return@getFileTypes enumConstant
-                    }
                 }
-            } }
+            }
 
             return null
         }
