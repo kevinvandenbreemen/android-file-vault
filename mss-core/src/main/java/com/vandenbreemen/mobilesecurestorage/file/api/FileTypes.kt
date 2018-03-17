@@ -34,5 +34,9 @@ enum class FileTypes(override val firstByte:Byte, override val secondByte:Byte? 
 
             return null
         }
+
+        fun registerFileTypes(values: Array<out FileType>) {
+            ALL_FILE_TYPES.addAll(values)
+        }
     }
 }
