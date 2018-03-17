@@ -28,6 +28,9 @@ class FileMetaTest {
 
     @Test
     fun shouldSupportAdditionalFileTypes(){
+
+        FileTypes.registerFileTypes(FakeFileType.values())
+
         val fileMeta = FileMeta()
         fileMeta.setFileType(FakeFileType.TEST_FILE_TYPE)
 
@@ -38,13 +41,7 @@ class FileMetaTest {
 
 enum class FakeFileType(override val firstByte: Byte, override val secondByte:Byte?=null):FileType{
 
-    TEST_FILE_TYPE(Byte.MAX_VALUE,Byte.MAX_VALUE)
+    TEST_FILE_TYPE(Byte.MAX_VALUE,4)
 
     ;
-
-    companion object {
-        init{
-            FileTypes.ALL_FILE_TYPES.addAll(FakeFileType.values())
-        }
-    }
 }

@@ -1,5 +1,7 @@
 package com.vandenbreemen.mobilesecurestorage.file.api
 
+import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime
+
 interface FileType{
     val firstByte:Byte
     val secondByte:Byte?
@@ -36,6 +38,21 @@ enum class FileTypes(override val firstByte:Byte, override val secondByte:Byte? 
         }
 
         fun registerFileTypes(values: Array<out FileType>) {
+            values.forEach { fileType->
+
+                var fileTypeBytes:Array<Byte?> = emptyArray()
+
+                fileType.secondByte?.let {
+                    fileTypeBytes = arrayOf(fileType.firstByte, fileType.secondByte)
+                } ?: run{
+                    fileTypeBytes = arrayOf(fileType.firstByte)
+                }
+
+                val existingFileType:FileType? = getFileType(fileTypeBytes)
+                if(existingFileType != null){
+                    throw MSSRuntime("File type $fileType is exact duplicate of existing file type $existingFileType")
+                }
+            }
             ALL_FILE_TYPES.addAll(values)
         }
     }
