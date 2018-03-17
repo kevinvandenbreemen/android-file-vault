@@ -17,7 +17,7 @@ enum class FileTypes(override val firstByte:Byte, override val secondByte:Byte? 
         /**
          * All known file types
          */
-        val ALL_FILE_TYPES:ArrayList<FileType> = arrayListOf(*FileTypes.values())
+        private val ALL_FILE_TYPES:ArrayList<FileType> = arrayListOf(*FileTypes.values())
 
         fun getFileType(bytes:Array<Byte?>):FileType?{
             ALL_FILE_TYPES.forEach { fileType->
