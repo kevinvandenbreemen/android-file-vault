@@ -7,6 +7,7 @@ import com.vandenbreemen.secretcamera.StringSelectorActivity.Companion.WORKFLOW
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.Matchers.notNullValue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ErrorCollector
@@ -73,7 +74,10 @@ class StringSelectorActivityTest {
 
         val nextShadow = shadowOf(nextActivity)
         assertEquals("Next activity", FileSelectActivity::class.java, nextShadow.intentClass)
-        errorCollector.checkThat(nextActivity.getStringExtra(SELECTED_STRING), `is`("Curly"))
+        errorCollector.checkThat(nextActivity.getParcelableExtra(SELECTED_STRING), notNullValue())
+
+        val stringSelection: StringSelection = nextActivity.getParcelableExtra(SELECTED_STRING)
+        errorCollector.checkThat(stringSelection.selectedString, `is`("Curly"))
 
     }
 

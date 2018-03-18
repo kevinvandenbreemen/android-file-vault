@@ -61,6 +61,31 @@ class StringSelectorWorkflow() : Parcelable {
 
 }
 
+class StringSelection(val selectedString: String) : Parcelable {
+    constructor(parcel: Parcel) : this(parcel.readString()) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(selectedString)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<StringSelection> {
+        override fun createFromParcel(parcel: Parcel): StringSelection {
+            return StringSelection(parcel)
+        }
+
+        override fun newArray(size: Int): Array<StringSelection?> {
+            return arrayOfNulls(size)
+        }
+    }
+
+
+}
+
 class StringSelectorActivity : Activity() {
 
     companion object {
@@ -80,7 +105,7 @@ class StringSelectorActivity : Activity() {
         listView.setOnItemClickListener(AdapterView.OnItemClickListener({ parent, view, position, id ->
             val selected = adapter.getItem(position)
             val intent = Intent(this, workflow.getActivityClass())
-            intent.putExtra(SELECTED_STRING, selected)
+            intent.putExtra(SELECTED_STRING, StringSelection(selected))
             startActivity(intent)
         }))
     }
