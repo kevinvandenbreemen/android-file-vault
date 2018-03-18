@@ -68,3 +68,10 @@ fun SecureFileSystem.getFileMeta(fileName: String, provider: Supplier<FileMeta>)
 
     return meta!!
 }
+
+/**
+ * List files, ignoring any special files required to make the extensions work
+ */
+fun SecureFileSystem.extListFiles(): List<String> {
+    return this.listFiles().filter { !METADATA_FILENAME.equals(it) }
+}

@@ -4,6 +4,7 @@ import com.vandenbreemen.mobilesecurestorage.TestConstants
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
 import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
+import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.getFileMeta
 import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
 import junit.framework.TestCase.assertEquals
@@ -63,6 +64,16 @@ class SecureFileSystemExtensionsTest {
 
         val retrieved = sfs.getFileMeta("test")
         assertEquals("File type", FileTypes.DATA, retrieved?.getFileType())
+    }
+
+    @Test
+    fun shouldNotIncludeMetadataFile() {
+        val sfs = getSUT()
+        sfs.storeObject("test", "Ramana")
+
+        sfs.setFileMetadata("test", FileMeta())
+        assertEquals("Single file", 1, sfs.extListFiles().size)
+
     }
 
 }
