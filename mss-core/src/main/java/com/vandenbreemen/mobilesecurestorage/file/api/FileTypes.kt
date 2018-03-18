@@ -7,6 +7,18 @@ interface FileType{
     val secondByte:Byte?
 }
 
+fun FileType.getBytes(): Array<Byte?> = getBytesForFileType(this)
+
+private fun getBytesForFileType(fileType: FileType): Array<Byte?> {
+    var fileTypeBytes: Array<Byte?> = emptyArray()
+    fileType.secondByte?.let {
+        fileTypeBytes = arrayOf(fileType.firstByte, fileType.secondByte)
+    } ?: run {
+        fileTypeBytes = arrayOf(fileType.firstByte)
+    }
+    return fileTypeBytes
+}
+
 enum class FileTypes(override val firstByte:Byte, override val secondByte:Byte? = null):FileType {
     SYSTEM(1),
     UNKNOWN(1,1),
@@ -40,13 +52,7 @@ enum class FileTypes(override val firstByte:Byte, override val secondByte:Byte? 
         fun registerFileTypes(values: Array<out FileType>) {
             values.forEach { fileType->
 
-                var fileTypeBytes:Array<Byte?> = emptyArray()
-
-                fileType.secondByte?.let {
-                    fileTypeBytes = arrayOf(fileType.firstByte, fileType.secondByte)
-                } ?: run{
-                    fileTypeBytes = arrayOf(fileType.firstByte)
-                }
+                var fileTypeBytes: Array<Byte?> = fileType.getBytes()
 
                 val existingFileType:FileType? = getFileType(fileTypeBytes)
                 if(existingFileType != null){
