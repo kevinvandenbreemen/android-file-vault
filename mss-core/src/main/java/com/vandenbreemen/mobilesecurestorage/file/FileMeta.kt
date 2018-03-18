@@ -7,26 +7,29 @@ import java.io.Serializable
 
 class FileMeta : Serializable {
 
-    private var fileTypeBytes: ByteArray = ByteArray(2, { it -> if (it == 0) FileTypes.UNKNOWN.firstByte!! else FileTypes.UNKNOWN.secondByte!! })
+    /**
+     * File type bytes
+     */
+    private var ftb: ByteArray = ByteArray(2, { it -> if (it == 0) FileTypes.UNKNOWN.firstByte!! else FileTypes.UNKNOWN.secondByte!! })
 
     fun setFileType(fileType:FileType){
         val byteArray = fileType.getBytes()
-        this.fileTypeBytes = ByteArray(byteArray.size, { index -> byteArray[index]!! })
+        this.ftb = ByteArray(byteArray.size, { index -> byteArray[index]!! })
     }
 
     fun getFileType(): FileType {
-        val bytes = Array<Byte?>(fileTypeBytes.size, { it -> fileTypeBytes[it] })
+        val bytes = Array<Byte?>(ftb.size, { it -> ftb[it] })
         return FileTypes.getFileType(bytes)!!
 
     }
 
     override fun equals(other: Any?): Boolean {
         if (other is FileMeta) {
-            if (other.fileTypeBytes.size != this.fileTypeBytes.size) {
+            if (other.ftb.size != this.ftb.size) {
                 return false
             }
 
-            return other.fileTypeBytes contentEquals this.fileTypeBytes
+            return other.ftb contentEquals this.ftb
 
         }
         return false
