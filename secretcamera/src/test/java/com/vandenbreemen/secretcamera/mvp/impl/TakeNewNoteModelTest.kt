@@ -4,6 +4,7 @@ import android.os.Environment
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
+import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
@@ -62,7 +63,7 @@ class TakeNewNoteModelTest {
                 return credentials.password
             }
         }
-        assertEquals("File stored", 1, secureFileSystem.listFiles().size)
+        assertEquals("File stored", 1, secureFileSystem.extListFiles().size)
     }
 
     @Test
@@ -75,7 +76,7 @@ class TakeNewNoteModelTest {
                 return credentials.password
             }
         }
-        assertEquals("File stored", 2, secureFileSystem.listFiles().size)
+        assertEquals("File stored", 2, secureFileSystem.extListFiles().size)
     }
 
 
