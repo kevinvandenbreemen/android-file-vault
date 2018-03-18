@@ -3,6 +3,8 @@ package com.vandenbreemen.secretcamera
 import android.content.Intent
 import android.widget.ListView
 import com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity
+import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.secretcamera.StringSelectorActivity.Companion.WORKFLOW
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
@@ -79,6 +81,40 @@ class StringSelectorActivityTest {
         val stringSelection: StringSelection = nextActivity.getParcelableExtra(SELECTED_STRING)
         errorCollector.checkThat(stringSelection.selectedString, `is`("Curly"))
 
+    }
+
+    @Test
+    fun shouldCarrySFSCredentials() {
+
+        val testFile = createTempFile("test")
+
+        val credentials = SFSCredentials(testFile, SecureString.fromPassword("teest"))
+
+        val intent = Intent(ShadowApplication.getInstance().applicationContext, StringSelectorActivity::class.java)
+        val arrayList = ArrayList<String>(Arrays.asList("Larry", "Curly", "Moe"))
+        intent.putExtra(StringSelectorActivity.WORKFLOW, StringSelectorWorkflow(FileSelectActivity::class.java, arrayList, credentials))
+
+        val activity = buildActivity(StringSelectorActivity::class.java, intent)
+                .create()
+                .get()
+
+        val listView = activity.findViewById<ListView>(R.id.itemList)
+        val shadow = shadowOf(listView)
+        shadow.populateItems()
+
+        shadow.performItemClick(1)
+
+        val shadowAct = shadowOf(activity)
+        val nextActivity = shadowAct.nextStartedActivity
+
+        assertNotNull("Intent started", nextActivity)
+
+        val nextShadow = shadowOf(nextActivity)
+        assertEquals("Next activity", FileSelectActivity::class.java, nextShadow.intentClass)
+
+        val stringSelection: StringSelection = nextActivity.getParcelableExtra(SELECTED_STRING)
+        errorCollector.checkThat(stringSelection.selectedString, `is`("Curly"))
+        errorCollector.checkThat(stringSelection.credentials, `is`(credentials))
     }
 
 }

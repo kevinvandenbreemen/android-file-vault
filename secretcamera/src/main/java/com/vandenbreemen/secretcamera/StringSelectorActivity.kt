@@ -20,6 +20,10 @@ class StringSelectorWorkflow() : Parcelable {
         this.items = items
     }
 
+    constructor(activity: Class<out Activity>, items: ArrayList<String>, credentials: SFSCredentials) : this(activity, items) {
+        this.credentials = credentials
+    }
+
     var activityClassStr: String = ""
 
     lateinit var selected: String
@@ -28,6 +32,8 @@ class StringSelectorWorkflow() : Parcelable {
 
     lateinit var items: List<String>
 
+    fun getActivityClass(): Class<in Activity> = Class.forName(activityClassStr) as Class<in Activity>
+
     constructor(parcel: Parcel) : this() {
         activityClassStr = parcel.readString()
         selected = parcel.readString()
@@ -35,7 +41,7 @@ class StringSelectorWorkflow() : Parcelable {
         items = parcel.createStringArrayList()
     }
 
-    fun getActivityClass(): Class<in Activity> = Class.forName(activityClassStr) as Class<in Activity>
+
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(activityClassStr)
@@ -62,11 +68,20 @@ class StringSelectorWorkflow() : Parcelable {
 }
 
 class StringSelection(val selectedString: String) : Parcelable {
+
+    var credentials: SFSCredentials? = null
+
     constructor(parcel: Parcel) : this(parcel.readString()) {
+        credentials = parcel.readParcelable(SFSCredentials::class.java.classLoader)
+    }
+
+    constructor(selectedString: String, credentials: SFSCredentials) : this(selectedString) {
+        this.credentials = credentials
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(selectedString)
+        parcel.writeParcelable(credentials, flags)
     }
 
     override fun describeContents(): Int {
@@ -105,7 +120,14 @@ class StringSelectorActivity : Activity() {
         listView.setOnItemClickListener(AdapterView.OnItemClickListener({ parent, view, position, id ->
             val selected = adapter.getItem(position)
             val intent = Intent(this, workflow.getActivityClass())
-            intent.putExtra(SELECTED_STRING, StringSelection(selected))
+
+            workflow.credentials?.let {
+                intent.putExtra(SELECTED_STRING, StringSelection(selected, it))
+            } ?: run {
+                intent.putExtra(SELECTED_STRING, StringSelection(selected))
+            }
+
+
             startActivity(intent)
         }))
     }
