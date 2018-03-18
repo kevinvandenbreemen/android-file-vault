@@ -22,6 +22,7 @@ private fun getBytesForFileType(fileType: FileType): Array<Byte?> {
 enum class FileTypes(override val firstByte:Byte, override val secondByte:Byte? = null):FileType {
     SYSTEM(1),
     UNKNOWN(1,1),
+    DATA(1, 2)
     ;
 
     companion object {
