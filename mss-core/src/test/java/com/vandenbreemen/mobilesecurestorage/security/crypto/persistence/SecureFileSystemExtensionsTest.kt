@@ -9,6 +9,7 @@ import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import org.junit.Test
+import java.util.function.Supplier
 
 /**
  * <h2>Intro</h2>
@@ -47,6 +48,18 @@ class SecureFileSystemExtensionsTest {
         val fileMeta = FileMeta()
         fileMeta.setFileType(FileTypes.DATA)
         sfs.setFileMetadata("test", fileMeta)
+
+        val retrieved = sfs.getFileMeta("test")
+        assertEquals("File type", FileTypes.DATA, retrieved?.getFileType())
+    }
+
+    @Test
+    fun shouldProvideFileMetaCreation() {
+        val sfs = getSUT()
+        sfs.storeObject("test", "Ramana")
+
+        var metadata = sfs.getFileMeta("test", Supplier { FileMeta(FileTypes.DATA) })
+        assertEquals("File type", FileTypes.DATA, metadata.getFileType())
 
         val retrieved = sfs.getFileMeta("test")
         assertEquals("File type", FileTypes.DATA, retrieved?.getFileType())

@@ -5,12 +5,16 @@ import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
 import com.vandenbreemen.mobilesecurestorage.file.api.getBytes
 import java.io.Serializable
 
-class FileMeta : Serializable {
+class FileMeta() : Serializable {
 
     /**
      * File type bytes
      */
     private var ftb: ByteArray = ByteArray(2, { it -> if (it == 0) FileTypes.UNKNOWN.firstByte!! else FileTypes.UNKNOWN.secondByte!! })
+
+    constructor(fileType: FileType) : this() {
+        this.setFileType(fileType)
+    }
 
     fun setFileType(fileType:FileType){
         val byteArray = fileType.getBytes()

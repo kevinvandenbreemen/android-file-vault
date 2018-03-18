@@ -3,6 +3,7 @@ package com.vandenbreemen.mobilesecurestorage.security.crypto
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import java.io.Serializable
+import java.util.function.Supplier
 
 //  SFS extensions in Kotlin
 
@@ -51,4 +52,19 @@ fun SecureFileSystem.getFileMeta(fileName: String): FileMeta? {
 
     val metadata = this.loadFile(com.vandenbreemen.mobilesecurestorage.security.crypto.METADATA_FILENAME) as FileMetadata
     return metadata.getMetadata(fileName)
+}
+
+fun SecureFileSystem.getFileMeta(fileName: String, provider: Supplier<FileMeta>): FileMeta {
+    if (!this.exists(com.vandenbreemen.mobilesecurestorage.security.crypto.METADATA_FILENAME)) {
+        this.storeObject(com.vandenbreemen.mobilesecurestorage.security.crypto.METADATA_FILENAME, FileMetadata())
+    }
+
+    var meta = getFileMeta(fileName)
+    meta ?: kotlin.run {
+        meta = provider.get()
+        setFileMetadata(fileName, meta!!)
+        return@getFileMeta meta!!
+    }
+
+    return meta!!
 }
