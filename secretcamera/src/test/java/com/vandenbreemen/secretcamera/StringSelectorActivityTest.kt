@@ -6,8 +6,7 @@ import com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.secretcamera.StringSelectorActivity.Companion.WORKFLOW
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.*
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Matchers.notNullValue
 import org.junit.Rule
@@ -114,7 +113,8 @@ class StringSelectorActivityTest {
 
         val stringSelection: StringSelection = nextActivity.getParcelableExtra(SELECTED_STRING)
         errorCollector.checkThat(stringSelection.selectedString, `is`("Curly"))
-        errorCollector.checkThat(stringSelection.credentials, `is`(credentials))
+        errorCollector.checkThat(stringSelection.credentials, notNullValue())
+        assertTrue("Password persisted", SecureString.fromPassword("teest").equals(stringSelection.credentials!!.password))
     }
 
 }

@@ -117,19 +117,21 @@ class StringSelectorActivity : Activity() {
         val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items)
         val listView = findViewById<ListView>(R.id.itemList)
         listView.setAdapter(adapter)
-        listView.setOnItemClickListener(AdapterView.OnItemClickListener({ parent, view, position, id ->
+        listView.onItemClickListener = AdapterView.OnItemClickListener({ parent, view, position, id ->
+
             val selected = adapter.getItem(position)
             val intent = Intent(this, workflow.getActivityClass())
 
             workflow.credentials?.let {
-                intent.putExtra(SELECTED_STRING, StringSelection(selected, it))
+                intent.putExtra(SELECTED_STRING, StringSelection(selected, it.copy()))
+                it.finalize()
             } ?: run {
                 intent.putExtra(SELECTED_STRING, StringSelection(selected))
             }
 
 
             startActivity(intent)
-        }))
+        })
     }
 
     fun onOk(view: View) {
