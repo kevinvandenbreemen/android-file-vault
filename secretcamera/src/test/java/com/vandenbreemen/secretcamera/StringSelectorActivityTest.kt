@@ -32,9 +32,8 @@ class StringSelectorActivityTest {
     @Test
     fun shouldDisplaySelections() {
         val intent = Intent(ShadowApplication.getInstance().applicationContext, StringSelectorActivity::class.java)
-        intent.putStringArrayListExtra(StringSelectorActivity.LIST,
-                ArrayList<String>(Arrays.asList("Larry", "Curly", "Moe")))
-        intent.putExtra(WORKFLOW, StringSelectorWorkflow())
+        val arrayList = ArrayList<String>(Arrays.asList("Larry", "Curly", "Moe"))
+        intent.putExtra(WORKFLOW, StringSelectorWorkflow(StringSelectorActivity::class.java, arrayList))
 
         val activity = buildActivity(StringSelectorActivity::class.java, intent)
                 .create()
@@ -54,9 +53,8 @@ class StringSelectorActivityTest {
     @Test
     fun shouldKickOffActivityWithSelection() {
         val intent = Intent(ShadowApplication.getInstance().applicationContext, StringSelectorActivity::class.java)
-        intent.putStringArrayListExtra(StringSelectorActivity.LIST,
-                ArrayList<String>(Arrays.asList("Larry", "Curly", "Moe")))
-        intent.putExtra(StringSelectorActivity.WORKFLOW, StringSelectorWorkflow(FileSelectActivity::class.java))
+        val arrayList = ArrayList<String>(Arrays.asList("Larry", "Curly", "Moe"))
+        intent.putExtra(StringSelectorActivity.WORKFLOW, StringSelectorWorkflow(FileSelectActivity::class.java, arrayList))
 
         val activity = buildActivity(StringSelectorActivity::class.java, intent)
                 .create()
