@@ -22,7 +22,8 @@
         <activity android:name="com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity" />
         <activity android:name="com.vandenbreemen.mobilesecurestorage.android.CreateSecureFileSystem" />
         <activity android:name="com.vandenbreemen.mobilesecurestorage.android.LoadSecureFileSystem" />
-        <activity android:name=".TakeNoteActivity"></activity>
+        <activity android:name=".TakeNoteActivity" />
+        <activity android:name=".StringSelectorActivity"></activity>
     </application>
 
 </manifest>

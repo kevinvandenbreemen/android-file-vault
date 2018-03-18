@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="horiz_bias_start" format="float" type="dimen">0.25</item>
-    <item name="vertical_bias_bottom" format="float" type="dimen">0.96</item>
-    <item name="horiz_bias_end" format="float" type="dimen">0.75</item>
+    <item name="bias_horiz_start" format="float" type="dimen">0.25</item>
+    <item name="bias_vertical_bottom" format="float" type="dimen">0.96</item>
+    <item name="bias_horiz_end" format="float" type="dimen">0.75</item>
 </resources>

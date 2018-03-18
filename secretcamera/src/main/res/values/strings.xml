@@ -4,4 +4,5 @@
     <string name="take_note">Take a\nNote</string>
     <string name="title_please">Specify Title</string>
     <string name="enter_text_for_your_note">Add your text here</string>
+    <string name="default_select_item_title">Please select an Item</string>
 </resources>
