@@ -1,8 +1,10 @@
 package com.vandenbreemen.secretcamera
 
 import android.content.Intent
+import android.widget.Button
 import android.widget.ListView
 import com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity
+import com.vandenbreemen.mobilesecurestorage.android.LoadSecureFileSystem
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.secretcamera.StringSelectorActivity.Companion.WORKFLOW
@@ -115,6 +117,33 @@ class StringSelectorActivityTest {
         errorCollector.checkThat(stringSelection.selectedString, `is`("Curly"))
         errorCollector.checkThat(stringSelection.credentials, notNullValue())
         assertTrue("Password persisted", SecureString.fromPassword("teest").equals(stringSelection.credentials!!.password))
+    }
+
+    @Test
+    fun shouldReturnOnCancel() {
+        val testFile = createTempFile("test")
+
+        val credentials = SFSCredentials(testFile, SecureString.fromPassword("teest"))
+
+        val intent = Intent(ShadowApplication.getInstance().applicationContext, StringSelectorActivity::class.java)
+        val arrayList = ArrayList<String>(Arrays.asList("Larry", "Curly", "Moe"))
+        intent.putExtra(StringSelectorActivity.WORKFLOW, StringSelectorWorkflow(FileSelectActivity::class.java, arrayList, credentials).setOnCancelActivity(LoadSecureFileSystem::class.java))
+
+        val activity = buildActivity(StringSelectorActivity::class.java, intent)
+                .create()
+                .get()
+
+        activity.findViewById<Button>(R.id.cancel).performClick()
+
+        val shadowAct = shadowOf(activity)
+        val nextActivity = shadowAct.nextStartedActivity
+
+        assertNotNull("Intent started", nextActivity)
+
+        val nextShadow = shadowOf(nextActivity)
+        assertEquals("Next activity", LoadSecureFileSystem::class.java, nextShadow.intentClass)
+        assertNotNull("Credentials", nextActivity.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS))
+
     }
 
 }

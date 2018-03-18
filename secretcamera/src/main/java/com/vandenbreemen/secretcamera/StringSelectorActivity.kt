@@ -32,22 +32,31 @@ class StringSelectorWorkflow() : Parcelable {
 
     lateinit var items: List<String>
 
-    fun getActivityClass(): Class<in Activity> = Class.forName(activityClassStr) as Class<in Activity>
+    var onCancel: String = MainActivity::class.java.canonicalName
 
     constructor(parcel: Parcel) : this() {
         activityClassStr = parcel.readString()
         selected = parcel.readString()
         credentials = parcel.readParcelable(SFSCredentials::class.java.classLoader)
         items = parcel.createStringArrayList()
+        onCancel = parcel.readString()
     }
 
+    fun getActivityClass(): Class<in Activity> = Class.forName(activityClassStr) as Class<in Activity>
 
+    fun getActivityOnCancel(): Class<in Activity> = Class.forName(onCancel) as Class<in Activity>
+
+    fun setOnCancelActivity(cancelClass: Class<out Activity>): StringSelectorWorkflow {
+        this.onCancel = cancelClass.canonicalName
+        return this
+    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(activityClassStr)
         parcel.writeString(selected)
         parcel.writeParcelable(credentials, flags)
         parcel.writeStringList(items)
+        parcel.writeString(onCancel)
     }
 
     override fun describeContents(): Int {
@@ -112,7 +121,8 @@ class StringSelectorActivity : Activity() {
         setContentView(R.layout.activity_string_selector)
 
         val workflow = intent.getParcelableExtra<StringSelectorWorkflow>(WORKFLOW)!!
-        val items = workflow.items
+        val items = workflow.items!!
+
 
         val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items)
         val listView = findViewById<ListView>(R.id.itemList)
@@ -134,11 +144,14 @@ class StringSelectorActivity : Activity() {
         })
     }
 
-    fun onOk(view: View) {
-
-    }
-
     fun onCancel(view: View) {
-
+        val workflow = intent.getParcelableExtra<StringSelectorWorkflow>(WORKFLOW)!!
+        val intent = Intent(this, workflow.getActivityOnCancel())
+        workflow.credentials?.let {
+            intent.putExtra(SFSCredentials.PARM_CREDENTIALS, it.copy())
+            it.finalize()
+        }
+        startActivity(intent)
+        finish()
     }
 }
