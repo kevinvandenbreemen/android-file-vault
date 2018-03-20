@@ -4,6 +4,7 @@ import android.util.Log
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
 import com.vandenbreemen.mobilesecurestorage.file.api.FileType
+import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
@@ -24,6 +25,15 @@ enum class NoteFileTypes(override val firstByte: Byte, override val secondByte: 
 
     SIMPLE_NOTE(SEC_CAM_BYTE, 1)
 
+    ;
+
+    //  Register these file types!
+    companion object {
+        init {
+            FileTypes.registerFileTypes(values())
+        }
+    }
+
 }
 
 /**
@@ -33,6 +43,18 @@ enum class NoteFileTypes(override val firstByte: Byte, override val secondByte: 
  * @author kevin
  */
 class TakeNewNoteModel(private val credentials: SFSCredentials) {
+
+    companion object {
+
+        /**
+         * Procedure for storing a new note to the SFS
+         */
+        fun storeNote(fileSystem: SecureFileSystem, title: String, content: String) {
+            val fileName = "newnote_" + Date() + "_" + System.nanoTime() % 1000
+            fileSystem.storeObject(fileName, Note(title, content))
+            fileSystem.setFileMetadata(fileName, FileMeta(NoteFileTypes.SIMPLE_NOTE))
+        }
+    }
 
     private lateinit var fileSystem: SecureFileSystem
 
@@ -63,9 +85,7 @@ class TakeNewNoteModel(private val credentials: SFSCredentials) {
         return Single.create(SingleOnSubscribe<Unit> {
             try {
 
-                val fileName = "newnote_" + Date() + "_" + System.nanoTime() % 1000
-                fileSystem.storeObject(fileName, Note(title, content))
-                fileSystem.setFileMetadata(fileName, FileMeta(NoteFileTypes.SIMPLE_NOTE))
+                storeNote(fileSystem, title, content)
 
                 it.onSuccess(Unit)
                 Log.d("TakeNewNote", "New note stored successfully - ${Thread.currentThread()}")
@@ -75,4 +95,6 @@ class TakeNewNoteModel(private val credentials: SFSCredentials) {
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
     }
+
+
 }
