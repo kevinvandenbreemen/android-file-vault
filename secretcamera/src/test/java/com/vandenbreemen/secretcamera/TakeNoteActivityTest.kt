@@ -137,4 +137,21 @@ class TakeNoteActivityTest {
         assertNotNull("Credentials", nextActivityIntent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS))
     }
 
+    @Test
+    fun shouldPreserveSFSCredentialsOnSuccess() {
+        val activity = buildActivity(TakeNoteActivity::class.java, intent)
+                .create()
+                .resume()
+                .get()
+
+        activity.findViewById<TextView>(R.id.title).setText("Test Note")
+        activity.findViewById<TextView>(R.id.content).setText("Testing creating a new new\nnote.  This is ultra secret\ninformation blablabla")
+        activity.findViewById<Button>(R.id.ok).performClick()
+
+        val nextActivityIntent = shadowOf(activity).nextStartedActivity
+        val credentials: SFSCredentials = nextActivityIntent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)
+        assertNotNull("Password", credentials.password)
+
+    }
+
 }
