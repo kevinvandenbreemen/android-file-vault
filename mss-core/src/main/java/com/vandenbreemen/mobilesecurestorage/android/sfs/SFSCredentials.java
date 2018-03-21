@@ -72,6 +72,14 @@ public class SFSCredentials implements Parcelable{
         return fileLocation;
     }
 
+    /**
+     * Check whether the credentials is still valid
+     * @return
+     */
+    public boolean finalized(){
+        return this.password != null;
+    }
+
     public SecureString getPassword() {
         return password;
     }

@@ -71,7 +71,7 @@ abstract class Model(private val credentials: SFSCredentials) {
         return Single.create(SingleOnSubscribe<Unit> {
             try {
                 sfs = object : SecureFileSystem(credentials.fileLocation) {
-                    override fun getPassword(): SecureString {
+                    override fun getPassword(): SecureString? {
                         return credentials.password
                     }
                 }
@@ -85,6 +85,7 @@ abstract class Model(private val credentials: SFSCredentials) {
 
     fun close() {
         credentials.finalize()
+        sfs.close()
         onClose()
     }
 
