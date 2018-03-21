@@ -7,6 +7,7 @@ import com.vandenbreemen.mobilesecurestorage.file.api.FileType
 import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
@@ -42,7 +43,10 @@ enum class NoteFileTypes(override val firstByte: Byte, override val secondByte: 
  * <h2>Other Details</h2>
  * @author kevin
  */
-class TakeNewNoteModel(private val credentials: SFSCredentials) {
+class TakeNewNoteModel(private val credentials: SFSCredentials) : Model(credentials) {
+    override fun onClose() {
+
+    }
 
     companion object {
 
