@@ -32,8 +32,6 @@ class TakeNoteActivity : Activity(), TakeNewNoteView {
         finish()
     }
 
-    lateinit var credentials: SFSCredentials
-
     lateinit var presenter: TakeNewNotePresenter
 
     override fun onResume() {
@@ -44,9 +42,8 @@ class TakeNoteActivity : Activity(), TakeNewNoteView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_take_note)
-
-        this.credentials = intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS) as SFSCredentials
-        this.presenter = TakeNewNotePresenterImpl(this, TakeNewNoteModel(credentials))
+        this.presenter = TakeNewNotePresenterImpl(this,
+                TakeNewNoteModel(intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS) as SFSCredentials))
     }
 
     fun onCancel(view: View) {
