@@ -2,6 +2,7 @@ package com.vandenbreemen.mobilesecurestorage.patterns.mvp
 
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog
+import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import io.reactivex.Single
@@ -13,15 +14,6 @@ import io.reactivex.schedulers.Schedulers
 General contracts for anything implementing MVP pattern
  */
 
-interface ModelContract{
-    val credentials:SFSCredentials
-
-    /**
-     * How to close a model
-     */
-    fun close()
-}
-
 interface View{
 
     /**
@@ -29,28 +21,29 @@ interface View{
      */
     fun onReadyToUse()
 
-}
-
-/**
- * Default presenter is one that is backed by a model of type Model
- */
-interface PresenterContract<out Model:com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model>{
-
-    val model:Model
-
-    fun close()
+    /**
+     * Display the given error
+     */
+    fun showError(error: ApplicationError)
 
 }
 
-open class Presenter<out T:Model>(override val model:T):PresenterContract<T>{
+open class Presenter<out M : Model, out V : View>(private val model: M, private val view: V) {
 
-    override fun close() {
+    fun start() {
+        model.init().subscribe(
+                { view.onReadyToUse() },
+                { e -> view.showError(ApplicationError("Unexpected error:  ${e.localizedMessage}")) }
+        )
+    }
+
+    fun close() {
         model.close()
     }
 
 }
 
-open class Model(override val credentials:SFSCredentials):ModelContract{
+abstract class Model(private val credentials: SFSCredentials) {
 
     protected lateinit var sfs:SecureFileSystem
 
@@ -70,7 +63,14 @@ open class Model(override val credentials:SFSCredentials):ModelContract{
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
     }
 
-    override fun close() {
+    fun close() {
         credentials.finalize()
+        onClose()
     }
+
+    /**
+     * Any additional logic you'd like to perform after the model has been closed
+     */
+    protected abstract fun onClose()
+
 }
