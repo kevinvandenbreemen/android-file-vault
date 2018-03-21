@@ -156,7 +156,9 @@ public abstract class SecureFileSystem extends IndexedFile {
     @Override
     public final void close() {
         super.close();
-        this.getPassword().randomFinalize();
+        if(this.getPassword() != null){
+            this.getPassword().randomFinalize();
+        }
     }
 
     /**

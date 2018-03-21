@@ -123,4 +123,21 @@ public class SFSCredentialsTest {
         collector.checkThat(copy.getPassword().equals(copyOfPass), is(true));
         collector.checkThat(copy.getFileLocation(), is(file));
     }
+
+    @Test
+    public void shouldLetUsFinalizeSFSAfterCredentialsFinalized() throws Exception{
+        password = SecureFileSystem.generatePassword(password);
+        SFSCredentials credentials = new SFSCredentials(file, password);
+
+        SecureFileSystem sfs = new SecureFileSystem(credentials.getFileLocation()){
+
+            @Override
+            protected SecureString getPassword() {
+                return credentials.getPassword();
+            }
+        };
+
+        credentials.finalize();
+        sfs.close();
+    }
 }

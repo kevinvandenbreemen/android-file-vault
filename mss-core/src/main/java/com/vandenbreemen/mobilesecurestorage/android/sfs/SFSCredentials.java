@@ -82,7 +82,7 @@ public class SFSCredentials implements Parcelable{
 
     @Override
     public void finalize() {
-        this.password.finalize();
+        this.password.randomFinalize();
         this.password = null;
     }
 }
