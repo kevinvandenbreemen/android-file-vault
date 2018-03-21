@@ -11,6 +11,10 @@ import com.vandenbreemen.secretcamera.mvp.SFSMenuContract
  */
 class SFSMainMenuPresenterImpl(val model:SFSMainMenuModel, val mainMenuView: SFSMenuContract.SFSMainMenuView) :
         Presenter<SFSMainMenuModel, SFSMenuContract.SFSMainMenuView>(model, mainMenuView) , SFSMenuContract.SFSMainMenuPresenter {
+    override fun viewNotes() {
+        model.getNotes().subscribe({notes->mainMenuView.gotoNotesList(model.credentials, ArrayList<String>(notes))})
+    }
+
     override fun takeNote() {
         mainMenuView.gotoTakeNote()
     }

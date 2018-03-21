@@ -26,7 +26,7 @@ class StringSelectorWorkflow() : Parcelable {
 
     var activityClassStr: String = ""
 
-    lateinit var selected: String
+    var selected: String = ""
 
     var credentials: SFSCredentials? = null
 
