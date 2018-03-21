@@ -47,7 +47,7 @@ class SFSMainMenuModelTest {
     fun shouldListNotes() {
 
         //  Arrange
-        storeNote(sut.sfs, "Test Note", "Test not content")
+        storeNote(sut.getSFS(), "Test Note", "Test not content")
 
         //  Act
         val singleList: Single<List<String>> = sut.getNotes()
@@ -62,8 +62,8 @@ class SFSMainMenuModelTest {
     @Test
     fun shouldListOnlyNotes() {
         //  Arrange
-        storeNote(sut.sfs, "Test Note", "Test not content")
-        sut.sfs.storeObject("NotANote", "I'm not a note")
+        storeNote(sut.getSFS(), "Test Note", "Test not content")
+        sut.getSFS().storeObject("NotANote", "I'm not a note")
 
         //  Act
         val singleList: Single<List<String>> = sut.getNotes()

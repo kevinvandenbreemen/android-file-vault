@@ -2,6 +2,7 @@ package com.vandenbreemen.secretcamera.mvp.impl
 
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog
+import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.getFileMeta
@@ -17,27 +18,9 @@ import io.reactivex.schedulers.Schedulers.io
  * <h2>Other Details</h2>
  * @author kevin
  */
-class SFSMainMenuModel(private val credentials: SFSCredentials) {
-
-    lateinit var sfs: SecureFileSystem
-
-    /**
-     * Initialize the menu with the given credentials
-     */
-    fun init(): Single<Unit> {
-        return Single.create(SingleOnSubscribe<Unit> {
-            try {
-                sfs = object : SecureFileSystem(credentials.fileLocation) {
-                    override fun getPassword(): SecureString {
-                        return credentials.password
-                    }
-                }
-                it.onSuccess(Unit)
-            } catch (exc: Exception) {
-                SystemLog.get().error("SFSMainMenu", "Failed to load", exc)
-                it.onError(exc)
-            }
-        }).subscribeOn(io()).observeOn(mainThread())
+class SFSMainMenuModel( val credentials: SFSCredentials):Model(credentials) {
+    override fun onClose() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     fun getNotes(): Single<List<String>> {
@@ -47,5 +30,7 @@ class SFSMainMenuModel(private val credentials: SFSCredentials) {
             })
         }).subscribeOn(io()).observeOn(mainThread())
     }
+
+    fun getSFS():SecureFileSystem = sfs
 
 }
