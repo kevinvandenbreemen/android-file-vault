@@ -42,7 +42,7 @@ class TakeNewNoteModelTest {
         credentials = SFSCredentials(sfsFile, testPassword)
         sut = TakeNewNoteModel(credentials)
 
-        sut.initializeAsynchronously().subscribe()
+        sut.init().subscribe()
     }
 
     @Test(expected = ApplicationError::class)

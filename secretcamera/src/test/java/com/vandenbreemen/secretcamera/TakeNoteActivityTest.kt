@@ -131,6 +131,7 @@ class TakeNoteActivityTest {
         activity.findViewById<Button>(R.id.ok).performClick()
 
         val nextActivityIntent = shadowOf(activity).nextStartedActivity
+        assertNotNull("Next activity started", nextActivityIntent)
         val intent = shadowOf(nextActivityIntent)
         assertEquals("Go to main", MainActivity::class.java, intent.intentClass)
         assertNotNull("Credentials", nextActivityIntent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS))

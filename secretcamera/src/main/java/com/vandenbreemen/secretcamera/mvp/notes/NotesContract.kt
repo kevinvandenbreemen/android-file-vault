@@ -1,6 +1,7 @@
 package com.vandenbreemen.secretcamera.mvp.notes
 
-import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.mobilesecurestorage.patterns.mvp.PresenterContract
+import com.vandenbreemen.mobilesecurestorage.patterns.mvp.View
 
 /**
  * <h2>Intro</h2>
@@ -8,21 +9,15 @@ import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
  * <h2>Other Details</h2>
  * @author kevin
  */
-interface TakeNewNotePresenter {
-
-    fun start()
+interface TakeNewNotePresenter : PresenterContract {
 
     fun provideNoteDetails(title: String?, note: String?)
 
     fun onCancel()
-    fun close()
 
 }
 
-interface TakeNewNoteView {
-    fun onReady()
-
-    fun showError(error: ApplicationError)
+interface TakeNewNoteView : View {
 
     fun onNoteSucceeded(message: String)
 

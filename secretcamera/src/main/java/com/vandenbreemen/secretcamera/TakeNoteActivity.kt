@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.mvp.impl.TakeNewNoteModel
@@ -15,17 +16,15 @@ import com.vandenbreemen.secretcamera.mvp.notes.TakeNewNotePresenter
 import com.vandenbreemen.secretcamera.mvp.notes.TakeNewNoteView
 
 class TakeNoteActivity : Activity(), TakeNewNoteView {
-    override fun onReady() {
-
+    override fun onReadyToUse() {
     }
 
     override fun showError(error: ApplicationError) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Toast.makeText(this, error.localizedMessage, LENGTH_SHORT).show()
     }
 
     override fun onNoteSucceeded(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-        presenter.close()
+
     }
 
     override fun close() {
@@ -54,6 +53,11 @@ class TakeNoteActivity : Activity(), TakeNewNoteView {
 
     fun onCancel(view: View) {
         presenter.onCancel()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        presenter.close()
     }
 
     @SuppressLint("WrongViewCast")

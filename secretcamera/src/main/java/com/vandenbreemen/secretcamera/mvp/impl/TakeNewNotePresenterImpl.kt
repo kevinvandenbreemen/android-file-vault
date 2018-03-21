@@ -2,6 +2,7 @@ package com.vandenbreemen.secretcamera.mvp.impl
 
 import android.util.Log
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Presenter
 import com.vandenbreemen.secretcamera.mvp.notes.TakeNewNotePresenter
 import com.vandenbreemen.secretcamera.mvp.notes.TakeNewNoteView
 
@@ -11,17 +12,9 @@ import com.vandenbreemen.secretcamera.mvp.notes.TakeNewNoteView
  * <h2>Other Details
  * @author kevin
  */
-class TakeNewNotePresenterImpl(val view: TakeNewNoteView, val model: TakeNewNoteModel) : TakeNewNotePresenter {
-    override fun start() {
-        model.initializeAsynchronously().subscribe(
-                { view.onReady() },
-                { e -> view.showError(ApplicationError("Unexpected error:  ${e.localizedMessage}")) }
-        )
-    }
-
-    override fun close() {
-        view.close()
-    }
+class TakeNewNotePresenterImpl(val view: TakeNewNoteView, val model: TakeNewNoteModel) :
+        Presenter<TakeNewNoteModel, TakeNewNoteView>(model, view),
+        TakeNewNotePresenter {
 
     override fun provideNoteDetails(title: String?, note: String?) {
         try {
@@ -29,6 +22,7 @@ class TakeNewNotePresenterImpl(val view: TakeNewNoteView, val model: TakeNewNote
                     .subscribe({ _ ->
                         Log.d("TakeNewNotePresenter", "New note taken - ${Thread.currentThread()}")
                         view.onNoteSucceeded("New note created")
+                        view.close()
                     },
                             { failure ->
                                 Log.e("UnexpectedError", "Error storing new note", failure)

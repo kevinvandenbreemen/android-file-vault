@@ -5,10 +5,8 @@ import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
 import com.vandenbreemen.mobilesecurestorage.file.api.FileType
 import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
-import com.vandenbreemen.mobilesecurestorage.log.SystemLog
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
-import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
 import com.vandenbreemen.secretcamera.api.Note
@@ -16,9 +14,7 @@ import com.vandenbreemen.secretcamera.api.SEC_CAM_BYTE
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.schedulers.Schedulers.io
 import java.util.*
 
 
@@ -60,24 +56,6 @@ class TakeNewNoteModel(private val credentials: SFSCredentials) : Model(credenti
         }
     }
 
-    private lateinit var fileSystem: SecureFileSystem
-
-    fun initializeAsynchronously(): Single<Unit> {
-        return Single.create(SingleOnSubscribe<Unit> {
-            try {
-                fileSystem = object : SecureFileSystem(credentials.fileLocation) {
-                    override fun getPassword(): SecureString {
-                        return credentials.password
-                    }
-                }
-                it.onSuccess(Unit)
-            } catch (exception: Exception) {
-                SystemLog.get().error("Failed to load SFS", exception)
-                it.onError(exception)
-            }
-        }).subscribeOn(io()).observeOn(mainThread())
-    }
-
     fun submitNewNote(title: String, content: String): Single<Unit> {
         if (title.isBlank()) {
             throw ApplicationError("Title is required")
@@ -89,7 +67,7 @@ class TakeNewNoteModel(private val credentials: SFSCredentials) : Model(credenti
         return Single.create(SingleOnSubscribe<Unit> {
             try {
 
-                storeNote(fileSystem, title, content)
+                storeNote(sfs, title, content)
 
                 it.onSuccess(Unit)
                 Log.d("TakeNewNote", "New note stored successfully - ${Thread.currentThread()}")

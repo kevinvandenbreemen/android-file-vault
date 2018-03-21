@@ -28,16 +28,24 @@ interface View{
 
 }
 
-open class Presenter<out M : Model, out V : View>(private val model: M, private val view: V) {
+/**
+ * What every presenter should provide
+ */
+interface PresenterContract {
+    fun start()
+    fun close()
+}
 
-    fun start() {
+open class Presenter<out M : Model, out V : View>(private val model: M, private val view: V) : PresenterContract {
+
+    override fun start() {
         model.init().subscribe(
                 { view.onReadyToUse() },
                 { e -> view.showError(ApplicationError("Unexpected error:  ${e.localizedMessage}")) }
         )
     }
 
-    fun close() {
+    override fun close() {
         model.close()
     }
 
