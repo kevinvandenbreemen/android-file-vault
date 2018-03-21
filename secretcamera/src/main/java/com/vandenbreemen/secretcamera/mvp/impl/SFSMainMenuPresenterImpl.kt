@@ -1,5 +1,6 @@
 package com.vandenbreemen.secretcamera.mvp.impl
 
+import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Presenter
 import com.vandenbreemen.secretcamera.mvp.SFSMenuContract
 
 /**
@@ -8,7 +9,8 @@ import com.vandenbreemen.secretcamera.mvp.SFSMenuContract
  * <h2>Other Details</h2>
  * @author kevin
  */
-class SFSMainMenuPresenterImpl(val mainMenuView: SFSMenuContract.SFSMainMenuView) : SFSMenuContract.SFSMainMenuPresenter {
+class SFSMainMenuPresenterImpl(val model:SFSMainMenuModel, val mainMenuView: SFSMenuContract.SFSMainMenuView) :
+        Presenter<SFSMainMenuModel, SFSMenuContract.SFSMainMenuView>(model, mainMenuView) , SFSMenuContract.SFSMainMenuPresenter {
     override fun takeNote() {
         mainMenuView.gotoTakeNote()
     }

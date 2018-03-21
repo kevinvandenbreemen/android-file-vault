@@ -20,7 +20,7 @@ import io.reactivex.schedulers.Schedulers.io
  */
 class SFSMainMenuModel( val credentials: SFSCredentials):Model(credentials) {
     override fun onClose() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     fun getNotes(): Single<List<String>> {

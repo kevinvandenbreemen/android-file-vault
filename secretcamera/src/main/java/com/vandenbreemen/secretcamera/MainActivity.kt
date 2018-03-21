@@ -5,13 +5,24 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
 import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow
 import com.vandenbreemen.mobilesecurestorage.android.fragment.SFSNavFragment
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.mvp.SFSMenuContract
+import com.vandenbreemen.secretcamera.mvp.impl.SFSMainMenuModel
 import com.vandenbreemen.secretcamera.mvp.impl.SFSMainMenuPresenterImpl
 
 class MainActivity : Activity(), SFSMenuContract.SFSMainMenuView {
+    override fun onReadyToUse() {
+
+    }
+
+    override fun showError(error: ApplicationError) {
+        Toast.makeText(this, error.localizedMessage, LENGTH_SHORT)
+    }
 
 
     /**
@@ -19,9 +30,12 @@ class MainActivity : Activity(), SFSMenuContract.SFSMainMenuView {
      */
     var fsWorkflow: FileWorkflow? = null
 
-    var sfsCredentials:SFSCredentials? = null
-
     var mainMenuPresenter: SFSMenuContract.SFSMainMenuPresenter? = null
+
+    override fun onPause() {
+        super.onPause()
+        mainMenuPresenter?.let { it.close() }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,10 +51,12 @@ class MainActivity : Activity(), SFSMenuContract.SFSMainMenuView {
         fsWorkflow = fsWorkflow?: FileWorkflow()
 
         if(intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS) != null){
-            sfsCredentials = intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)
+            val credentials = intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)
 
             findViewById<ViewGroup>(R.id.mainSection).addView(
                 layoutInflater.inflate(R.layout.main_screen_selections, findViewById(R.id.mainSection), false))
+
+            mainMenuPresenter = SFSMainMenuPresenterImpl(SFSMainMenuModel(credentials), this)
 
         }
         else{   //  Otherwise show the FS select fragment!
@@ -55,7 +71,7 @@ class MainActivity : Activity(), SFSMenuContract.SFSMainMenuView {
             fragmentManager.beginTransaction().add(R.id.upperSection, frag).commit()
         }
 
-        mainMenuPresenter = SFSMainMenuPresenterImpl(this)
+
     }
 
     fun onTakeNote(view:View){
@@ -63,8 +79,7 @@ class MainActivity : Activity(), SFSMenuContract.SFSMainMenuView {
     }
 
     override fun gotoTakeNote() {
-        val takeNote = Intent(this, TakeNoteActivity::class.java)
-        takeNote.putExtra(SFSCredentials.PARM_CREDENTIALS, sfsCredentials!!.copy())
+        val takeNote = mainMenuPresenter!!.getNewActivityIntent(this, TakeNoteActivity::class.java)
         startActivity(takeNote)
         finish()
     }

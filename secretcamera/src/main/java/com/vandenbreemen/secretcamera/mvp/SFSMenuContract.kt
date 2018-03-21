@@ -1,5 +1,8 @@
 package com.vandenbreemen.secretcamera.mvp
 
+import com.vandenbreemen.mobilesecurestorage.patterns.mvp.PresenterContract
+import com.vandenbreemen.mobilesecurestorage.patterns.mvp.View
+
 /**
  * <h2>Intro</h2>
  * Contract/participants in the main menu (after SFS loaded)
@@ -7,7 +10,7 @@ package com.vandenbreemen.secretcamera.mvp
  * @author kevin
  */
 class SFSMenuContract{
-    interface SFSMainMenuPresenter{
+    interface SFSMainMenuPresenter:PresenterContract{
         fun takePicture()
         fun takeNote()
 
@@ -16,7 +19,7 @@ class SFSMenuContract{
     /**
      * Main menu view
      */
-    interface SFSMainMenuView{
+    interface SFSMainMenuView:View{
         fun gotoTakePicture()
         fun gotoTakeNote()
     }
