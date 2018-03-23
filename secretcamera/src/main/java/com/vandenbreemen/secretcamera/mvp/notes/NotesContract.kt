@@ -23,3 +23,14 @@ interface TakeNewNoteView : View {
 
     fun close()
 }
+
+interface NoteDetailsPresenter:PresenterContract{
+
+    fun onOk()
+
+}
+
+interface NoteDetailsView:View{
+    fun setNoteTitle(title:String)
+    fun setNoteContent(content:String)
+}
