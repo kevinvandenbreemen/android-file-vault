@@ -52,39 +52,17 @@ class NoteDetailsActivityTest {
 
     @Test
     fun shouldLoadNoteContent(){
-        TakeNewNoteModel.storeNote(sfs, "test note", "note content")
-        val noteFile = sfs.extListFiles()[0]
-        val selection = StringSelection(noteFile, sfsCredentials)
 
-        intent.putExtra(SELECTED_STRING, selection)
-        val activity = Robolectric.buildActivity(NoteDetailsActivity::class.java, intent)
-                .create()
-                .resume()
-                .get()
-
-        assertEquals("Note title", "test note", activity.findViewById<EditText>(R.id.title).text.toString())
-        assertEquals("Note content", "note content", activity.findViewById<EditText>(R.id.content).text.toString())
+        NoteDetailsRobot().apply {
+            createNote("test note", "note content")
+            val activity = startActivity()
+            checkTitle("test note")
+            checkContent("note content")
+        }
     }
 
     @Test
     fun shouldReturnToMainOnOkay(){
-//        TakeNewNoteModel.storeNote(sfs, "test note", "note content")
-//        val noteFile = sfs.extListFiles()[0]
-//        val selection = StringSelection(noteFile, sfsCredentials)
-//
-//        intent.putExtra(SELECTED_STRING, selection)
-//        val activity = Robolectric.buildActivity(NoteDetailsActivity::class.java, intent)
-//                .create()
-//                .resume()
-//                .get()
-//
-//        activity.findViewById<Button>(R.id.ok).performClick()
-//
-//        val shadow = shadowOf(activity)
-//        val intent = shadow.nextStartedActivity
-//        val shadowIntent = shadowOf(intent)
-//        assertEquals("Go to main", MainActivity::class.java, shadowIntent.intentClass)
-//        assertNotNull("Credentials", intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS))
 
         NoteDetailsRobot().apply {
             createNote("test note", "note content")

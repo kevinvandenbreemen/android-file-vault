@@ -25,12 +25,12 @@ open class BaseRobot(private val activityClass:Class<out Activity>) {
 
     fun sfs():SecureFileSystem{
         return object: SecureFileSystem(sfsFile){
-            override fun getPassword(): SecureString = testPassword
+            override fun getPassword(): SecureString = testPassword.copy()
         }
     }
 
     fun credentials():SFSCredentials{
-        return SFSCredentials(sfsFile, testPassword)
+        return SFSCredentials(sfsFile, testPassword.copy())
     }
 
     fun intent():Intent{

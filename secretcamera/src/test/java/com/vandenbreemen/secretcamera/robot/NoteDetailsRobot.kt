@@ -2,6 +2,7 @@ package com.vandenbreemen.secretcamera.robot
 
 import android.app.Activity
 import android.widget.Button
+import android.widget.EditText
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
 import com.vandenbreemen.secretcamera.*
@@ -15,6 +16,8 @@ import org.robolectric.Shadows
  */
 class NoteDetailsRobot() : BaseRobot(NoteDetailsActivity::class.java) {
 
+    private lateinit var activity: NoteDetailsActivity
+
     fun createNote(noteTitle:String, noteContent:String){
         TakeNewNoteModel.storeNote(sfs(), noteTitle, noteContent)
     }
@@ -26,10 +29,12 @@ class NoteDetailsRobot() : BaseRobot(NoteDetailsActivity::class.java) {
         val intent = intent()
 
         intent.putExtra(SELECTED_STRING, selection)
-        return Robolectric.buildActivity(NoteDetailsActivity::class.java, intent)
+        activity = Robolectric.buildActivity(NoteDetailsActivity::class.java, intent)
                 .create()
                 .resume()
                 .get()
+
+        return activity
     }
 
     fun checkWentToActivity(activity: Activity, clazz: Class<out Activity>){
@@ -42,6 +47,15 @@ class NoteDetailsRobot() : BaseRobot(NoteDetailsActivity::class.java) {
 
     fun clickOkay(activity: Activity){
         activity.findViewById<Button>(R.id.ok).performClick()
+    }
+
+    fun checkTitle(title: String) {
+        TestCase.assertEquals("Note title", title, activity.findViewById<EditText>(R.id.title).text.toString())
+
+    }
+
+    fun checkContent(content: String) {
+        TestCase.assertEquals("Note content", content, activity.findViewById<EditText>(R.id.content).text.toString())
     }
 
 }
