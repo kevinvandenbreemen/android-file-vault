@@ -70,11 +70,14 @@ abstract class Model(private val credentials: SFSCredentials) {
     fun init(): Single<Unit>{
         return Single.create(SingleOnSubscribe<Unit> {
             try {
-                sfs = object : SecureFileSystem(credentials.fileLocation) {
+                this.sfs = object : SecureFileSystem(credentials.fileLocation) {
                     override fun getPassword(): SecureString? {
                         return credentials.password
                     }
                 }
+
+                this.setup()
+
                 it.onSuccess(Unit)
             } catch (exception: Exception) {
                 SystemLog.get().error(javaClass.simpleName, "Failed to load SFS", exception)
@@ -103,4 +106,8 @@ abstract class Model(private val credentials: SFSCredentials) {
         return ret
     }
 
+    /**
+     * Do any setup necessary for the model to work
+     */
+    protected abstract fun setup()
 }

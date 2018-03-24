@@ -40,6 +40,10 @@ enum class NoteFileTypes(override val firstByte: Byte, override val secondByte: 
  * @author kevin
  */
 class TakeNewNoteModel(private val credentials: SFSCredentials) : Model(credentials) {
+    override fun setup() {
+
+    }
+
     override fun onClose() {
 
     }

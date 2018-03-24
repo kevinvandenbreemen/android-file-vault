@@ -19,6 +19,10 @@ import io.reactivex.schedulers.Schedulers.io
  * @author kevin
  */
 class SFSMainMenuModel( val credentials: SFSCredentials):Model(credentials) {
+    override fun setup() {
+
+    }
+
     override fun onClose() {
 
     }
