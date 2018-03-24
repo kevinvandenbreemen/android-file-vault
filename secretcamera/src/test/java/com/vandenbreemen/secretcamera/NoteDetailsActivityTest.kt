@@ -8,6 +8,7 @@ import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.secretcamera.mvp.impl.TakeNewNoteModel
+import com.vandenbreemen.secretcamera.robot.NoteDetailsRobot
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
 import junit.framework.TestCase.assertEquals
@@ -67,23 +68,31 @@ class NoteDetailsActivityTest {
 
     @Test
     fun shouldReturnToMainOnOkay(){
-        TakeNewNoteModel.storeNote(sfs, "test note", "note content")
-        val noteFile = sfs.extListFiles()[0]
-        val selection = StringSelection(noteFile, sfsCredentials)
+//        TakeNewNoteModel.storeNote(sfs, "test note", "note content")
+//        val noteFile = sfs.extListFiles()[0]
+//        val selection = StringSelection(noteFile, sfsCredentials)
+//
+//        intent.putExtra(SELECTED_STRING, selection)
+//        val activity = Robolectric.buildActivity(NoteDetailsActivity::class.java, intent)
+//                .create()
+//                .resume()
+//                .get()
+//
+//        activity.findViewById<Button>(R.id.ok).performClick()
+//
+//        val shadow = shadowOf(activity)
+//        val intent = shadow.nextStartedActivity
+//        val shadowIntent = shadowOf(intent)
+//        assertEquals("Go to main", MainActivity::class.java, shadowIntent.intentClass)
+//        assertNotNull("Credentials", intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS))
 
-        intent.putExtra(SELECTED_STRING, selection)
-        val activity = Robolectric.buildActivity(NoteDetailsActivity::class.java, intent)
-                .create()
-                .resume()
-                .get()
+        NoteDetailsRobot().apply {
+            createNote("test note", "note content")
+            val activity = startActivity()
+            clickOkay(activity)
+            checkWentToActivity(activity, MainActivity::class.java)
+        }
 
-        activity.findViewById<Button>(R.id.ok).performClick()
-
-        val shadow = shadowOf(activity)
-        val intent = shadow.nextStartedActivity
-        val shadowIntent = shadowOf(intent)
-        assertEquals("Go to main", MainActivity::class.java, shadowIntent.intentClass)
-        assertNotNull("Credentials", intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS))
     }
 
 }
