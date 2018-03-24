@@ -7,6 +7,8 @@ import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.secretcamera.mvp.impl.TakeNewNoteModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.plugins.RxJavaPlugins
 import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -30,6 +32,9 @@ class NoteDetailsActivityTest {
 
     @Before
     fun setup(){
+
+        RxJavaPlugins.setIoSchedulerHandler { scheduler -> AndroidSchedulers.mainThread() }
+
         val file = createTempFile("note_test")
         sfsCredentials = SFSCredentials(file, SecureFileSystem.generatePassword(SecureString.fromPassword("test")))
         sfs = object : SecureFileSystem(sfsCredentials.fileLocation){
@@ -43,7 +48,7 @@ class NoteDetailsActivityTest {
 
     @Test
     fun shouldLoadNoteContent(){
-        TakeNewNoteModel.storeNote(sfs, "test note", "Note content")
+        TakeNewNoteModel.storeNote(sfs, "test note", "note content")
         val noteFile = sfs.extListFiles()[0]
         val selection = StringSelection(noteFile, sfsCredentials)
 

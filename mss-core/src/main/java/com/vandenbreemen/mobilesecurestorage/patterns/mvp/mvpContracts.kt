@@ -44,14 +44,19 @@ interface PresenterContract {
     fun getNewActivityIntent(context: Context, type: Class<out Activity>): Intent
 }
 
-open class Presenter<out M : Model, out V : View>(private val model: M, private val view: V) : PresenterContract {
+abstract class Presenter<out M : Model, out V : View>(private val model: M, private val view: V) : PresenterContract {
 
     override fun start() {
         model.init().subscribe(
-                { view.onReadyToUse() },
+                {
+                    view.onReadyToUse()
+                    this.setupView()
+                },
                 { e -> view.showError(ApplicationError("Unexpected error:  ${e.localizedMessage}")) }
         )
     }
+
+    protected abstract fun setupView()
 
     override fun close() {
         model.close()
