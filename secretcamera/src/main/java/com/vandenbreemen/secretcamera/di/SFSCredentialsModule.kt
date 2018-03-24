@@ -2,6 +2,7 @@ package com.vandenbreemen.secretcamera.di
 
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.secretcamera.MainActivity
+import com.vandenbreemen.secretcamera.TakeNoteActivity
 import dagger.Module
 import dagger.Provides
 
@@ -12,7 +13,7 @@ import dagger.Provides
 class SFSCredentialsModule {
 
     @Provides
-    fun provideCredentials(activity:MainActivity):SFSCredentials{
+    fun provideCredentials(activity:TakeNoteActivity):SFSCredentials{
         return activity.intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)
             as SFSCredentials
     }

@@ -7,14 +7,17 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
-import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
-import com.vandenbreemen.secretcamera.mvp.impl.TakeNewNoteModel
-import com.vandenbreemen.secretcamera.mvp.impl.TakeNewNotePresenterImpl
 import com.vandenbreemen.secretcamera.mvp.notes.TakeNewNotePresenter
 import com.vandenbreemen.secretcamera.mvp.notes.TakeNewNoteView
+import dagger.android.AndroidInjection
+import javax.inject.Inject
 
 class TakeNoteActivity : Activity(), TakeNewNoteView {
+
+    @Inject
+    lateinit var presenter: TakeNewNotePresenter
+
     override fun onReadyToUse() {
     }
 
@@ -32,7 +35,6 @@ class TakeNoteActivity : Activity(), TakeNewNoteView {
         finish()
     }
 
-    lateinit var presenter: TakeNewNotePresenter
 
     override fun onResume() {
         super.onResume()
@@ -40,10 +42,9 @@ class TakeNoteActivity : Activity(), TakeNewNoteView {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_take_note)
-        this.presenter = TakeNewNotePresenterImpl(this,
-                TakeNewNoteModel(intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS) as SFSCredentials))
     }
 
     fun onCancel(view: View) {
