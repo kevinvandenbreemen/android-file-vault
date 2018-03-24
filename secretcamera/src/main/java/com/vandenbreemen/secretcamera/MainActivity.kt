@@ -14,6 +14,7 @@ import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.mvp.SFSMenuContract
 import com.vandenbreemen.secretcamera.mvp.impl.SFSMainMenuModel
 import com.vandenbreemen.secretcamera.mvp.impl.SFSMainMenuPresenterImpl
+import dagger.android.AndroidInjection
 
 class MainActivity : Activity(), SFSMenuContract.SFSMainMenuView {
     override fun onReadyToUse() {
@@ -38,7 +39,9 @@ class MainActivity : Activity(), SFSMenuContract.SFSMainMenuView {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
 
         //  Get file workflow
