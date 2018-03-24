@@ -1,6 +1,7 @@
 package com.vandenbreemen.secretcamera
 
 import android.content.Intent
+import android.widget.Button
 import android.widget.EditText
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
@@ -10,11 +11,13 @@ import com.vandenbreemen.secretcamera.mvp.impl.TakeNewNoteModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowApplication
 import java.io.File
 
@@ -60,6 +63,27 @@ class NoteDetailsActivityTest {
 
         assertEquals("Note title", "test note", activity.findViewById<EditText>(R.id.title).text.toString())
         assertEquals("Note content", "note content", activity.findViewById<EditText>(R.id.content).text.toString())
+    }
+
+    @Test
+    fun shouldReturnToMainOnOkay(){
+        TakeNewNoteModel.storeNote(sfs, "test note", "note content")
+        val noteFile = sfs.extListFiles()[0]
+        val selection = StringSelection(noteFile, sfsCredentials)
+
+        intent.putExtra(SELECTED_STRING, selection)
+        val activity = Robolectric.buildActivity(NoteDetailsActivity::class.java, intent)
+                .create()
+                .resume()
+                .get()
+
+        activity.findViewById<Button>(R.id.ok).performClick()
+
+        val shadow = shadowOf(activity)
+        val intent = shadow.nextStartedActivity
+        val shadowIntent = shadowOf(intent)
+        assertEquals("Go to main", MainActivity::class.java, shadowIntent.intentClass)
+        assertNotNull("Credentials", intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS))
     }
 
 }

@@ -88,7 +88,7 @@ class MainActivity : Activity(), SFSMenuContract.SFSMainMenuView {
 
     override fun gotoNotesList(credentials:SFSCredentials, strings:ArrayList<String>) {
 
-        val workflow = StringSelectorWorkflow(MainActivity::class.java, strings, credentials)
+        val workflow = StringSelectorWorkflow(NoteDetailsActivity::class.java, strings, credentials)
         workflow.setOnCancelActivity(MainActivity::class.java)
         val intent = Intent(this, StringSelectorActivity::class.java)
         intent.putExtra(StringSelectorActivity.WORKFLOW, workflow)

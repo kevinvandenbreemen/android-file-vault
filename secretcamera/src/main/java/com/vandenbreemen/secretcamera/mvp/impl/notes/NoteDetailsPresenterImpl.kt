@@ -14,7 +14,7 @@ class NoteDetailsPresenterImpl(private val model: NoteDetailsModel, private val 
     }
 
     override fun onOk() {
-
+        view.close()
     }
 
 }

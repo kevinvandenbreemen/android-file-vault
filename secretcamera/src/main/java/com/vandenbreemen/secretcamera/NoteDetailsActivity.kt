@@ -2,6 +2,7 @@ package com.vandenbreemen.secretcamera
 
 import android.app.Activity
 import android.os.Bundle
+import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
@@ -32,7 +33,10 @@ class NoteDetailsActivity : Activity(), NoteDetailsView {
         Toast.makeText(this, error.localizedMessage, LENGTH_SHORT)
     }
 
-
+    override fun onPause() {
+        super.onPause()
+        presenter.close()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -43,5 +47,15 @@ class NoteDetailsActivity : Activity(), NoteDetailsView {
     override fun onResume() {
         super.onResume()
         this.presenter.start()
+    }
+
+    fun onOkay(view:View){
+        presenter.onOk()
+    }
+
+    override fun close() {
+        val intent = presenter.getNewActivityIntent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }

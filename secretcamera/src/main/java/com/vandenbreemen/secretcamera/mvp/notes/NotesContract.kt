@@ -33,4 +33,5 @@ interface NoteDetailsPresenter:PresenterContract{
 interface NoteDetailsView:View{
     fun setNoteTitle(title:String)
     fun setNoteContent(content:String)
+    fun close()
 }
