@@ -6,7 +6,6 @@ import android.os.Environment
 import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.IdlingPolicies
 import android.support.test.espresso.IdlingRegistry
-import android.util.Log
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotExist
 import com.schibsted.spain.barista.interaction.BaristaClickInteractions.clickOn
@@ -74,8 +73,6 @@ class MainScreenRobot(val activity: Activity) {
         val file = File(dir.absolutePath
                 + File.separator + DEFAULT_LOCATION
                 + File.separator + FILENAME)
-        println("DELETING ${file.absolutePath}")
-        Log.d("Delete", "DELETING ${file.absolutePath}")
         InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(
                 "rm -f " + file.absolutePath)
     }
