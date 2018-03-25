@@ -1,11 +1,12 @@
 package com.vandenbreemen.secretcamera.util
 
 import android.app.Activity
-import android.content.pm.ActivityInfo
 import android.os.Environment
 import android.support.test.InstrumentationRegistry
+import android.support.test.InstrumentationRegistry.getInstrumentation
 import android.support.test.espresso.IdlingPolicies
 import android.support.test.espresso.IdlingRegistry
+import android.support.test.uiautomator.UiDevice
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotExist
 import com.schibsted.spain.barista.interaction.BaristaClickInteractions.clickOn
@@ -65,7 +66,8 @@ class MainScreenRobot(val activity: Activity) {
     }
 
     fun rotateToLandscape() {
-        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        val device = UiDevice.getInstance(getInstrumentation())
+        device.setOrientationLeft()
     }
 
     fun deleteTestFile() {
