@@ -130,4 +130,16 @@ class MainActivityTest {
         }
     }
 
+    @Test
+    fun shouldStartTakeNoteWhenInLandscape() {
+        MainScreenRobot(activityRule.activity).apply {
+            loadExistingSFS()
+            rotateToLandscape()
+            clickTakeNote().apply {
+                checkTitleDisplayed()
+                checkContentDisplayed()
+            }
+        }
+    }
+
 }
