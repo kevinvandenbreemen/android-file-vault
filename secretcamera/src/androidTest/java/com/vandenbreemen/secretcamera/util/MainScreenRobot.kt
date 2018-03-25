@@ -1,5 +1,7 @@
 package com.vandenbreemen.secretcamera.util
 
+import android.app.Activity
+import android.content.pm.ActivityInfo
 import android.support.test.espresso.IdlingPolicies
 import android.support.test.espresso.IdlingRegistry
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
@@ -16,7 +18,7 @@ import java.util.concurrent.TimeUnit
  * <h2>Other Details</h2>
  * @author kevin
  */
-class MainScreenRobot {
+class MainScreenRobot(val activity: Activity) {
 
     companion object {
         val TIME_TO_WAIT = TimeUnit.MILLISECONDS.convert(2, TimeUnit.SECONDS)
@@ -60,6 +62,10 @@ class MainScreenRobot {
         IdlingRegistry.getInstance().register(getElapsedTimeIdlingResource())
     }
 
+    fun rotateToLandscape() {
+        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    }
+
     fun checkTakePictureDisplayed() = assertDisplayed(R.id.takePicture)
 
     fun checkNavigationNotDisplayed() = assertNotExist(R.id.sfsNavFrag)
@@ -67,5 +73,6 @@ class MainScreenRobot {
     fun checkTakeNoteDisplayed() = assertDisplayed(R.id.takeNote)
 
     fun checkNavigationDisplayed() = assertDisplayed(R.id.sfsNavFrag)
+    fun checkNotesDisplayed() = assertDisplayed(R.id.view_notes)
 
 }

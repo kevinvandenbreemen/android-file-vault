@@ -57,7 +57,7 @@ class MainActivityTest {
     @Test
     fun shouldShowFileActionsPrompt(){
         activityRule.launchActivity(null)
-        MainScreenRobot().apply {
+        MainScreenRobot(activityRule.activity).apply {
             checkNavigationDisplayed()
         }
     }
@@ -68,7 +68,7 @@ class MainActivityTest {
         //  Arrange
         activityRule.launchActivity(null)
 
-        MainScreenRobot().apply {
+        MainScreenRobot(activityRule.activity).apply {
             //  Act
             createNewSFS()
             //  Assert
@@ -82,8 +82,21 @@ class MainActivityTest {
         //  Arrange
         activityRule.launchActivity(null)
 
-        MainScreenRobot().apply {
+        MainScreenRobot(activityRule.activity).apply {
             loadExistingSFS()
+            checkTakePictureDisplayed()
+        }
+    }
+
+    @Test
+    fun shouldPreserveActionsAfterOpeningAndReorienting() {
+        activityRule.launchActivity(null)
+
+        MainScreenRobot(activityRule.activity).apply {
+            loadExistingSFS()
+            rotateToLandscape()
+            checkTakeNoteDisplayed()
+            checkNotesDisplayed()
             checkTakePictureDisplayed()
         }
     }
@@ -93,7 +106,7 @@ class MainActivityTest {
         //  Arrange
         activityRule.launchActivity(null)
 
-        MainScreenRobot().apply {
+        MainScreenRobot(activityRule.activity).apply {
             loadExistingSFS()
             checkTakeNoteDisplayed()
         }
@@ -104,7 +117,7 @@ class MainActivityTest {
         //  Arrange
         activityRule.launchActivity(null)
 
-        MainScreenRobot().apply {
+        MainScreenRobot(activityRule.activity).apply {
             createNewSFS()
             checkTakePictureDisplayed()
         }
