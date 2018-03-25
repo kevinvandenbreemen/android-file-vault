@@ -31,7 +31,7 @@ class SFSMainMenuModelTest {
     @Before
     fun setup() {
 
-        RxJavaPlugins.setIoSchedulerHandler { scheduler -> AndroidSchedulers.mainThread() }
+        RxJavaPlugins.setComputationSchedulerHandler { scheduler -> AndroidSchedulers.mainThread() }
         ShadowLog.stream = System.out
 
         val sfsFile = File(Environment.getExternalStorageDirectory().toString() + File.separator + "test")

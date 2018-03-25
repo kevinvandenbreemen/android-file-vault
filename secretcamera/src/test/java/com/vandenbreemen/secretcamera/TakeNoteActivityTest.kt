@@ -40,7 +40,7 @@ class TakeNoteActivityTest {
     @Before
     fun setup() {
 
-        RxJavaPlugins.setIoSchedulerHandler { scheduler -> AndroidSchedulers.mainThread() }
+        RxJavaPlugins.setComputationSchedulerHandler { scheduler -> AndroidSchedulers.mainThread() }
         ShadowLog.stream = System.out
 
         sfsFile = File(Environment.getExternalStorageDirectory().toString() + File.separator + "test")

@@ -79,7 +79,7 @@ class TakeNewNoteModel(private val credentials: SFSCredentials) : Model(credenti
                 Log.e("TakeNewNoteFailure", "Error storing note", exc)
                 it.onError(exc)
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread())
     }
 
 

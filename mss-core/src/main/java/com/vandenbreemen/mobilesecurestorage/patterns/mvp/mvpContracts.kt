@@ -88,7 +88,7 @@ abstract class Model(private val credentials: SFSCredentials) {
                 SystemLog.get().error(javaClass.simpleName, "Failed to load SFS", exception)
                 it.onError(exception)
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread())
     }
 
     fun close() {
