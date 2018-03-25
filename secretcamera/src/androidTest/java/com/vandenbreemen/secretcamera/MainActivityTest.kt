@@ -37,6 +37,10 @@ class MainActivityTest {
 
     @Before
     fun setup(){
+
+        //  Arrange
+        activityRule.launchActivity(null)
+
         fileName = "unitTestFile"
         IdlingPolicies.setMasterPolicyTimeout(60, TimeUnit.SECONDS);
         IdlingPolicies.setIdlingResourceTimeout(26, TimeUnit.SECONDS);
@@ -56,7 +60,6 @@ class MainActivityTest {
 
     @Test
     fun shouldShowFileActionsPrompt(){
-        activityRule.launchActivity(null)
         MainScreenRobot(activityRule.activity).apply {
             checkNavigationDisplayed()
         }
@@ -65,8 +68,6 @@ class MainActivityTest {
     @Test
     fun shouldNotShowSFSNavAfterCreating(){
 
-        //  Arrange
-        activityRule.launchActivity(null)
 
         MainScreenRobot(activityRule.activity).apply {
             //  Act
@@ -79,8 +80,6 @@ class MainActivityTest {
 
     @Test
     fun shouldShowTakePictureAfterOpening(){
-        //  Arrange
-        activityRule.launchActivity(null)
 
         MainScreenRobot(activityRule.activity).apply {
             loadExistingSFS()
@@ -90,7 +89,6 @@ class MainActivityTest {
 
     @Test
     fun shouldPreserveActionsAfterOpeningAndReorienting() {
-        activityRule.launchActivity(null)
 
         MainScreenRobot(activityRule.activity).apply {
             loadExistingSFS()
@@ -103,8 +101,6 @@ class MainActivityTest {
 
     @Test
     fun shouldShowTakeNoteAfterOpening(){
-        //  Arrange
-        activityRule.launchActivity(null)
 
         MainScreenRobot(activityRule.activity).apply {
             loadExistingSFS()
@@ -114,8 +110,6 @@ class MainActivityTest {
 
     @Test
     fun shouldShowTakePictureAfterCreating(){
-        //  Arrange
-        activityRule.launchActivity(null)
 
         MainScreenRobot(activityRule.activity).apply {
             createNewSFS()
