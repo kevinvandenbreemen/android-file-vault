@@ -118,4 +118,16 @@ class MainActivityTest {
         }
     }
 
+    @Test
+    fun shouldStartTakeNoteWorkflow() {
+        MainScreenRobot(activityRule.activity).apply {
+            deleteTestFile()
+            createNewSFS()
+            clickTakeNote().apply {
+                checkTitleDisplayed()
+                checkContentDisplayed()
+            }
+        }
+    }
+
 }

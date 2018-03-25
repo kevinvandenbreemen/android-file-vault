@@ -87,5 +87,11 @@ class MainScreenRobot(val activity: Activity) {
 
     fun checkNavigationDisplayed() = assertDisplayed(R.id.sfsNavFrag)
     fun checkNotesDisplayed() = assertDisplayed(R.id.view_notes)
+    fun clickTakeNote(): NoteTakingRobot {
+        clickOn(R.id.takeNote)
+        return NoteTakingRobot()
+    }
+
+
 
 }
