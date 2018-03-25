@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit
 class MainActivityTest {
 
     companion object {
-        val DEFAULT_LOCATION = "Music"
+
         val TIME_TO_WAIT = TimeUnit.MILLISECONDS.convert(2, TimeUnit.SECONDS)
     }
 
@@ -70,7 +70,7 @@ class MainActivityTest {
 
 
         MainScreenRobot(activityRule.activity).apply {
-            //  Act
+            deleteTestFile()
             createNewSFS()
             //  Assert
             checkNavigationNotDisplayed()
@@ -112,6 +112,7 @@ class MainActivityTest {
     fun shouldShowTakePictureAfterCreating(){
 
         MainScreenRobot(activityRule.activity).apply {
+            deleteTestFile()
             createNewSFS()
             checkTakePictureDisplayed()
         }

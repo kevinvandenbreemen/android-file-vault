@@ -2,14 +2,17 @@ package com.vandenbreemen.secretcamera.util
 
 import android.app.Activity
 import android.content.pm.ActivityInfo
+import android.os.Environment
+import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.IdlingPolicies
 import android.support.test.espresso.IdlingRegistry
+import android.util.Log
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotExist
 import com.schibsted.spain.barista.interaction.BaristaClickInteractions.clickOn
 import com.schibsted.spain.barista.interaction.BaristaEditTextInteractions.writeTo
-import com.vandenbreemen.secretcamera.MainActivityTest
 import com.vandenbreemen.secretcamera.R
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 /**
@@ -22,9 +25,9 @@ class MainScreenRobot(val activity: Activity) {
 
     companion object {
         val TIME_TO_WAIT = TimeUnit.MILLISECONDS.convert(2, TimeUnit.SECONDS)
+        val FILENAME = "unitTestFile"
+        val DEFAULT_LOCATION = "Music"
     }
-
-    val fileName = "unitTestFile"
 
     var waitResource: ElapsedTimeIdlingResource? = null
 
@@ -40,10 +43,10 @@ class MainScreenRobot(val activity: Activity) {
 
     fun createNewSFS() {
         clickOn(R.id.createNew)
-        clickOn(MainActivityTest.DEFAULT_LOCATION)
+        clickOn(DEFAULT_LOCATION)
 
         clickOn(R.id.ok)
-        writeTo(R.id.fileName, fileName)
+        writeTo(R.id.fileName, FILENAME)
         writeTo(R.id.password, "password")
         writeTo(R.id.confirmPassword, "password")
 
@@ -53,8 +56,8 @@ class MainScreenRobot(val activity: Activity) {
     fun loadExistingSFS() {
         clickOn(R.id.loadExisting)
 
-        clickOn(MainActivityTest.DEFAULT_LOCATION)
-        clickOn(fileName)
+        clickOn(DEFAULT_LOCATION)
+        clickOn(FILENAME)
         clickOn(R.id.ok)
         writeTo(R.id.password, "password")
         clickOn(R.id.ok)
@@ -64,6 +67,17 @@ class MainScreenRobot(val activity: Activity) {
 
     fun rotateToLandscape() {
         activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    }
+
+    fun deleteTestFile() {
+        val dir = Environment.getExternalStorageDirectory()
+        val file = File(dir.absolutePath
+                + File.separator + DEFAULT_LOCATION
+                + File.separator + FILENAME)
+        println("DELETING ${file.absolutePath}")
+        Log.d("Delete", "DELETING ${file.absolutePath}")
+        InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(
+                "rm -f " + file.absolutePath)
     }
 
     fun checkTakePictureDisplayed() = assertDisplayed(R.id.takePicture)
