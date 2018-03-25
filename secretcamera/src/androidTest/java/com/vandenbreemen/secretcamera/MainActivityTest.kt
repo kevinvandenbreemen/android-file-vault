@@ -4,11 +4,8 @@ import android.support.test.espresso.IdlingPolicies
 import android.support.test.espresso.IdlingRegistry
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
-import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
-import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotExist
-import com.schibsted.spain.barista.interaction.BaristaClickInteractions.clickOn
-import com.schibsted.spain.barista.interaction.BaristaEditTextInteractions.writeTo
 import com.vandenbreemen.secretcamera.util.ElapsedTimeIdlingResource
+import com.vandenbreemen.secretcamera.util.MainScreenRobot
 import org.junit.After
 import org.junit.Before
 import org.junit.FixMethodOrder
@@ -60,7 +57,9 @@ class MainActivityTest {
     @Test
     fun shouldShowFileActionsPrompt(){
         activityRule.launchActivity(null)
-        assertDisplayed(R.id.sfsNavFrag)
+        MainScreenRobot().apply {
+            checkNavigationDisplayed()
+        }
     }
 
     @Test
@@ -69,11 +68,13 @@ class MainActivityTest {
         //  Arrange
         activityRule.launchActivity(null)
 
-        //  Act
-        doStandardCreate()
+        MainScreenRobot().apply {
+            //  Act
+            createNewSFS()
+            //  Assert
+            checkNavigationNotDisplayed()
+        }
 
-        //  Assert
-        assertNotExist(R.id.sfsNavFrag)
     }
 
     @Test
@@ -81,11 +82,10 @@ class MainActivityTest {
         //  Arrange
         activityRule.launchActivity(null)
 
-        //  Act
-        doStandardLoad()
-
-        //  Assert
-        assertDisplayed(R.id.takePicture)
+        MainScreenRobot().apply {
+            loadExistingSFS()
+            checkTakePictureDisplayed()
+        }
     }
 
     @Test
@@ -93,23 +93,10 @@ class MainActivityTest {
         //  Arrange
         activityRule.launchActivity(null)
 
-        //  Act
-        doStandardLoad()
-
-        //  Assert
-        assertDisplayed(R.id.takeNote)
-    }
-
-    private fun doStandardLoad() {
-        clickOn(R.id.loadExisting)
-
-        clickOn(DEFAULT_LOCATION)
-        clickOn(fileName)
-        clickOn(R.id.ok)
-        writeTo(R.id.password, "password")
-        clickOn(R.id.ok)
-
-        IdlingRegistry.getInstance().register(getElapsedTimeIdlingResource())
+        MainScreenRobot().apply {
+            loadExistingSFS()
+            checkTakeNoteDisplayed()
+        }
     }
 
     @Test
@@ -117,23 +104,10 @@ class MainActivityTest {
         //  Arrange
         activityRule.launchActivity(null)
 
-        //  Act
-        doStandardCreate()
-
-        //  Assert
-        assertDisplayed(R.id.takePicture)
-    }
-
-    private fun doStandardCreate() {
-        clickOn(R.id.createNew)
-        clickOn(DEFAULT_LOCATION)
-
-        clickOn(R.id.ok)
-        writeTo(R.id.fileName, fileName)
-        writeTo(R.id.password, "password")
-        writeTo(R.id.confirmPassword, "password")
-
-        clickOn(R.id.ok)
+        MainScreenRobot().apply {
+            createNewSFS()
+            checkTakePictureDisplayed()
+        }
     }
 
 }
