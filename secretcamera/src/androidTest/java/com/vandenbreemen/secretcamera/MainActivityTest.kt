@@ -6,6 +6,7 @@ import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import com.vandenbreemen.secretcamera.util.ElapsedTimeIdlingResource
 import com.vandenbreemen.secretcamera.util.MainScreenRobot
+import com.vandenbreemen.secretcamera.util.NoteTakingRobot
 import org.junit.After
 import org.junit.Before
 import org.junit.FixMethodOrder
@@ -139,6 +140,26 @@ class MainActivityTest {
                 checkTitleDisplayed()
                 checkContentDisplayed()
             }
+        }
+    }
+
+    @Test
+    fun shouldTakeNote() {
+        MainScreenRobot(activityRule.activity).apply {
+            deleteTestFile()
+            createNewSFS()
+            clickTakeNote().apply {
+                setTitle("Test Note")
+                setContent("Note Content\nOn multiple lines!")
+                clickOK()
+            }
+            clickNotes().apply { selectItem(0) }
+
+            NoteTakingRobot().apply {
+                checkTitleIs("Test Note")
+                checkContentIs("Note Content\nOn multiple lines!")
+            }
+
         }
     }
 

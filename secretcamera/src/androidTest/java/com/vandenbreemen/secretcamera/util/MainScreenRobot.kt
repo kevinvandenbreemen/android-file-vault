@@ -92,6 +92,10 @@ class MainScreenRobot(val activity: Activity) {
         return NoteTakingRobot()
     }
 
+    fun clickNotes(): SelectorRobot {
+        clickOn(R.id.view_notes)
+        return SelectorRobot()
+    }
 
 
 }
