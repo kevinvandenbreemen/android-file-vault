@@ -10,7 +10,7 @@ import com.vandenbreemen.secretcamera.mvp.impl.TakeNewNoteModel
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
-import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.*
 import org.hamcrest.Matchers.`is`
 import org.junit.Before
 import org.junit.Rule
@@ -79,6 +79,27 @@ class NoteDetailsModelTest {
         val note = sfs.loadFile(noteFile) as Note
         errorCollector.checkThat(note.title, `is`("Updated Title"))
         errorCollector.checkThat(note.content, `is`("Updated Content"))
+    }
+
+    @Test
+    fun shouldNotBeEditingByDefault() {
+        TakeNewNoteModel.storeNote(sfs, "Test Note", "Test Note Content")
+        val noteFile = sfs.extListFiles()[0]
+        sut = NoteDetailsModel(credentials, noteFile)
+        sut.init().subscribe()
+
+        assertFalse("Editing", sut.isEditing())
+    }
+
+    @Test
+    fun shouldToggleEditing() {
+        TakeNewNoteModel.storeNote(sfs, "Test Note", "Test Note Content")
+        val noteFile = sfs.extListFiles()[0]
+        sut = NoteDetailsModel(credentials, noteFile)
+        sut.init().subscribe()
+
+        sut.startEditing()
+        assertTrue("Editing", sut.isEditing())
     }
 
 }

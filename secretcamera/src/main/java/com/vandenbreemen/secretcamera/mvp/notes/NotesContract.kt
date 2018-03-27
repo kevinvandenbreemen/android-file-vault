@@ -28,10 +28,13 @@ interface NoteDetailsPresenter:PresenterContract{
 
     fun onOk()
 
+    fun onEdit()
+
 }
 
 interface NoteDetailsView:View{
     fun setNoteTitle(title:String)
     fun setNoteContent(content:String)
     fun close()
+    fun enableEdit()
 }

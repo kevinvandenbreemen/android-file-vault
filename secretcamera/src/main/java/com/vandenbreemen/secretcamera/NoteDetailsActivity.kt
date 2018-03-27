@@ -13,6 +13,9 @@ import dagger.android.AndroidInjection
 import javax.inject.Inject
 
 class NoteDetailsActivity : Activity(), NoteDetailsView {
+    override fun enableEdit() {
+
+    }
 
     @Inject
     lateinit var presenter:NoteDetailsPresenter
