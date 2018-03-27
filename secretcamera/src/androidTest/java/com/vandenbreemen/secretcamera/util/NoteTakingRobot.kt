@@ -42,4 +42,8 @@ class NoteTakingRobot {
         assertContains(R.id.content, content)
     }
 
+    fun clickEdit() {
+        clickOn(R.id.edit)
+    }
+
 }

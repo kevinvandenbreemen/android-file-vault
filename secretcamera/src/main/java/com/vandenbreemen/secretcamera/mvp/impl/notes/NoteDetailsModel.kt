@@ -3,6 +3,11 @@ package com.vandenbreemen.secretcamera.mvp.impl.notes
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.secretcamera.api.Note
+import io.reactivex.Single
+import io.reactivex.SingleOnSubscribe
+import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
+import io.reactivex.schedulers.Schedulers
+import io.reactivex.schedulers.Schedulers.computation
 
 /**
  * Created by kevin on 22/03/18.
@@ -21,5 +26,13 @@ class NoteDetailsModel(credentials: SFSCredentials, private val noteFilename:Str
 
     fun getNote(): Note {
         return note
+    }
+
+    fun updateNote(title: String, content: String): Single<Unit> {
+        return Single.create(SingleOnSubscribe<Unit> {
+            val newNote = Note(title, content)
+            sfs.storeObject(noteFilename, newNote)
+            it.onSuccess(Unit)
+        }).subscribeOn(computation()).observeOn(mainThread())
     }
 }

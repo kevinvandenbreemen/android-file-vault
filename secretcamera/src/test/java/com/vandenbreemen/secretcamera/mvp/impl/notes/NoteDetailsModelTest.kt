@@ -7,6 +7,7 @@ import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.secretcamera.api.Note
 import com.vandenbreemen.secretcamera.mvp.impl.TakeNewNoteModel
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
 import junit.framework.TestCase.assertNotNull
@@ -37,7 +38,7 @@ class NoteDetailsModelTest {
 
     @Before
     fun setup(){
-        RxJavaPlugins.setIoSchedulerHandler { scheduler -> AndroidSchedulers.mainThread() }
+        RxJavaPlugins.setComputationSchedulerHandler { scheduler -> AndroidSchedulers.mainThread() }
         ShadowLog.stream = System.out
 
         val sfsFile = File(Environment.getExternalStorageDirectory().toString() + File.separator + "test")
@@ -62,6 +63,22 @@ class NoteDetailsModelTest {
         assertNotNull("Note", note)
         errorCollector.checkThat(note.title, `is`("Test Note"))
         errorCollector.checkThat(note.content, `is`("Test Note Content"))
+    }
+
+    @Test
+    fun shouldUpdateNote(){
+        TakeNewNoteModel.storeNote(sfs, "Test Note", "Test Note Content")
+        val noteFile = sfs.extListFiles()[0]
+        sut = NoteDetailsModel(credentials, noteFile)
+        sut.init().subscribe()
+
+        val single:Single<Unit> = sut.updateNote("Updated Title", "Updated Content")
+        single.subscribe()
+
+        //  force note reload
+        val note = sfs.loadFile(noteFile) as Note
+        errorCollector.checkThat(note.title, `is`("Updated Title"))
+        errorCollector.checkThat(note.content, `is`("Updated Content"))
     }
 
 }
