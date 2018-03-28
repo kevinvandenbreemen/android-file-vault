@@ -1,5 +1,6 @@
 package com.vandenbreemen.secretcamera
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
 import android.view.View
@@ -7,6 +8,7 @@ import android.widget.EditText
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.secretcamera.api.Note
 import com.vandenbreemen.secretcamera.mvp.notes.NoteDetailsPresenter
 import com.vandenbreemen.secretcamera.mvp.notes.NoteDetailsView
 import dagger.android.AndroidInjection
@@ -14,7 +16,14 @@ import javax.inject.Inject
 
 class NoteDetailsActivity : Activity(), NoteDetailsView {
     override fun enableEdit() {
+        findViewById<EditText>(R.id.title).isEnabled = true
+        findViewById<EditText>(R.id.content).isEnabled = true
+    }
 
+    @SuppressLint("WrongViewCast")
+    override fun getNoteOnUI(): Note {
+        return Note(findViewById<EditText>(R.id.title).text.toString(),
+                findViewById<EditText>(R.id.content).text.toString())
     }
 
     @Inject
@@ -54,6 +63,10 @@ class NoteDetailsActivity : Activity(), NoteDetailsView {
 
     fun onOkay(view:View){
         presenter.onOk()
+    }
+
+    fun onEdit(view: View) {
+        presenter.onEdit()
     }
 
     override fun close() {

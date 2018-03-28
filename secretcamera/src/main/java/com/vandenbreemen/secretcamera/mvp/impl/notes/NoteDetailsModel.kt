@@ -13,6 +13,8 @@ import io.reactivex.schedulers.Schedulers.computation
  */
 class NoteDetailsModel(credentials: SFSCredentials, private val noteFilename:String) : Model(credentials) {
 
+    private var editing: Boolean = false
+
     private lateinit var note:Note
 
     override fun setup():Unit{
@@ -39,7 +41,6 @@ class NoteDetailsModel(credentials: SFSCredentials, private val noteFilename:Str
         return this.editing
     }
 
-    private var editing: Boolean = false
 
     fun startEditing() {
         this.editing = true

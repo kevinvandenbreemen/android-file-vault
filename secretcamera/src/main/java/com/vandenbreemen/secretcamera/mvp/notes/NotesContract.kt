@@ -2,6 +2,7 @@ package com.vandenbreemen.secretcamera.mvp.notes
 
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.PresenterContract
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.View
+import com.vandenbreemen.secretcamera.api.Note
 
 /**
  * <h2>Intro</h2>
@@ -37,4 +38,5 @@ interface NoteDetailsView:View{
     fun setNoteContent(content:String)
     fun close()
     fun enableEdit()
+    fun getNoteOnUI(): Note
 }
