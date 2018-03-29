@@ -4,8 +4,10 @@ import android.os.Environment
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
+import com.vandenbreemen.mobilesecurestorage.security.crypto.listFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.secretcamera.api.Note
+import com.vandenbreemen.secretcamera.mvp.impl.NoteFileTypes
 import com.vandenbreemen.secretcamera.mvp.impl.TakeNewNoteModel
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -52,6 +54,12 @@ class NoteDetailsModelTest {
 
     }
 
+    private fun sfs(): SecureFileSystem {
+        return object : SecureFileSystem(credentials.fileLocation) {
+            override fun getPassword(): SecureString = credentials.password.copy()
+        }
+    }
+
     @Test
     fun shouldLoadNote(){
         TakeNewNoteModel.storeNote(sfs, "Test Note", "Test Note Content")
@@ -68,7 +76,7 @@ class NoteDetailsModelTest {
     @Test
     fun shouldUpdateNote(){
         TakeNewNoteModel.storeNote(sfs, "Test Note", "Test Note Content")
-        val noteFile = sfs.extListFiles()[0]
+        var noteFile = sfs.extListFiles()[0]
         sut = NoteDetailsModel(credentials, noteFile)
         sut.init().subscribe()
 
@@ -76,9 +84,26 @@ class NoteDetailsModelTest {
         single.subscribe()
 
         //  force note reload
-        val note = sfs.loadFile(noteFile) as Note
+        noteFile = sfs().listFiles(NoteFileTypes.SIMPLE_NOTE)[0]
+        val note = sfs().loadFile(noteFile) as Note
         errorCollector.checkThat(note.title, `is`("Updated Title"))
         errorCollector.checkThat(note.content, `is`("Updated Content"))
+    }
+
+    @Test
+    fun shouldRenameNote() {
+        TakeNewNoteModel.storeNote(sfs, "Test Note", "Test Note Content")
+        var noteFile = sfs.extListFiles()[0]
+        sut = NoteDetailsModel(credentials, noteFile)
+        sut.init().subscribe()
+
+        val single: Single<Unit> = sut.updateNote("Updated Title", "Updated Content")
+        single.subscribe()
+
+        //  force note reload
+        noteFile = sfs().extListFiles()[0]
+
+        assertTrue("Note file updated - $noteFile", noteFile.startsWith("Updated Title "))
     }
 
     @Test
