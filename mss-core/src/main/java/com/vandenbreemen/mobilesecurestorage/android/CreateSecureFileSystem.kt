@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -52,6 +53,10 @@ class CreateSecureFileSystem : Activity(), CreateSecureFileSystemView {
 
     fun onOkay(view: View) {
 
+        onProvidedDetails()
+    }
+
+    private fun onProvidedDetails() {
         val fileName = findViewById<TextView>(R.id.fileName)
         val pass = findViewById<TextView>(R.id.password)
         val cPass = findViewById<TextView>(R.id.confirmPassword)
@@ -81,5 +86,15 @@ class CreateSecureFileSystem : Activity(), CreateSecureFileSystemView {
      */
     protected fun setOnCompleteListener(listener: Consumer<SFSCredentials>) {
         this.onCompleteListener = listener
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        when (keyCode) {
+            KeyEvent.KEYCODE_ENTER -> {
+                onProvidedDetails()
+                return true
+            }
+            else -> return super.onKeyUp(keyCode, event)
+        }
     }
 }

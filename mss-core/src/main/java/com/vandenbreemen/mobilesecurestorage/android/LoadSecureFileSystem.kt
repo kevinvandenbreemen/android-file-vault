@@ -76,7 +76,6 @@ class LoadSecureFileSystem : Activity(), LoadFileSystemView {
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
-        Log.d("KeyDebug", "keyCode=$keyCode")
         when (keyCode) {
             KeyEvent.KEYCODE_ENTER -> {
                 val passView = findViewById<TextView>(R.id.password)
