@@ -9,7 +9,7 @@
     android:layout_marginEnd="10dp"
     android:layout_marginStart="10dp"
     android:layout_marginTop="16dp"
-    android:maxHeight="200dp"
+    android:maxHeight="300dp"
     android:paddingEnd="50dp"
     android:paddingStart="50dp"
     app:cardBackgroundColor="@color/colorPrimary"
@@ -34,7 +34,7 @@
         <Button
             android:id="@+id/loadExisting"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             android:minWidth="200dp"
@@ -48,7 +48,7 @@
         <Button
             android:id="@+id/createNew"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:minWidth="200dp"
             android:text="@string/create_new"
             android:theme="@style/ButtonStyle"
