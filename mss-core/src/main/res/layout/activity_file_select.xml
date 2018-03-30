@@ -12,17 +12,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:text="@string/select_file_folder"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="12pt"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="10pt"
+        app:layout_constraintBottom_toBottomOf="@id/topBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/cancel"
@@ -39,8 +38,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/bottomBar" />
 
     <Button
         android:id="@+id/ok"
@@ -57,34 +55,44 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.85"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/bottomBar" />
 
     <android.support.constraint.Guideline
         android:id="@+id/topBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1" />
+        app:layout_constraintGuide_percent="0.14" />
 
-    <ListView
-        android:id="@+id/fileList"
+    <android.support.v7.widget.CardView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="8dp"
+        app:cardBackgroundColor="@color/colorAccent"
+        app:cardElevation="4dp"
         app:layout_constraintBottom_toTopOf="@id/bottomBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topBar" />
+        app:layout_constraintTop_toBottomOf="@id/topBar">
+
+        <ListView
+            android:id="@+id/fileList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="8dp" />
+
+    </android.support.v7.widget.CardView>
+
 
     <android.support.constraint.Guideline
         android:id="@+id/bottomBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.85" />
+        app:layout_constraintGuide_percent="0.88" />
 
 </android.support.constraint.ConstraintLayout>
