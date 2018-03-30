@@ -44,6 +44,12 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
          * Indicates that we're selecting a directory only
          */
         const val PARM_DIR_ONLY = "DIR_ONLY"
+
+        /**
+         * For selecting files confirmation is not required.  File selection will be done on first
+         * file clicked
+         */
+        const val PARM_NO_CONFIRM_NEEDED = "__NO_CONF_RQD"
     }
 
     /**
@@ -66,6 +72,7 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
 
         val model = FileSelectModel(this)
         model.setSelectDirectories(intent.getBooleanExtra(PARM_DIR_ONLY, false))
+        model.isAutoSelect = intent.getBooleanExtra(PARM_NO_CONFIRM_NEEDED, false)
 
         controller = FileSelectController(model, this)
 

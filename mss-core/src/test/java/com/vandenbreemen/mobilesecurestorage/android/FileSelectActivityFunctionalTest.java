@@ -221,6 +221,43 @@ public class FileSelectActivityFunctionalTest {
         assertEquals("Selected file", fileInExtStorageDir, selectedFile.get());
     }
 
+    @Test
+    public void testSelectAndConfirm() {
+
+        Intent startListFile = new Intent(ShadowApplication.getInstance().getApplicationContext(), FileSelectActivity.class);
+        startListFile.putExtra(FileSelectActivity.PARM_NO_CONFIRM_NEEDED, Boolean.TRUE);
+
+        sut = Robolectric.buildActivity(FileSelectActivity.class, startListFile)
+                .create()
+                .get();
+
+        shadowOf(sut.getApplication()).grantPermissions(Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        sut.onResume();
+
+        AtomicReference<File> selectedFile = new AtomicReference<>(null);
+        FileSelectActivity.FileSelectListener listener = selectedFile::set;
+        sut.setListener(listener);
+
+        ListView listView = sut.findViewById(R.id.fileList);
+
+        ShadowListView shadow = shadowOf(listView);
+        shadow.populateItems();
+
+        int fileIndex = 0;
+        for (int i = 0; i < listView.getAdapter().getCount(); i++) {
+            if (!((File) listView.getAdapter().getItem(i)).isDirectory()) {
+                fileIndex = i;
+                break;
+            }
+        }
+
+        shadow.performItemClick(fileIndex);
+
+        assertEquals("Selected file", fileInExtStorageDir, selectedFile.get());
+    }
+
     //  System should gracefully act when no listener/intent/etc set up for confirmed file
     @Test
     public void sanityConfirmFile() {

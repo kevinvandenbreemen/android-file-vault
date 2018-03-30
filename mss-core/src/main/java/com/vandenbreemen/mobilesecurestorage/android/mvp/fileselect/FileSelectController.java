@@ -22,6 +22,8 @@ public class FileSelectController {
     public FileSelectController(FileSelectModel model, FileSelectView view) {
         this.model = model;
         this.view = view;
+
+        this.model.setListener(file -> view.select(file));
     }
 
     public void start() {
