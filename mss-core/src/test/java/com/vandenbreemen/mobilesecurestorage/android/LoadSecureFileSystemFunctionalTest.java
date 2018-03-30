@@ -2,6 +2,7 @@ package com.vandenbreemen.mobilesecurestorage.android;
 
 import android.content.Intent;
 import android.os.Environment;
+import android.view.KeyEvent;
 import android.widget.TextView;
 
 import com.vandenbreemen.mobilesecurestorage.R;
@@ -110,6 +111,28 @@ public class LoadSecureFileSystemFunctionalTest {
         textView.setText(password);
 
         load.findViewById(R.id.ok).performClick();
+
+        Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> credentials.get() != null);
+
+        assertTrue("Password",
+                SecureFileSystem.generatePassword(SecureString.fromPassword(password)).equals(credentials.get().getPassword()));
+    }
+
+    @Test
+    public void shouldAllowEnterToDecrypt() {
+
+        AtomicReference<SFSCredentials> credentials = new AtomicReference<>(null);
+
+        LoadSecureFileSystem load = Robolectric.buildActivity(LoadSecureFileSystem.class, startLoadSFS)
+                .create()
+                .get();
+
+        load.setListener(cred -> credentials.set(cred));
+
+        TextView textView = load.findViewById(R.id.password);
+        textView.setText(password);
+
+        load.onKeyUp(KeyEvent.KEYCODE_ENTER, new KeyEvent(1, 1));
 
         Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> credentials.get() != null);
 

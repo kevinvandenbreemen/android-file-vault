@@ -1,10 +1,13 @@
 package com.vandenbreemen.mobilesecurestorage.android
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import com.vandenbreemen.mobilesecurestorage.R
@@ -31,12 +34,16 @@ class LoadSecureFileSystem : Activity(), LoadFileSystemView {
 
     private lateinit var workflow: FileWorkflow
 
+    @SuppressLint("WrongViewCast")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_load_secure_file_system)
 
         this.workflow = intent.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME)
         controller = LoadFileSystemController(LoadFileSystemModel(workflow.fileOrDirectory), this)
+
+        //  Set up enter key
+        findViewById<EditText>(R.id.password)
     }
 
     /**
@@ -66,5 +73,17 @@ class LoadSecureFileSystem : Activity(), LoadFileSystemView {
 
     fun onCancel(view: View) {
         handleWorkflowCancel(this, workflow)
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        Log.d("KeyDebug", "keyCode=$keyCode")
+        when (keyCode) {
+            KeyEvent.KEYCODE_ENTER -> {
+                val passView = findViewById<TextView>(R.id.password)
+                controller.providePassword(passView.text.toString())
+                return true
+            }
+            else -> return super.onKeyUp(keyCode, event)
+        }
     }
 }
