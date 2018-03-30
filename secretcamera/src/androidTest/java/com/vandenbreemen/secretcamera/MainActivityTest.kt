@@ -144,6 +144,15 @@ class MainActivityTest {
     }
 
     @Test
+    fun shouldNotCrashWhenNoNotes() {
+        MainScreenRobot(activityRule.activity).apply {
+            deleteTestFile()
+            createNewSFS()
+            clickNotes()
+        }
+    }
+
+    @Test
     fun shouldTakeNote() {
         MainScreenRobot(activityRule.activity).apply {
             deleteTestFile()
