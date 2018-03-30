@@ -1,8 +1,8 @@
 package com.vandenbreemen.secretcamera
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -16,7 +16,7 @@ import com.vandenbreemen.secretcamera.mvp.impl.SFSMainMenuModel
 import com.vandenbreemen.secretcamera.mvp.impl.SFSMainMenuPresenterImpl
 import dagger.android.AndroidInjection
 
-class MainActivity : Activity(), SFSMenuContract.SFSMainMenuView {
+class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
     override fun onReadyToUse() {
 
     }
