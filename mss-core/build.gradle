@@ -49,6 +49,7 @@ dependencies {
     compile 'com.madgag.spongycastle:core:1.53.0.0'
     compile 'com.madgag.spongycastle:prov:1.53.0.0'
     compile group: 'io.reactivex.rxjava2', name: 'rxandroid', version: '2.0.1'
+    compile 'com.android.support:cardview-v7:26.1.0'
 
     //  Testing dependencies
     testImplementation 'junit:junit:4.12'
