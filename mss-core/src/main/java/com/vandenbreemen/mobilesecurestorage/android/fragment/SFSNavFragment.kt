@@ -51,6 +51,7 @@ class SFSNavFragment(): Fragment() {
         button = viewGroup.findViewById(R.id.loadExisting)
         button.setOnClickListener {
             val intent: Intent = Intent(activity, FileSelectActivity::class.java)
+            intent.putExtra(FileSelectActivity.PARM_NO_CONFIRM_NEEDED, true)
             this.workflow.targetActivity = LoadSecureFileSystem::class.java
             intent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, this.workflow)
             activity.startActivity(intent)

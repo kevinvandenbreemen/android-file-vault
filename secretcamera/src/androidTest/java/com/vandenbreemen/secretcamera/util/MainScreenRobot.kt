@@ -58,7 +58,6 @@ class MainScreenRobot(val activity: Activity) {
 
         clickOn(DEFAULT_LOCATION)
         clickOn(FILENAME)
-        clickOn(R.id.ok)
         writeTo(R.id.password, "password")
         clickOn(R.id.ok)
 
