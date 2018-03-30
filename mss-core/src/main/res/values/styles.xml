@@ -5,6 +5,25 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorButtonNormal">@color/colorAccent</item>
+    </style>
+
+    <style name="ButtonStyle" parent="Base.Widget.AppCompat.Button">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="colorControlHighlight">@color/colorPrimaryDark</item>
+        <item name="android:colorButtonNormal">@color/white</item>
+    </style>
+
+    <style name="ButtonCancel" parent="Base.Widget.AppCompat.Button.Colored">
+        <item name="android:colorAccent">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
+    </style>
+
+    <style name="ButtonOK" parent="Base.Widget.AppCompat.Button.Colored">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="colorControlHighlight">@color/green</item>
+        <item name="android:colorAccent">@color/green</item>
     </style>
 
     <style name="item_select">
