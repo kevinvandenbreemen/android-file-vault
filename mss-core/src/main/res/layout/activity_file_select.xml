@@ -70,7 +70,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         app:cardBackgroundColor="@color/colorPrimary"
-        app:cardElevation="4dp"
+        app:cardElevation="@dimen/card_elevation"
         app:layout_constraintBottom_toTopOf="@id/bottomBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
