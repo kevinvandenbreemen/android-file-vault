@@ -163,4 +163,33 @@ class MainActivityTest {
         }
     }
 
+    @Test
+    fun shouldEditNote(){
+        MainScreenRobot(activityRule.activity).apply {
+            deleteTestFile()
+            createNewSFS()
+            clickTakeNote().apply {
+                setTitle("Test Note")
+                setContent("Note Content\nOn multiple lines!")
+                clickOK()
+            }
+            clickNotes().apply { selectItem(0) }
+
+            NoteTakingRobot().apply {
+                clickEdit()
+                setTitle("Update Title")
+                setContent("Updated content")
+                clickOK()
+            }
+
+            clickNotes().apply { selectItem(0) }
+
+            NoteTakingRobot().apply {
+                checkTitleIs("Update Title")
+                checkContentIs("Updated content")
+            }
+
+        }
+    }
+
 }

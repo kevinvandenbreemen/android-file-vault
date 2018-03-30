@@ -6,4 +6,5 @@
     <string name="enter_text_for_your_note">Add your text here</string>
     <string name="default_select_item_title">Please select an Item</string>
     <string name="specify_title">Please choose a title</string>
+    <string name="edit">Edit</string>
 </resources>

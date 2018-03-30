@@ -1,6 +1,7 @@
 package com.vandenbreemen.mobilesecurestorage.security.crypto
 
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
+import com.vandenbreemen.mobilesecurestorage.file.api.FileType
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import java.io.Serializable
 import java.util.function.Supplier
@@ -74,4 +75,10 @@ fun SecureFileSystem.getFileMeta(fileName: String, provider: Supplier<FileMeta>)
  */
 fun SecureFileSystem.extListFiles(): List<String> {
     return this.listFiles().filter { !METADATA_FILENAME.equals(it) }
+}
+
+fun SecureFileSystem.listFiles(fileType: FileType): List<String> {
+    return this.extListFiles().filter {
+        fileType == getFileMeta(it)?.getFileType()
+    }
 }
