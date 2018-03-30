@@ -45,6 +45,7 @@ class SFSNavFragment(): Fragment() {
             this.workflow.targetActivity = CreateSecureFileSystem::class.java
             intent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, this.workflow)
             intent.putExtra(FileSelectActivity.PARM_DIR_ONLY, true)
+            intent.putExtra(FileSelectActivity.PARM_TITLE, resources.getText(R.string.loc_for_new_sfs))
             activity.startActivity(intent)
         }
 
@@ -52,6 +53,7 @@ class SFSNavFragment(): Fragment() {
         button.setOnClickListener {
             val intent: Intent = Intent(activity, FileSelectActivity::class.java)
             intent.putExtra(FileSelectActivity.PARM_NO_CONFIRM_NEEDED, true)
+            intent.putExtra(FileSelectActivity.PARM_TITLE, resources.getText(R.string.select_file))
             this.workflow.targetActivity = LoadSecureFileSystem::class.java
             intent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, this.workflow)
             activity.startActivity(intent)
