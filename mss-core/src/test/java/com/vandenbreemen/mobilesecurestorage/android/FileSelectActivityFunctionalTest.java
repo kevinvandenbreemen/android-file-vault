@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Environment;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.vandenbreemen.mobilesecurestorage.R;
 import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow;
@@ -97,6 +98,19 @@ public class FileSelectActivityFunctionalTest {
         shadow.populateItems();
 
         assertNotSame("File items displayed", 0, listView.getAdapter().getCount());
+    }
+
+    @Test
+    public void testSetTitle() {
+        Intent startListFile = new Intent(ShadowApplication.getInstance().getApplicationContext(), FileSelectActivity.class);
+        startListFile.putExtra(FileSelectActivity.PARM_TITLE, "This is a test");
+
+        sut = Robolectric.buildActivity(FileSelectActivity.class, startListFile)
+                .create()
+                .get();
+
+        TextView tv = sut.findViewById(R.id.title);
+        assertEquals("Title", "This is a test", tv.getText().toString());
     }
 
     @Test

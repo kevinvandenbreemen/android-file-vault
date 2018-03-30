@@ -50,6 +50,8 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
          * file clicked
          */
         const val PARM_NO_CONFIRM_NEEDED = "__NO_CONF_RQD"
+
+        const val PARM_TITLE = "__TITLE"
     }
 
     /**
@@ -73,6 +75,10 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
         val model = FileSelectModel(this)
         model.setSelectDirectories(intent.getBooleanExtra(PARM_DIR_ONLY, false))
         model.isAutoSelect = intent.getBooleanExtra(PARM_NO_CONFIRM_NEEDED, false)
+
+        val title = intent.getStringExtra(PARM_TITLE)
+                ?: resources.getText(R.string.select_file_folder)
+        findViewById<TextView>(R.id.title).setText(title)
 
         controller = FileSelectController(model, this)
 
