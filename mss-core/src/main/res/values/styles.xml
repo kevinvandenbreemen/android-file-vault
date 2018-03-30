@@ -22,8 +22,9 @@
 
     <style name="ButtonOK" parent="Base.Widget.AppCompat.Button.Colored">
         <item name="android:textColor">@color/colorAccent</item>
-        <item name="colorControlHighlight">@color/green</item>
         <item name="android:colorAccent">@color/green</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
+        <item name="android:colorButtonNormal">@color/green</item>
     </style>
 
     <style name="item_select">
