@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowIntent;
 import org.robolectric.shadows.ShadowListView;
@@ -42,6 +43,7 @@ import static org.robolectric.Shadows.shadowOf;
  * @author kevin
  */
 @RunWith(RobolectricTestRunner.class)
+@Config(application = TestApplication.class)
 public class FileSelectActivityFunctionalTest {
     /**
      * App.  Using this to simulate having/not having permissions

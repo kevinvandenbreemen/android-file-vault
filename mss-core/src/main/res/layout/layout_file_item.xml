@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="2dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginStart="8dp"
+    android:layout_marginEnd="32dp"
+    android:layout_marginStart="32dp"
     android:layout_marginTop="2dp"
     android:maxHeight="100dp"
     android:paddingBottom="10dp"
@@ -13,7 +13,9 @@
     android:paddingStart="10dp"
     android:paddingTop="10dp"
     app:cardBackgroundColor="@color/white"
-    app:cardElevation="3dp">
+    app:cardElevation="3dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent">
 
     <TextView
         android:id="@+id/itemLabel"

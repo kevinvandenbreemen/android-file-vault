@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.Shadows;
+import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowIntent;
 import org.robolectric.shadows.ShadowToast;
 
@@ -42,6 +43,7 @@ import static junit.framework.TestCase.fail;
  * @author kevin
  */
 @RunWith(RobolectricTestRunner.class)
+@Config(application = TestApplication.class)
 public class CreateSecureFileSystemFunctionalTest {
 
     private File directory;
