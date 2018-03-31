@@ -89,7 +89,7 @@
         android:layout_marginTop="8dp"
         android:onClick="onEdit"
         android:text="@string/edit"
-        android:theme="@style/ButtonOK"
+        android:theme="@style/ButtonAction"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ok"
         app:layout_constraintStart_toStartOf="parent"
