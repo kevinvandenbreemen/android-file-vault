@@ -1,12 +1,17 @@
 package com.vandenbreemen.mobilesecurestorage.file;
 
+import com.vandenbreemen.mobilesecurestorage.data.ByteReader;
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
 import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime;
+
+import org.spongycastle.pqc.math.linearalgebra.ByteUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+
+import static com.vandenbreemen.mobilesecurestorage.data.ControlBytes.END_OF_HEADER;
 
 /**
  * <h2>Intro</h2>
@@ -17,6 +22,14 @@ import java.io.RandomAccessFile;
  */
 public class ChunkedFile {
 
+    /**
+     *
+     */
+    private static final int PREFIX_BYTE_LEN = 256;
+
+    private static final byte[] SIGNATURE = {
+            'N', 'E', 'S', 26, 'J', 'K'    //  NES Rom (Just Kidding)
+    };
 
     /**
      * Location of the actual file
@@ -36,19 +49,67 @@ public class ChunkedFile {
     public ChunkedFile(File location) {
         if (location == null)
             throw new MSSRuntime("Unexpected:  Null file ref");
-        if (!location.exists()) {
+
+        this.location = location;
+
+        if (!this.location.exists()) {
             try {
-                if (!location.createNewFile())
-                    throw new MSSRuntime("Unable to create file at '" + location.getAbsolutePath() + "'");
-                else
-                    SystemLog.get().info("Successfully created file '" + location.getAbsolutePath() + "'");
+                if (!this.location.createNewFile())
+                    throw new MSSRuntime("Unable to create file at '" + this.location.getAbsolutePath() + "'");
+                else {
+                    SystemLog.get().info("Successfully created file '" + this.location.getAbsolutePath() + "'");
+
+                }
             } catch (IOException ioex) {
                 SystemLog.get().error("Failed to create file", ioex);
-                throw new MSSRuntime("Unable to create file at '" + location.getAbsolutePath() + "'", ioex);
+                throw new MSSRuntime("Unable to create file at '" + this.location.getAbsolutePath() + "'", ioex);
             }
         }
-        this.location = location;
+
         this.cursor = 0;
+
+
+    }
+
+    /**
+     * Create a new chunked file with empty message
+     *
+     * @param location
+     * @return
+     */
+    public static ChunkedFile getChunkedFile(File location) {
+        boolean exists = location.exists() && location.length() > 0;
+        ChunkedFile ret = new ChunkedFile(location);
+        if (!exists) {
+            ret.addFileTypeSignature();
+            ret.setMessage(new byte[0]);
+        }
+        return ret;
+    }
+
+    void addFileTypeSignature() {
+        this.cursor = 0;
+        writeBytes(SIGNATURE);
+    }
+
+    /**
+     * Check that this file is a valid chunked file.
+     *
+     * @throws ChunkedMediumException
+     */
+    void validateFile() throws ChunkedMediumException {
+        long currentCursor = cursor;
+        this.cursor = 0;
+
+        try {
+            byte[] sigBytes = readBytes(SIGNATURE.length);
+            if (!ByteUtils.equals(SIGNATURE, sigBytes)) {
+                SystemLog.get().debug("ERROR VALIDATING FILE:  PREFIX IS:  " + new String(sigBytes) + " but expected " + new String(SIGNATURE));
+                throw new ChunkedMediumException("Not a valid chunked file");
+            }
+        } finally {
+            this.cursor = currentCursor;
+        }
     }
 
     /**
@@ -72,13 +133,14 @@ public class ChunkedFile {
      * @return
      */
     public ChunkedFile setCursor(long location) {
+        long locationAdjustedForFilePrefix = location + PREFIX_BYTE_LEN;
         try (RandomAccessFile raf = get(true)) {
-            raf.seek(location);
-            cursor = location;
+            raf.seek(locationAdjustedForFilePrefix);
+            cursor = locationAdjustedForFilePrefix;
             return this;
         } catch (IOException ioe) {
-            SystemLog.get().error("Unable to move to location " + location, ioe);
-            throw new IllegalArgumentException("Location " + location + " is out of bounds");
+            SystemLog.get().error("Unable to move to location " + locationAdjustedForFilePrefix, ioe);
+            throw new IllegalArgumentException("Location " + locationAdjustedForFilePrefix + " is out of bounds");
         }
     }
 
@@ -115,4 +177,22 @@ public class ChunkedFile {
         }
     }
 
+    public byte[] getMessage() {
+        this.cursor = SIGNATURE.length;
+        byte[] raw = readBytes(PREFIX_BYTE_LEN - SIGNATURE.length);
+        return new ByteReader().readBytes(raw);
+    }
+
+    public void setMessage(byte[] prefixBytes) {
+        this.cursor = SIGNATURE.length;
+        byte[] msgBytes = new byte[PREFIX_BYTE_LEN - SIGNATURE.length];
+        System.arraycopy(prefixBytes, 0, msgBytes, 0, prefixBytes.length);
+        msgBytes[prefixBytes.length] = END_OF_HEADER;
+        this.cursor = SIGNATURE.length;
+        writeBytes(msgBytes);
+    }
+
+    public boolean isEmpty() {
+        return location.length() == PREFIX_BYTE_LEN;
+    }
 }

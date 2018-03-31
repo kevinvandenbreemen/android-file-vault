@@ -117,13 +117,13 @@ public class IndexedFile {
         this();
 
         try {
-            this.file = new ChunkedFile(desiredFile);
+            this.file = ChunkedFile.getChunkedFile(desiredFile);
         } catch (Exception ex) {
             throw new MSSRuntime("Unexpected error creating backing file", ex);
         }
 
         //	Now try and load up the FAT
-        if (!NumberUtils.empty(desiredFile.length()) /* IE the file wasn't just created */) {
+        if (!this.file.isEmpty() /* IE the file wasn't just created */) {
             try {
                 FileOnTheSystem fatLoader = new FileOnTheSystem(null, this, 0);
                 byte[] fatBytes = fatLoader.getData();

@@ -54,4 +54,26 @@ public class TestConstants {
         return file;
     }
 
+    /**
+     * @param name   Name of file
+     * @param create Whether to actually create the file
+     * @return
+     */
+    public static File getTestFile(String name, boolean create) {
+        File dir = new File(TEST_DIR);
+        dir.mkdir();
+
+        File file = new File(TEST_DIR + File.separator + name);
+        if (create) {
+            try {
+                file.createNewFile();
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+                throw new RuntimeException("Unexpected - Unable to create test file!", ioe);
+            }
+        }
+        file.deleteOnExit();
+        return file;
+    }
+
 }
