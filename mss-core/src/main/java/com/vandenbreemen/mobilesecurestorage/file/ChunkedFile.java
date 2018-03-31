@@ -139,14 +139,8 @@ public class ChunkedFile {
      */
     public ChunkedFile setCursor(long location) {
         long locationAdjustedForFilePrefix = location + PREFIX_BYTE_LEN;
-        try (RandomAccessFile raf = get(true)) {
-            raf.seek(locationAdjustedForFilePrefix);
-            cursor = locationAdjustedForFilePrefix;
-            return this;
-        } catch (IOException ioe) {
-            SystemLog.get().error("Unable to move to location " + locationAdjustedForFilePrefix, ioe);
-            throw new IllegalArgumentException("Location " + locationAdjustedForFilePrefix + " is out of bounds");
-        }
+        cursor = locationAdjustedForFilePrefix;
+        return this;
     }
 
     /**
