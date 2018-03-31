@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity"
-
+            android:screenOrientation="portrait"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,14 +22,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity" android:screenOrientation="portrait" />
+        <activity android:name="com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity" />
         <activity android:name="com.vandenbreemen.mobilesecurestorage.android.CreateSecureFileSystem"
             android:screenOrientation="portrait"/>
         <activity android:name="com.vandenbreemen.mobilesecurestorage.android.LoadSecureFileSystem"
             android:screenOrientation="portrait"/>
-        <activity android:name=".TakeNoteActivity" />
-        <activity android:name=".StringSelectorActivity" />
-        <activity android:name=".NoteDetailsActivity"></activity>
+        <activity
+            android:name=".TakeNoteActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".StringSelectorActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".NoteDetailsActivity"
+            android:configChanges="orientation|screenSize"></activity>
     </application>
 
 </manifest>
