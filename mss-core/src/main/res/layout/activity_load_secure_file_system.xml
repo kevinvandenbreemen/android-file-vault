@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context="com.vandenbreemen.mobilesecurestorage.android.LoadSecureFileSystem">
 
     <EditText
@@ -30,6 +31,7 @@
         android:layout_marginTop="8dp"
         android:onClick="onOkay"
         android:text="@string/ok"
+        android:theme="@style/ButtonOK"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -45,6 +47,7 @@
         android:layout_marginTop="8dp"
         android:onClick="onCancel"
         android:text="@string/cancel"
+        android:theme="@style/ButtonCancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ok"
         app:layout_constraintHorizontal_bias="0.5"
