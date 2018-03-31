@@ -2,6 +2,7 @@ package com.vandenbreemen.secretcamera.mvp.impl.notes
 
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
+import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
 import com.vandenbreemen.secretcamera.api.Note
@@ -35,12 +36,21 @@ class NoteDetailsModel(credentials: SFSCredentials, private val noteFilename:Str
 
     fun updateNote(title: String, content: String): Single<Unit> {
         return Single.create(SingleOnSubscribe<Unit> {
-            val newNote = Note(title, content)
-            val newNoteFileName = title + " " + Date() + "_" + System.nanoTime() % 1000
-            sfs.storeObject(newNoteFileName, newNote)
-            sfs.setFileMetadata(newNoteFileName, FileMeta(NoteFileTypes.SIMPLE_NOTE))
-            sfs.deleteFile(noteFilename)
-            it.onSuccess(Unit)
+
+            if (title.isBlank()) {
+                it.onError(ApplicationError("Title required"))
+            } else if (content.isBlank()) {
+                it.onError(ApplicationError("Content required"))
+            } else {
+                val newNote = Note(title, content)
+                val newNoteFileName = title + " " + Date() + "_" + System.nanoTime() % 1000
+                sfs.storeObject(newNoteFileName, newNote)
+                sfs.setFileMetadata(newNoteFileName, FileMeta(NoteFileTypes.SIMPLE_NOTE))
+                sfs.deleteFile(noteFilename)
+                it.onSuccess(Unit)
+            }
+
+
         }).subscribeOn(computation()).observeOn(mainThread())
     }
 

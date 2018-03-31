@@ -2,6 +2,7 @@ package com.vandenbreemen.secretcamera.mvp.impl.notes
 
 import android.os.Environment
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.listFiles
@@ -88,6 +89,42 @@ class NoteDetailsModelTest {
         val note = sfs().loadFile(noteFile) as Note
         errorCollector.checkThat(note.title, `is`("Updated Title"))
         errorCollector.checkThat(note.content, `is`("Updated Content"))
+    }
+
+    @Test
+    fun shouldPreventUpdatingNoteToBlankTitle() {
+        TakeNewNoteModel.storeNote(sfs, "Test Note", "Test Note Content")
+        var noteFile = sfs.extListFiles()[0]
+        sut = NoteDetailsModel(credentials, noteFile)
+        sut.init().subscribe()
+
+        val single: Single<Unit> = sut.updateNote("", "Updated Content")
+        single.test()
+                .assertError(ApplicationError::class.java)
+                .assertNotComplete()
+
+        noteFile = sfs().listFiles(NoteFileTypes.SIMPLE_NOTE)[0]
+        val note = sfs().loadFile(noteFile) as Note
+        errorCollector.checkThat(note.title, `is`("Test Note"))
+        errorCollector.checkThat(note.content, `is`("Test Note Content"))
+    }
+
+    @Test
+    fun shouldPreventUpdatingNoteToBlankContent() {
+        TakeNewNoteModel.storeNote(sfs, "Test Note", "Test Note Content")
+        var noteFile = sfs.extListFiles()[0]
+        sut = NoteDetailsModel(credentials, noteFile)
+        sut.init().subscribe()
+
+        val single: Single<Unit> = sut.updateNote("Test Note", "")
+        single.test()
+                .assertError(ApplicationError::class.java)
+                .assertNotComplete()
+
+        noteFile = sfs().listFiles(NoteFileTypes.SIMPLE_NOTE)[0]
+        val note = sfs().loadFile(noteFile) as Note
+        errorCollector.checkThat(note.title, `is`("Test Note"))
+        errorCollector.checkThat(note.content, `is`("Test Note Content"))
     }
 
     @Test
