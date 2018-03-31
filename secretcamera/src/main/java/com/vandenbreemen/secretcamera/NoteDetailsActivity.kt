@@ -4,6 +4,9 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
@@ -38,7 +41,7 @@ class NoteDetailsActivity : Activity(), NoteDetailsView {
     }
 
     override fun onReadyToUse() {
-
+        findViewById<ViewGroup>(R.id.overlay).visibility = GONE
     }
 
     override fun showError(error: ApplicationError) {
@@ -47,6 +50,7 @@ class NoteDetailsActivity : Activity(), NoteDetailsView {
 
     override fun onPause() {
         super.onPause()
+        findViewById<ViewGroup>(R.id.overlay).visibility = VISIBLE
         presenter.close()
     }
 

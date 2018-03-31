@@ -105,4 +105,10 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.86" />
+
+    <include
+        android:id="@+id/overlay"
+        layout="@layout/layout_logo_screen"
+        android:visibility="gone" />
+
 </android.support.constraint.ConstraintLayout>

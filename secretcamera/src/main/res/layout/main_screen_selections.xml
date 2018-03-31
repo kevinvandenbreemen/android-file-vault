@@ -82,5 +82,9 @@
 
     </GridLayout>
 
+    <include
+        android:id="@+id/overlay"
+        layout="@layout/layout_logo_screen"
+        android:visibility="gone" />
 
 </android.support.v7.widget.CardView>

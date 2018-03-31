@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
 import android.view.View
+import android.view.View.VISIBLE
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
@@ -114,6 +116,11 @@ class StringSelectorActivity : Activity() {
 
     companion object {
         const val WORKFLOW = "__WORKFLOW"
+    }
+
+    override fun onPause() {
+        super.onPause()
+        findViewById<ViewGroup>(R.id.overlay).visibility = VISIBLE
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

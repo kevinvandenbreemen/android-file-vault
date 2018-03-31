@@ -4,6 +4,9 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
@@ -19,6 +22,7 @@ class TakeNoteActivity : Activity(), TakeNewNoteView {
     lateinit var presenter: TakeNewNotePresenter
 
     override fun onReadyToUse() {
+        findViewById<ViewGroup>(R.id.overlay).visibility = GONE
     }
 
     override fun showError(error: ApplicationError) {
@@ -45,6 +49,8 @@ class TakeNoteActivity : Activity(), TakeNewNoteView {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_take_note)
+
+        findViewById<ViewGroup>(R.id.overlay).visibility = VISIBLE
     }
 
     fun onCancel(view: View) {
@@ -53,6 +59,7 @@ class TakeNoteActivity : Activity(), TakeNewNoteView {
 
     override fun onPause() {
         super.onPause()
+        findViewById<ViewGroup>(R.id.overlay).visibility = VISIBLE
         presenter.close()
     }
 
