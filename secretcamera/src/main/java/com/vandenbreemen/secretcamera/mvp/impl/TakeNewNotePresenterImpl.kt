@@ -25,12 +25,12 @@ class TakeNewNotePresenterImpl(val view: TakeNewNoteView, val model: TakeNewNote
                     .subscribe({ _ ->
                         Log.d("TakeNewNotePresenter", "New note taken - ${Thread.currentThread()}")
                         view.onNoteSucceeded("New note created")
-                        view.close()
+                        view.close(model.copyCredentials())
                     },
                             { failure ->
                                 Log.e("UnexpectedError", "Error storing new note", failure)
                                 view.showError(ApplicationError("Unexpected error"))
-                                view.close()
+                                view.close(model.copyCredentials())
                             }
                     )
         } catch (error: ApplicationError) {
@@ -39,7 +39,7 @@ class TakeNewNotePresenterImpl(val view: TakeNewNoteView, val model: TakeNewNote
     }
 
     override fun onCancel() {
-        view.close()
+        view.close(model.copyCredentials())
     }
 
 

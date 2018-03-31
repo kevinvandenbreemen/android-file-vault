@@ -1,8 +1,5 @@
 package com.vandenbreemen.mobilesecurestorage.patterns.mvp
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
@@ -37,11 +34,6 @@ interface View{
 interface PresenterContract {
     fun start()
     fun close()
-
-    /**
-     * Create a new intent to start an activity with the known security credentials
-     */
-    fun getNewActivityIntent(context: Context, type: Class<out Activity>): Intent
 }
 
 abstract class Presenter<out M : Model, out V : View>(private val model: M, private val view: V) : PresenterContract {
@@ -60,10 +52,6 @@ abstract class Presenter<out M : Model, out V : View>(private val model: M, priv
 
     override fun close() {
         model.close()
-    }
-
-    override fun getNewActivityIntent(context: Context, type: Class<out Activity>): Intent {
-        return model.getNewActivityIntent(context, type)
     }
 
 }
@@ -102,13 +90,8 @@ abstract class Model(private val credentials: SFSCredentials) {
      */
     protected abstract fun onClose()
 
-    /**
-     * Get a new intent for starting an activity
-     */
-    fun getNewActivityIntent(context: Context, type: Class<out Activity>): Intent {
-        val ret = Intent(context, type)
-        ret.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials.copy())
-        return ret
+    fun copyCredentials(): SFSCredentials {
+        return credentials.copy()
     }
 
     /**

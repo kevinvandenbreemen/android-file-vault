@@ -101,13 +101,14 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
         mainMenuPresenter!!.viewNotes()
     }
 
-    override fun gotoTakeNote() {
-        val takeNote = mainMenuPresenter!!.getNewActivityIntent(this, TakeNoteActivity::class.java)
+    override fun gotoTakeNote(credentials: SFSCredentials) {
+        val takeNote = Intent(this, TakeNoteActivity::class.java)
+        takeNote.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
         startActivity(takeNote)
         finish()
     }
 
-    override fun gotoTakePicture() {
+    override fun gotoTakePicture(credentials: SFSCredentials) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

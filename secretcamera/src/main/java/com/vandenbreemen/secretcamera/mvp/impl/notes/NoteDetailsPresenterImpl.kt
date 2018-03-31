@@ -25,7 +25,7 @@ class NoteDetailsPresenterImpl(private val model: NoteDetailsModel, private val 
         if (model.isEditing()) {
             val note = view.getNoteOnUI()
             model.updateNote(note.title, note.content).subscribe(
-                    { view.close() },
+                    { view.close(model.copyCredentials()) },
                     { error ->
                         SystemLog.get().e(NoteDetailsPresenterImpl::class.java.simpleName, "Error updating note", error)
                         view.showError(if (error is ApplicationError) error as ApplicationError
@@ -34,7 +34,7 @@ class NoteDetailsPresenterImpl(private val model: NoteDetailsModel, private val 
             )
             return
         }
-        view.close()
+        view.close(model.copyCredentials())
     }
 
 }

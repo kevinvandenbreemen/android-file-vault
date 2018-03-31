@@ -2,6 +2,7 @@ package com.vandenbreemen.secretcamera
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
+import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.mvp.notes.TakeNewNotePresenter
 import com.vandenbreemen.secretcamera.mvp.notes.TakeNewNoteView
@@ -33,8 +35,9 @@ class TakeNoteActivity : Activity(), TakeNewNoteView {
 
     }
 
-    override fun close() {
-        val backToMain = presenter.getNewActivityIntent(this, MainActivity::class.java)
+    override fun close(credentials: SFSCredentials) {
+        val backToMain = Intent(this, MainActivity::class.java)
+        backToMain.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
         startActivity(backToMain)
         finish()
     }

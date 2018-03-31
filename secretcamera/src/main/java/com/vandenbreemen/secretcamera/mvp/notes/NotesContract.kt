@@ -1,5 +1,6 @@
 package com.vandenbreemen.secretcamera.mvp.notes
 
+import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.PresenterContract
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.View
 import com.vandenbreemen.secretcamera.api.Note
@@ -22,7 +23,7 @@ interface TakeNewNoteView : View {
 
     fun onNoteSucceeded(message: String)
 
-    fun close()
+    fun close(credentials: SFSCredentials)
 }
 
 interface NoteDetailsPresenter:PresenterContract{
@@ -36,7 +37,7 @@ interface NoteDetailsPresenter:PresenterContract{
 interface NoteDetailsView:View{
     fun setNoteTitle(title:String)
     fun setNoteContent(content:String)
-    fun close()
+    fun close(credentials: SFSCredentials)
     fun enableEdit()
     fun getNoteOnUI(): Note
 }

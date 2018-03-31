@@ -3,7 +3,6 @@ package com.vandenbreemen.secretcamera.mvp
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.PresenterContract
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.View
-import com.vandenbreemen.secretcamera.StringSelectorWorkflow
 
 /**
  * <h2>Intro</h2>
@@ -22,8 +21,8 @@ class SFSMenuContract{
      * Main menu view
      */
     interface SFSMainMenuView:View{
-        fun gotoTakePicture()
-        fun gotoTakeNote()
+        fun gotoTakePicture(credentials: SFSCredentials)
+        fun gotoTakeNote(credentials: SFSCredentials)
         fun gotoNotesList(credentials:SFSCredentials, strings:ArrayList<String>)
     }
 }

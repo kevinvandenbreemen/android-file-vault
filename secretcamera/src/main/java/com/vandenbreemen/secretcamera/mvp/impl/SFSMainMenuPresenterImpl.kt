@@ -20,10 +20,10 @@ class SFSMainMenuPresenterImpl(val model:SFSMainMenuModel, val mainMenuView: SFS
     }
 
     override fun takeNote() {
-        mainMenuView.gotoTakeNote()
+        mainMenuView.gotoTakeNote(model.copyCredentials())
     }
 
     override fun takePicture() {
-        mainMenuView.gotoTakePicture()
+        mainMenuView.gotoTakePicture(model.copyCredentials())
     }
 }
