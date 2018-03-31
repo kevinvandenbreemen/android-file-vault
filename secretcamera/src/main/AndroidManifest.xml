@@ -15,6 +15,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity"
             android:screenOrientation="portrait"
+            android:excludeFromRecents="true"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,19 +23,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity" />
+        <activity
+            android:name="com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity"
+            android:excludeFromRecents="true" />
         <activity android:name="com.vandenbreemen.mobilesecurestorage.android.CreateSecureFileSystem"
+            android:excludeFromRecents="true"
             android:screenOrientation="portrait"/>
         <activity android:name="com.vandenbreemen.mobilesecurestorage.android.LoadSecureFileSystem"
+            android:excludeFromRecents="true"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".TakeNoteActivity"
+            android:excludeFromRecents="true"
             android:configChanges="orientation|screenSize" />
         <activity
             android:name=".StringSelectorActivity"
+            android:excludeFromRecents="true"
             android:configChanges="orientation|screenSize" />
         <activity
             android:name=".NoteDetailsActivity"
+            android:excludeFromRecents="true"
             android:configChanges="orientation|screenSize"></activity>
     </application>
 
