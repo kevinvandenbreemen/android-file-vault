@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.RandomAccessFile;
+import java.util.stream.IntStream;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
@@ -61,7 +62,7 @@ public class ChunkedFileTest {
     }
 
     @Test
-    public void shouldAddByteMessage() {
+    public void shouldAddByteMessage() throws Exception {
         sut.setMessage(new byte[]{
                 'a',
                 'b',
@@ -78,7 +79,43 @@ public class ChunkedFileTest {
     }
 
     @Test
-    public void shouldSupportAddingBytesAndMessageTogether() {
+    public void shouldConsiderFileWithMessageAndNoChunksAsEmpty() throws Exception {
+        sut.setMessage(new byte[]{
+                'a',
+                'b',
+                'c',
+                'd'
+        });
+
+        assertTrue("Empty chunked file", sut.isEmpty());
+    }
+
+    @Test
+    public void shouldPreventMessageLongerThanMaxBytes() {
+        int length = (ChunkedFile.PREFIX_BYTE_LEN - ChunkedFile.SIGNATURE.length) + 1;
+        byte[] badMessage = new byte[length];
+        IntStream.range(0, length).forEach(i -> badMessage[i] = 1);
+        try {
+            sut.setMessage(badMessage);
+            fail("Max bytes reached");
+        } catch (ChunkedMediumException cmx) {
+            cmx.printStackTrace();
+        }
+    }
+
+    @Test
+    public void shouldAllowMessageAtMaxBytesLong() throws Exception {
+        int length = (ChunkedFile.PREFIX_BYTE_LEN - ChunkedFile.SIGNATURE.length);
+        byte[] messageBytes = new byte[length];
+        IntStream.range(0, length).forEach(i -> messageBytes[i] = 1);
+
+        sut.setMessage(messageBytes);
+
+        assertArrayEquals("Prefix Bytes", messageBytes, sut.getMessage());
+    }
+
+    @Test
+    public void shouldSupportAddingBytesAndMessageTogether() throws Exception {
         sut.setMessage(new byte[]{
                 'a',
                 'b',
@@ -102,7 +139,7 @@ public class ChunkedFileTest {
     }
 
     @Test
-    public void shouldSupportAddingBytesAndMessageTogetherOnExistingEmptyFile() {
+    public void shouldSupportAddingBytesAndMessageTogetherOnExistingEmptyFile() throws Exception {
 
         sut = ChunkedFile.getChunkedFile(TestConstants.getTestFile("chunkedxt_" + System.currentTimeMillis()));
 

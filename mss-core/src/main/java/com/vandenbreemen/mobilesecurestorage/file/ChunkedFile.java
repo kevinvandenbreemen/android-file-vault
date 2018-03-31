@@ -25,9 +25,9 @@ public class ChunkedFile {
     /**
      *
      */
-    private static final int PREFIX_BYTE_LEN = 256;
+    static final int PREFIX_BYTE_LEN = 256;
 
-    private static final byte[] SIGNATURE = {
+    static final byte[] SIGNATURE = {
             'N', 'E', 'S', 26, 'J', 'K'    //  NES Rom (Just Kidding)
     };
 
@@ -82,7 +82,12 @@ public class ChunkedFile {
         ChunkedFile ret = new ChunkedFile(location);
         if (!exists) {
             ret.addFileTypeSignature();
-            ret.setMessage(new byte[0]);
+            try {
+                ret.setMessage(new byte[0]);
+            } catch (ChunkedMediumException stupidErrorHandling) {
+                SystemLog.get().error("Failed to set empty message", stupidErrorHandling);
+                throw new MSSRuntime("Something is screwed up - cannot sete empty message");
+            }
         }
         return ret;
     }
@@ -183,11 +188,20 @@ public class ChunkedFile {
         return new ByteReader().readBytes(raw);
     }
 
-    public void setMessage(byte[] prefixBytes) {
+    public final void setMessage(byte[] prefixBytes) throws ChunkedMediumException {
+
+        if (prefixBytes.length > (PREFIX_BYTE_LEN - SIGNATURE.length)) {
+            throw new ChunkedMediumException("Prefix byte longer than maximum allowed length of " + (PREFIX_BYTE_LEN - SIGNATURE.length));
+        }
+
         this.cursor = SIGNATURE.length;
         byte[] msgBytes = new byte[PREFIX_BYTE_LEN - SIGNATURE.length];
         System.arraycopy(prefixBytes, 0, msgBytes, 0, prefixBytes.length);
-        msgBytes[prefixBytes.length] = END_OF_HEADER;
+
+        if (prefixBytes.length < (PREFIX_BYTE_LEN - SIGNATURE.length)) {
+            msgBytes[prefixBytes.length] = END_OF_HEADER;
+        }
+
         this.cursor = SIGNATURE.length;
         writeBytes(msgBytes);
     }
