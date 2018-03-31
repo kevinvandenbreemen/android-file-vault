@@ -45,7 +45,7 @@ class NoteDetailsActivity : Activity(), NoteDetailsView {
     }
 
     override fun showError(error: ApplicationError) {
-        Toast.makeText(this, error.localizedMessage, LENGTH_SHORT)
+        Toast.makeText(this, error.localizedMessage, LENGTH_SHORT).show()
     }
 
     override fun onPause() {

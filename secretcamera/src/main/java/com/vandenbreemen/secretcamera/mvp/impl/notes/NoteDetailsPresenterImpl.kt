@@ -1,6 +1,7 @@
 package com.vandenbreemen.secretcamera.mvp.impl.notes
 
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog
+import com.vandenbreemen.mobilesecurestorage.log.e
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Presenter
 import com.vandenbreemen.secretcamera.mvp.notes.NoteDetailsPresenter
@@ -26,7 +27,7 @@ class NoteDetailsPresenterImpl(private val model: NoteDetailsModel, private val 
             model.updateNote(note.title, note.content).subscribe(
                     { view.close() },
                     { error ->
-                        SystemLog.get().error(NoteDetailsPresenterImpl::class.java.simpleName, "Error updating note", error)
+                        SystemLog.get().e(NoteDetailsPresenterImpl::class.java.simpleName, "Error updating note", error)
                         view.showError(if (error is ApplicationError) error as ApplicationError
                         else ApplicationError("Unknown error"))
                     }
