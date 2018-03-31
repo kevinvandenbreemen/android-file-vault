@@ -21,9 +21,9 @@ public class SecureString implements CharSequence, Serializable {
     /**
      * Bytes inside the string
      */
-    private byte[] bytes;
+    private volatile byte[] bytes;
 
-    private boolean isFinalized;
+    private volatile boolean isFinalized;
 
     /**
      * Initializes this secure string using the given array of bytes.  Please note
