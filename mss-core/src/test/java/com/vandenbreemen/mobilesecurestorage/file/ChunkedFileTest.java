@@ -29,7 +29,7 @@ public class ChunkedFileTest {
     private ChunkedFile sut;
 
     @Before
-    public void setup() {
+    public void setup() throws ChunkedMediumException {
         sut = ChunkedFile.getChunkedFile(TestConstants.getTestFile("chunked_" + System.currentTimeMillis(), false));
     }
 
@@ -174,7 +174,7 @@ public class ChunkedFileTest {
         raf.close();
 
         try {
-            ChunkedFile.getChunkedFile(testFile).validateFile();
+            ChunkedFile.getChunkedFile(testFile);
             fail("Invalid file format validation");
         } catch (ChunkedMediumException xmx) {
             xmx.printStackTrace();
@@ -182,17 +182,17 @@ public class ChunkedFileTest {
     }
 
     @Test
-    public void shouldIdentifyFileAsEmpty() {
+    public void shouldIdentifyFileAsEmpty() throws ChunkedMediumException {
         assertTrue("Empty", ChunkedFile.getChunkedFile(TestConstants.getTestFile("testEmpty", false)).isEmpty());
     }
 
     @Test
-    public void shouldIdentifyChunkedFileCreatedUsingEmptyExistingFileAsEmpty() {
+    public void shouldIdentifyChunkedFileCreatedUsingEmptyExistingFileAsEmpty() throws ChunkedMediumException {
         assertTrue("Empty", ChunkedFile.getChunkedFile(TestConstants.getTestFile("testEmpty")).isEmpty());
     }
 
     @Test
-    public void shouldIdentifyFileWithContentAsNonEmpty() {
+    public void shouldIdentifyFileWithContentAsNonEmpty() throws ChunkedMediumException {
 
         sut = ChunkedFile.getChunkedFile(TestConstants.getTestFile("testNonEmpty", false));
 

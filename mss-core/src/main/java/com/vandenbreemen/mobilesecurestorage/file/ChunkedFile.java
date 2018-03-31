@@ -77,7 +77,7 @@ public class ChunkedFile {
      * @param location
      * @return
      */
-    public static ChunkedFile getChunkedFile(File location) {
+    public static ChunkedFile getChunkedFile(File location) throws ChunkedMediumException {
         boolean exists = location.exists() && location.length() > 0;
         ChunkedFile ret = new ChunkedFile(location);
         if (!exists) {
@@ -88,6 +88,8 @@ public class ChunkedFile {
                 SystemLog.get().error("Failed to set empty message", stupidErrorHandling);
                 throw new MSSRuntime("Something is screwed up - cannot sete empty message");
             }
+        } else {
+            ret.validateFile();
         }
         return ret;
     }
