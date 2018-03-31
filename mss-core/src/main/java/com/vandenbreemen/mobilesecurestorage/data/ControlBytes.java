@@ -34,6 +34,12 @@ public class ControlBytes {
      */
     public static final byte LENGTH_IND = 17;
 
+    /**
+     * This byte signifies the premature end of a header in the space allocated
+     * for that header.
+     */
+    public static final byte END_OF_HEADER = 4;
+
     private ControlBytes() {
     }
 
