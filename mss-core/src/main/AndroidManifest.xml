@@ -22,7 +22,8 @@
         <activity android:name=".android.FileSelectActivity" />
         <activity android:name=".android.CreateSecureFileSystem" />
         <activity android:name=".android.LoadSecureFileSystem" />
-        <activity android:name=".android.SecureFileSystemDetails"></activity>
+        <activity android:name=".android.SecureFileSystemDetails" />
+        <activity android:name=".android.FileImportActivity"></activity>
     </application>
 
 </manifest>
