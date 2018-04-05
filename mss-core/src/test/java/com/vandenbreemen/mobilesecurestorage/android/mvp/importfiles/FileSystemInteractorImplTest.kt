@@ -2,6 +2,8 @@ package com.vandenbreemen.mobilesecurestorage.android.mvp.importfiles
 
 import android.os.Environment
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.plugins.RxJavaPlugins
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,6 +20,8 @@ class FileSystemInteractorImplTest {
 
     @Before
     fun setup() {
+        RxJavaPlugins.setIoSchedulerHandler { scheduler -> AndroidSchedulers.mainThread() }
+
         directory = File(Environment.getExternalStorageDirectory().toString() + File.separator + "test")
         directory.mkdir()
 
