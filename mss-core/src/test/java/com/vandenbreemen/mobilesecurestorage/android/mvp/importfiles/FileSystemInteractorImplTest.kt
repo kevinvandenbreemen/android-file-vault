@@ -39,6 +39,16 @@ class FileSystemInteractorImplTest {
 
     @Test
     fun shouldReturnErrorIfNotDirectory() {
+        val notADirectory = File(directory.absolutePath + File.separator + "file_2")
+        notADirectory.createNewFile()
+        val interactor: FileSystemInteractor = FileSystemInteractorImpl()
+        interactor.listFiles(notADirectory).test()
+                .assertError(ApplicationError::class.java)
+                .assertNoValues()
+    }
+
+    @Test
+    fun shouldReturnErrorIfFileDoesNotExist() {
         val interactor: FileSystemInteractor = FileSystemInteractorImpl()
         interactor.listFiles(File(directory.absolutePath + File.separator + "file_2")).test()
                 .assertError(ApplicationError::class.java)
