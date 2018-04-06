@@ -1,6 +1,8 @@
 package com.vandenbreemen.mobilesecurestorage.android.mvp.importfiles
 
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.patterns.mvp.PresenterContract
+import com.vandenbreemen.mobilesecurestorage.patterns.mvp.View
 import io.reactivex.Single
 import java.io.File
 
@@ -13,13 +15,13 @@ interface FileSystemInteractor {
 
 }
 
-interface FileImportPresenter {
+interface FileImportPresenter : PresenterContract {
 
     fun import(directory: File)
 
 }
 
-interface FileImportView {
+interface FileImportView : View {
 
     fun showTotalFiles(totalFiles: Int)
 
