@@ -3,8 +3,8 @@ package com.vandenbreemen.mobilesecurestorage.android.mvp.importfiles
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
-import io.reactivex.Single
-import io.reactivex.SingleOnSubscribe
+import io.reactivex.Observable
+import io.reactivex.ObservableOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.schedulers.Schedulers.computation
 import java.io.File
@@ -27,12 +27,17 @@ class FileImportModel(credentials: SFSCredentials) : Model(credentials) {
 
     }
 
-    fun importDir(directoryToImport: File): Single<Unit> {
-        return fileSystemInteractor.listFiles(directoryToImport).flatMap { files: List<File>? ->
-            Single.create(SingleOnSubscribe<Unit> { emitter ->
+    fun importDir(directoryToImport: File): Observable<Int> {
+        return fileSystemInteractor.listFiles(directoryToImport).flatMapObservable { files: List<File>? ->
+            Observable.create(ObservableOnSubscribe<Int> { emitter ->
                 files?.let {
-                    it.forEach({ fileToImport -> sfs.importFile(fileToImport, fileToImport.name) })
-                    emitter.onSuccess(Unit)
+                    var count = 0
+                    it.forEach({ fileToImport ->
+                        sfs.importFile(fileToImport, fileToImport.name)
+                        count++
+                        emitter.onNext(count)
+                    })
+                    emitter.onComplete()
                 } ?: run { emitter.onError(ApplicationError("Unknown error importing files")) }
             }).observeOn(computation()).subscribeOn(mainThread())
         }

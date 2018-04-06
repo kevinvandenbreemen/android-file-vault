@@ -11,9 +11,11 @@ class FileImportPresenterImpl(val model: FileImportModel, val view: FileImportVi
     override fun import(directory: File) {
         model.importDir(directory)
                 .subscribe({
-                    view.done(model.copyCredentials())
+                    view.updateProgress(it)
                 }, {
                     view.showError(ApplicationError(it))
+                }, {
+                    view.done(model.copyCredentials())
                 })
     }
 
