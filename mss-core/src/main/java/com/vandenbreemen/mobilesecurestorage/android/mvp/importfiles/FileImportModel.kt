@@ -5,6 +5,7 @@ import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.schedulers.Schedulers.computation
 import java.io.File
@@ -42,5 +43,9 @@ class FileImportModel(credentials: SFSCredentials) : Model(credentials) {
             }).observeOn(computation()).subscribeOn(mainThread())
         }
 
+    }
+
+    fun countFiles(directoryToImport: File): Single<Int> {
+        return fileSystemInteractor.countFiles(directoryToImport)
     }
 }

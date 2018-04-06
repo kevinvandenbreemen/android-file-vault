@@ -13,11 +13,23 @@ import java.io.File
 class FileSystemInteractorImpl : FileSystemInteractor {
     override fun listFiles(directory: File): Single<List<File>> {
         return Single.create(SingleOnSubscribe<List<File>> {
-            if (!directory.exists() || !directory.isDirectory) {
+            if (isNotDirectory(directory)) {
                 it.onError(ApplicationError("${directory.absolutePath} does not exist or is not a directory"))
             } else {
                 it.onSuccess(directory.listFiles().asList())
             }
         }).observeOn(io()).subscribeOn(mainThread())
     }
+
+    override fun countFiles(directory: File): Single<Int> {
+        return Single.create(SingleOnSubscribe<Int> {
+            if (isNotDirectory(directory)) {
+                it.onError(ApplicationError("${directory.absolutePath} does not exist or is not a directory"))
+            } else {
+                it.onSuccess(directory.listFiles().size)
+            }
+        }).observeOn(io()).subscribeOn(mainThread())
+    }
+
+    private fun isNotDirectory(directory: File) = !directory.exists() || !directory.isDirectory
 }

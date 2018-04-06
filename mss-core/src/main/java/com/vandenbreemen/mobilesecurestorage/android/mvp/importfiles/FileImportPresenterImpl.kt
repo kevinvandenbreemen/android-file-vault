@@ -9,14 +9,21 @@ import java.io.File
  */
 class FileImportPresenterImpl(val model: FileImportModel, val view: FileImportView) : Presenter<FileImportModel, FileImportView>(model, view), FileImportPresenter {
     override fun import(directory: File) {
-        model.importDir(directory)
-                .subscribe({
-                    view.updateProgress(it)
-                }, {
-                    view.showError(ApplicationError(it))
-                }, {
-                    view.done(model.copyCredentials())
-                })
+
+        model.countFiles(directory).subscribe({ totalFiles ->
+            view.showTotalFiles(totalFiles)
+            model.importDir(directory)
+                    .subscribe({
+                        view.updateProgress(it)
+                    }, {
+                        view.showError(ApplicationError(it))
+                    }, {
+                        view.done(model.copyCredentials())
+                    })
+        }, {
+            view.showError(ApplicationError(it))
+        })
+
     }
 
     override fun setupView() {

@@ -13,6 +13,8 @@ interface FileSystemInteractor {
      */
     fun listFiles(directory: File): Single<List<File>>
 
+    fun countFiles(directory: File): Single<Int>
+
 }
 
 interface FileImportPresenter : PresenterContract {

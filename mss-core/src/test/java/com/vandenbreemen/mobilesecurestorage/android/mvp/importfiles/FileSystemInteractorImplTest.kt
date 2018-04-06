@@ -59,4 +59,12 @@ class FileSystemInteractorImplTest {
                 .assertNoValues()
     }
 
+    @Test
+    fun shouldCountFiles() {
+        val interactor: FileSystemInteractor = FileSystemInteractorImpl()
+        interactor.countFiles(directory).test()
+                .assertComplete()
+                .assertValue({ it == 4 })
+    }
+
 }
