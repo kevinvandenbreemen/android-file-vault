@@ -9,6 +9,10 @@ package com.vandenbreemen.mobilesecurestorage.message;
  */
 public class ApplicationError extends Exception {
 
+    public ApplicationError(Throwable exception) {
+        super(exception.getLocalizedMessage(), exception);
+    }
+
     public ApplicationError(String message) {
         super(message);
     }
