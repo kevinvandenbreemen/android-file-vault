@@ -11,14 +11,14 @@ import java.io.File
  * <h2>Other Details</h2>
  * @author kevin
  */
-interface FileImporter {
+interface FileLoader {
 
     @Throws(ApplicationError::class)
-    fun importFile(fileToImport: File): ImportedFileData
+    fun loadFile(fileToImport: File): ImportedFileData
 }
 
-private class FileImporterImpl : FileImporter {
-    override fun importFile(fileToImport: File): ImportedFileData {
+private class FileLoaderImpl : FileLoader {
+    override fun loadFile(fileToImport: File): ImportedFileData {
         if (fileToImport.isDirectory) {
             throw ApplicationError("Cannot import a directory")
         }
@@ -30,6 +30,6 @@ private class FileImporterImpl : FileImporter {
 
 }
 
-fun getFileImporter(): FileImporter {
-    return FileImporterImpl()
+fun getFileImporter(): FileLoader {
+    return FileLoaderImpl()
 }

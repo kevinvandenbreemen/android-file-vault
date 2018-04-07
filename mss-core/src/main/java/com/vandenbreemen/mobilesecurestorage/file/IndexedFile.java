@@ -715,7 +715,7 @@ public class IndexedFile {
 
         String fileName = getFileNameGeneratedForImport(onDisk);
 
-        ImportedFileData imported = FileImporterJavaInteractor.getFileImporter().importFile(onDisk);
+        ImportedFileData imported = FileImporterJavaInteractor.getFileImporter().loadFile(onDisk);
         storeObject(fileName, imported);
 
         return fileName;

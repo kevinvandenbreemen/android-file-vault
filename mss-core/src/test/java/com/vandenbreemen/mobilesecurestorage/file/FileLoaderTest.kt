@@ -14,19 +14,19 @@ import org.junit.Test
  * <h2>Other Details</h2>
  * @author kevin
  */
-class FileImporterTest {
+class FileLoaderTest {
 
-    lateinit var fileImporter: FileImporter
+    lateinit var fileLoader: FileLoader
 
     @Before
     fun setup() {
-        this.fileImporter = getFileImporter()
+        this.fileLoader = getFileImporter()
     }
 
     @Test
     fun shouldImportFileData() {
         val expectedBytes = Bytes.loadBytesFromFile(TestConstants.TEST_RES_IMG_1)
-        val importedFileData = fileImporter.importFile(TestConstants.TEST_RES_IMG_1)
+        val importedFileData = fileLoader.loadFile(TestConstants.TEST_RES_IMG_1)
 
         assertTrue("Imported data", ByteUtils.equals(expectedBytes, importedFileData.fileData))
     }
@@ -35,13 +35,13 @@ class FileImporterTest {
     fun shouldPreventImportingDirectory() {
         val directory = TestConstants.getTestFile("testdir_${System.currentTimeMillis()}", false)
         directory.mkdir()
-        fileImporter.importFile(directory)
+        fileLoader.loadFile(directory)
     }
 
     @Test(expected = ApplicationError::class)
     fun shouldNotImportFileThatDoesNotExist() {
         val nonExistentFile = TestConstants.getTestFile("doesNotExist_${System.currentTimeMillis()}", false)
-        fileImporter.importFile(nonExistentFile)
+        fileLoader.loadFile(nonExistentFile)
     }
 
 }
