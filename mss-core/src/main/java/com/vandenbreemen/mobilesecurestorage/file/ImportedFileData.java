@@ -21,11 +21,6 @@ public class ImportedFileData implements Serializable {
     private static final long serialVersionUID = 1822306847715808049L;
 
     /**
-     * Original location on disk of the data that were imported
-     */
-    private File originalLocation;
-
-    /**
      * Date from the file
      */
     private byte[] fileData;
@@ -38,7 +33,6 @@ public class ImportedFileData implements Serializable {
      * @param fileData
      */
     public ImportedFileData(File originalLocation, byte[] fileData) {
-        this.originalLocation = originalLocation;
         this.fileData = fileData;
     }
 
@@ -49,10 +43,6 @@ public class ImportedFileData implements Serializable {
      * @return
      */
     public static ImportedFileData loadFileFromDisk(File onDisk) {
-
-        if (!onDisk.exists())
-            throw new MSSRuntime("File '" + onDisk.getAbsolutePath() + "' does not exist");
-
         try {
             byte[] data = Bytes.loadBytesFromFile(onDisk);
             return new ImportedFileData(onDisk, data);
