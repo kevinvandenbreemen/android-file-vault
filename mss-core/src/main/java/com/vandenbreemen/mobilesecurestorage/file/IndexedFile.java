@@ -5,6 +5,7 @@ import com.vandenbreemen.mobilesecurestorage.data.Pair;
 import com.vandenbreemen.mobilesecurestorage.data.Serialization;
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
 import com.vandenbreemen.mobilesecurestorage.log.slf4j.MessageFormatter;
+import com.vandenbreemen.mobilesecurestorage.message.ApplicationError;
 import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime;
 import com.vandenbreemen.mobilesecurestorage.security.BytesToBits;
 import com.vandenbreemen.mobilesecurestorage.security.SecureString;
@@ -712,13 +713,13 @@ public class IndexedFile {
      * @param importedName Name to use when storing the file
      * @return Name given to imported file
      */
-    public final String importFile(File onDisk, String importedName) {
+    public final String importFile(File onDisk, String importedName) throws ApplicationError {
 
         String fileName = getFileNameGeneratedForImport(onDisk);
         if (!StringUtils.isBlank(importedName))
             fileName = importedName;
 
-        ImportedFileData imported = ImportedFileData.loadFileFromDisk(onDisk);
+        ImportedFileData imported = FileImporterJavaInteractor.getFileImporter().importFile(onDisk);
         storeObject(fileName, imported);
 
         return fileName;

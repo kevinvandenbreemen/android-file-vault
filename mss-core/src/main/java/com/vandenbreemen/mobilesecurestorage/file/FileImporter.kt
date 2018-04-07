@@ -1,3 +1,4 @@
+@file:JvmName("FileImporterJavaInteractor")
 package com.vandenbreemen.mobilesecurestorage.file
 
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError

@@ -1,10 +1,5 @@
 package com.vandenbreemen.mobilesecurestorage.file;
 
-import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
-import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime;
-import com.vandenbreemen.mobilesecurestorage.security.Bytes;
-
-import java.io.File;
 import java.io.Serializable;
 
 /**
@@ -26,29 +21,12 @@ public class ImportedFileData implements Serializable {
     private byte[] fileData;
 
     /**
-     * Create an imported file data with a known set of bytes.  It is recommended that you use
-     * {@link #loadFileFromDisk(File)} instead of constructing this directly.
+     * Create an imported file data with a known set of bytes.
      *
      * @param fileData
      */
-    public ImportedFileData(byte[] fileData) {
+    ImportedFileData(byte[] fileData) {
         this.fileData = fileData;
-    }
-
-    /**
-     * Load up all data in the given file, returning it as an {@link ImportedFileData}
-     *
-     * @param onDisk
-     * @return
-     */
-    public static ImportedFileData loadFileFromDisk(File onDisk) {
-        try {
-            byte[] data = Bytes.loadBytesFromFile(onDisk);
-            return new ImportedFileData(data);
-        } catch (Exception ex) {
-            SystemLog.get().error("Error importing from file '" + onDisk.getAbsolutePath() + "'", ex);
-            throw new MSSRuntime("Could not import file", ex);
-        }
     }
 
     /**

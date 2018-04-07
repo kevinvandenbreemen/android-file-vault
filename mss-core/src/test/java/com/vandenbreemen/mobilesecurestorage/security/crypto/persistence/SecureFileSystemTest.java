@@ -5,6 +5,7 @@ import com.vandenbreemen.mobilesecurestorage.data.Pair;
 import com.vandenbreemen.mobilesecurestorage.file.ChunkedMediumException;
 import com.vandenbreemen.mobilesecurestorage.file.ImportedFileData;
 import com.vandenbreemen.mobilesecurestorage.file.IndexedFile;
+import com.vandenbreemen.mobilesecurestorage.message.ApplicationError;
 import com.vandenbreemen.mobilesecurestorage.patterns.ProgressListener;
 import com.vandenbreemen.mobilesecurestorage.security.Bytes;
 import com.vandenbreemen.mobilesecurestorage.security.SecureString;
@@ -653,8 +654,11 @@ public class SecureFileSystemTest {
                     try {
                         while (true) {
                             filesList.forEach(file -> {
-                                sfs.importFile(file, null);
-                                System.out.println("Imported " + file.getName());
+                                try {
+                                    sfs.importFile(file, null);
+                                    System.out.println("Imported " + file.getName());
+                                } catch (ApplicationError wontHappen) {
+                                }
                             });
                         }
                     } catch (Exception ex) {
