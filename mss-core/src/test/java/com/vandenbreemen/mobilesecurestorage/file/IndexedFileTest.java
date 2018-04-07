@@ -692,11 +692,11 @@ public class IndexedFileTest {
         tempFile.deleteOnExit();
 
         IndexedFile idf = new IndexedFile(tempFile);
-        idf.importFile(TestConstants.TEST_RES_IMG_1, "1.jpg");
-        idf.importFile(TestConstants.TEST_RES_IMG_2, "2.jpg");
-        idf.importFile(TestConstants.TEST_RES_IMG_3, "3.jpg");
+        idf.importFile(TestConstants.TEST_RES_IMG_1);
+        idf.importFile(TestConstants.TEST_RES_IMG_2);
+        idf.importFile(TestConstants.TEST_RES_IMG_3);
 
-        idf.deleteFiles("1.jpg", "2.jpg");
+        idf.deleteFiles(TestConstants.TEST_RES_IMG_1.getName(), TestConstants.TEST_RES_IMG_2.getName());
 
         assertEquals("Single file remaining expected", 1, idf.listFiles().size());
 
@@ -713,13 +713,13 @@ public class IndexedFileTest {
                 Bytes.loadBytesFromFile(TestConstants.TEST_RES_IMG_3);
 
         IndexedFile idf = new IndexedFile(tempFile);
-        idf.importFile(TestConstants.TEST_RES_IMG_1, "1.jpg");
-        idf.importFile(TestConstants.TEST_RES_IMG_2, "2.jpg");
-        idf.importFile(TestConstants.TEST_RES_IMG_3, "3.jpg");
+        idf.importFile(TestConstants.TEST_RES_IMG_1);
+        idf.importFile(TestConstants.TEST_RES_IMG_2);
+        idf.importFile(TestConstants.TEST_RES_IMG_3);
 
-        idf.deleteFiles("1.jpg", "2.jpg");
+        idf.deleteFiles(TestConstants.TEST_RES_IMG_1.getName(), TestConstants.TEST_RES_IMG_2.getName());
 
-        byte[] loaded = idf.loadBytesFromFile("3.jpg");
+        byte[] loaded = idf.loadBytesFromFile(TestConstants.TEST_RES_IMG_3.getName());
         for (int i = 0; i < expectedBytes.length; i++) {
             assertEquals("Data corruption at byte " + i, expectedBytes[i], loaded[i]);
         }
@@ -733,9 +733,9 @@ public class IndexedFileTest {
         tempFile.deleteOnExit();
 
         IndexedFile idf = new IndexedFile(tempFile);
-        idf.importFile(TestConstants.TEST_RES_IMG_1, "1.jpg");
-        idf.importFile(TestConstants.TEST_RES_IMG_2, "2.jpg");
-        idf.importFile(TestConstants.TEST_RES_IMG_3, "3.jpg");
+        idf.importFile(TestConstants.TEST_RES_IMG_1);
+        idf.importFile(TestConstants.TEST_RES_IMG_2);
+        idf.importFile(TestConstants.TEST_RES_IMG_3);
 
         try {
             idf.deleteFiles("1.jpg", "1.jpg");
@@ -762,7 +762,7 @@ public class IndexedFileTest {
             IndexedFile idf = new IndexedFile(tempFile);
             assertEquals(
                     "System should return filename generated during import",
-                    TestConstants.TEST_RES_IMG_1.getName(), idf.importFile(TestConstants.TEST_RES_IMG_1, null));
+                    TestConstants.TEST_RES_IMG_1.getName(), idf.importFile(TestConstants.TEST_RES_IMG_1));
 
             idf = new IndexedFile(tempFile);
             assertEquals("Single file expected", 1, idf.listFiles().size());

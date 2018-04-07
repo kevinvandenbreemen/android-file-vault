@@ -34,7 +34,7 @@ class FileImportModel(credentials: SFSCredentials) : Model(credentials) {
                 files?.let {
                     var count = 0
                     it.forEach({ fileToImport ->
-                        sfs.importFile(fileToImport, fileToImport.name)
+                        sfs.importFile(fileToImport)
                         count++
                         emitter.onNext(count)
                     })

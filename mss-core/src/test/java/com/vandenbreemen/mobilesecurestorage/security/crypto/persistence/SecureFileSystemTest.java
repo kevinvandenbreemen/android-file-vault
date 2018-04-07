@@ -308,11 +308,11 @@ public class SecureFileSystemTest {
         tempFile.deleteOnExit();
 
         IndexedFile idf = getNewSecureFileSystem(tempFile);
-        idf.importFile(TestConstants.TEST_RES_IMG_1, "1.jpg");
-        idf.importFile(TestConstants.TEST_RES_IMG_2, "2.jpg");
-        idf.importFile(TestConstants.TEST_RES_IMG_3, "3.jpg");
+        idf.importFile(TestConstants.TEST_RES_IMG_1);
+        idf.importFile(TestConstants.TEST_RES_IMG_2);
+        idf.importFile(TestConstants.TEST_RES_IMG_3);
 
-        idf.deleteFiles("1.jpg", "2.jpg");
+        idf.deleteFiles(TestConstants.TEST_RES_IMG_1.getName(), TestConstants.TEST_RES_IMG_2.getName());
 
         assertEquals("Single file remaining expected", 1, idf.listFiles().size());
 
@@ -325,9 +325,9 @@ public class SecureFileSystemTest {
         tempFile.deleteOnExit();
 
         SecureFileSystem idf = getNewSecureFileSystem(tempFile);
-        idf.importFile(TestConstants.TEST_RES_IMG_1, "1.jpg");
-        idf.importFile(TestConstants.TEST_RES_IMG_2, "2.jpg");
-        idf.importFile(TestConstants.TEST_RES_IMG_3, "3.jpg");
+        idf.importFile(TestConstants.TEST_RES_IMG_1);
+        idf.importFile(TestConstants.TEST_RES_IMG_2);
+        idf.importFile(TestConstants.TEST_RES_IMG_3);
 
         SecureString secureString = SecureFileSystem.generatePassword(new SecureString("password123".getBytes()));
 
@@ -366,13 +366,13 @@ public class SecureFileSystemTest {
                 Bytes.loadBytesFromFile(TestConstants.TEST_RES_IMG_3);
 
         IndexedFile idf = getNewSecureFileSystem(tempFile);
-        idf.importFile(TestConstants.TEST_RES_IMG_1, "1.jpg");
-        idf.importFile(TestConstants.TEST_RES_IMG_2, "2.jpg");
-        idf.importFile(TestConstants.TEST_RES_IMG_3, "3.jpg");
+        idf.importFile(TestConstants.TEST_RES_IMG_1);
+        idf.importFile(TestConstants.TEST_RES_IMG_2);
+        idf.importFile(TestConstants.TEST_RES_IMG_3);
 
-        idf.deleteFiles("1.jpg", "2.jpg");
+        idf.deleteFiles(TestConstants.TEST_RES_IMG_1.getName(), TestConstants.TEST_RES_IMG_2.getName());
 
-        byte[] loaded = idf.loadBytesFromFile("3.jpg");
+        byte[] loaded = idf.loadBytesFromFile(TestConstants.TEST_RES_IMG_3.getName());
         for (int i = 0; i < expectedBytes.length; i++) {
             assertEquals("Data corruption at byte " + i, expectedBytes[i], loaded[i]);
         }
@@ -572,7 +572,7 @@ public class SecureFileSystemTest {
 
             IndexedFile idf = getNewSecureFileSystem(tempFile);
 
-            idf.importFile(TestConstants.TEST_RES_IMG_1, null);
+            idf.importFile(TestConstants.TEST_RES_IMG_1);
 
             idf = getNewSecureFileSystem(tempFile);
 
@@ -655,7 +655,7 @@ public class SecureFileSystemTest {
                         while (true) {
                             filesList.forEach(file -> {
                                 try {
-                                    sfs.importFile(file, null);
+                                    sfs.importFile(file);
                                     System.out.println("Imported " + file.getName());
                                 } catch (ApplicationError wontHappen) {
                                 }
@@ -743,7 +743,7 @@ public class SecureFileSystemTest {
 
         SecureFileSystem idf = getNewSecureFileSystem(tempFile);
 
-        idf.importFile(TestConstants.TEST_RES_IMG_1, null);
+        idf.importFile(TestConstants.TEST_RES_IMG_1);
 
         try {
             idf.errorOutOnLockTimeout();

@@ -14,7 +14,6 @@ import com.vandenbreemen.mobilesecurestorage.util.NumberUtils;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.ObjectInputStream;
@@ -710,14 +709,11 @@ public class IndexedFile {
      * Import the given file's bytes and stores it to this {@link IndexedFile}.
      *
      * @param onDisk       Location of the file on disk to import
-     * @param importedName Name to use when storing the file
      * @return Name given to imported file
      */
-    public final String importFile(File onDisk, String importedName) throws ApplicationError {
+    public final String importFile(File onDisk) throws ApplicationError {
 
         String fileName = getFileNameGeneratedForImport(onDisk);
-        if (!StringUtils.isBlank(importedName))
-            fileName = importedName;
 
         ImportedFileData imported = FileImporterJavaInteractor.getFileImporter().importFile(onDisk);
         storeObject(fileName, imported);
@@ -737,7 +733,7 @@ public class IndexedFile {
 
     /**
      * Load the raw bytes from a file known to be stored as a {@link ImportedFileData}.  Please use this
-     * method only when you can be confident that the original file was stored using {@link #importFile(File, String)}.
+     * method only when you can be confident that the original file was stored using {@link #importFile(File)}.
      *
      * @param fileName Name of file in this file system
      * @return
