@@ -29,10 +29,9 @@ public class ImportedFileData implements Serializable {
      * Create an imported file data with a known set of bytes.  It is recommended that you use
      * {@link #loadFileFromDisk(File)} instead of constructing this directly.
      *
-     * @param originalLocation
      * @param fileData
      */
-    public ImportedFileData(File originalLocation, byte[] fileData) {
+    public ImportedFileData(byte[] fileData) {
         this.fileData = fileData;
     }
 
@@ -45,7 +44,7 @@ public class ImportedFileData implements Serializable {
     public static ImportedFileData loadFileFromDisk(File onDisk) {
         try {
             byte[] data = Bytes.loadBytesFromFile(onDisk);
-            return new ImportedFileData(onDisk, data);
+            return new ImportedFileData(data);
         } catch (Exception ex) {
             SystemLog.get().error("Error importing from file '" + onDisk.getAbsolutePath() + "'", ex);
             throw new MSSRuntime("Could not import file", ex);

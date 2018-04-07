@@ -1,6 +1,7 @@
 package com.vandenbreemen.mobilesecurestorage.file
 
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.mobilesecurestorage.security.Bytes
 import java.io.File
 
 /**
@@ -23,7 +24,7 @@ private class FileImporterImpl : FileImporter {
         if (!fileToImport.exists()) {
             throw ApplicationError("Cannot import non-existent file ${fileToImport.name}")
         }
-        return ImportedFileData.loadFileFromDisk(fileToImport)
+        return ImportedFileData(Bytes.loadBytesFromFile(fileToImport))
     }
 
 }
