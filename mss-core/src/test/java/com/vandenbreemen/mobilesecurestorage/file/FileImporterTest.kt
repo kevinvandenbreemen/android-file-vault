@@ -7,7 +7,6 @@ import junit.framework.TestCase.assertTrue
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils
 import org.junit.Before
 import org.junit.Test
-import java.io.File
 
 /**
  * <h2>Intro</h2>
@@ -19,15 +18,9 @@ class FileImporterTest {
 
     lateinit var fileImporter: FileImporter
 
-    lateinit var directory: File
-
     @Before
     fun setup() {
         this.fileImporter = getFileImporter()
-        this.directory = TestConstants.getTestFile("testdir_${System.currentTimeMillis()}", false)
-        if (!this.directory.mkdir()) {
-            throw RuntimeException("Failed to create test dir")
-        }
     }
 
     @Test
@@ -40,6 +33,8 @@ class FileImporterTest {
 
     @Test(expected = ApplicationError::class)
     fun shouldPreventImportingDirectory() {
+        val directory = TestConstants.getTestFile("testdir_${System.currentTimeMillis()}", false)
+        directory.mkdir()
         fileImporter.importFile(directory)
     }
 
