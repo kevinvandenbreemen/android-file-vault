@@ -1,6 +1,9 @@
 package com.vandenbreemen.mobilesecurestorage.android.mvp.importfiles
 
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractor
+import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
+import com.vandenbreemen.mobilesecurestorage.file.getFileImporter
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import io.reactivex.Observable
@@ -20,12 +23,15 @@ class FileImportModel(credentials: SFSCredentials) : Model(credentials) {
      */
     private val fileSystemInteractor = FileSystemInteractorImpl()
 
+    private val fileLoader = getFileImporter()
+    lateinit var secureFileSystemInteractor: SecureFileSystemInteractor
+
     override fun onClose() {
 
     }
 
     override fun setup() {
-
+        this.secureFileSystemInteractor = getSecureFileSystemInteractor(sfs)
     }
 
     fun importDir(directoryToImport: File): Observable<Int> {
@@ -34,7 +40,10 @@ class FileImportModel(credentials: SFSCredentials) : Model(credentials) {
                 files?.let {
                     var count = 0
                     it.forEach({ fileToImport ->
-                        sfs.importFile(fileToImport)
+
+                        val bytes = fileLoader.loadFile(fileToImport)
+                        secureFileSystemInteractor.importToFile(bytes, fileLoader.getFilenameToUseWhenImporting(fileToImport))
+
                         count++
                         emitter.onNext(count)
                     })

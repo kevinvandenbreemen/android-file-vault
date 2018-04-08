@@ -15,9 +15,15 @@ interface FileLoader {
 
     @Throws(ApplicationError::class)
     fun loadFile(fileToImport: File): ImportedFileData
+
+    fun getFilenameToUseWhenImporting(file: File): String
 }
 
 private class FileLoaderImpl : FileLoader {
+    override fun getFilenameToUseWhenImporting(file: File): String {
+        return file.name
+    }
+
     override fun loadFile(fileToImport: File): ImportedFileData {
         if (fileToImport.isDirectory) {
             throw ApplicationError("Cannot import a directory")
