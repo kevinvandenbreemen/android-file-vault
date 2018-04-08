@@ -3,11 +3,15 @@ package com.vandenbreemen.mobilesecurestorage.file
 import com.vandenbreemen.mobilesecurestorage.TestConstants
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.security.Bytes
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.plugins.RxJavaPlugins
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
 /**
  * <h2>Intro</h2>
@@ -15,6 +19,7 @@ import org.junit.Test
  * <h2>Other Details</h2>
  * @author kevin
  */
+@RunWith(RobolectricTestRunner::class)
 class FileLoaderTest {
 
     lateinit var fileLoader: FileLoader
@@ -22,6 +27,7 @@ class FileLoaderTest {
     @Before
     fun setup() {
         this.fileLoader = getFileImporter()
+        RxJavaPlugins.setIoSchedulerHandler { scheduler -> AndroidSchedulers.mainThread() }
     }
 
     @Test
@@ -49,6 +55,15 @@ class FileLoaderTest {
     fun shouldGetFilenameForImports() {
         val expectedName = TestConstants.TEST_RES_IMG_1.name
         assertEquals("File name for import", expectedName, fileLoader.getFilenameToUseWhenImporting(TestConstants.TEST_RES_IMG_1))
+    }
+
+    @Test
+    fun shouldSupportLoadingThreadOnIOScheduler() {
+        val expectedBytes = Bytes.loadBytesFromFile(TestConstants.TEST_RES_IMG_1)
+
+        fileLoader.loadFileReactive(TestConstants.TEST_RES_IMG_1).test()
+                .assertComplete()
+                .assertValue({ importedFileData: ImportedFileData? -> ByteUtils.equals(expectedBytes, importedFileData!!.fileData) })
     }
 
 }

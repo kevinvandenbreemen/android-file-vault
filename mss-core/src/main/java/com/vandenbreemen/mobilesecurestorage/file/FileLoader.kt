@@ -1,8 +1,14 @@
 @file:JvmName("FileImporterJavaInteractor")
 package com.vandenbreemen.mobilesecurestorage.file
 
+import com.vandenbreemen.mobilesecurestorage.log.SystemLog
+import com.vandenbreemen.mobilesecurestorage.log.e
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.security.Bytes
+import io.reactivex.Single
+import io.reactivex.SingleOnSubscribe
+import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
+import io.reactivex.schedulers.Schedulers.io
 import java.io.File
 
 /**
@@ -16,10 +22,26 @@ interface FileLoader {
     @Throws(ApplicationError::class)
     fun loadFile(fileToImport: File): ImportedFileData
 
+    /**
+     * Load the given file on the IO scheduler, returning a single rxandroid handler
+     */
+    fun loadFileReactive(fileToImport: File): Single<ImportedFileData>
+
     fun getFilenameToUseWhenImporting(file: File): String
 }
 
 private class FileLoaderImpl : FileLoader {
+    override fun loadFileReactive(fileToImport: File): Single<ImportedFileData> {
+        return Single.create(SingleOnSubscribe<ImportedFileData> { subscriber ->
+            try {
+                subscriber.onSuccess(loadFile(fileToImport))
+            } catch (ex: ApplicationError) {
+                SystemLog.get().e("FileLoader", "Failed to get bytes for ${fileToImport.absolutePath}", ex)
+                subscriber.onError(ex)
+            }
+        }).observeOn(io()).subscribeOn(mainThread())
+    }
+
     override fun getFilenameToUseWhenImporting(file: File): String {
         return file.name
     }
