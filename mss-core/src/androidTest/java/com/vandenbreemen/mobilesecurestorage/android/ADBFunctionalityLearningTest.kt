@@ -8,6 +8,7 @@ import android.support.test.runner.AndroidJUnit4
 import android.util.Log
 import org.awaitility.Awaitility.await
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.Matchers.greaterThan
 import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Rule
@@ -16,6 +17,9 @@ import org.junit.rules.ErrorCollector
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import java.io.File
+import java.io.FileOutputStream
+import java.io.ObjectOutputStream
+import java.security.SecureRandom
 import java.util.concurrent.TimeUnit
 
 /**
@@ -66,6 +70,28 @@ class ADBFunctionalityLearningTest {
         await().atMost(5, TimeUnit.SECONDS).until { !newFile.exists() }
 
         errorCollector.checkThat(newFile.exists(), `is`(false))
+    }
+
+    @Test
+    fun howToCreateTestDataDirectory() {
+        val testDir = File(Environment.getExternalStorageDirectory().absolutePath + File.separator + "testData")
+        errorCollector.checkThat(testDir.mkdir(), `is`(true))
+        for (i in 1..5) {
+            val file = File(testDir.absolutePath + File.separator + "testFile_$i")
+            file.createNewFile()
+            val bytes = ByteArray(1000000)
+            SecureRandom().nextBytes(bytes)
+            ObjectOutputStream(FileOutputStream(file)).use {
+                it.writeObject(bytes)
+            }
+            errorCollector.checkThat(file.length(), greaterThan(999999L))
+        }
+
+        val command = "rm -rf ${testDir.absolutePath}"
+        Log.d(TAG, "Delete using command $command")
+        getInstrumentation().getUiAutomation().executeShellCommand(command)
+        await().atMost(5, TimeUnit.SECONDS).until { !testDir.exists() }
+
     }
 
 
