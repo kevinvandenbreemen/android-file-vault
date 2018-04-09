@@ -5,6 +5,8 @@ import android.os.Environment
 import android.support.test.InstrumentationRegistry.getInstrumentation
 import android.support.test.rule.GrantPermissionRule
 import android.support.test.runner.AndroidJUnit4
+import android.util.Log
+import org.awaitility.Awaitility.await
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Before
 import org.junit.FixMethodOrder
@@ -14,6 +16,7 @@ import org.junit.rules.ErrorCollector
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 /**
  * <h2>Intro</h2>
@@ -27,7 +30,7 @@ class ADBFunctionalityLearningTest {
 
     companion object {
         val TAG = "LearningTests"
-        val testFilename = "testData_${System.currentTimeMillis()}"
+
     }
 
     //  Set up storage/reading permissions
@@ -37,24 +40,31 @@ class ADBFunctionalityLearningTest {
     @get:Rule
     val errorCollector: ErrorCollector = ErrorCollector()
 
-    lateinit var testFilename: String
-
     @Before
     fun setup() {
-        this.testFilename = "testData_${System.currentTimeMillis()}"
     }
 
     @Test
     fun howToCreateANewFileOnDevice() {
+        val testFilename = "testData_${System.currentTimeMillis()}"
         val newFile = File(Environment.getExternalStorageDirectory().absolutePath + File.separator + testFilename)
+        Log.d(TAG, "Try and create ${newFile.absolutePath}")
         errorCollector.checkThat(newFile.createNewFile(), `is`(true))
         errorCollector.checkThat(newFile.exists(), `is`(true))
+        getInstrumentation().getUiAutomation().executeShellCommand("rm -f ${newFile.absolutePath}")
     }
 
     @Test
     fun howToDeleteTestData() {
+        val testFilename = "testData_${System.currentTimeMillis()}"
         val newFile = File(Environment.getExternalStorageDirectory().absolutePath + File.separator + testFilename)
-        getInstrumentation().getUiAutomation().executeShellCommand("rm -f ${newFile.absolutePath}")
+        Log.d(TAG, "Try and delete ${newFile.absolutePath}")
+        errorCollector.checkThat(newFile.createNewFile(), `is`(true))
+        val command = "rm -f ${newFile.absolutePath}"
+        Log.d(TAG, "Delete using command $command")
+        getInstrumentation().getUiAutomation().executeShellCommand(command)
+        await().atMost(5, TimeUnit.SECONDS).until { !newFile.exists() }
+
         errorCollector.checkThat(newFile.exists(), `is`(false))
     }
 
