@@ -2,6 +2,7 @@ package com.vandenbreemen.mobilesecurestorage.android
 
 import android.Manifest
 import android.os.Environment
+import android.support.test.InstrumentationRegistry.getInstrumentation
 import android.support.test.rule.GrantPermissionRule
 import android.support.test.runner.AndroidJUnit4
 import org.hamcrest.CoreMatchers.`is`
@@ -16,8 +17,7 @@ import java.io.File
 
 /**
  * <h2>Intro</h2>
- * Trying to figure out how to delete test files:
- * <br/>See https://stackoverflow.com/questions/49363485/how-to-put-test-data-files-on-a-device-for-instrumental-tests
+ *
  * <h2>Other Details</h2>
  * @author kevin
  */
@@ -54,7 +54,7 @@ class ADBFunctionalityLearningTest {
     @Test
     fun howToDeleteTestData() {
         val newFile = File(Environment.getExternalStorageDirectory().absolutePath + File.separator + testFilename)
-        errorCollector.checkThat(newFile.delete(), `is`(true))  //  Won't delete the file....
+        getInstrumentation().getUiAutomation().executeShellCommand("rm -f ${newFile.absolutePath}")
         errorCollector.checkThat(newFile.exists(), `is`(false))
     }
 
