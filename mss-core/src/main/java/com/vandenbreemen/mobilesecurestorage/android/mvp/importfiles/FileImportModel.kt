@@ -34,12 +34,17 @@ class FileImportModel(credentials: SFSCredentials) : Model(credentials) {
 
     fun importDir(directoryToImport: File): Single<Unit> {
         return fileSystemInteractor.listFiles(directoryToImport).flatMap { files: List<File>? ->
-            Single.create(SingleOnSubscribe<Unit> { emitter ->
-                files?.let {
-                    it.forEach({ fileToImport -> sfs.importFile(fileToImport) })
-                    emitter.onSuccess(Unit)
-                } ?: run { emitter.onError(ApplicationError("Unknown error importing files")) }
-            }).observeOn(computation()).subscribeOn(mainThread())
+
+            files!!.forEach(
+                    { fileToImport -> sfs.importFile(fileToImport)
+
+                    }
+
+
+            )
+            return@flatMap Single.just(Unit)
+
+
         }
 
     }

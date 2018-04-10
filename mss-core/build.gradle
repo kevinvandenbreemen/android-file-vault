@@ -64,5 +64,6 @@ dependencies {
     androidTestCompile ('com.android.support.test.espresso:espresso-idling-resource:3.0.1') {
         exclude module: 'support-annotations'
     }
+    androidTestCompile ("com.android.support.test.espresso:espresso-intents:$rootProject.ext.espressoVersion")
 
 }
