@@ -6,3 +6,7 @@ package com.vandenbreemen.mobilesecurestorage.log
 fun CurrentSystemLog.e(tag: String, message: String, throwable: Throwable) {
     this.error("$tag - $message", throwable)
 }
+
+fun CurrentSystemLog.d(tag: String, message: String) {
+    this.debug("$tag - $message")
+}
