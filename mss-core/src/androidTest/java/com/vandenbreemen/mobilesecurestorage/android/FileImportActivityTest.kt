@@ -73,6 +73,8 @@ class FileImportActivityTest {
 
         Awaitility.await().atMost(30, TimeUnit.SECONDS).until { !testDir.exists() && !sfsFile.exists() }
 
+        Log.d(TAG, "Any previous test data has been cleaned.  Proceeding to test.")
+
         sfs()
         testDir.mkdir()
 
@@ -100,7 +102,7 @@ class FileImportActivityTest {
 
         await().atMost(30, TimeUnit.SECONDS).until {
             Log.d(TAG, "Number of files in SFS:  ${sfs().listFiles().size}")
-            sfs().listFiles().size == 4
+            sfs().listFiles().size == 5
         }
     }
 

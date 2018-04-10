@@ -75,6 +75,7 @@ class ADBFunctionalityLearningTest {
     @Test
     fun howToCreateTestDataDirectory() {
         val testDir = File(Environment.getExternalStorageDirectory().absolutePath + File.separator + "testData")
+
         errorCollector.checkThat(testDir.mkdir(), `is`(true))
         for (i in 1..5) {
             val file = File(testDir.absolutePath + File.separator + "testFile_$i")
