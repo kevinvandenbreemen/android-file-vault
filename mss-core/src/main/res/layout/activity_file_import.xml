@@ -37,6 +37,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
+        android:progressDrawable="@drawable/progress"
         android:id="@+id/progressBar"
         style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="match_parent"
