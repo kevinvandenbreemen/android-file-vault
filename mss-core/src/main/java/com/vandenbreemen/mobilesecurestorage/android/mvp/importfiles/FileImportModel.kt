@@ -4,6 +4,8 @@ import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractor
 import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
 import com.vandenbreemen.mobilesecurestorage.file.getFileImporter
+import com.vandenbreemen.mobilesecurestorage.log.SystemLog
+import com.vandenbreemen.mobilesecurestorage.log.d
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import io.reactivex.Observable
@@ -33,19 +35,17 @@ class FileImportModel(credentials: SFSCredentials) : Model(credentials) {
     }
 
     fun importDir(directoryToImport: File): Single<Unit> {
-        return fileSystemInteractor.listFiles(directoryToImport).flatMap { files: List<File>? ->
 
+        val listFilesSinglke = fileSystemInteractor.listFiles(directoryToImport)
+        return listFilesSinglke.map {
+            files->
             files!!.forEach(
                     { fileToImport -> sfs.importFile(fileToImport)
-
-                    }
-
-
-            )
-            return@flatMap Single.just(Unit)
-
+                    })
+            return@map Unit
 
         }
+        listFilesSinglke.subscribe({s->})
 
     }
 }
