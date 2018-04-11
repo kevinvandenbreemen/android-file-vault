@@ -18,7 +18,7 @@ class FileImportPresenterImpl(val model: FileImportModel, val view: FileImportVi
     }
 
     override fun setupView() {
-        view.onReadyToUse()
+
     }
 
 
