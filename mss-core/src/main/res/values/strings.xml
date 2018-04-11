@@ -11,4 +11,5 @@
     <string name="loc_for_new_sfs">Please select folder for new File</string>
     <string name="select_file">Please select Secure File System file</string>
     <string name="actions">Main Menu</string>
+    <string name="importing">Importing files...</string>
 </resources>
