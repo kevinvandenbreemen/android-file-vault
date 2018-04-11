@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.ProgressBar
 import android.widget.Toast
 import com.vandenbreemen.mobilesecurestorage.R
 import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow
@@ -16,11 +17,11 @@ import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 
 class FileImportActivity : Activity(), FileImportView {
     override fun showTotalFiles(totalFiles: Int) {
-
+        findViewById<ProgressBar>(R.id.progressBar).max = totalFiles
     }
 
     override fun updateProgress(numberOfFilesImported: Int) {
-
+        findViewById<ProgressBar>(R.id.progressBar).progress = numberOfFilesImported
     }
 
     override fun done(sfsCredentials: SFSCredentials) {
