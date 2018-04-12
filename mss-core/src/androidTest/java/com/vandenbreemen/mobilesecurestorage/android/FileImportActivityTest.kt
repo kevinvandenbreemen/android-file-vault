@@ -142,7 +142,7 @@ class FileImportActivityTest {
         for (i in 1..100) {  //  Import at least 100 files
             val file = File(testDir.absolutePath + File.separator + "testFileEvenMore_$i")
             file.createNewFile()
-            val bytes = ByteArray(1000000)
+            val bytes = ByteArray(2000000)
             SecureRandom().nextBytes(bytes)
             ObjectOutputStream(FileOutputStream(file)).use {
                 it.writeObject(bytes)
