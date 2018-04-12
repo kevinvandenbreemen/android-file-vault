@@ -96,5 +96,10 @@ class MainScreenRobot(val activity: Activity) {
         return SelectorRobot()
     }
 
+    fun clickViewPictures(): GalleryRobot {
+        clickOn(R.id.view_pictures)
+        return GalleryRobot()
+    }
+
 
 }

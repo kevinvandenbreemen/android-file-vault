@@ -201,4 +201,13 @@ class MainActivityTest {
         }
     }
 
+    @Test
+    fun shouldLoadPictureViewer() {
+        MainScreenRobot(activityRule.activity).apply {
+            createNewSFS()
+            clickViewPictures().checkOnGalleryScreen()
+
+        }
+    }
+
 }

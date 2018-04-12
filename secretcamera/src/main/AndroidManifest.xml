@@ -13,10 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"
-            android:screenOrientation="portrait"
+        <activity
+            android:name=".MainActivity"
             android:excludeFromRecents="true"
-            >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,24 +26,27 @@
         <activity
             android:name="com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity"
             android:excludeFromRecents="true" />
-        <activity android:name="com.vandenbreemen.mobilesecurestorage.android.CreateSecureFileSystem"
+        <activity
+            android:name="com.vandenbreemen.mobilesecurestorage.android.CreateSecureFileSystem"
             android:excludeFromRecents="true"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.vandenbreemen.mobilesecurestorage.android.LoadSecureFileSystem"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.vandenbreemen.mobilesecurestorage.android.LoadSecureFileSystem"
             android:excludeFromRecents="true"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".TakeNoteActivity"
-            android:excludeFromRecents="true"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:excludeFromRecents="true" />
         <activity
             android:name=".StringSelectorActivity"
-            android:excludeFromRecents="true"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:excludeFromRecents="true" />
         <activity
             android:name=".NoteDetailsActivity"
-            android:excludeFromRecents="true"
-            android:configChanges="orientation|screenSize"></activity>
+            android:configChanges="orientation|screenSize"
+            android:excludeFromRecents="true" />
+        <activity android:name=".Gallery"></activity>
     </application>
 
 </manifest>

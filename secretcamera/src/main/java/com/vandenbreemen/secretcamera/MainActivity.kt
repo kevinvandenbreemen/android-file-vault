@@ -97,6 +97,10 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
 
     }
 
+    fun onViewPictures(view: View) {
+
+    }
+
     fun onViewNotes(view: View){
         mainMenuPresenter!!.viewNotes()
     }
