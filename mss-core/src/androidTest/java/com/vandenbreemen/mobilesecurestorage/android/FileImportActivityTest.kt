@@ -1,14 +1,11 @@
 package com.vandenbreemen.mobilesecurestorage.android
 
 import android.Manifest
-import android.content.ComponentName
 import android.content.Intent
 import android.os.Environment
 import android.support.test.InstrumentationRegistry
-import android.support.test.InstrumentationRegistry.getTargetContext
 import android.support.test.espresso.intent.Intents
 import android.support.test.espresso.intent.Intents.intended
-import android.support.test.espresso.intent.VerificationModes.times
 import android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import android.support.test.rule.ActivityTestRule
 import android.support.test.rule.GrantPermissionRule
@@ -138,6 +135,35 @@ class FileImportActivityTest {
 
         //intended(hasComponent(ComponentName(getTargetContext(), MainActivity::class.java)))
         intended(hasComponent(MainActivity::class.java.name))
+    }
+
+    @Test
+    fun shouldBeAbleToImportLotsAndLotsOfFiles() {
+        for (i in 1..100) {  //  Import at least 100 files
+            val file = File(testDir.absolutePath + File.separator + "testFileEvenMore_$i")
+            file.createNewFile()
+            val bytes = ByteArray(1000000)
+            SecureRandom().nextBytes(bytes)
+            ObjectOutputStream(FileOutputStream(file)).use {
+                it.writeObject(bytes)
+            }
+        }
+
+        Awaitility.await().atMost(30, TimeUnit.SECONDS).until { testDir.listFiles().size == 105 }
+
+        val workflow = FileWorkflow()
+        workflow.fileOrDirectory = this.testDir
+
+        val intent = Intent()
+        intent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
+        intent.putExtra(SFSCredentials.PARM_CREDENTIALS, SFSCredentials(sfsFile, createPassword()))
+
+        rule.launchActivity(intent)
+
+        await().atMost(30, TimeUnit.SECONDS).until {
+            Log.d(TAG, "Number of files in SFS:  ${sfs().listFiles().size}")
+            sfs().listFiles().size == 105
+        }
     }
 
 }
