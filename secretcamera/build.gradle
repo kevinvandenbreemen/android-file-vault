@@ -43,6 +43,7 @@ android {
 project.ext {
     supportLibraryVersion = "25.2.0"
     daggerVersion = "2.11"
+    mockitoVersion="2.18.0"
 }
 
 dependencies {
@@ -74,4 +75,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testCompile group: 'org.robolectric', name: 'robolectric', version: '3.6.1'
     testCompile group: 'org.hamcrest', name: 'java-hamcrest', version: '2.0.0.0'
+    testCompile "org.mockito:mockito-core:$mockitoVersion"
+    testCompile "org.mockito:mockito-inline:$mockitoVersion"
+
+
 }

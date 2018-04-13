@@ -17,6 +17,10 @@ import com.vandenbreemen.secretcamera.mvp.impl.SFSMainMenuPresenterImpl
 import dagger.android.AndroidInjection
 
 class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
+    override fun gotoGallery(credentials: SFSCredentials) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun onReadyToUse() {
 
     }

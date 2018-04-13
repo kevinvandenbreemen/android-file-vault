@@ -11,6 +11,10 @@ import com.vandenbreemen.secretcamera.mvp.SFSMenuContract
  */
 class SFSMainMenuPresenterImpl(val model:SFSMainMenuModel, val mainMenuView: SFSMenuContract.SFSMainMenuView) :
         Presenter<SFSMainMenuModel, SFSMenuContract.SFSMainMenuView>(model, mainMenuView) , SFSMenuContract.SFSMainMenuPresenter {
+    override fun openGallery() {
+        mainMenuView.gotoGallery(model.copyCredentials())
+    }
+
     override fun setupView() {
 
     }
