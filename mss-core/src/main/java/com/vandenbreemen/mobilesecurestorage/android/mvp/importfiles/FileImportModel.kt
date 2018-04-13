@@ -49,7 +49,7 @@ class FileImportModel(credentials: SFSCredentials) : Model(credentials) {
                     })
                     emitter.onComplete()
                 } ?: run { emitter.onError(ApplicationError("Unknown error importing files")) }
-            }).observeOn(computation()).subscribeOn(mainThread())
+            }).observeOn(mainThread()).subscribeOn(computation())
         }
 
     }

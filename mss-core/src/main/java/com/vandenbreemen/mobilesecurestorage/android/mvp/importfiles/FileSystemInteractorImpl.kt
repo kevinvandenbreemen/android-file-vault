@@ -18,7 +18,7 @@ class FileSystemInteractorImpl : FileSystemInteractor {
             } else {
                 it.onSuccess(directory.listFiles().asList())
             }
-        }).observeOn(io()).subscribeOn(mainThread())
+        }).observeOn(mainThread()).subscribeOn(io())
     }
 
     override fun countFiles(directory: File): Single<Int> {
