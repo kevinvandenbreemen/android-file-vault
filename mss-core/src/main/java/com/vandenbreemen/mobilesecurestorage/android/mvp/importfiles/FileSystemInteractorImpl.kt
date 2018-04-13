@@ -28,7 +28,7 @@ class FileSystemInteractorImpl : FileSystemInteractor {
             } else {
                 it.onSuccess(directory.listFiles().size)
             }
-        }).observeOn(io()).subscribeOn(mainThread())
+        }).observeOn(mainThread()).subscribeOn(io())
     }
 
     private fun isNotDirectory(directory: File) = !directory.exists() || !directory.isDirectory
