@@ -17,9 +17,7 @@ import com.vandenbreemen.secretcamera.mvp.impl.SFSMainMenuPresenterImpl
 import dagger.android.AndroidInjection
 
 class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
-    override fun gotoGallery(credentials: SFSCredentials) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+
 
     override fun onReadyToUse() {
 
@@ -102,7 +100,7 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
     }
 
     fun onViewPictures(view: View) {
-
+        mainMenuPresenter!!.openGallery()
     }
 
     fun onViewNotes(view: View){
@@ -118,5 +116,12 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
 
     override fun gotoTakePicture(credentials: SFSCredentials) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun gotoGallery(credentials: SFSCredentials) {
+        val gallery = Intent(this, Gallery::class.java)
+        gallery.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
+        startActivity(gallery)
+        finish()
     }
 }

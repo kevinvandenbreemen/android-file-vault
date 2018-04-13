@@ -7,6 +7,7 @@ import com.vandenbreemen.secretcamera.R
 class GalleryRobot {
 
     fun checkOnGalleryScreen() {
+
         assertDisplayed(R.id.galleryTitle)
     }
 
