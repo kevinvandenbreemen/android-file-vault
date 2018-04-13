@@ -4,9 +4,14 @@ import android.Manifest
 import android.content.Intent
 import android.os.Environment
 import android.support.test.InstrumentationRegistry
+import android.support.test.espresso.Espresso.onView
+import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.intent.Intents
 import android.support.test.espresso.intent.Intents.intended
 import android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import android.support.test.espresso.matcher.RootMatchers.withDecorView
+import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
+import android.support.test.espresso.matcher.ViewMatchers.withText
 import android.support.test.rule.ActivityTestRule
 import android.support.test.rule.GrantPermissionRule
 import android.support.test.runner.AndroidJUnit4
@@ -18,6 +23,8 @@ import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import org.awaitility.Awaitility
 import org.awaitility.Awaitility.await
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.not
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -94,6 +101,21 @@ class FileImportActivityTest {
                 it.writeObject(bytes)
             }
         }
+    }
+
+    @Test
+    fun shouldGracefullyErrorWhenTryingToImportDirectoryThatDoesNotExist() {
+        val workflow = FileWorkflow()
+        workflow.fileOrDirectory = File(Environment.getExternalStorageDirectory().absolutePath + File.separator + "noSuchDir_")
+
+        val intent = Intent()
+        intent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
+        intent.putExtra(SFSCredentials.PARM_CREDENTIALS, SFSCredentials(sfsFile, createPassword()))
+
+        rule.launchActivity(intent)
+
+        onView(withText("${File(Environment.getExternalStorageDirectory().absolutePath + File.separator + "noSuchDir_").absolutePath} does not exist or is not a directory")).inRoot(withDecorView(not(`is`(rule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+
     }
 
     @Test
