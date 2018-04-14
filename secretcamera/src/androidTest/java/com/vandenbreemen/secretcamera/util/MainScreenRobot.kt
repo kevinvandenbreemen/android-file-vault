@@ -64,6 +64,16 @@ class MainScreenRobot(val activity: Activity) {
         IdlingRegistry.getInstance().register(getElapsedTimeIdlingResource())
     }
 
+    fun loadExistingSFS(dir: String, fileName: String, password: String) {
+        clickOn(R.id.loadExisting)
+        clickOn(dir)
+        clickOn(fileName)
+        writeTo(R.id.password, "password")
+        clickOn(R.id.ok)
+
+        IdlingRegistry.getInstance().register(getElapsedTimeIdlingResource())
+    }
+
     fun rotateToLandscape() {
         val device = UiDevice.getInstance(getInstrumentation())
         device.setOrientationLeft()

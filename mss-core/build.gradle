@@ -59,8 +59,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
     androidTestUtil 'com.android.support.test:orchestrator:1.0.1'
-    testCompile group: 'org.awaitility', name: 'awaitility', version: '3.0.0'
-    androidTestCompile group: 'org.awaitility', name: 'awaitility', version: '3.0.0'
+    testCompile "org.awaitility:awaitility:$rootProject.ext.awaitilityVersion"
+    androidTestCompile "org.awaitility:awaitility:$rootProject.ext.awaitilityVersion"
     androidTestCompile ('com.android.support.test.espresso:espresso-idling-resource:3.0.1') {
         exclude module: 'support-annotations'
     }

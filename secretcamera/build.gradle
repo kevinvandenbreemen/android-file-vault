@@ -77,6 +77,7 @@ dependencies {
     testCompile group: 'org.hamcrest', name: 'java-hamcrest', version: '2.0.0.0'
     testCompile "org.mockito:mockito-core:$mockitoVersion"
     testCompile "org.mockito:mockito-inline:$mockitoVersion"
+    androidTestCompile "org.awaitility:awaitility:$rootProject.ext.awaitilityVersion"
 
 
 }
