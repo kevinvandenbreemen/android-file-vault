@@ -37,6 +37,7 @@ class Gallery : AppCompatActivity(), GalleryView {
         intent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
         intent.putExtra(FileSelectActivity.PARM_DIR_ONLY, true)
         intent.putExtra(FileSelectActivity.PARM_TITLE, resources.getText(com.vandenbreemen.mobilesecurestorage.R.string.loc_for_new_sfs))
+        intent.putExtra(SFSCredentials.PARM_CREDENTIALS, sfsCredentials)
         startActivity(intent)
     }
 

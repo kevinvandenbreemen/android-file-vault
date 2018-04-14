@@ -19,6 +19,7 @@ import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow
 import com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect.FileSelectController
 import com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect.FileSelectModel
 import com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect.FileSelectView
+import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import java.io.File
 
@@ -129,6 +130,13 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
             val intent = Intent(this, workflow.targetActivity)
             intent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
             workflow.fileOrDirectory = selected //  Pass the selected file/directory on to the next activity
+
+            //  Credentials if available
+            getIntent().getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)?.let {
+                intent.putExtra(SFSCredentials.PARM_CREDENTIALS, it.copy())
+                it.finalize()
+            }
+
             startActivity(intent)
             finish()
         } else {

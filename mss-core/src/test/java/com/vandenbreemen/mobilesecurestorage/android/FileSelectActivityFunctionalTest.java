@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import com.vandenbreemen.mobilesecurestorage.R;
 import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow;
+import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials;
+import com.vandenbreemen.mobilesecurestorage.security.SecureString;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -365,6 +367,47 @@ public class FileSelectActivityFunctionalTest {
         FileWorkflow workflowParcel = nextActivity.getParcelableExtra(FileWorkflow.PARM_WORKFLOW_NAME);
         assertNotNull("workflow", workflowParcel);
         assertEquals("Selected directory", subDir, workflowParcel.getFileOrDirectory());
+    }
+
+    @Test
+    public void shouldIncludeCredentialsWhenStartingNextActivity() {
+        FileWorkflow workflow = new FileWorkflow();
+        workflow.setTargetActivity(CreateSecureFileSystem.class);
+
+        Intent startFileSelect = new Intent(sut.getApplication(), FileSelectActivity.class);
+        startFileSelect.putExtra(PARM_DIR_ONLY, Boolean.TRUE);
+        startFileSelect.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
+        startFileSelect.putExtra(SFSCredentials.PARM_CREDENTIALS, new SFSCredentials(new File("noSuchFile"), SecureString.fromPassword("test")));
+
+        sut = Robolectric.buildActivity(FileSelectActivity.class, startFileSelect)
+                .create()
+                .get();
+
+        sut.onResume();
+
+        ListView listView = sut.findViewById(R.id.fileList);
+
+        ShadowListView shadow = shadowOf(listView);
+        shadow.populateItems();
+
+        int fileIndex = 0;
+        for (int i = 0; i < listView.getAdapter().getCount(); i++) {
+            if (((File) listView.getAdapter().getItem(i)).isDirectory()) {
+                fileIndex = i;
+                break;
+            }
+        }
+
+        shadow.performItemClick(fileIndex);
+
+        sut.findViewById(R.id.ok).performClick();
+
+        //  Validate activity started
+        //  https://stackoverflow.com/a/39674693
+        Intent nextActivity = shadowOf(sut).getNextStartedActivity();
+        ShadowIntent nxtActivityIntent = shadowOf(nextActivity);
+
+        assertNotNull("Credentials", nextActivity.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS));
     }
 
     @Test
