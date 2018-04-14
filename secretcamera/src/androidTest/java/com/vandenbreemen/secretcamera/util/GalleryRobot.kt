@@ -23,6 +23,7 @@ class GalleryRobot {
 
     fun selectDirectory(dirName: String) {
         clickOn(dirName)
+        clickOn(R.id.ok)
     }
 
     fun checkOnImportScreen() {
