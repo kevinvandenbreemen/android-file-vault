@@ -48,6 +48,11 @@ abstract class Presenter<out M : Model, out V : View>(private val model: M, priv
         )
     }
 
+    /**
+     * Once the view is #onReadyToUse, call any API on the view required for it to initialize further details etc.  For
+     * example this could be adding a title to a screen based on the title on an accessed record.  Do NOT call view.readyToUse() from
+     * this method!
+     */
     protected abstract fun setupView()
 
     override fun close() {
