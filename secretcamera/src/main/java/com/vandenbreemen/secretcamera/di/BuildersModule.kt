@@ -1,8 +1,10 @@
 package com.vandenbreemen.secretcamera.di
 
+import com.vandenbreemen.secretcamera.Gallery
 import com.vandenbreemen.secretcamera.MainActivity
 import com.vandenbreemen.secretcamera.NoteDetailsActivity
 import com.vandenbreemen.secretcamera.TakeNoteActivity
+import com.vandenbreemen.secretcamera.di.mvp.GalleryPresenterModule
 import com.vandenbreemen.secretcamera.di.mvp.NoteDetailsPresenterModule
 import com.vandenbreemen.secretcamera.di.mvp.TakeNotePresenterModule
 import dagger.Module
@@ -22,5 +24,8 @@ abstract class BuildersModule {
 
     @ContributesAndroidInjector(modules = [NoteDetailsPresenterModule::class])
     abstract fun bindNoteDetailsActivity():NoteDetailsActivity
+
+    @ContributesAndroidInjector(modules = [GalleryPresenterModule::class])
+    abstract fun bindGalleryActivity(): Gallery
 
 }

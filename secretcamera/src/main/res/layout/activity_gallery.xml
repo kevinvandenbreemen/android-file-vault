@@ -32,6 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/import_dir"
+            android:onClick="onImportDir"
             android:id="@+id/importImages"
             style="@style/ButtonAction" />
 
