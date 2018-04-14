@@ -21,5 +21,11 @@ class GalleryRobot {
         assertDisplayed(R.id.fileList)
     }
 
+    fun selectDirectory(dirName: String) {
+        clickOn(dirName)
+    }
 
+    fun checkOnImportScreen() {
+        assertDisplayed(R.string.importing)
+    }
 }

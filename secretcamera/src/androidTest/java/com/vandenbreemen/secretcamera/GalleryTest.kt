@@ -24,6 +24,7 @@ class GalleryTest {
 
     companion object {
         const val TESTDIR = "Music"
+        const val IMPORTDIR = "Podcasts"
         const val PASSWORD = "password"
         const val TAG = "GalleryTest"
     }
@@ -92,6 +93,22 @@ class GalleryTest {
             robot.apply {
                 clickImportImages()
                 checkOnDirectorySelectScreen()
+            }
+
+        }
+    }
+
+    @Test
+    fun shouldImportDirectory() {
+        MainScreenRobot(activityRule.activity).apply {
+            loadExistingSFS(TESTDIR, fileName, PASSWORD)
+
+            val robot = clickViewPictures()
+            robot.apply {
+                clickImportImages()
+                checkOnDirectorySelectScreen()
+                selectDirectory(IMPORTDIR)
+                checkOnImportScreen()
             }
 
         }
