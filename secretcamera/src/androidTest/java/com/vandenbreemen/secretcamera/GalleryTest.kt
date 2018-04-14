@@ -17,6 +17,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
+import java.io.FileOutputStream
+import java.io.ObjectOutputStream
+import java.security.SecureRandom
 import java.util.concurrent.TimeUnit
 
 @RunWith(AndroidJUnit4::class)
@@ -99,7 +102,19 @@ class GalleryTest {
     }
 
     @Test
-    fun shouldImportDirectory() {
+    fun shouldImportImages() {
+
+        //  Stand up a few files to simulate an import
+        for (i in 1..5) {
+            val file = File(Environment.getExternalStorageDirectory().absolutePath + File.separator + IMPORTDIR + File.separator + "IMG_$i.jpg")
+            file.createNewFile()
+            val bytes = ByteArray(100000)
+            SecureRandom().nextBytes(bytes)
+            ObjectOutputStream(FileOutputStream(file)).use {
+                it.writeObject(bytes)
+            }
+        }
+
         MainScreenRobot(activityRule.activity).apply {
             loadExistingSFS(TESTDIR, fileName, PASSWORD)
 
@@ -108,7 +123,10 @@ class GalleryTest {
                 clickImportImages()
                 checkOnDirectorySelectScreen()
                 selectDirectory(IMPORTDIR)
-                checkOnImportScreen()
+
+                IdlingRegistry.getInstance().register(getElapsedTimeIdlingResource())
+
+                checkOnGalleryScreen()
             }
 
         }

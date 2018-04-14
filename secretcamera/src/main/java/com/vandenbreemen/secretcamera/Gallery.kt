@@ -34,6 +34,7 @@ class Gallery : AppCompatActivity(), GalleryView {
         val intent: Intent = Intent(this, FileSelectActivity::class.java)
         val workflow: FileWorkflow = FileWorkflow()
         workflow.targetActivity = FileImportActivity::class.java
+        workflow.activityToStartAfterTargetActivityFinished = Gallery::class.java
         intent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
         intent.putExtra(FileSelectActivity.PARM_DIR_ONLY, true)
         intent.putExtra(FileSelectActivity.PARM_TITLE, resources.getText(com.vandenbreemen.mobilesecurestorage.R.string.loc_for_new_sfs))
