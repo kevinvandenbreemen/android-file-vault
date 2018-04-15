@@ -43,7 +43,7 @@ android {
 project.ext {
     supportLibraryVersion = "25.2.0"
     daggerVersion = "2.11"
-    mockitoVersion="2.18.0"
+    mockitoVersion = "2.18.0"
 }
 
 dependencies {
