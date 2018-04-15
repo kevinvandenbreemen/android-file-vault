@@ -8,6 +8,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import com.vandenbreemen.mobilesecurestorage.R
 import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow
+import com.vandenbreemen.mobilesecurestorage.android.api.FutureIntent
 import com.vandenbreemen.mobilesecurestorage.android.mvp.importfiles.FileImportModel
 import com.vandenbreemen.mobilesecurestorage.android.mvp.importfiles.FileImportPresenter
 import com.vandenbreemen.mobilesecurestorage.android.mvp.importfiles.FileImportPresenterImpl
@@ -16,6 +17,28 @@ import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.api.FileType
 import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+
+interface FileImportDataProvider {
+    fun getFileTypeToBeImported(): FileType
+}
+
+class FileImportFutureIntent : FutureIntent<FileImportDataProvider> {
+    override fun populateIntentWithDetailsAboutFutureActivity(intent: Intent, provider: FileImportDataProvider) {
+        val byteArray = if (provider.getFileTypeToBeImported().secondByte != null)
+            byteArrayOf(provider.getFileTypeToBeImported().firstByte, provider.getFileTypeToBeImported().secondByte!!)
+        else
+            byteArrayOf(provider.getFileTypeToBeImported().firstByte)
+
+        intent.putExtra(FileImportActivity.PARM_FILE_TYPE_BYTES, byteArray)
+    }
+
+    override fun populateIntentToStartFutureActivity(intentToStartFutureActivity: Intent, intentForCurrentActivity: Intent) {
+        intentToStartFutureActivity.putExtra(
+                FileImportActivity.PARM_FILE_TYPE_BYTES,
+                intentForCurrentActivity.getByteArrayExtra(FileImportActivity.PARM_FILE_TYPE_BYTES))
+    }
+
+}
 
 class FileImportActivity : Activity(), FileImportView {
 
