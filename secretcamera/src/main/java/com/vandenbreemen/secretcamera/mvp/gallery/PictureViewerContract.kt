@@ -3,6 +3,7 @@ package com.vandenbreemen.secretcamera.mvp.gallery
 import android.graphics.Bitmap
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
+import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Presenter
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.PresenterContract
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.View
 import com.vandenbreemen.mobilesecurestorage.security.crypto.listFiles
@@ -37,6 +38,12 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
                 }
     }
 
+    fun listImages(): Single<List<String>> {
+        return Single.create(SingleOnSubscribe<List<String>> {
+            it.onSuccess(this.imageFilesInteractor.listImageFiles())
+        }).subscribeOn(computation()).observeOn(mainThread())
+    }
+
 }
 
 class ImageFilesInteractor(private val sfs: SecureFileSystem) {
@@ -51,9 +58,26 @@ class ImageFilesInteractor(private val sfs: SecureFileSystem) {
 }
 
 interface PictureViewerView : View {
+    fun displayImage(imageToDisplay: Bitmap) {
+
+    }
 
 }
 
 interface PictureViewerPresenter : PresenterContract {
+    fun displayImage()
+
+}
+
+class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: PictureViewerView) : Presenter<PictureViewerModel, PictureViewerView>(model, view), PictureViewerPresenter {
+    override fun displayImage() {
+        model.listImages().flatMap { imageFiles ->
+            model.loadImage(imageFiles[0])
+        }.subscribe({ bitmap -> view.displayImage(bitmap) })
+    }
+
+    override fun setupView() {
+
+    }
 
 }
