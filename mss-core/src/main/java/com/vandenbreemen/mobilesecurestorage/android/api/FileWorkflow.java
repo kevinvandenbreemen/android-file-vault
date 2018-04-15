@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
@@ -19,6 +18,7 @@ import java.io.File;
  */
 public class FileWorkflow implements Parcelable {
 
+    public static final String TAG = "FileWorkflowError";
     public static final Creator<FileWorkflow> CREATOR = new Creator<FileWorkflow>() {
         @Override
         public FileWorkflow createFromParcel(Parcel source) {
@@ -28,7 +28,7 @@ public class FileWorkflow implements Parcelable {
             try {
                 ret.targetActivity = (Class<? extends Activity>) Class.forName(className);
             } catch (Exception ex) {
-                Log.e("FileWorkflowError", "Failed to get target activity class", ex);
+                Log.e(TAG, "Failed to get target activity class", ex);
             }
 
             String filePath = source.readString();
@@ -41,7 +41,7 @@ public class FileWorkflow implements Parcelable {
                 try {
                     ret.onFinishTargetActivity = (Class<? extends Activity>) Class.forName(className);
                 } catch (Exception ex) {
-                    Log.e("FileWorkflowError", "Failed to get onFinishTargetActivity", ex);
+                    Log.e(TAG, "Failed to get onFinishTargetActivity", ex);
                 }
             }
 
@@ -50,7 +50,7 @@ public class FileWorkflow implements Parcelable {
                 try {
                     ret.cancelActivity = (Class<? extends Activity>) Class.forName(className);
                 } catch (Exception ex) {
-                    Log.e("FileWorkflowError", "Failed to get cancelActivity", ex);
+                    Log.e(TAG, "Failed to get cancelActivity", ex);
                 }
             }
 
@@ -59,7 +59,7 @@ public class FileWorkflow implements Parcelable {
                 try {
                     ret.targetActivityFutureIntent = (Class<? extends FutureIntent>) Class.forName(className);
                 } catch (Exception ex) {
-                    Log.e("FileWorkflowError", "Failed to get futureIntent", ex);
+                    Log.e(TAG, "Failed to get futureIntent", ex);
                 }
             }
 
@@ -133,8 +133,7 @@ public class FileWorkflow implements Parcelable {
         return this;
     }
 
-    @NotNull
-    public FutureIntent<?> getTargetFutureIntent() throws IllegalAccessException, InstantiationException {
+    public FutureIntent getTargetFutureIntent() throws IllegalAccessException, InstantiationException {
         if (this.targetActivityFutureIntent != null) {
             return this.targetActivityFutureIntent.newInstance();
         }
