@@ -16,6 +16,11 @@ import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 
 class FileImportActivity : Activity(), FileImportView {
+
+    companion object {
+        const val PARM_FILE_TYPE_BYTES = "__fileTypeBytes"
+    }
+
     override fun showTotalFiles(totalFiles: Int) {
         findViewById<ProgressBar>(R.id.progressBar).max = totalFiles
     }

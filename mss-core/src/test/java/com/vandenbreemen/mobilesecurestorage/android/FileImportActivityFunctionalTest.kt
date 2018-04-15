@@ -4,7 +4,9 @@ import android.content.Intent
 import android.os.Environment
 import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
+import com.vandenbreemen.mobilesecurestorage.security.crypto.getFileMeta
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
@@ -74,6 +76,38 @@ class FileImportActivityFunctionalTest {
 
         assertEquals("File import count", 3, sfs().listFiles().size)
 
+    }
+
+    @Test
+    fun shouldAddFileTypeToImportedFiles() {
+//  Arrange
+        var file = File(directoryToImport.absolutePath + File.separator + "file1")
+        file.createNewFile()
+        file = File(directoryToImport.absolutePath + File.separator + "file2")
+        file.createNewFile()
+        file = File(directoryToImport.absolutePath + File.separator + "file3")
+        file.createNewFile()
+
+        val workflow = FileWorkflow()
+        workflow.fileOrDirectory = directoryToImport
+
+        val intent = Intent(RuntimeEnvironment.application, FileImportActivity::class.java)
+        intent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
+        intent.putExtra(FileImportActivity.PARM_FILE_TYPE_BYTES, byteArrayOf(FileTypes.DATA.firstByte, FileTypes.DATA.secondByte!!))
+        intent.putExtra(SFSCredentials.PARM_CREDENTIALS,
+                SFSCredentials(sfsFile, createPassword()))
+
+        val sut: FileImportActivity = buildActivity(FileImportActivity::class.java, intent)
+                .create()
+                .resume()
+                .get()
+
+        assertEquals("File import count", 3, sfs().listFiles().size)
+        sfs().listFiles().forEach { file ->
+            run {
+                assertEquals("File type", FileTypes.DATA, sfs().getFileMeta(file)?.getFileType())
+            }
+        }
     }
 
 }

@@ -88,6 +88,19 @@ class GalleryTest {
     }
 
     @Test
+    fun shouldLoadGallery() {
+        MainScreenRobot(activityRule.activity).apply {
+            loadExistingSFS(TESTDIR, fileName, PASSWORD)
+            val robot = clickViewPictures()
+            robot.apply galleryRobot@{
+                this@galleryRobot.clickViewPictures()
+
+            }
+
+        }
+    }
+
+    @Test
     fun shouldInitImageImport() {
         MainScreenRobot(activityRule.activity).apply {
             loadExistingSFS(TESTDIR, fileName, PASSWORD)
