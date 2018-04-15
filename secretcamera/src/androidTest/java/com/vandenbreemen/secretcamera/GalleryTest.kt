@@ -8,9 +8,13 @@ import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import android.util.Log
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
+import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
+import com.vandenbreemen.mobilesecurestorage.security.crypto.getFileMeta
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
+import com.vandenbreemen.secretcamera.mvp.gallery.PicturesFileTypes
 import com.vandenbreemen.secretcamera.util.ElapsedTimeIdlingResource
 import com.vandenbreemen.secretcamera.util.MainScreenRobot
+import junit.framework.TestCase.assertEquals
 import org.awaitility.Awaitility.await
 import org.junit.After
 import org.junit.Before
@@ -143,6 +147,19 @@ class GalleryTest {
             }
 
         }
+
+        val sfsForVerification = object : SecureFileSystem(sfsFile) {
+            override fun getPassword(): SecureString {
+                return SecureFileSystem.generatePassword(SecureString.fromPassword(PASSWORD))
+            }
+
+        }
+        assertEquals("Files imported", 5, sfsForVerification.extListFiles().size)
+        sfsForVerification.extListFiles().forEach({ file ->
+            run {
+                assertEquals("File type", PicturesFileTypes.IMPORTED_IMAGE, sfsForVerification.getFileMeta(file)?.getFileType())
+            }
+        })
     }
 
 }
