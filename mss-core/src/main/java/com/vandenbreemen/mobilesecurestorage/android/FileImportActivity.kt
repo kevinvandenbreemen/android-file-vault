@@ -13,6 +13,8 @@ import com.vandenbreemen.mobilesecurestorage.android.mvp.importfiles.FileImportP
 import com.vandenbreemen.mobilesecurestorage.android.mvp.importfiles.FileImportPresenterImpl
 import com.vandenbreemen.mobilesecurestorage.android.mvp.importfiles.FileImportView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.file.api.FileType
+import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 
 class FileImportActivity : Activity(), FileImportView {
@@ -41,7 +43,12 @@ class FileImportActivity : Activity(), FileImportView {
 
     override fun onReadyToUse() {
         val directoryToImport = intent.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME).fileOrDirectory
-        fileImportPresenter.import(directoryToImport)
+        var fileType: FileType? = null
+        intent.getByteArrayExtra(PARM_FILE_TYPE_BYTES)?.let { byteArray ->
+            val bytes = Array<Byte?>(byteArray.size, { it -> byteArray[it] })
+            fileType = FileTypes.getFileType(bytes)
+        }
+        fileImportPresenter.import(directoryToImport, fileType)
     }
 
     override fun showError(error: ApplicationError) {

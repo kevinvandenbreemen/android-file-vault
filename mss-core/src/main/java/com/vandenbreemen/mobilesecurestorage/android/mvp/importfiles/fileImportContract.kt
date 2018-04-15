@@ -1,6 +1,7 @@
 package com.vandenbreemen.mobilesecurestorage.android.mvp.importfiles
 
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.file.api.FileType
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.PresenterContract
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.View
 import io.reactivex.Single
@@ -19,7 +20,7 @@ interface FileSystemInteractor {
 
 interface FileImportPresenter : PresenterContract {
 
-    fun import(directory: File)
+    fun import(directory: File, fileType: FileType?)
 
 }
 

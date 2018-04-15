@@ -6,6 +6,7 @@ import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
+import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.getFileMeta
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -102,8 +103,8 @@ class FileImportActivityFunctionalTest {
                 .resume()
                 .get()
 
-        assertEquals("File import count", 3, sfs().listFiles().size)
-        sfs().listFiles().forEach { file ->
+        assertEquals("File import count", 3, sfs().extListFiles().size)
+        sfs().extListFiles().forEach { file ->
             run {
                 assertEquals("File type", FileTypes.DATA, sfs().getFileMeta(file)?.getFileType())
             }

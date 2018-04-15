@@ -2,8 +2,11 @@ package com.vandenbreemen.mobilesecurestorage.android.mvp.importfiles
 
 import android.os.Environment
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
+import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
+import com.vandenbreemen.mobilesecurestorage.security.crypto.getFileMeta
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
@@ -94,7 +97,7 @@ class FileImportPresenterTest {
         file.createNewFile()
 
         //  Act
-        sut.import(directoryToImport)
+        sut.import(directoryToImport, null)
 
         //  Assert
         assertEquals("Total files", 3, view.totalFiles ?: 0)
@@ -111,10 +114,30 @@ class FileImportPresenterTest {
         file.createNewFile()
 
         //  Act
-        sut.import(directoryToImport)
+        sut.import(directoryToImport, null)
 
         //  Assert
         assertEquals("Progress Updates", 3, view.progressUpdates.size)
+    }
+
+    @Test
+    fun shouldSetFileTypeDuringImport() {
+        //  Arrange
+        var file = File(directoryToImport.absolutePath + File.separator + "file1")
+        file.createNewFile()
+        file = File(directoryToImport.absolutePath + File.separator + "file2")
+        file.createNewFile()
+        file = File(directoryToImport.absolutePath + File.separator + "file3")
+        file.createNewFile()
+
+        //  Act
+        sut.import(directoryToImport, FileTypes.SYSTEM)
+
+        sfs().extListFiles().forEach({ file ->
+            run {
+                assertEquals("File type", FileTypes.SYSTEM, sfs().getFileMeta(file)?.getFileType())
+            }
+        })
     }
 
 }

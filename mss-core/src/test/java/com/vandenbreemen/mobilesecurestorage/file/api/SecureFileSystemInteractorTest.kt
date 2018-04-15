@@ -50,20 +50,20 @@ class SecureFileSystemInteractorTest {
 
     @Test
     fun shouldImportFile() {
-        sut.importToFile(getFileImporter().loadFile(TestConstants.TEST_RES_IMG_1), "1.jpg")
+        sut.importToFile(getFileImporter().loadFile(TestConstants.TEST_RES_IMG_1), "1.jpg", null)
         assertEquals("File imported", 1, sfs().listFiles().size)
     }
 
     @Test
     fun shouldStoreFileWithGivenName() {
-        sut.importToFile(getFileImporter().loadFile(TestConstants.TEST_RES_IMG_1), "1.jpg")
+        sut.importToFile(getFileImporter().loadFile(TestConstants.TEST_RES_IMG_1), "1.jpg", null)
         assertEquals("Imported filename", "1.jpg", sfs().listFiles()[0])
     }
 
     @Test
     fun shouldProperlyPersistData() {
         val rawBytes = Bytes.loadBytesFromFile(TestConstants.TEST_RES_IMG_1)
-        sut.importToFile(getFileImporter().loadFile(TestConstants.TEST_RES_IMG_1), "1.jpg")
+        sut.importToFile(getFileImporter().loadFile(TestConstants.TEST_RES_IMG_1), "1.jpg", null)
         val loadedBytes = sfs().loadBytesFromFile("1.jpg")
         assertTrue("Persisted bytes", ByteUtils.equals(rawBytes, loadedBytes))
     }
@@ -72,7 +72,7 @@ class SecureFileSystemInteractorTest {
     fun shouldNotOverwriteExistingFile() {
         sfs().storeObject("1.jpg", ArrayList<String>())
         sut = getSecureFileSystemInteractor(sfs())
-        sut.importToFile(getFileImporter().loadFile(TestConstants.TEST_RES_IMG_1), "1.jpg")
+        sut.importToFile(getFileImporter().loadFile(TestConstants.TEST_RES_IMG_1), "1.jpg", null)
     }
 
 }

@@ -2,7 +2,10 @@ package com.vandenbreemen.mobilesecurestorage.android.mvp.importfiles
 
 import android.os.Environment
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
+import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
+import com.vandenbreemen.mobilesecurestorage.security.crypto.getFileMeta
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
@@ -56,12 +59,36 @@ class FileImportModelTest {
         //  Act
         val fileImportModel = FileImportModel(sfsCredentials)
         fileImportModel.init().subscribe()
-        fileImportModel.importDir(directoryToImport).test()
+        fileImportModel.importDir(directoryToImport, null).test()
                 .assertComplete()
                 .assertNoErrors()
 
         //  assert
         assertEquals("Single file imported", 2, sfs().listFiles().size)
+
+    }
+
+    @Test
+    fun shouldSetFileTypeWhenImportingFiles() {
+        //  Arrange
+        val sfsCredentials = SFSCredentials(sfsFile, createPassword())
+        File(directoryToImport.absolutePath + File.separator + "newfile").createNewFile()
+        File(directoryToImport.absolutePath + File.separator + "newfile1").createNewFile()
+
+        //  Act
+        val fileImportModel = FileImportModel(sfsCredentials)
+        fileImportModel.init().subscribe()
+        fileImportModel.importDir(directoryToImport, FileTypes.UNKNOWN).test()
+                .assertComplete()
+                .assertNoErrors()
+
+        //  assert
+        assertEquals("Single file imported", 2, sfs().extListFiles().size)
+        sfs().extListFiles().forEach { file ->
+            run {
+                assertEquals("File type", FileTypes.UNKNOWN, sfs().getFileMeta(file)?.getFileType())
+            }
+        }
 
     }
 
