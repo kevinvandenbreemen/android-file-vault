@@ -6,9 +6,9 @@ import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.getFileMeta
+import com.vandenbreemen.mobilesecurestorage.security.crypto.listFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.*
 import org.junit.Test
 import java.util.function.Supplier
 
@@ -52,6 +52,20 @@ class SecureFileSystemExtensionsTest {
 
         val retrieved = sfs.getFileMeta("test")
         assertEquals("File type", FileTypes.DATA, retrieved?.getFileType())
+    }
+
+    @Test
+    fun shouldListFilesByType() {
+        val sfs = getSUT()
+        sfs.storeObject("test", "Ramana")
+        sfs.setFileMetadata("test", FileMeta(FileTypes.DATA))
+
+        sfs.storeObject("notInclude", "Not there")
+        sfs.setFileMetadata("notInclude", FileMeta(FileTypes.SYSTEM))
+
+        val filesList = sfs.listFiles(FileTypes.DATA)
+        assertEquals("Single file", 1, filesList.size)
+        assertTrue("Expected file", filesList.contains("test"))
     }
 
     @Test
