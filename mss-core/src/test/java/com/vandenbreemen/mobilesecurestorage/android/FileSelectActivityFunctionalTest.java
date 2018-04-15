@@ -370,6 +370,46 @@ public class FileSelectActivityFunctionalTest {
     }
 
     @Test
+    public void shouldParametrizeTargetActivityUsingFutureIntent() {
+
+        FileWorkflow workflow = new FileWorkflow();
+        workflow.setTargetActivity(CreateSecureFileSystem.class);
+        workflow.setTargetActivityFutureIntent(TestFutureIntent.class);
+
+        Intent startFileSelect = new Intent(sut.getApplication(), FileSelectActivity.class);
+        startFileSelect.putExtra(PARM_DIR_ONLY, Boolean.TRUE);
+        startFileSelect.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
+
+        sut = Robolectric.buildActivity(FileSelectActivity.class, startFileSelect)
+                .create()
+                .get();
+
+        sut.onResume();
+
+        ListView listView = sut.findViewById(R.id.fileList);
+
+        ShadowListView shadow = shadowOf(listView);
+        shadow.populateItems();
+
+        int fileIndex = 0;
+        for (int i = 0; i < listView.getAdapter().getCount(); i++) {
+            if (((File) listView.getAdapter().getItem(i)).isDirectory()) {
+                fileIndex = i;
+                break;
+            }
+        }
+
+        shadow.performItemClick(fileIndex);
+
+        sut.findViewById(R.id.ok).performClick();
+
+        //  Validate activity started
+        //  https://stackoverflow.com/a/39674693
+        Intent nextActivity = shadowOf(sut).getNextStartedActivity();
+        assertNotNull("Parameter from future intent", nextActivity.getStringExtra(TestFutureIntent.KEY_NAME));
+    }
+
+    @Test
     public void shouldIncludeCredentialsWhenStartingNextActivity() {
         FileWorkflow workflow = new FileWorkflow();
         workflow.setTargetActivity(CreateSecureFileSystem.class);

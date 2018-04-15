@@ -137,6 +137,8 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
                 it.finalize()
             }
 
+            workflow.targetFutureIntent?.let { futureIntent -> futureIntent.populateIntentToStartFutureActivity(intent, getIntent()) }
+
             startActivity(intent)
             finish()
         } else {
