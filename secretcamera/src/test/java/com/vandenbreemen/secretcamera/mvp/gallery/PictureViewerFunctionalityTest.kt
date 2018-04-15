@@ -29,7 +29,7 @@ import org.robolectric.shadows.ShadowLog
  * @author kevin
  */
 @RunWith(RobolectricTestRunner::class)
-class PictureViewerContractTest {
+class PictureViewerFunctionalityTest {
 
     lateinit var credentials: SFSCredentials
 
