@@ -24,6 +24,10 @@ class ImageFilesInteractor(private val sfs: SecureFileSystem) {
         return sfs.listFiles(PicturesFileTypes.IMPORTED_IMAGE)
     }
 
+    fun loadImageBytes(fileName: String): ByteArray {
+        return sfs.loadBytesFromFile(fileName)
+    }
+
 }
 
 interface PictureViewerView : View {

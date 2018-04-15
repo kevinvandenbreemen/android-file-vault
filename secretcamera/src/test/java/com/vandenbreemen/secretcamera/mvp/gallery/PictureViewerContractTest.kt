@@ -2,13 +2,16 @@ package com.vandenbreemen.secretcamera.mvp.gallery
 
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
+import com.vandenbreemen.mobilesecurestorage.security.Bytes
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
 import com.vandenbreemen.secretcamera.shittySolutionPleaseDelete.TestConstants
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
+import org.bouncycastle.pqc.math.linearalgebra.ByteUtils
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.notNullValue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -64,6 +67,23 @@ class PictureViewerContractTest {
         errorCollector.checkThat("Image file ${TestConstants.TEST_RES_IMG_1.name}",
                 filesList.contains(TestConstants.TEST_RES_IMG_1.name), `is`(true))
         errorCollector.checkThat("Single image", filesList.size, `is`(1))
+    }
+
+    @Test
+    fun shouldBeAbleToLoadImageBytes() {
+        //  Arrange
+        sfs.importFile(TestConstants.TEST_RES_IMG_1)
+        sfs.setFileMetadata(TestConstants.TEST_RES_IMG_1.name, FileMeta(PicturesFileTypes.IMPORTED_IMAGE))
+        val expectedBytes = Bytes.loadBytesFromFile(TestConstants.TEST_RES_IMG_1)
+
+        //  Act
+        val interactor = ImageFilesInteractor(sfs)
+        val bytes = interactor.loadImageBytes(TestConstants.TEST_RES_IMG_1.name)
+
+        //  Assert
+        errorCollector.checkThat("Bytes non-null", bytes, notNullValue())
+        errorCollector.checkThat("Bytes expected", ByteUtils.equals(expectedBytes, bytes), `is`(true))
+
     }
 
 }
