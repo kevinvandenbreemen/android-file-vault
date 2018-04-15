@@ -106,4 +106,22 @@ class PictureViewerContractTest {
                 .assertValue { it != null }
     }
 
+    @Test
+    fun modelShouldBeAbleToDeliverAndroidBitmapGivenFileName() {
+        //  Arrange
+        sfs.importFile(TestConstants.TEST_RES_IMG_1)
+        sfs.setFileMetadata(TestConstants.TEST_RES_IMG_1.name, FileMeta(PicturesFileTypes.IMPORTED_IMAGE))
+
+        //  Act
+        val model = PictureViewerModel(credentials)
+        model.init().subscribe()
+        val result: Single<Bitmap> = model.loadImage(TestConstants.TEST_RES_IMG_1.name)
+
+        //  Assert
+        errorCollector.checkThat("Single back", result, notNullValue())
+        result.test()
+                .assertComplete()
+                .assertValue { it != null }
+    }
+
 }
