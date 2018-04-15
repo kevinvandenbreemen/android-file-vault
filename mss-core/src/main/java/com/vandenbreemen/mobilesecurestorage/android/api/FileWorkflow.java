@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
@@ -53,6 +54,15 @@ public class FileWorkflow implements Parcelable {
                 }
             }
 
+            className = source.readString();
+            if (!StringUtils.isBlank(className)) {
+                try {
+                    ret.targetActivityFutureIntent = (Class<? extends FutureIntent>) Class.forName(className);
+                } catch (Exception ex) {
+                    Log.e("FileWorkflowError", "Failed to get futureIntent", ex);
+                }
+            }
+
             return ret;
         }
 
@@ -70,6 +80,7 @@ public class FileWorkflow implements Parcelable {
     private Class<? extends Activity> targetActivity;
     private Class<? extends Activity> onFinishTargetActivity;
     private Class<? extends Activity> cancelActivity;
+    private Class<? extends FutureIntent> targetActivityFutureIntent;
 
     @Override
     public int describeContents() {
@@ -82,6 +93,7 @@ public class FileWorkflow implements Parcelable {
         dest.writeString(this.fileOrDirectory != null ? fileOrDirectory.getAbsolutePath() : "");
         dest.writeString(this.onFinishTargetActivity != null ? this.onFinishTargetActivity.getName() : "");
         dest.writeString(this.cancelActivity != null ? this.cancelActivity.getName() : "");
+        dest.writeString(this.targetActivityFutureIntent != null ? this.targetActivityFutureIntent.getName() : "");
     }
 
     public File getFileOrDirectory() {
@@ -114,5 +126,18 @@ public class FileWorkflow implements Parcelable {
 
     public void setCancelActivity(Class<? extends Activity> cancelActivity) {
         this.cancelActivity = cancelActivity;
+    }
+
+    public FileWorkflow setTargetActivityFutureIntent(Class<? extends FutureIntent> targetActivityFutureIntent) {
+        this.targetActivityFutureIntent = targetActivityFutureIntent;
+        return this;
+    }
+
+    @NotNull
+    public FutureIntent<?> getTargetFutureIntent() throws IllegalAccessException, InstantiationException {
+        if (this.targetActivityFutureIntent != null) {
+            return this.targetActivityFutureIntent.newInstance();
+        }
+        return null;
     }
 }
