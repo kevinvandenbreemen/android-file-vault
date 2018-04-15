@@ -100,7 +100,7 @@ abstract class Model(private val credentials: SFSCredentials) {
     }
 
     /**
-     * Do any setup necessary for the model to work
+     * Do any setup necessary for the model to work.  This method is called once the SFS has been initialized
      */
     protected abstract fun setup()
 }
