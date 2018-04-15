@@ -6,8 +6,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnitRunner
 
 /**
@@ -42,6 +41,13 @@ class PictureViewerContractTest {
         presenter.displayImage()
         verify(model).listImages()
         verify(view).displayImage(bitmap)
+    }
+
+    @Test
+    fun shouldHandleNoImagesAvailable() {
+        `when`(model.listImages()).thenReturn(Single.just(listOf()))
+        presenter.displayImage()
+        verify(view, never()).displayImage(bitmap)
     }
 
 }
