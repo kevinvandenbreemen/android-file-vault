@@ -58,9 +58,7 @@ class ImageFilesInteractor(private val sfs: SecureFileSystem) {
 }
 
 interface PictureViewerView : View {
-    fun displayImage(imageToDisplay: Bitmap) {
-
-    }
+    fun displayImage(imageToDisplay: Bitmap)
 
 }
 
