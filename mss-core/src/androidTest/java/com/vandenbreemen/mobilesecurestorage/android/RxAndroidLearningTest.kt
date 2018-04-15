@@ -53,4 +53,23 @@ class RxAndroidLearningTest {
         assertEquals("Main thread", 2L, whatThread!!)
     }
 
+    @Test
+    fun howToChainSingles() {
+        var whatThreads: MutableList<Long> = mutableListOf()
+        Single.create(SingleOnSubscribe<Int> {
+            whatThreads.add(Thread.currentThread().id)
+            it.onSuccess(1)
+        }).subscribeOn(io()).observeOn(mainThread())
+                .flatMap { value ->
+                    Single.create(SingleOnSubscribe<Int> {
+                        whatThreads.add(Thread.currentThread().id)
+                        it.onSuccess(2)
+                    }).subscribeOn(io()).observeOn(mainThread())
+                }.subscribe({ value -> })
+
+        await().atMost(1, TimeUnit.SECONDS).until { whatThreads.size == 2 }
+        assertNotSame("First thread", 2, whatThreads[0])
+        assertNotSame("Second thread", 2, whatThreads[1])
+    }
+
 }
