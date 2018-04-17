@@ -27,14 +27,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/galleryTitle">
 
-
-        <Button
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/import_dir"
-            android:onClick="onImportDir"
-            android:id="@+id/importImages"
-            style="@style/ButtonAction" />
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/import_dir"
+                android:onClick="onImportDir"
+                android:id="@+id/importImages"
+                style="@style/ButtonAction" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/view_pictures"
+                android:onClick="onViewPictures"
+                android:id="@+id/view_pictures"
+                style="@style/ButtonAction" />
+        </LinearLayout>
+
 
     </android.support.v7.widget.CardView>
 

@@ -33,4 +33,8 @@ class GalleryRobot {
     fun clickViewPictures() {
         clickOn(R.id.view_pictures)
     }
+
+    fun checkOnPictureViewerScreen() {
+        assertDisplayed(R.id.pictureViewer)
+    }
 }

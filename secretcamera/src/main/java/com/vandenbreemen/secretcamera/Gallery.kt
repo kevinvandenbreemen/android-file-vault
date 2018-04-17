@@ -34,6 +34,10 @@ class Gallery : AppCompatActivity(), GalleryView {
         presenter.importDirectory()
     }
 
+    fun onViewPictures(view: View) {
+        TODO("Still to come")
+    }
+
     override fun loadDirectoryImport(sfsCredentials: SFSCredentials) {
         val intent: Intent = Intent(this, FileSelectActivity::class.java)
         val workflow: FileWorkflow = FileWorkflow()

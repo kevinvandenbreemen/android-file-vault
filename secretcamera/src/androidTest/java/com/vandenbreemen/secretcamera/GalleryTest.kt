@@ -98,7 +98,7 @@ class GalleryTest {
             val robot = clickViewPictures()
             robot.apply galleryRobot@{
                 this@galleryRobot.clickViewPictures()
-
+                this@galleryRobot.checkOnPictureViewerScreen()
             }
 
         }

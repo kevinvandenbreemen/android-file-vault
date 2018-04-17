@@ -9,4 +9,5 @@
     <string name="edit">Edit</string>
     <string name="gallery">View\nPictures</string>
     <string name="import_dir">Import Directory</string>
+    <string name="view_pictures">View Pictures</string>
 </resources>
