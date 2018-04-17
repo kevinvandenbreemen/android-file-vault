@@ -2,6 +2,7 @@ package com.vandenbreemen.secretcamera.mvp.gallery
 
 import android.graphics.Bitmap
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Presenter
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.PresenterContract
@@ -70,8 +71,14 @@ interface PictureViewerPresenter : PresenterContract {
 class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: PictureViewerView) : Presenter<PictureViewerModel, PictureViewerView>(model, view), PictureViewerPresenter {
     override fun displayImage() {
         model.listImages().flatMap { imageFiles ->
-            model.loadImage(imageFiles[0])
-        }.subscribe({ bitmap -> view.displayImage(bitmap) })
+            if (imageFiles.isEmpty()) {
+                Single.error<Bitmap>(ApplicationError("No images available"))
+            } else {
+                model.loadImage(imageFiles[0])
+            }
+        }.subscribe({ bitmap -> view.displayImage(bitmap) },
+                { error -> view.showError(ApplicationError(error)) }
+        )
     }
 
     override fun setupView() {

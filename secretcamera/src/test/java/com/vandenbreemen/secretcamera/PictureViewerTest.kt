@@ -12,6 +12,7 @@ import com.vandenbreemen.secretcamera.mvp.gallery.PicturesFileTypes
 import com.vandenbreemen.secretcamera.shittySolutionPleaseDelete.TestConstants
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
+import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import org.junit.Before
 import org.junit.Test
@@ -19,6 +20,7 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric.buildActivity
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowApplication
+import org.robolectric.shadows.ShadowToast
 
 @RunWith(RobolectricTestRunner::class)
 class PictureViewerTest {
@@ -68,6 +70,16 @@ class PictureViewerTest {
         val view = activity.findViewById<ImageView>(R.id.currentImage)
         assertNotNull(view.drawable as BitmapDrawable)
 
+    }
+
+    @Test
+    fun shouldGracefullyHandleNoAvailableImages() {
+        val activity = buildActivity(PictureViewerActivity::class.java, intent)
+                .create()
+                .resume()
+                .get()
+
+        assertEquals("No image Message", "No images available", ShadowToast.getTextOfLatestToast())
     }
 
 }

@@ -37,4 +37,10 @@ class GalleryContractTest {
         verify(galleryView).loadDirectoryImport(sfsCopy)
     }
 
+    @Test
+    fun shouldGoToPictureViewer() {
+        galleryPresenter.viewPictures()
+        verify(galleryView).loadPictureViewer(sfsCopy)
+    }
+
 }

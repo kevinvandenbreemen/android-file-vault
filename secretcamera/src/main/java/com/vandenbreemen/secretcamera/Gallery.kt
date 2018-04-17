@@ -35,7 +35,14 @@ class Gallery : AppCompatActivity(), GalleryView {
     }
 
     fun onViewPictures(view: View) {
-        TODO("Still to come")
+        presenter.viewPictures()
+    }
+
+    override fun loadPictureViewer(sfsCredentials: SFSCredentials) {
+        val intent = Intent(this, PictureViewerActivity::class.java)
+        intent.putExtra(SFSCredentials.PARM_CREDENTIALS, sfsCredentials)
+        startActivity(intent)
+        finish()
     }
 
     override fun loadDirectoryImport(sfsCredentials: SFSCredentials) {

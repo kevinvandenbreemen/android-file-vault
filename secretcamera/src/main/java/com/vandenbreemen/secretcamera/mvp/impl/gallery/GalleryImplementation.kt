@@ -18,6 +18,10 @@ class GalleryModel(credentials: SFSCredentials) : Model(credentials) {
 }
 
 class GalleryPresenterImpl(val model: GalleryModel, val view: GalleryView) : Presenter<GalleryModel, GalleryView>(model, view), GalleryPresenter {
+    override fun viewPictures() {
+        view.loadPictureViewer(model.copyCredentials())
+    }
+
     override fun importDirectory() {
         view.loadDirectoryImport(model.copyCredentials())
     }

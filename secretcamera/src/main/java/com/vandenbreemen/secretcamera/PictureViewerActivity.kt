@@ -4,6 +4,8 @@ import android.app.Activity
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewerPresenter
 import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewerView
@@ -31,7 +33,7 @@ class PictureViewerActivity : Activity(), PictureViewerView {
     }
 
     override fun showError(error: ApplicationError) {
-
+        Toast.makeText(this, error.localizedMessage, LENGTH_SHORT).show()
     }
 
     override fun displayImage(imageToDisplay: Bitmap) {
