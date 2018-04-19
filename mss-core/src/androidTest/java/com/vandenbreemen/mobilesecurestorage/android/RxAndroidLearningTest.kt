@@ -34,7 +34,7 @@ class RxAndroidLearningTest {
 
         await().atMost(1, TimeUnit.SECONDS).until { whatThread?:-1 >= 0L }
         Log.d(TAG, "single exec thread = $whatThread")
-        assertNotSame("Main thread", 2L, whatThread!!)
+        assertNotSame("Main thread", 1L, whatThread!!)
     }
 
     @Test
@@ -50,7 +50,7 @@ class RxAndroidLearningTest {
 
         await().atMost(1, TimeUnit.SECONDS).until { whatThread?:-1 >= 0L }
         Log.d(TAG, "single exec thread = $whatThread")
-        assertEquals("Main thread", 2L, whatThread!!)
+        assertEquals("Main thread", 1L, whatThread!!)
     }
 
     @Test
@@ -68,8 +68,8 @@ class RxAndroidLearningTest {
                 }.subscribe({ value -> })
 
         await().atMost(1, TimeUnit.SECONDS).until { whatThreads.size == 2 }
-        assertNotSame("First thread", 2, whatThreads[0])
-        assertNotSame("Second thread", 2, whatThreads[1])
+        assertNotSame("First thread", 1, whatThreads[0])
+        assertNotSame("Second thread", 1, whatThreads[1])
     }
 
 }

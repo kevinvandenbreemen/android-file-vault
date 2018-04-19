@@ -5,9 +5,10 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
+import com.davemorrissey.labs.subscaleview.ImageSource
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewerPresenter
 import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewerView
@@ -46,6 +47,7 @@ class PictureViewerActivity : Activity(), PictureViewerView {
     }
 
     override fun displayImage(imageToDisplay: Bitmap) {
-        findViewById<ImageView>(R.id.currentImage).setImageBitmap(imageToDisplay)
+        //findViewById<ImageView>(R.id.currentImage).setImageBitmap(imageToDisplay)
+        findViewById<SubsamplingScaleImageView>(R.id.currentImage).setImage(ImageSource.bitmap(imageToDisplay))
     }
 }

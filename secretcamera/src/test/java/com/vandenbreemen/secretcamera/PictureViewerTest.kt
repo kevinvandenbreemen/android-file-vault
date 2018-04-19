@@ -1,8 +1,7 @@
 package com.vandenbreemen.secretcamera
 
 import android.content.Intent
-import android.graphics.drawable.BitmapDrawable
-import android.widget.ImageView
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
@@ -13,7 +12,7 @@ import com.vandenbreemen.secretcamera.shittySolutionPleaseDelete.TestConstants
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
 import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -67,8 +66,8 @@ class PictureViewerTest {
                 .resume()
                 .get()
 
-        val view = activity.findViewById<ImageView>(R.id.currentImage)
-        assertNotNull(view.drawable as BitmapDrawable)
+        val view = activity.findViewById<SubsamplingScaleImageView>(R.id.currentImage)
+        assertTrue("Image rendered", view.hasImage())
 
     }
 

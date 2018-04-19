@@ -46,8 +46,14 @@
             android:name=".NoteDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:excludeFromRecents="true" />
-        <activity android:name=".Gallery" />
-        <activity android:name=".PictureViewerActivity"></activity>
+        <activity
+            android:name=".Gallery"
+            android:configChanges="orientation|screenSize"
+            android:excludeFromRecents="true" />
+        <activity
+            android:name=".PictureViewerActivity"
+            android:configChanges="orientation|screenSize"
+            android:excludeFromRecents="true"></activity>
     </application>
 
 </manifest>
