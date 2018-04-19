@@ -21,4 +21,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/overlay"
+        layout="@layout/layout_logo_screen"
+        android:visibility="gone" />
+
 </android.support.constraint.ConstraintLayout>

@@ -3,6 +3,8 @@ package com.vandenbreemen.secretcamera
 import android.app.Activity
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
@@ -28,7 +30,14 @@ class PictureViewerActivity : Activity(), PictureViewerView {
         presenter.start()
     }
 
+    override fun onPause() {
+        super.onPause()
+        findViewById<ViewGroup>(R.id.overlay).visibility = View.VISIBLE
+        presenter.close()
+    }
+
     override fun onReadyToUse() {
+        findViewById<ViewGroup>(R.id.overlay).visibility = View.GONE
         presenter.displayImage()
     }
 
