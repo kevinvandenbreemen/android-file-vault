@@ -86,4 +86,21 @@ class PictureViewerModelTest {
         assertEquals("Prev file", "img_1", model.prevFile().blockingGet())
     }
 
+    @Test
+    fun shouldPersistPositionAfterNavigateForward() {
+        model.currentFile().blockingGet()
+        model.nextFile().blockingGet()
+        assertEquals("Current file", "img_10", model.currentFile().blockingGet())
+    }
+
+    @Test
+    fun shouldPersistPositionAfterNavigateBack() {
+        model.currentFile().blockingGet()
+        model.nextFile().blockingGet()
+        model.nextFile().blockingGet()
+        model.nextFile().blockingGet()
+        model.prevFile().blockingGet()
+        assertEquals("Current file", "img_2", model.currentFile().blockingGet())
+    }
+
 }
