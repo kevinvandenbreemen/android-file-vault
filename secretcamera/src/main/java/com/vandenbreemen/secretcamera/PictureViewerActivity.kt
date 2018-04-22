@@ -49,4 +49,16 @@ class PictureViewerActivity : Activity(), PictureViewerView {
     override fun displayImage(imageToDisplay: Bitmap) {
         findViewById<SubsamplingScaleImageView>(R.id.currentImage).setImage(ImageSource.bitmap(imageToDisplay))
     }
+
+    fun onForward(view: View) {
+        presenter.nextImage()
+    }
+
+    fun onBack(view: View) {
+        presenter.previousImage()
+    }
+
+    override fun end() {
+
+    }
 }

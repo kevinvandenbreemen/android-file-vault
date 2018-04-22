@@ -22,6 +22,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageButton
+        android:id="@+id/forward"
+        android:layout_width="45dp"
+        android:layout_height="70dp"
+        android:alpha="0.5"
+        android:background="@color/shade"
+        android:onClick="onForward"
+        android:scaleType="fitXY"
+        android:src="@drawable/arrow_frwd"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/backward"
+        android:layout_width="45dp"
+        android:layout_height="70dp"
+        android:alpha="0.5"
+        android:background="@color/shade"
+        android:onClick="onBack"
+        android:scaleType="fitXY"
+        android:src="@drawable/arrow_back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <include
         android:id="@+id/overlay"
         layout="@layout/layout_logo_screen"

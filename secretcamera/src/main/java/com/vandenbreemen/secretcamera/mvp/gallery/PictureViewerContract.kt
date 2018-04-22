@@ -23,17 +23,38 @@ class ImageFilesInteractor(private val sfs: SecureFileSystem) {
 interface PictureViewerView : View {
     fun displayImage(imageToDisplay: Bitmap)
 
+    fun end()
 }
 
 interface PictureViewerPresenter : PresenterContract {
     fun displayImage()
+    fun nextImage()
+    fun previousImage()
 
 }
 
 class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: PictureViewerView) : Presenter<PictureViewerModel, PictureViewerView>(model, view), PictureViewerPresenter {
+
+
     override fun displayImage() {
 
         model.currentFile().flatMap { imageFile ->
+            model.loadImage(imageFile)
+        }.subscribe({ bitmap -> view.displayImage(bitmap) },
+                { error -> view.showError(ApplicationError(error)) }
+        )
+    }
+
+    override fun nextImage() {
+        model.nextFile().flatMap { imageFile ->
+            model.loadImage(imageFile)
+        }.subscribe({ bitmap -> view.displayImage(bitmap) },
+                { error -> view.showError(ApplicationError(error)) }
+        )
+    }
+
+    override fun previousImage() {
+        model.prevFile().flatMap { imageFile ->
             model.loadImage(imageFile)
         }.subscribe({ bitmap -> view.displayImage(bitmap) },
                 { error -> view.showError(ApplicationError(error)) }
