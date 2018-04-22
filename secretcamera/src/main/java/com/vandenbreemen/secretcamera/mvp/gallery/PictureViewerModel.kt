@@ -5,12 +5,15 @@ import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
 import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractor
 import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
+import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.secretcamera.api.GallerySettings
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.schedulers.Schedulers.computation
 
 /**
  * <h2>Intro</h2>
@@ -54,16 +57,24 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
         }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread())
     }
 
-    fun currentFile(): String? {
-        secureFileSystemInteractor.load(SETTINGS, FileTypes.DATA)?.let { loaded ->
-            val gallerySettings = loaded as GallerySettings
-            return gallerySettings.currentFile
-        }
+    fun currentFile(): Single<String> {
+        return Single.create(SingleOnSubscribe<String> {
+            secureFileSystemInteractor.load(SETTINGS, FileTypes.DATA)?.let { loaded ->
+                val gallerySettings = loaded as GallerySettings
+                it.onSuccess(gallerySettings.currentFile)
+            }
 
-        val listOfFiles = this.imageFilesInteractor.listImageFiles()
-        val newGallerySettings = GallerySettings(listOfFiles[0])
-        secureFileSystemInteractor.save(newGallerySettings, SETTINGS, FileTypes.DATA)
-        return newGallerySettings.currentFile
+            val listOfFiles = this.imageFilesInteractor.listImageFiles()
+
+            if (listOfFiles.isEmpty()) {
+                it.onError(ApplicationError("No images available"))
+                return@SingleOnSubscribe
+            }
+
+            val newGallerySettings = GallerySettings(listOfFiles[0])
+            secureFileSystemInteractor.save(newGallerySettings, SETTINGS, FileTypes.DATA)
+            it.onSuccess(newGallerySettings.currentFile)
+        }).subscribeOn(computation()).observeOn(mainThread())
     }
 
 }

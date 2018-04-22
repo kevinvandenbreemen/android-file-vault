@@ -7,7 +7,6 @@ import com.vandenbreemen.mobilesecurestorage.patterns.mvp.PresenterContract
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.View
 import com.vandenbreemen.mobilesecurestorage.security.crypto.listFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
-import io.reactivex.Single
 
 
 class ImageFilesInteractor(private val sfs: SecureFileSystem) {
@@ -33,12 +32,9 @@ interface PictureViewerPresenter : PresenterContract {
 
 class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: PictureViewerView) : Presenter<PictureViewerModel, PictureViewerView>(model, view), PictureViewerPresenter {
     override fun displayImage() {
-        model.listImages().flatMap { imageFiles ->
-            if (imageFiles.isEmpty()) {
-                Single.error<Bitmap>(ApplicationError("No images available"))
-            } else {
-                model.loadImage(imageFiles[0])
-            }
+
+        model.currentFile().flatMap { imageFile ->
+            model.loadImage(imageFile)
         }.subscribe({ bitmap -> view.displayImage(bitmap) },
                 { error -> view.showError(ApplicationError(error)) }
         )

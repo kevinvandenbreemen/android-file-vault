@@ -57,7 +57,7 @@ class PictureViewerModelTest {
 
     @Test
     fun shouldDetermineCurrentFile() {
-        assertEquals("Current file", "img_1", model.currentFile())
+        assertEquals("Current file", "img_1", model.currentFile().blockingGet())
     }
 
 }

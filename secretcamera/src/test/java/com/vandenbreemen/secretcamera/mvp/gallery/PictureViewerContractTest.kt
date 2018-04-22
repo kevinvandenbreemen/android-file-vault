@@ -1,6 +1,7 @@
 package com.vandenbreemen.secretcamera.mvp.gallery
 
 import android.graphics.Bitmap
+import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
@@ -31,7 +32,7 @@ class PictureViewerContractTest {
 
     @Before
     fun setup() {
-        `when`(model.listImages()).thenReturn(Single.just(listOf("file")))
+        `when`(model.currentFile()).thenReturn(Single.just("file"))
         `when`(model.loadImage("file")).thenReturn(Single.just(bitmap))
         this.presenter = PictureViewerPresenterImpl(model, view)
     }
@@ -39,13 +40,13 @@ class PictureViewerContractTest {
     @Test
     fun shouldShowFirstAvailableImage() {
         presenter.displayImage()
-        verify(model).listImages()
+        verify(model).currentFile()
         verify(view).displayImage(bitmap)
     }
 
     @Test
     fun shouldHandleNoImagesAvailable() {
-        `when`(model.listImages()).thenReturn(Single.just(listOf()))
+        `when`(model.currentFile()).thenReturn(Single.error(ApplicationError("No images available")))
         presenter.displayImage()
         verify(view, never()).displayImage(bitmap)
     }
