@@ -90,9 +90,7 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
         return Single.create(SingleOnSubscribe<String> {
 
             val gallerySettings = getGallerySettings()
-            val listOfFiles = this.imageFilesInteractor.listImageFiles()
-            val currentIndex = listOfFiles.indexOf(gallerySettings.currentFile)
-            val nextFile = listOfFiles[currentIndex + 1]
+            val nextFile = getNextFile(gallerySettings)
             gallerySettings.currentFile = nextFile
             secureFileSystemInteractor.save(gallerySettings, SETTINGS, FileTypes.DATA)
             it.onSuccess(gallerySettings.currentFile)
@@ -100,16 +98,28 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
         }).subscribeOn(computation()).observeOn(mainThread())
     }
 
+    private fun getNextFile(gallerySettings: GallerySettings): String {
+        val listOfFiles = this.imageFilesInteractor.listImageFiles()
+        val currentIndex = listOfFiles.indexOf(gallerySettings.currentFile)
+        val nextFile = listOfFiles[currentIndex + 1]
+        return nextFile
+    }
+
     fun prevFile(): Single<String> {
         return Single.create(SingleOnSubscribe<String> {
             val gallerySettings = getGallerySettings()
-            val listOfFiles = this.imageFilesInteractor.listImageFiles()
-            val currentIndex = listOfFiles.indexOf(gallerySettings.currentFile)
-            val prevFile = listOfFiles[currentIndex - 1]
+            val prevFile = getPreviousFile(gallerySettings)
             gallerySettings.currentFile = prevFile
             secureFileSystemInteractor.save(gallerySettings, SETTINGS, FileTypes.DATA)
             it.onSuccess(gallerySettings.currentFile)
         }).subscribeOn(computation()).observeOn(mainThread())
+    }
+
+    private fun getPreviousFile(gallerySettings: GallerySettings): String {
+        val listOfFiles = this.imageFilesInteractor.listImageFiles()
+        val currentIndex = listOfFiles.indexOf(gallerySettings.currentFile)
+        val prevFile = listOfFiles[currentIndex - 1]
+        return prevFile
     }
 
 }
