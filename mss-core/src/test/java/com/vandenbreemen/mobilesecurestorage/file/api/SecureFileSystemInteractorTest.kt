@@ -75,4 +75,11 @@ class SecureFileSystemInteractorTest {
         sut.importToFile(getFileImporter().loadFile(TestConstants.TEST_RES_IMG_1), "1.jpg", null)
     }
 
+    @Test
+    fun shouldStoreToFileWithType() {
+        val settings = "SettingsDummy"
+        sut.save(settings, "settings", FileTypes.DATA)
+        assertEquals("Load file", "SettingsDummy", sut.load("settings", FileTypes.DATA))
+    }
+
 }
