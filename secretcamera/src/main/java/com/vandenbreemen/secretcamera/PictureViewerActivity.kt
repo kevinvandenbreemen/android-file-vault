@@ -47,7 +47,6 @@ class PictureViewerActivity : Activity(), PictureViewerView {
     }
 
     override fun displayImage(imageToDisplay: Bitmap) {
-        //findViewById<ImageView>(R.id.currentImage).setImageBitmap(imageToDisplay)
         findViewById<SubsamplingScaleImageView>(R.id.currentImage).setImage(ImageSource.bitmap(imageToDisplay))
     }
 }
