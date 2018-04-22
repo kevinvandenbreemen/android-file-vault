@@ -63,7 +63,7 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
             return gallerySettings
         }
         val gallerySettings = GallerySettings(null)
-        secureFileSystemInteractor.save(gallerySettings, SETTINGS, FileTypes.DATA)
+        saveGallerySettings(gallerySettings)
         return gallerySettings
     }
 
@@ -81,7 +81,7 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
             }
 
             gallerySettings.currentFile = listOfFiles[0]
-            secureFileSystemInteractor.save(gallerySettings, SETTINGS, FileTypes.DATA)
+            saveGallerySettings(gallerySettings)
             emitter.onSuccess(gallerySettings.currentFile)
         }).subscribeOn(computation()).observeOn(mainThread())
     }
@@ -92,7 +92,7 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
             val gallerySettings = getGallerySettings()
             val nextFile = getNextFile(gallerySettings)
             gallerySettings.currentFile = nextFile
-            secureFileSystemInteractor.save(gallerySettings, SETTINGS, FileTypes.DATA)
+            saveGallerySettings(gallerySettings)
             it.onSuccess(gallerySettings.currentFile)
 
         }).subscribeOn(computation()).observeOn(mainThread())
@@ -110,9 +110,13 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
             val gallerySettings = getGallerySettings()
             val prevFile = getPreviousFile(gallerySettings)
             gallerySettings.currentFile = prevFile
-            secureFileSystemInteractor.save(gallerySettings, SETTINGS, FileTypes.DATA)
+            saveGallerySettings(gallerySettings)
             it.onSuccess(gallerySettings.currentFile)
         }).subscribeOn(computation()).observeOn(mainThread())
+    }
+
+    private fun saveGallerySettings(gallerySettings: GallerySettings) {
+        secureFileSystemInteractor.save(gallerySettings, SETTINGS, FileTypes.DATA)
     }
 
     private fun getPreviousFile(gallerySettings: GallerySettings): String {
