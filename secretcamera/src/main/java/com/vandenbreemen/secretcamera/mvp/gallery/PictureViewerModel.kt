@@ -57,52 +57,59 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
         }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread())
     }
 
+    private fun getGallerySettings(): GallerySettings {
+        secureFileSystemInteractor.load(SETTINGS, FileTypes.DATA)?.let { loaded ->
+            val gallerySettings = loaded as GallerySettings
+            return gallerySettings
+        }
+        val gallerySettings = GallerySettings(null)
+        secureFileSystemInteractor.save(gallerySettings, SETTINGS, FileTypes.DATA)
+        return gallerySettings
+    }
+
     fun currentFile(): Single<String> {
-        return Single.create(SingleOnSubscribe<String> {
-            secureFileSystemInteractor.load(SETTINGS, FileTypes.DATA)?.let { loaded ->
-                val gallerySettings = loaded as GallerySettings
-                it.onSuccess(gallerySettings.currentFile)
+        return Single.create(SingleOnSubscribe<String> { emitter ->
+            val gallerySettings = getGallerySettings()
+            gallerySettings.currentFile?.let {
+                emitter.onSuccess(it)
             }
 
             val listOfFiles = this.imageFilesInteractor.listImageFiles()
-
             if (listOfFiles.isEmpty()) {
-                it.onError(ApplicationError("No images available"))
+                emitter.onError(ApplicationError("No images available"))
                 return@SingleOnSubscribe
             }
 
-            val newGallerySettings = GallerySettings(listOfFiles[0])
-            secureFileSystemInteractor.save(newGallerySettings, SETTINGS, FileTypes.DATA)
-            it.onSuccess(newGallerySettings.currentFile)
+            gallerySettings.currentFile = listOfFiles[0]
+            secureFileSystemInteractor.save(gallerySettings, SETTINGS, FileTypes.DATA)
+            emitter.onSuccess(gallerySettings.currentFile)
         }).subscribeOn(computation()).observeOn(mainThread())
     }
 
     fun nextFile(): Single<String> {
         return Single.create(SingleOnSubscribe<String> {
-            secureFileSystemInteractor.load(SETTINGS, FileTypes.DATA)?.let { loaded ->
-                val gallerySettings = loaded as GallerySettings
-                val listOfFiles = this.imageFilesInteractor.listImageFiles()
-                val currentIndex = listOfFiles.indexOf(gallerySettings.currentFile)
-                val nextFile = listOfFiles[currentIndex + 1]
-                gallerySettings.currentFile = nextFile
-                secureFileSystemInteractor.save(gallerySettings, SETTINGS, FileTypes.DATA)
-                it.onSuccess(gallerySettings.currentFile)
-            }
-        })
+
+            val gallerySettings = getGallerySettings()
+            val listOfFiles = this.imageFilesInteractor.listImageFiles()
+            val currentIndex = listOfFiles.indexOf(gallerySettings.currentFile)
+            val nextFile = listOfFiles[currentIndex + 1]
+            gallerySettings.currentFile = nextFile
+            secureFileSystemInteractor.save(gallerySettings, SETTINGS, FileTypes.DATA)
+            it.onSuccess(gallerySettings.currentFile)
+
+        }).subscribeOn(computation()).observeOn(mainThread())
     }
 
     fun prevFile(): Single<String> {
         return Single.create(SingleOnSubscribe<String> {
-            secureFileSystemInteractor.load(SETTINGS, FileTypes.DATA)?.let { loaded ->
-                val gallerySettings = loaded as GallerySettings
-                val listOfFiles = this.imageFilesInteractor.listImageFiles()
-                val currentIndex = listOfFiles.indexOf(gallerySettings.currentFile)
-                val prevFile = listOfFiles[currentIndex - 1]
-                gallerySettings.currentFile = prevFile
-                secureFileSystemInteractor.save(gallerySettings, SETTINGS, FileTypes.DATA)
-                it.onSuccess(gallerySettings.currentFile)
-            }
-        })
+            val gallerySettings = getGallerySettings()
+            val listOfFiles = this.imageFilesInteractor.listImageFiles()
+            val currentIndex = listOfFiles.indexOf(gallerySettings.currentFile)
+            val prevFile = listOfFiles[currentIndex - 1]
+            gallerySettings.currentFile = prevFile
+            secureFileSystemInteractor.save(gallerySettings, SETTINGS, FileTypes.DATA)
+            it.onSuccess(gallerySettings.currentFile)
+        }).subscribeOn(computation()).observeOn(mainThread())
     }
 
 }
