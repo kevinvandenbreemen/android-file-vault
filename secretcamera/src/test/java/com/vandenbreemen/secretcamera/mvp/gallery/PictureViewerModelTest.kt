@@ -3,12 +3,15 @@ package com.vandenbreemen.secretcamera.mvp.gallery
 import android.os.Environment
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
+import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
+import com.vandenbreemen.mobilesecurestorage.security.crypto.getFileMeta
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -58,6 +61,16 @@ class PictureViewerModelTest {
     @Test
     fun shouldDetermineCurrentFile() {
         assertEquals("Current file", "img_1", model.currentFile().blockingGet())
+    }
+
+    @Test
+    fun shouldLoadCurrentFileFromConfigFile() {
+        assertEquals("Current file", "img_1", model.currentFile().blockingGet())
+        assertEquals("Current file", "img_1", model.currentFile().blockingGet())
+
+        assertTrue("Config file", sfs().exists(PictureViewerModel.SETTINGS))
+        assertEquals("File type", FileTypes.DATA, sfs().getFileMeta(PictureViewerModel.SETTINGS)!!.getFileType())
+
     }
 
 }
