@@ -112,4 +112,10 @@ class PictureViewerModelTest {
         assertEquals("Current file", "img_1", model.currentFile().blockingGet())
     }
 
+    @Test
+    fun shouldWrapWhenNavigatingBackFromStart() {
+        model.currentFile().blockingGet()
+        assertEquals("Current file", "img_9", model.prevFile().blockingGet())
+    }
+
 }

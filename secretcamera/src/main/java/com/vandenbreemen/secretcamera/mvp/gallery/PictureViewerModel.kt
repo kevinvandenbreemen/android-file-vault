@@ -128,7 +128,13 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
     private fun getPreviousFile(gallerySettings: GallerySettings): String {
         val listOfFiles = this.imageFilesInteractor.listImageFiles()
         val currentIndex = listOfFiles.indexOf(gallerySettings.currentFile)
-        val prevFile = listOfFiles[currentIndex - 1]
+
+        var nextIndex = currentIndex - 1
+        if (nextIndex < 0) {
+            nextIndex = listOfFiles.size - 1
+        }
+
+        val prevFile = listOfFiles[nextIndex]
         return prevFile
     }
 
