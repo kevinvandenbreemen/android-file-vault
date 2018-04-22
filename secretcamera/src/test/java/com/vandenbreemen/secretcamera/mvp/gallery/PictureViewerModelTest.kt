@@ -37,7 +37,7 @@ class PictureViewerModelTest {
         RxJavaPlugins.setComputationSchedulerHandler { scheduler -> AndroidSchedulers.mainThread() }
         ShadowLog.stream = System.out
 
-        val sfsFile = File(Environment.getExternalStorageDirectory().toString() + File.separator + "test")
+        val sfsFile = File(Environment.getExternalStorageDirectory().toString() + File.separator + "test${System.currentTimeMillis()}")
         val tempPassword = "password"
         val testPassword = SecureFileSystem.generatePassword(SecureString.fromPassword(tempPassword))
         credentials = SFSCredentials(sfsFile, testPassword)
@@ -71,6 +71,19 @@ class PictureViewerModelTest {
         assertTrue("Config file", sfs().exists(PictureViewerModel.SETTINGS))
         assertEquals("File type", FileTypes.DATA, sfs().getFileMeta(PictureViewerModel.SETTINGS)!!.getFileType())
 
+    }
+
+    @Test
+    fun shouldStepToNextFile() {
+        model.currentFile().blockingGet()
+        assertEquals("Next file", "img_10", model.nextFile().blockingGet())
+    }
+
+    @Test
+    fun shouldStepToPreviousFile() {
+        model.currentFile().blockingGet()
+        model.nextFile().blockingGet()
+        assertEquals("Prev file", "img_1", model.prevFile().blockingGet())
     }
 
 }

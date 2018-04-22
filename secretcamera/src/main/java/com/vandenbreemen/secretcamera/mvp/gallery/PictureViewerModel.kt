@@ -77,4 +77,32 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
         }).subscribeOn(computation()).observeOn(mainThread())
     }
 
+    fun nextFile(): Single<String> {
+        return Single.create(SingleOnSubscribe<String> {
+            secureFileSystemInteractor.load(SETTINGS, FileTypes.DATA)?.let { loaded ->
+                val gallerySettings = loaded as GallerySettings
+                val listOfFiles = this.imageFilesInteractor.listImageFiles()
+                val currentIndex = listOfFiles.indexOf(gallerySettings.currentFile)
+                val nextFile = listOfFiles[currentIndex + 1]
+                gallerySettings.currentFile = nextFile
+                secureFileSystemInteractor.save(gallerySettings, SETTINGS, FileTypes.DATA)
+                it.onSuccess(gallerySettings.currentFile)
+            }
+        })
+    }
+
+    fun prevFile(): Single<String> {
+        return Single.create(SingleOnSubscribe<String> {
+            secureFileSystemInteractor.load(SETTINGS, FileTypes.DATA)?.let { loaded ->
+                val gallerySettings = loaded as GallerySettings
+                val listOfFiles = this.imageFilesInteractor.listImageFiles()
+                val currentIndex = listOfFiles.indexOf(gallerySettings.currentFile)
+                val prevFile = listOfFiles[currentIndex - 1]
+                gallerySettings.currentFile = prevFile
+                secureFileSystemInteractor.save(gallerySettings, SETTINGS, FileTypes.DATA)
+                it.onSuccess(gallerySettings.currentFile)
+            }
+        })
+    }
+
 }
