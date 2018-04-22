@@ -23,7 +23,14 @@ class PictureViewerActivity : Activity(), PictureViewerView {
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+
+        //  See also https://developer.android.com/training/system-ui/status.html
+        val decorView = window.decorView
+        val uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN
+        decorView.systemUiVisibility = uiOptions
+
         setContentView(R.layout.activity_picture_viewer)
+
     }
 
     override fun onResume() {
@@ -35,6 +42,7 @@ class PictureViewerActivity : Activity(), PictureViewerView {
         super.onPause()
         findViewById<ViewGroup>(R.id.overlay).visibility = View.VISIBLE
         presenter.close()
+        finish()
     }
 
     override fun onReadyToUse() {
@@ -47,6 +55,7 @@ class PictureViewerActivity : Activity(), PictureViewerView {
     }
 
     override fun displayImage(imageToDisplay: Bitmap) {
+        findViewById<SubsamplingScaleImageView>(R.id.currentImage).maxScale = 15F
         findViewById<SubsamplingScaleImageView>(R.id.currentImage).setImage(ImageSource.bitmap(imageToDisplay))
     }
 

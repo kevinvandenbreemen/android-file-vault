@@ -1,5 +1,6 @@
 package com.vandenbreemen.mobilesecurestorage.file.api
 
+import com.vandenbreemen.mobilesecurestorage.log.SystemLog
 import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime
 
 interface FileType{
@@ -46,6 +47,8 @@ enum class FileTypes(override val firstByte:Byte, override val secondByte:Byte? 
                     }
                 }
             }
+
+            SystemLog.get().error("Unable to get file type for bytes {${bytes[0]}, ${bytes[1]}}")
 
             return null
         }
