@@ -8,7 +8,6 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.view.WindowManager.LayoutParams.FLAG_SECURE
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -16,6 +15,7 @@ import android.widget.Toast.LENGTH_SHORT
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.api.Note
+import com.vandenbreemen.secretcamera.di.ActivitySecurity
 import com.vandenbreemen.secretcamera.mvp.notes.NoteDetailsPresenter
 import com.vandenbreemen.secretcamera.mvp.notes.NoteDetailsView
 import dagger.android.AndroidInjection
@@ -74,7 +74,7 @@ class NoteDetailsActivity : Activity(), NoteDetailsView {
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
-        window.setFlags(FLAG_SECURE, FLAG_SECURE)
+        ActivitySecurity.setSecurity(this)
         setContentView(R.layout.activity_note_details)
     }
 
