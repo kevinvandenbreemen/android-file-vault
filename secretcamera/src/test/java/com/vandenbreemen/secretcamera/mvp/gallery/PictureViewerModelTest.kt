@@ -1,5 +1,6 @@
 package com.vandenbreemen.secretcamera.mvp.gallery
 
+import android.graphics.Bitmap
 import android.os.Environment
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
@@ -8,16 +9,37 @@ import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.getFileMeta
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito.mock
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.Implementation
+import org.robolectric.annotation.Implements
 import org.robolectric.shadows.ShadowLog
 import java.io.File
+
+var generateThumbnailCalled = false
+
+@Implements(AndroidImageInteractor::class)
+class ShadowAndroidImageInteractor {
+
+    @Implementation
+    fun generateThumbnail(bitmap: Bitmap): Single<Bitmap> {
+        generateThumbnailCalled = true
+        return Single.just(mock(Bitmap::class.java))
+    }
+}
 
 /**
  * <h2>Intro</h2>
@@ -32,8 +54,15 @@ class PictureViewerModelTest {
 
     lateinit var model: PictureViewerModel
 
+    @get:Rule
+    val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+    @Mock
+    lateinit var imageBitmap: Bitmap
+
     @Before
     fun setup() {
+        generateThumbnailCalled = false
         RxJavaPlugins.setComputationSchedulerHandler { scheduler -> AndroidSchedulers.mainThread() }
         ShadowLog.stream = System.out
 
@@ -116,6 +145,21 @@ class PictureViewerModelTest {
     fun shouldWrapWhenNavigatingBackFromStart() {
         model.currentFile().blockingGet()
         assertEquals("Current file", "img_9", model.prevFile().blockingGet())
+    }
+
+    @Test
+    fun shouldProvideImageList() {
+        val imageList = model.listImages().blockingGet()
+        for (i in 1..10) {
+            assertTrue("Image img_$i in list", imageList.contains("img_$i"))
+        }
+    }
+
+    @Test
+    @Config(shadows = [ShadowAndroidImageInteractor::class])
+    fun shouldGetThumbnail() {
+        model.getThumbnail(imageBitmap).subscribe()
+        assertTrue("Generate thumbnail", generateThumbnailCalled)
     }
 
 }

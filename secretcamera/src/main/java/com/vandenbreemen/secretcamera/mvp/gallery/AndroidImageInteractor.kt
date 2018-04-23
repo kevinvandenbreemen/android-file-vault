@@ -2,6 +2,7 @@ package com.vandenbreemen.secretcamera.mvp.gallery
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.ThumbnailUtils
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
 import io.reactivex.schedulers.Schedulers.computation
@@ -20,5 +21,10 @@ class AndroidImageInteractor {
         }).subscribeOn(computation())
     }
 
+    fun generateThumbnail(bitmap: Bitmap): Single<Bitmap> {
+        return Single.create(SingleOnSubscribe<Bitmap> {
+            it.onSuccess(ThumbnailUtils.extractThumbnail(bitmap, 150, 150))
+        }).subscribeOn(computation())
+    }
 
 }

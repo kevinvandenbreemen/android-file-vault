@@ -138,4 +138,8 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
         return prevFile
     }
 
+    fun getThumbnail(imageBitmap: Bitmap): Single<Bitmap> {
+        return androidImageInteractor.generateThumbnail(imageBitmap)
+    }
+
 }
