@@ -9,6 +9,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
@@ -20,9 +21,17 @@ import dagger.android.AndroidInjection
 import javax.inject.Inject
 
 class NoteDetailsActivity : Activity(), NoteDetailsView {
+
+    lateinit var noteTextReadonly: String
+
     override fun enableEdit() {
         findViewById<EditText>(R.id.title).isEnabled = true
-        findViewById<EditText>(R.id.content).isEnabled = true
+
+        val container = findViewById<ViewGroup>(R.id.contentContainer)
+        container.removeAllViews()
+        val noteEditor: EditText = layoutInflater.inflate(R.layout.text_edit, container, false) as EditText
+        noteEditor.setText(noteTextReadonly)
+        container.addView(noteEditor)
     }
 
     @SuppressLint("WrongViewCast")
@@ -39,7 +48,12 @@ class NoteDetailsActivity : Activity(), NoteDetailsView {
     }
 
     override fun setNoteContent(content: String) {
-        findViewById<EditText>(R.id.content).setText(content)
+        noteTextReadonly = content
+        val container = findViewById<ViewGroup>(R.id.contentContainer)
+        container.removeAllViews()
+        val scrollView = layoutInflater.inflate(R.layout.text_readonly, container, false)
+        scrollView.findViewById<TextView>(R.id.content).setText(content)
+        container.addView(scrollView)
     }
 
     override fun onReadyToUse() {

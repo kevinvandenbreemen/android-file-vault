@@ -3,9 +3,13 @@ package com.vandenbreemen.secretcamera.robot
 import android.app.Activity
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
-import com.vandenbreemen.secretcamera.*
+import com.vandenbreemen.secretcamera.NoteDetailsActivity
+import com.vandenbreemen.secretcamera.R
+import com.vandenbreemen.secretcamera.SELECTED_STRING
+import com.vandenbreemen.secretcamera.StringSelection
 import com.vandenbreemen.secretcamera.mvp.impl.TakeNewNoteModel
 import junit.framework.TestCase
 import org.robolectric.Robolectric
@@ -55,7 +59,7 @@ class NoteDetailsRobot() : BaseRobot(NoteDetailsActivity::class.java) {
     }
 
     fun checkContent(content: String) {
-        TestCase.assertEquals("Note content", content, activity.findViewById<EditText>(R.id.content).text.toString())
+        TestCase.assertEquals("Note content", content, activity.findViewById<TextView>(R.id.content).text.toString())
     }
 
 }
