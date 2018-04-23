@@ -3,4 +3,7 @@
     <item name="bias_horiz_start" format="float" type="dimen">0.25</item>
     <item name="bias_vertical_bottom" format="float" type="dimen">0.96</item>
     <item name="bias_horiz_end" format="float" type="dimen">0.75</item>
+    <dimen name="img_select_item_width">150dp</dimen>
+    <dimen name="img_select_item_height">150dp</dimen>
+    <dimen name="img_select_container_height">160dp</dimen>
 </resources>
