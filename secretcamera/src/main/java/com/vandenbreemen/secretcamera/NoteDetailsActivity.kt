@@ -8,6 +8,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.WindowManager.LayoutParams.FLAG_SECURE
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -73,6 +74,7 @@ class NoteDetailsActivity : Activity(), NoteDetailsView {
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+        window.setFlags(FLAG_SECURE, FLAG_SECURE)
         setContentView(R.layout.activity_note_details)
     }
 

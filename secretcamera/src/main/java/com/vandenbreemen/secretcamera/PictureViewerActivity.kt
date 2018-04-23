@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import com.davemorrissey.labs.subscaleview.ImageSource
@@ -29,6 +30,7 @@ class PictureViewerActivity : Activity(), PictureViewerView {
         val uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN
         decorView.systemUiVisibility = uiOptions
 
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         setContentView(R.layout.activity_picture_viewer)
 
     }
