@@ -30,6 +30,12 @@ class Gallery : AppCompatActivity(), GalleryView {
         setContentView(R.layout.activity_gallery)
     }
 
+    override fun onPause() {
+        super.onPause()
+        presenter.close()
+        finish()
+    }
+
     fun onImportDir(view: View) {
         presenter.importDirectory()
     }
