@@ -7,6 +7,8 @@ import com.vandenbreemen.mobilesecurestorage.patterns.mvp.PresenterContract
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.View
 import com.vandenbreemen.mobilesecurestorage.security.crypto.listFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 
 
 class ImageFilesInteractor(private val sfs: SecureFileSystem) {
@@ -30,6 +32,7 @@ interface PictureViewerPresenter : PresenterContract {
     fun displayImage()
     fun nextImage()
     fun previousImage()
+    fun thumbnail(fileName: String): Single<Bitmap>
 
 }
 
@@ -59,6 +62,13 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
         }.subscribe({ bitmap -> view.displayImage(bitmap) },
                 { error -> view.showError(ApplicationError(error)) }
         )
+    }
+
+    override fun thumbnail(fileName: String): Single<Bitmap> {
+        return model.loadImage(fileName).observeOn(mainThread())
+                .flatMap { bitmap ->
+                    model.getThumbnail(bitmap)
+                }.observeOn(mainThread())
     }
 
     override fun setupView() {
