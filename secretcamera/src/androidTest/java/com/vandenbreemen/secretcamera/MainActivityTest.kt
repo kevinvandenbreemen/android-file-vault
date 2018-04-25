@@ -4,6 +4,7 @@ import android.support.test.espresso.IdlingPolicies
 import android.support.test.espresso.IdlingRegistry
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
+import com.vandenbreemen.secretcamera.di.turnOffSecureActivities
 import com.vandenbreemen.secretcamera.util.ElapsedTimeIdlingResource
 import com.vandenbreemen.secretcamera.util.MainScreenRobot
 import com.vandenbreemen.secretcamera.util.NoteTakingRobot
@@ -45,6 +46,8 @@ class MainActivityTest {
         fileName = "unitTestFile"
         IdlingPolicies.setMasterPolicyTimeout(60, TimeUnit.SECONDS);
         IdlingPolicies.setIdlingResourceTimeout(26, TimeUnit.SECONDS);
+
+        turnOffSecureActivities()
     }
 
     fun getElapsedTimeIdlingResource(): ElapsedTimeIdlingResource {
