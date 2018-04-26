@@ -96,6 +96,8 @@ class PictureViewerTest {
         //  Arrange
         sfs.importFile(TestConstants.TEST_RES_IMG_1)
         sfs.setFileMetadata(TestConstants.TEST_RES_IMG_1.name, FileMeta(PicturesFileTypes.IMPORTED_IMAGE))
+        sfs.importFile(TestConstants.TEST_RES_IMG_2)
+        sfs.setFileMetadata(TestConstants.TEST_RES_IMG_2.name, FileMeta(PicturesFileTypes.IMPORTED_IMAGE))
 
         val activity = buildActivity(PictureViewerActivity::class.java, intent)
                 .create()
@@ -107,6 +109,7 @@ class PictureViewerTest {
 
         //  Assert
         assertEquals(VISIBLE, activity.findViewById<RecyclerView>(R.id.pictureSelector).visibility)
+        assertEquals("Image select items", 2, activity.findViewById<RecyclerView>(R.id.pictureSelector).childCount)
     }
 
     @Test
