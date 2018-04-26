@@ -66,6 +66,8 @@ class PictureViewerActivity : Activity(), PictureViewerView {
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         setContentView(R.layout.activity_picture_viewer)
 
+        findViewById<RecyclerView>(R.id.pictureSelector).visibility = GONE
+
     }
 
     override fun onResume() {
@@ -104,6 +106,10 @@ class PictureViewerActivity : Activity(), PictureViewerView {
 
     fun onShowSelector(view: View) {
 
+    }
+
+    override fun showImageSelector(files: List<String>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun end() {

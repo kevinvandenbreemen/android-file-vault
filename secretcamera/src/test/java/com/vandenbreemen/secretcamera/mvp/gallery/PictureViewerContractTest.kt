@@ -51,4 +51,12 @@ class PictureViewerContractTest {
         verify(view, never()).displayImage(bitmap)
     }
 
+    @Test
+    fun shouldShowImageSelectionsWhenSelectImageCalled() {
+        val filesList = listOf("file1", "file2")
+        `when`(model.listImages()).thenReturn(Single.just(filesList))
+        presenter.showSelector()
+        verify(view).showImageSelector(filesList)
+    }
+
 }

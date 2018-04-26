@@ -25,7 +25,7 @@ class ImageFilesInteractor(private val sfs: SecureFileSystem) {
 
 interface PictureViewerView : View {
     fun displayImage(imageToDisplay: Bitmap)
-
+    fun showImageSelector(files: List<String>)
     fun end()
 }
 
@@ -33,11 +33,13 @@ interface PictureViewerPresenter : PresenterContract {
     fun displayImage()
     fun nextImage()
     fun previousImage()
+    fun showSelector()
     fun thumbnail(fileName: String): Single<Bitmap>
 
 }
 
 class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: PictureViewerView) : Presenter<PictureViewerModel, PictureViewerView>(model, view), PictureViewerPresenter {
+
 
 
     override fun displayImage() {
@@ -71,6 +73,10 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
                     model.getThumbnail(bitmap)
                 }.observeOn(mainThread())
                 .subscribeOn(computation())
+    }
+
+    override fun showSelector() {
+        model.listImages().subscribe({ imageFiles -> view.showImageSelector(imageFiles) })
     }
 
     override fun setupView() {
