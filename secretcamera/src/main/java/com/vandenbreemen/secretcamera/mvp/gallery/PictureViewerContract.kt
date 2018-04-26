@@ -9,6 +9,7 @@ import com.vandenbreemen.mobilesecurestorage.security.crypto.listFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
+import io.reactivex.schedulers.Schedulers.computation
 
 
 class ImageFilesInteractor(private val sfs: SecureFileSystem) {
@@ -69,6 +70,7 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
                 .flatMap { bitmap ->
                     model.getThumbnail(bitmap)
                 }.observeOn(mainThread())
+                .subscribeOn(computation())
     }
 
     override fun setupView() {

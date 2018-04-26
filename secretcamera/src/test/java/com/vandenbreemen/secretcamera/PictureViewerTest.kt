@@ -1,6 +1,10 @@
 package com.vandenbreemen.secretcamera
 
 import android.content.Intent
+import android.support.design.widget.FloatingActionButton
+import android.support.v7.widget.RecyclerView
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
@@ -69,6 +73,40 @@ class PictureViewerTest {
         val view = activity.findViewById<SubsamplingScaleImageView>(R.id.currentImage)
         assertTrue("Image rendered", view.hasImage())
 
+    }
+
+    @Test
+    fun shouldNotShowPictureSelectorOnInitialLoad() {
+
+        //  Arrange
+        sfs.importFile(TestConstants.TEST_RES_IMG_1)
+        sfs.setFileMetadata(TestConstants.TEST_RES_IMG_1.name, FileMeta(PicturesFileTypes.IMPORTED_IMAGE))
+
+        val activity = buildActivity(PictureViewerActivity::class.java, intent)
+                .create()
+                .resume()
+                .get()
+
+        //  Assert
+        assertEquals(GONE, activity.findViewById<RecyclerView>(R.id.pictureSelector).visibility)
+    }
+
+    @Test
+    fun shouldShowPictureSelectorWhenSelectImageClicked() {
+        //  Arrange
+        sfs.importFile(TestConstants.TEST_RES_IMG_1)
+        sfs.setFileMetadata(TestConstants.TEST_RES_IMG_1.name, FileMeta(PicturesFileTypes.IMPORTED_IMAGE))
+
+        val activity = buildActivity(PictureViewerActivity::class.java, intent)
+                .create()
+                .resume()
+                .get()
+
+        //  Act
+        activity.findViewById<FloatingActionButton>(R.id.showSelector).performClick()
+
+        //  Assert
+        assertEquals(VISIBLE, activity.findViewById<RecyclerView>(R.id.pictureSelector).visibility)
     }
 
     @Test

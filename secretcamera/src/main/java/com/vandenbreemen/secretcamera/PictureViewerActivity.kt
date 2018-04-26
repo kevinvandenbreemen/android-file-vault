@@ -3,9 +3,14 @@ package com.vandenbreemen.secretcamera
 import android.app.Activity
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import com.davemorrissey.labs.subscaleview.ImageSource
@@ -15,6 +20,34 @@ import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewerPresenter
 import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewerView
 import dagger.android.AndroidInjection
 import javax.inject.Inject
+
+class ThumbnailViewHolder(val view: ViewGroup) : RecyclerView.ViewHolder(view) {
+
+
+}
+
+class ThumbnailAdapter(private val fileNames: List<String>,
+                       private val presenter: PictureViewerPresenter
+) : RecyclerView.Adapter<ThumbnailViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThumbnailViewHolder {
+        return ThumbnailViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.image_select_item, parent, false) as ViewGroup)
+    }
+
+    override fun getItemCount(): Int {
+        return fileNames.size
+    }
+
+    override fun onBindViewHolder(holder: ThumbnailViewHolder, position: Int) {
+        presenter.thumbnail(fileNames[position]).subscribe({ bitmap ->
+            val imageView = holder.view.findViewById<ImageView>(R.id.preview)
+            imageView.setImageBitmap(bitmap)
+
+            val loadingSpinner = holder.view.findViewById<ProgressBar>(R.id.loading)
+            loadingSpinner.visibility = GONE
+        })
+    }
+
+}
 
 class PictureViewerActivity : Activity(), PictureViewerView {
 
@@ -67,6 +100,10 @@ class PictureViewerActivity : Activity(), PictureViewerView {
 
     fun onBack(view: View) {
         presenter.previousImage()
+    }
+
+    fun onShowSelector(view: View) {
+
     }
 
     override fun end() {
