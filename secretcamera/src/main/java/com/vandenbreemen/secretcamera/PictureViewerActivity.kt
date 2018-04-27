@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
@@ -105,11 +106,14 @@ class PictureViewerActivity : Activity(), PictureViewerView {
     }
 
     fun onShowSelector(view: View) {
-
+        presenter.showSelector()
     }
 
     override fun showImageSelector(files: List<String>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val recyclerView = findViewById<RecyclerView>(R.id.pictureSelector)
+        val adapter = ThumbnailAdapter(files, presenter)
+        recyclerView.adapter = adapter
+        recyclerView.visibility = VISIBLE
     }
 
     override fun end() {

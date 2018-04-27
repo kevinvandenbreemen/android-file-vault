@@ -109,7 +109,10 @@ class PictureViewerTest {
 
         //  Assert
         assertEquals(VISIBLE, activity.findViewById<RecyclerView>(R.id.pictureSelector).visibility)
-        assertEquals("Image select items", 2, activity.findViewById<RecyclerView>(R.id.pictureSelector).childCount)
+        val recyclerView = activity.findViewById<RecyclerView>(R.id.pictureSelector)
+        recyclerView.measure(0, 0)
+        recyclerView.layout(0, 0, 100, 1000)
+        assertEquals("Image select items", 2, recyclerView.adapter.itemCount)
     }
 
     @Test
