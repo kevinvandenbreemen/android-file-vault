@@ -115,6 +115,31 @@ class PictureViewerTest {
         assertEquals("Image select items", 2, recyclerView.adapter.itemCount)
     }
 
+    //  TODO    This test doesn't work as the viewHolderForAdaptorAtPosition is always null...
+    //  See investigations at https://github.com/robolectric/robolectric/issues/3747
+    //@Test
+    fun shouldLoadImageWhenSelectorClicked() {
+        //  Arrange
+        sfs.importFile(TestConstants.TEST_RES_IMG_1)
+        sfs.setFileMetadata(TestConstants.TEST_RES_IMG_1.name, FileMeta(PicturesFileTypes.IMPORTED_IMAGE))
+        sfs.importFile(TestConstants.TEST_RES_IMG_2)
+        sfs.setFileMetadata(TestConstants.TEST_RES_IMG_2.name, FileMeta(PicturesFileTypes.IMPORTED_IMAGE))
+
+        val activity = buildActivity(PictureViewerActivity::class.java, intent)
+                .create()
+                .resume()
+                .get()
+
+        //  Act
+        activity.findViewById<FloatingActionButton>(R.id.showSelector).performClick()
+
+        //  Assert
+        val recyclerView = activity.findViewById<RecyclerView>(R.id.pictureSelector)
+        recyclerView.measure(0, 0)
+        recyclerView.layout(0, 0, 100, 1000)
+        recyclerView.findViewHolderForAdapterPosition(1).itemView.performClick()
+    }
+
     @Test
     fun shouldGracefullyHandleNoAvailableImages() {
         val activity = buildActivity(PictureViewerActivity::class.java, intent)

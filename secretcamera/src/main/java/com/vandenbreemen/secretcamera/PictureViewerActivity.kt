@@ -3,6 +3,7 @@ package com.vandenbreemen.secretcamera
 import android.app.Activity
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
+import android.widget.LinearLayout.HORIZONTAL
 import android.widget.ProgressBar
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
@@ -41,6 +43,7 @@ class ThumbnailAdapter(private val fileNames: List<String>,
     override fun onBindViewHolder(holder: ThumbnailViewHolder, position: Int) {
         presenter.thumbnail(fileNames[position]).subscribe({ bitmap ->
             val imageView = holder.view.findViewById<ImageView>(R.id.preview)
+            imageView.visibility = VISIBLE
             imageView.setImageBitmap(bitmap)
 
             val loadingSpinner = holder.view.findViewById<ProgressBar>(R.id.loading)
@@ -67,7 +70,11 @@ class PictureViewerActivity : Activity(), PictureViewerView {
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         setContentView(R.layout.activity_picture_viewer)
 
-        findViewById<RecyclerView>(R.id.pictureSelector).visibility = GONE
+        val layoutManager = LinearLayoutManager(this)
+        layoutManager.orientation = HORIZONTAL
+        val recyclerView = findViewById<RecyclerView>(R.id.pictureSelector)
+        recyclerView.layoutManager = layoutManager
+        recyclerView.visibility = GONE
 
     }
 
@@ -112,8 +119,11 @@ class PictureViewerActivity : Activity(), PictureViewerView {
     override fun showImageSelector(files: List<String>) {
         val recyclerView = findViewById<RecyclerView>(R.id.pictureSelector)
         val adapter = ThumbnailAdapter(files, presenter)
-        recyclerView.adapter = adapter
+
         recyclerView.visibility = VISIBLE
+        recyclerView.adapter = adapter
+        recyclerView.adapter.notifyDataSetChanged()
+
     }
 
     override fun end() {

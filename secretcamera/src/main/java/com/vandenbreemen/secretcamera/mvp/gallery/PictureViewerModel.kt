@@ -54,7 +54,7 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
     fun listImages(): Single<List<String>> {
         return Single.create(SingleOnSubscribe<List<String>> {
             it.onSuccess(this.imageFilesInteractor.listImageFiles())
-        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread())
+        }).subscribeOn(Schedulers.computation()).observeOn(mainThread())
     }
 
     private fun getGallerySettings(): GallerySettings {
