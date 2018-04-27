@@ -6,6 +6,8 @@
     android:background="@color/colorPrimaryDark">
 
     <ImageView
+        android:minHeight="@dimen/img_select_item_height"
+        android:minWidth="@dimen/img_select_item_width"
         android:id="@+id/preview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
