@@ -39,7 +39,7 @@ class PictureViewerContractTest {
 
     @Test
     fun shouldShowFirstAvailableImage() {
-        presenter.displayImage()
+        presenter.selectImageToDisplay()
         verify(model).currentFile()
         verify(view).displayImage(bitmap)
     }
@@ -47,7 +47,7 @@ class PictureViewerContractTest {
     @Test
     fun shouldHandleNoImagesAvailable() {
         `when`(model.currentFile()).thenReturn(Single.error(ApplicationError("No images available")))
-        presenter.displayImage()
+        presenter.selectImageToDisplay()
         verify(view, never()).displayImage(bitmap)
     }
 
@@ -61,10 +61,16 @@ class PictureViewerContractTest {
 
     @Test
     fun shouldShowSelectedImage() {
-        `when`(model.loadImage("file")).then { throw RuntimeException("Incorrect filename") }
         `when`(model.loadImage("file2")).thenReturn(Single.just(bitmap))
-        presenter.displayImage("file2")
+        presenter.selectImageToDisplay("file2")
         verify(view).displayImage(bitmap)
+    }
+
+    @Test
+    fun shouldHideImageSelectorWhenSelectingImageToDisplahy() {
+        `when`(model.loadImage("file2")).thenReturn(Single.just(bitmap))
+        presenter.selectImageToDisplay("file2")
+        verify(view).hideImageSelector()
     }
 
 }

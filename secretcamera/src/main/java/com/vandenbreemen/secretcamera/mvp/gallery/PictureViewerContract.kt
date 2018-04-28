@@ -27,25 +27,29 @@ interface PictureViewerView : View {
     fun displayImage(imageToDisplay: Bitmap)
     fun showImageSelector(files: List<String>)
     fun end()
+    fun hideImageSelector()
 }
 
 interface PictureViewerPresenter : PresenterContract {
-    fun displayImage()
+    fun selectImageToDisplay()
     fun nextImage()
     fun previousImage()
     fun showSelector()
     fun thumbnail(fileName: String): Single<Bitmap>
-    fun displayImage(fileName: String)
+    fun selectImageToDisplay(fileName: String)
 
 }
 
 class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: PictureViewerView) : Presenter<PictureViewerModel, PictureViewerView>(model, view), PictureViewerPresenter {
-    override fun displayImage(fileName: String) {
-        model.loadImage(fileName).subscribe({ image -> view.displayImage(image) })
+    override fun selectImageToDisplay(fileName: String) {
+        model.loadImage(fileName).subscribe({ image ->
+            view.displayImage(image)
+            view.hideImageSelector()
+        })
     }
 
 
-    override fun displayImage() {
+    override fun selectImageToDisplay() {
 
         model.currentFile().flatMap { imageFile ->
             model.loadImage(imageFile)
