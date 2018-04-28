@@ -1,6 +1,7 @@
 package com.vandenbreemen.secretcamera.mvp.gallery
 
 import android.graphics.Bitmap
+import android.util.Log
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Presenter
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.PresenterContract
@@ -18,7 +19,12 @@ class ImageFilesInteractor(private val sfs: SecureFileSystem) {
     }
 
     fun loadImageBytes(fileName: String): ByteArray {
-        return sfs.loadBytesFromFile(fileName)
+        try {
+            return sfs.loadBytesFromFile(fileName)
+        } catch (exception: Exception) {
+            Log.e(ImageFilesInteractor::class.java.simpleName, "Failed to load image bytes", exception)
+            throw ApplicationError("Error loading $fileName")
+        }
     }
 
 }
@@ -61,7 +67,10 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
     override fun nextImage() {
         model.nextFile().flatMap { imageFile ->
             model.loadImage(imageFile)
-        }.subscribe({ bitmap -> view.displayImage(bitmap) },
+        }
+                .observeOn(mainThread())
+                .subscribeOn(computation())
+                .subscribe({ bitmap -> view.displayImage(bitmap) },
                 { error -> view.showError(ApplicationError(error)) }
         )
     }
