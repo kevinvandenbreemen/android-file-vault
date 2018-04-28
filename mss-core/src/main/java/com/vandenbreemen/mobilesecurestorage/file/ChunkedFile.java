@@ -37,11 +37,6 @@ public class ChunkedFile {
     private File location;
 
     /**
-     * Where in the file we are
-     */
-    private long cursor;
-
-    /**
      * Create a new {@link ChunkedFile} at the given location.  Note that the cursor will be set to the first byte of the file.
      *
      * @param location
@@ -102,16 +97,10 @@ public class ChunkedFile {
      * @throws ChunkedMediumException
      */
     void validateFile() throws ChunkedMediumException {
-        long currentCursor = cursor;
-
-        try {
-            byte[] sigBytes = readBytesInternal(0, SIGNATURE.length);
-            if (!ByteUtils.equals(SIGNATURE, sigBytes)) {
-                SystemLog.get().debug("ERROR VALIDATING FILE:  PREFIX IS:  " + new String(sigBytes) + " but expected " + new String(SIGNATURE));
-                throw new ChunkedMediumException("Not a valid chunked file");
-            }
-        } finally {
-            this.cursor = currentCursor;
+        byte[] sigBytes = readBytesInternal(0, SIGNATURE.length);
+        if (!ByteUtils.equals(SIGNATURE, sigBytes)) {
+            SystemLog.get().debug("ERROR VALIDATING FILE:  PREFIX IS:  " + new String(sigBytes) + " but expected " + new String(SIGNATURE));
+            throw new ChunkedMediumException("Not a valid chunked file");
         }
     }
 
@@ -131,7 +120,7 @@ public class ChunkedFile {
 
 
     /**
-     * Read the given number of bytes from the current {@link #cursor}.
+     * Read the given number of bytes from the file at the given cursor (location in file)
      *
      *
      * @param cursor

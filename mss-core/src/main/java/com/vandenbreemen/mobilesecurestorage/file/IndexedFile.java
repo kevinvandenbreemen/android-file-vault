@@ -476,7 +476,6 @@ public class IndexedFile {
      * locked the {@link #accessLock}'s write lock first!
      */
     protected final void writeBytes(long chunkIndex, byte[] bytes) {
-        //file.setCursor(chunkIndex * unitSize);
         file.writeBytes(chunkIndex * unitSize, encodeChunk(bytes));
     }
 
@@ -586,7 +585,6 @@ public class IndexedFile {
      * Reads the current chunk from the file
      */
     protected final Chunk readChunk(long chunkIndex) {
-        //file.setCursor(chunkIndex * unitSize);
         byte[] bytes = file.readBytes(chunkIndex * unitSize, unitSize);
         return new Chunk(this, readChunk(bytes));
     }
