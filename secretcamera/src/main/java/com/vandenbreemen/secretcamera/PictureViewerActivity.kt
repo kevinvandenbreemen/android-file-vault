@@ -119,12 +119,16 @@ class PictureViewerActivity : Activity(), PictureViewerView {
     }
 
     override fun showImageSelector(files: List<String>) {
-        val recyclerView = findViewById<RecyclerView>(R.id.pictureSelector)
-        val adapter = ThumbnailAdapter(files, presenter)
+        presenter.currentImageFileName().subscribe({ currentImageFilename ->
+            val recyclerView = findViewById<RecyclerView>(R.id.pictureSelector)
+            val adapter = ThumbnailAdapter(files, presenter)
 
-        recyclerView.visibility = VISIBLE
-        recyclerView.adapter = adapter
-        recyclerView.adapter.notifyDataSetChanged()
+            recyclerView.adapter = adapter
+            recyclerView.layoutManager.scrollToPosition(files.indexOf(currentImageFilename))
+            recyclerView.adapter.notifyDataSetChanged()
+            recyclerView.visibility = VISIBLE
+        })
+
 
     }
 
