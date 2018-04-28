@@ -10,11 +10,13 @@ import com.vandenbreemen.mobilesecurestorage.patterns.ProgressListener;
 import com.vandenbreemen.mobilesecurestorage.security.Bytes;
 import com.vandenbreemen.mobilesecurestorage.security.SecureString;
 
+import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 import org.junit.Test;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -632,13 +634,18 @@ public class SecureFileSystemTest {
      * Validate concurrent access to the SFS, loading and saving files
      */
     //  This test is disabled as it is used only during development/troubleshooting
-    //@Test
+    @Test
     public void testConcurrentSFSAccess() throws Exception {
 
         File img1 = TestConstants.TEST_RES_IMG_1;
         File img2 = TestConstants.TEST_RES_IMG_2;
         File img3 = TestConstants.TEST_RES_IMG_3;
         List<File> filesList = Arrays.asList(img1, img2, img3);
+
+        Map<String, byte[]> expectedBytesByFileName = new HashMap<>();
+        expectedBytesByFileName.put(img1.getName(), Bytes.loadBytesFromFile(img1));
+        expectedBytesByFileName.put(img2.getName(), Bytes.loadBytesFromFile(img2));
+        expectedBytesByFileName.put(img3.getName(), Bytes.loadBytesFromFile(img3));
 
         File tempFile = TestConstants.getTestFile(("test_concurrent_access" + System.currentTimeMillis() + ".dat"));
         tempFile.deleteOnExit();
@@ -660,6 +667,7 @@ public class SecureFileSystemTest {
                                 } catch (ApplicationError wontHappen) {
                                 }
                             });
+                            break;
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -702,7 +710,8 @@ public class SecureFileSystemTest {
                         while (true) {
                             sfs.listFiles().forEach(file -> {
                                 try {
-                                    sfs.loadFile(file);
+                                    ImportedFileData ifd = (ImportedFileData) sfs.loadFile(file);
+                                    assertTrue("Byte Match", ByteUtils.equals(ifd.getFileData(), expectedBytesByFileName.get(file)));
                                     System.out.println("Read file " + file);
                                 } catch (Exception ex) {
                                     if (ex instanceof ChunkedMediumException &&
@@ -725,9 +734,44 @@ public class SecureFileSystemTest {
             }
         };
 
+        Thread readThread2 = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    if (Thread.currentThread().equals(this)) {
+                        while (true) {
+                            List<String> fileNames = sfs.listFiles();
+                            for (int i = fileNames.size() - 1; i >= 0; i--) {
+                                String file = fileNames.get(i);
+                                try {
+                                    ImportedFileData ifd = (ImportedFileData) sfs.loadFile(file);
+                                    assertTrue("Byte Match", ByteUtils.equals(ifd.getFileData(), expectedBytesByFileName.get(file)));
+                                    System.out.println("Read file " + file);
+                                } catch (Exception ex) {
+                                    if (ex instanceof ChunkedMediumException &&
+                                            ChunkedMediumException.TYPE.FILE_NOT_FOUND.equals(((ChunkedMediumException) ex).getType())) {
+                                        //  Can be safely ignored
+                                        System.out.println("File " + file + " no longer exists");
+                                    } else {
+                                        throw new RuntimeException("Failed to load " + file, ex);
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    error.set(ex);
+                    return;
+                }
+            }
+        };
+
         importThread.start();
         readThread.start();
-        deleteThread.start();
+        //deleteThread.start();
+        readThread2.start();
 
         Thread.sleep(6000);
 

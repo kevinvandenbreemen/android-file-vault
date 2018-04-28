@@ -66,8 +66,6 @@ public class ChunkedFile {
             }
         }
 
-        this.cursor = 0;
-
 
     }
 
@@ -95,8 +93,7 @@ public class ChunkedFile {
     }
 
     void addFileTypeSignature() {
-        this.cursor = 0;
-        writeBytes(SIGNATURE);
+        writeBytesInternal(0, SIGNATURE);
     }
 
     /**
@@ -106,10 +103,9 @@ public class ChunkedFile {
      */
     void validateFile() throws ChunkedMediumException {
         long currentCursor = cursor;
-        this.cursor = 0;
 
         try {
-            byte[] sigBytes = readBytes(SIGNATURE.length);
+            byte[] sigBytes = readBytesInternal(0, SIGNATURE.length);
             if (!ByteUtils.equals(SIGNATURE, sigBytes)) {
                 SystemLog.get().debug("ERROR VALIDATING FILE:  PREFIX IS:  " + new String(sigBytes) + " but expected " + new String(SIGNATURE));
                 throw new ChunkedMediumException("Not a valid chunked file");
@@ -133,25 +129,20 @@ public class ChunkedFile {
         }
     }
 
-    /**
-     * Sets the location of the cursor
-     *
-     * @param location
-     * @return
-     */
-    public ChunkedFile setCursor(long location) {
-        long locationAdjustedForFilePrefix = location + PREFIX_BYTE_LEN;
-        cursor = locationAdjustedForFilePrefix;
-        return this;
-    }
 
     /**
      * Read the given number of bytes from the current {@link #cursor}.
      *
+     *
+     * @param cursor
      * @param numBytes
      * @return
      */
-    public byte[] readBytes(int numBytes) {
+    public byte[] readBytes(long cursor, int numBytes) {
+        return readBytesInternal(cursor + PREFIX_BYTE_LEN, numBytes);
+    }
+
+    private byte[] readBytesInternal(long cursor, int numBytes) {
         try (RandomAccessFile raf = get(true)) {
             raf.seek(cursor);
             byte[] buffer = new byte[numBytes];
@@ -165,22 +156,27 @@ public class ChunkedFile {
     /**
      * Write the given bytes to the file
      *
+     *
+     * @param cursor
      * @param bytes
      * @return
      */
-    public ChunkedFile writeBytes(byte[] bytes) {
+    public ChunkedFile writeBytes(long cursor, byte[] bytes) {
+        writeBytesInternal(cursor + PREFIX_BYTE_LEN, bytes);
+        return this;
+    }
+
+    private void writeBytesInternal(long cursor, byte[] bytes) {
         try (RandomAccessFile raf = get(false)) {
             raf.seek(cursor);
             raf.write(bytes);
-            return this;
         } catch (Exception ex) {
             throw new MSSRuntime("Unexpected error writing data", ex);
         }
     }
 
     public byte[] getMessage() {
-        this.cursor = SIGNATURE.length;
-        byte[] raw = readBytes(PREFIX_BYTE_LEN - SIGNATURE.length);
+        byte[] raw = readBytesInternal(SIGNATURE.length, PREFIX_BYTE_LEN - SIGNATURE.length);
         return new ByteReader().readBytes(raw);
     }
 
@@ -190,7 +186,6 @@ public class ChunkedFile {
             throw new ChunkedMediumException("Prefix byte longer than maximum allowed length of " + (PREFIX_BYTE_LEN - SIGNATURE.length));
         }
 
-        this.cursor = SIGNATURE.length;
         byte[] msgBytes = new byte[PREFIX_BYTE_LEN - SIGNATURE.length];
         System.arraycopy(prefixBytes, 0, msgBytes, 0, prefixBytes.length);
 
@@ -198,8 +193,7 @@ public class ChunkedFile {
             msgBytes[prefixBytes.length] = END_OF_HEADER;
         }
 
-        this.cursor = SIGNATURE.length;
-        writeBytes(msgBytes);
+        writeBytesInternal(SIGNATURE.length, msgBytes);
     }
 
     public boolean isEmpty() {

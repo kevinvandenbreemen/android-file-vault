@@ -35,28 +35,23 @@ public class ChunkedFileTest {
 
     @Test
     public void testWriteBytes() {
-        sut.setCursor(0);
-        sut.writeBytes(new byte[]{1, 2, 3, 4});
+        sut.writeBytes(0, new byte[]{1, 2, 3, 4});
 
-        byte[] read = sut.readBytes(4);
+        byte[] read = sut.readBytes(0, 4);
         assertArrayEquals("Bytes expected",
                 new byte[]{1, 2, 3, 4}, read);
     }
 
     @Test
     public void shouldWriteBytesAfterPrefix() throws Exception {
-        sut.setCursor(0);
-        sut.writeBytes(new byte[]{65, 65, 65, 65});
+        sut.writeBytes(0, new byte[]{65, 65, 65, 65});
         sut.validateFile();
     }
 
     @Test
     public void testSeek() {
-        sut.setCursor(0);
-        sut.writeBytes(new byte[]{1, 2, 3, 4});
-
-        sut.setCursor(1);
-        byte[] read = sut.readBytes(3);
+        sut.writeBytes(0, new byte[]{1, 2, 3, 4});
+        byte[] read = sut.readBytes(1, 3);
 
         assertArrayEquals("Subset of bytes expected", new byte[]{2, 3, 4}, read);
     }
@@ -123,10 +118,9 @@ public class ChunkedFileTest {
                 'd'
         });
 
-        sut.setCursor(0);
-        sut.writeBytes(new byte[]{1, 2, 3, 4});
+        sut.writeBytes(0, new byte[]{1, 2, 3, 4});
 
-        byte[] read = sut.readBytes(4);
+        byte[] read = sut.readBytes(0, 4);
         assertArrayEquals("Bytes expected",
                 new byte[]{1, 2, 3, 4}, read);
 
@@ -150,10 +144,9 @@ public class ChunkedFileTest {
                 'd'
         });
 
-        sut.setCursor(0);
-        sut.writeBytes(new byte[]{1, 2, 3, 4});
+        sut.writeBytes(0, new byte[]{1, 2, 3, 4});
 
-        byte[] read = sut.readBytes(4);
+        byte[] read = sut.readBytes(0, 4);
         assertArrayEquals("Bytes expected",
                 new byte[]{1, 2, 3, 4}, read);
 
@@ -196,8 +189,7 @@ public class ChunkedFileTest {
 
         sut = ChunkedFile.getChunkedFile(TestConstants.getTestFile("testNonEmpty", false));
 
-        sut.setCursor(0);
-        sut.writeBytes(new byte[]{'k', 'e', 'v', 'i', 'n'});
+        sut.writeBytes(0, new byte[]{'k', 'e', 'v', 'i', 'n'});
         assertFalse("Non-empty", sut.isEmpty());
     }
 
