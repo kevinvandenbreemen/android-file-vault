@@ -35,11 +35,14 @@ interface PictureViewerPresenter : PresenterContract {
     fun previousImage()
     fun showSelector()
     fun thumbnail(fileName: String): Single<Bitmap>
+    fun displayImage(fileName: String)
 
 }
 
 class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: PictureViewerView) : Presenter<PictureViewerModel, PictureViewerView>(model, view), PictureViewerPresenter {
-
+    override fun displayImage(fileName: String) {
+        model.loadImage(fileName).subscribe({ image -> view.displayImage(image) })
+    }
 
 
     override fun displayImage() {

@@ -59,4 +59,12 @@ class PictureViewerContractTest {
         verify(view).showImageSelector(filesList)
     }
 
+    @Test
+    fun shouldShowSelectedImage() {
+        `when`(model.loadImage("file")).then { throw RuntimeException("Incorrect filename") }
+        `when`(model.loadImage("file2")).thenReturn(Single.just(bitmap))
+        presenter.displayImage("file2")
+        verify(view).displayImage(bitmap)
+    }
+
 }
