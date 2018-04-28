@@ -3,6 +3,7 @@ package com.vandenbreemen.secretcamera.mvp.gallery
 import android.graphics.Bitmap
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import io.reactivex.Single
+import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -67,10 +68,16 @@ class PictureViewerContractTest {
     }
 
     @Test
-    fun shouldHideImageSelectorWhenSelectingImageToDisplahy() {
+    fun shouldHideImageSelectorWhenSelectingImageToDisplay() {
         `when`(model.loadImage("file2")).thenReturn(Single.just(bitmap))
         presenter.selectImageToDisplay("file2")
         verify(view).hideImageSelector()
+    }
+
+    @Test
+    fun shouldRetrieveCurrentSelectedImage() {
+        `when`(model.currentFile()).thenReturn(Single.just("currentFile"))
+        assertEquals("currentFile", presenter.currentImageFileName().blockingGet())
     }
 
 }

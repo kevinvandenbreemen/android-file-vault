@@ -43,7 +43,10 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
 
     fun loadImage(fileName: String): Single<Bitmap> {
         return Single.create(SingleOnSubscribe<ByteArray> {
-            it.onSuccess(imageFilesInteractor.loadImageBytes(fileName))
+            val gallerySettings = getGallerySettings()
+            gallerySettings.currentFile = fileName
+            saveGallerySettings(gallerySettings)
+            it.onSuccess(imageFilesInteractor.loadImageBytes(gallerySettings.currentFile!!))
         })
                 .subscribeOn(Schedulers.computation())
                 .flatMap { imageBytes ->

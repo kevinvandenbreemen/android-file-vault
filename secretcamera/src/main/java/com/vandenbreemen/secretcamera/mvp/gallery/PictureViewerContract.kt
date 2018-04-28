@@ -43,6 +43,7 @@ interface PictureViewerPresenter : PresenterContract {
     fun showSelector()
     fun thumbnail(fileName: String): Single<Bitmap>
     fun selectImageToDisplay(fileName: String)
+    fun currentImageFileName(): Single<String>
 
 }
 
@@ -93,6 +94,10 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
 
     override fun showSelector() {
         model.listImages().subscribe({ imageFiles -> view.showImageSelector(imageFiles) })
+    }
+
+    override fun currentImageFileName(): Single<String> {
+        return model.currentFile()
     }
 
     override fun setupView() {
