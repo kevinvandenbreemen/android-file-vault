@@ -43,6 +43,7 @@ class ThumbnailAdapter(private val fileNames: List<String>,
     override fun onBindViewHolder(holder: ThumbnailViewHolder, position: Int) {
         presenter.thumbnail(fileNames[position]).subscribe({ bitmap ->
             val imageView = holder.view.findViewById<ImageView>(R.id.preview)
+            imageView.setOnClickListener(View.OnClickListener { view -> presenter.selectImageToDisplay(fileNames[position]) })
             imageView.visibility = VISIBLE
             imageView.setImageBitmap(bitmap)
 
@@ -54,6 +55,7 @@ class ThumbnailAdapter(private val fileNames: List<String>,
 }
 
 class PictureViewerActivity : Activity(), PictureViewerView {
+
 
     @Inject
     lateinit var presenter: PictureViewerPresenter
@@ -92,7 +94,7 @@ class PictureViewerActivity : Activity(), PictureViewerView {
 
     override fun onReadyToUse() {
         findViewById<ViewGroup>(R.id.overlay).visibility = View.GONE
-        presenter.displayImage()
+        presenter.selectImageToDisplay()
     }
 
     override fun showError(error: ApplicationError) {
@@ -124,6 +126,12 @@ class PictureViewerActivity : Activity(), PictureViewerView {
         recyclerView.adapter = adapter
         recyclerView.adapter.notifyDataSetChanged()
 
+    }
+
+    override fun hideImageSelector() {
+        val recyclerView = findViewById<RecyclerView>(R.id.pictureSelector)
+        recyclerView.removeAllViews()
+        recyclerView.visibility = GONE
     }
 
     override fun end() {
