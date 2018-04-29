@@ -25,7 +25,7 @@ public class ImportedFileData implements Serializable {
      *
      * @param fileData
      */
-    ImportedFileData(byte[] fileData) {
+    public ImportedFileData(byte[] fileData) {
         this.fileData = fileData;
     }
 

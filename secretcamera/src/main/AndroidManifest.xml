@@ -35,29 +35,30 @@
             android:excludeFromRecents="true"
             android:screenOrientation="portrait" />
         <activity
-            android:parentActivityName=".MainActivity"
             android:name=".TakeNoteActivity"
             android:configChanges="orientation|screenSize"
-            android:excludeFromRecents="true" />
+            android:excludeFromRecents="true"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".StringSelectorActivity"
             android:configChanges="orientation|screenSize"
             android:excludeFromRecents="true" />
         <activity
-            android:parentActivityName=".MainActivity"
             android:name=".NoteDetailsActivity"
             android:configChanges="orientation|screenSize"
-            android:excludeFromRecents="true" />
+            android:excludeFromRecents="true"
+            android:parentActivityName=".MainActivity" />
         <activity
-            android:parentActivityName=".MainActivity"
             android:name=".Gallery"
             android:configChanges="orientation|screenSize"
-            android:excludeFromRecents="true" />
+            android:excludeFromRecents="true"
+            android:parentActivityName=".MainActivity" />
         <activity
-            android:parentActivityName=".MainActivity"
             android:name=".PictureViewerActivity"
             android:configChanges="orientation|screenSize"
-            android:excludeFromRecents="true"></activity>
+            android:excludeFromRecents="true"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".TakePictureActivity"></activity>
     </application>
 
 </manifest>
