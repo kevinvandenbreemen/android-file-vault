@@ -46,6 +46,14 @@ project.ext {
     mockitoVersion = "2.18.0"
 }
 
+repositories {
+    maven { url 'https://dl.bintray.com/camerakit/camerakit-android-snapshots' }
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
 dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestUtil 'com.android.support.test:orchestrator:1.0.1'
@@ -62,7 +70,7 @@ dependencies {
     provided 'javax.annotation:jsr250-api:1.0'
     kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
-    compile 'com.wonderkiln:camerakit:0.13.1'
+    implementation group: 'com.camerakit', name:'camerakit', version:'1.0.0-Snapshot', changing: true
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
