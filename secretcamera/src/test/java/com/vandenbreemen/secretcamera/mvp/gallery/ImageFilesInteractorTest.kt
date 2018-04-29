@@ -9,6 +9,7 @@ import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -57,6 +58,14 @@ class ImageFilesInteractorTest {
     @Test
     fun shouldListFilesInAscendingOrder() {
         assertEquals("first image", "img_1", imageFilesInteractor.listImageFiles()[0])
+    }
+
+    @Test
+    fun shouldIncludeCapturedImages() {
+        sfs().storeObject("captured", "CApturedIMG")
+        sfs().setFileMetadata("captured", FileMeta(PicturesFileTypes.CAPTURED_IMAGE))
+        this.imageFilesInteractor = ImageFilesInteractor(sfs())
+        assertTrue("Captured image", imageFilesInteractor.listImageFiles().contains("captured"))
     }
 
 }

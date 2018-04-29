@@ -15,7 +15,7 @@ import io.reactivex.schedulers.Schedulers.computation
 
 class ImageFilesInteractor(private val sfs: SecureFileSystem) {
     fun listImageFiles(): List<String> {
-        return sfs.listFiles(PicturesFileTypes.IMPORTED_IMAGE).sorted()
+        return sfs.listFiles(PicturesFileTypes.IMPORTED_IMAGE, PicturesFileTypes.CAPTURED_IMAGE).sorted()
     }
 
     fun loadImageBytes(fileName: String): ByteArray {

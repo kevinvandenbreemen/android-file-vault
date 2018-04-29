@@ -69,6 +69,19 @@ class SecureFileSystemExtensionsTest {
     }
 
     @Test
+    fun shouldListFilesByMultipleTypes() {
+        val sfs = getSUT()
+        sfs.storeObject("test", "Ramana")
+        sfs.setFileMetadata("test", FileMeta(FileTypes.DATA))
+
+        sfs.storeObject("test2", "OtherType")
+        sfs.setFileMetadata("test2", FileMeta(FileTypes.SYSTEM))
+
+        val filesList = sfs.listFiles(FileTypes.DATA, FileTypes.SYSTEM)
+        assertEquals("Files list", 2, filesList.size)
+    }
+
+    @Test
     fun shouldProvideFileMetaCreation() {
         val sfs = getSUT()
         sfs.storeObject("test", "Ramana")

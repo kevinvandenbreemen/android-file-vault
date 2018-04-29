@@ -77,8 +77,8 @@ fun SecureFileSystem.extListFiles(): List<String> {
     return this.listFiles().filter { !METADATA_FILENAME.equals(it) }
 }
 
-fun SecureFileSystem.listFiles(fileType: FileType): List<String> {
+fun SecureFileSystem.listFiles(vararg fileTypes: FileType): List<String> {
     return this.extListFiles().filter {
-        fileType == getFileMeta(it)?.getFileType()
+        fileTypes.contains(getFileMeta(it)?.getFileType())
     }
 }
