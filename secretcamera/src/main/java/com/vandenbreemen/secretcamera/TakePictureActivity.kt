@@ -1,11 +1,13 @@
 package com.vandenbreemen.secretcamera
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.view.View
 import android.widget.Toast
 import com.camerakit.CameraKitView
+import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.mvp.takepicture.TakePicturePresenter
 import com.vandenbreemen.secretcamera.mvp.takepicture.TakePictureView
@@ -13,6 +15,7 @@ import dagger.android.AndroidInjection
 import javax.inject.Inject
 
 class TakePictureActivity : Activity(), TakePictureView {
+
 
     companion object {
         const val TAG = "TakePictureActivity"
@@ -39,6 +42,8 @@ class TakePictureActivity : Activity(), TakePictureView {
     override fun onPause() {
         cameraView.onPause()
         super.onPause()
+        presenter.close()
+        finish()
     }
 
     override fun onReadyToUse() {
@@ -51,5 +56,16 @@ class TakePictureActivity : Activity(), TakePictureView {
 
     override fun showError(error: ApplicationError) {
         Toast.makeText(this, error.localizedMessage, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        presenter.back()
+    }
+
+    override fun returnToMain(credentials: SFSCredentials) {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
+        startActivity(intent)
     }
 }

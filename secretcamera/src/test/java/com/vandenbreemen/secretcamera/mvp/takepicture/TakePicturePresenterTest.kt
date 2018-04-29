@@ -2,6 +2,7 @@ package com.vandenbreemen.secretcamera.mvp.takepicture
 
 import android.os.Environment
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.getDateInteractor
 import com.vandenbreemen.mobilesecurestorage.security.Bytes
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
@@ -19,10 +20,26 @@ import org.junit.Test
 import org.junit.rules.ErrorCollector
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.Implementation
+import org.robolectric.annotation.Implements
 import org.robolectric.shadows.ShadowLog
 import java.io.File
+
+val fakeCredentials = SFSCredentials(File("no/such"), SecureString.fromPassword("test"))
+
+@Implements(Model::class)
+class ShadowTakePictureModel {
+
+    @Implementation
+    fun copyCredentials(): SFSCredentials {
+        return fakeCredentials
+    }
+
+}
 
 /**
  * <h2>Intro</h2>
@@ -76,6 +93,13 @@ class TakePicturePresenterTest {
         takePicturePresenter.capture(pictureBytes)
 
         errorCollector.checkThat("Stored Files", sfs().listFiles(PicturesFileTypes.CAPTURED_IMAGE).size, `is`(1))
+    }
+
+    @Test
+    @Config(shadows = [ShadowTakePictureModel::class])
+    fun shouldReturnUserToMain() {
+        takePicturePresenter.back()
+        verify(view).returnToMain(fakeCredentials)
     }
 
 }
