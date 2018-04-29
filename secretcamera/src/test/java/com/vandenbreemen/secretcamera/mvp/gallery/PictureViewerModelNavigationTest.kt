@@ -210,7 +210,7 @@ class PictureViewerModelTest {
 
     @Test
     fun shouldUpdateCurrentImageOnSelectImage() {
-        model.loadImage(TestConstants.TEST_RES_IMG_2.name).blockingGet()
+        model.loadImageForDisplay(TestConstants.TEST_RES_IMG_2.name).blockingGet()
         assertEquals("Current image", TestConstants.TEST_RES_IMG_2.name, model.currentFile().blockingGet())
     }
 

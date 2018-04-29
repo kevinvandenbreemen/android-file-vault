@@ -49,7 +49,7 @@ interface PictureViewerPresenter : PresenterContract {
 
 class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: PictureViewerView) : Presenter<PictureViewerModel, PictureViewerView>(model, view), PictureViewerPresenter {
     override fun selectImageToDisplay(fileName: String) {
-        model.loadImage(fileName).subscribe({ image ->
+        model.loadImageForDisplay(fileName).subscribe({ image ->
             view.displayImage(image)
             view.hideImageSelector()
         })
@@ -59,7 +59,7 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
     override fun selectImageToDisplay() {
 
         model.currentFile().flatMap { imageFile ->
-            model.loadImage(imageFile)
+            model.loadImageForDisplay(imageFile)
         }.subscribe({ bitmap -> view.displayImage(bitmap) },
                 { error -> view.showError(ApplicationError(error)) }
         )

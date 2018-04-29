@@ -41,12 +41,22 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
         this.secureFileSystemInteractor = getSecureFileSystemInteractor(sfs)
     }
 
-    fun loadImage(fileName: String): Single<Bitmap> {
+    fun loadImageForDisplay(fileName: String): Single<Bitmap> {
         return Single.create(SingleOnSubscribe<ByteArray> {
             val gallerySettings = getGallerySettings()
             gallerySettings.currentFile = fileName
             saveGallerySettings(gallerySettings)
             it.onSuccess(imageFilesInteractor.loadImageBytes(gallerySettings.currentFile!!))
+        })
+                .subscribeOn(Schedulers.computation())
+                .flatMap { imageBytes ->
+                    androidImageInteractor.convertByteArrayToBitmap(imageBytes).observeOn(AndroidSchedulers.mainThread())
+                }
+    }
+
+    fun loadImage(filename: String): Single<Bitmap> {
+        return Single.create(SingleOnSubscribe<ByteArray> {
+            it.onSuccess(imageFilesInteractor.loadImageBytes(filename))
         })
                 .subscribeOn(Schedulers.computation())
                 .flatMap { imageBytes ->
@@ -75,6 +85,7 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
             val gallerySettings = getGallerySettings()
             gallerySettings.currentFile?.let {
                 emitter.onSuccess(it)
+                return@SingleOnSubscribe
             }
 
             val listOfFiles = this.imageFilesInteractor.listImageFiles()

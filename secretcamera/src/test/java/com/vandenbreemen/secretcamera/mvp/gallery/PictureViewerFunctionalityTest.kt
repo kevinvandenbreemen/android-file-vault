@@ -115,7 +115,7 @@ class PictureViewerFunctionalityTest {
         //  Act
         val model = PictureViewerModel(credentials)
         model.init().subscribe()
-        val result: Single<Bitmap> = model.loadImage(TestConstants.TEST_RES_IMG_1.name)
+        val result: Single<Bitmap> = model.loadImageForDisplay(TestConstants.TEST_RES_IMG_1.name)
 
         //  Assert
         errorCollector.checkThat("Single back", result, notNullValue())

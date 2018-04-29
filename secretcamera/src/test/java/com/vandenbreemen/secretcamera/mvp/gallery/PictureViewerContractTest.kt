@@ -34,7 +34,7 @@ class PictureViewerContractTest {
     @Before
     fun setup() {
         `when`(model.currentFile()).thenReturn(Single.just("file"))
-        `when`(model.loadImage("file")).thenReturn(Single.just(bitmap))
+        `when`(model.loadImageForDisplay("file")).thenReturn(Single.just(bitmap))
         this.presenter = PictureViewerPresenterImpl(model, view)
     }
 
@@ -62,14 +62,14 @@ class PictureViewerContractTest {
 
     @Test
     fun shouldShowSelectedImage() {
-        `when`(model.loadImage("file2")).thenReturn(Single.just(bitmap))
+        `when`(model.loadImageForDisplay("file2")).thenReturn(Single.just(bitmap))
         presenter.selectImageToDisplay("file2")
         verify(view).displayImage(bitmap)
     }
 
     @Test
     fun shouldHideImageSelectorWhenSelectingImageToDisplay() {
-        `when`(model.loadImage("file2")).thenReturn(Single.just(bitmap))
+        `when`(model.loadImageForDisplay("file2")).thenReturn(Single.just(bitmap))
         presenter.selectImageToDisplay("file2")
         verify(view).hideImageSelector()
     }
