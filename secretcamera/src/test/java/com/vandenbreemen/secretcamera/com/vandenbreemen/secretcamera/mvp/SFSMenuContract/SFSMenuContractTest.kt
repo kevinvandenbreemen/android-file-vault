@@ -38,4 +38,10 @@ class SFSMenuPresenterTest {
         verify(view).gotoGallery(copyOfCredentials)
     }
 
+    @Test
+    fun shouldStartTakePicture() {
+        this.presenter.takePicture()
+        verify(view).gotoTakePicture(copyOfCredentials)
+    }
+
 }
