@@ -5,6 +5,8 @@ import android.os.Environment
 import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
+import com.vandenbreemen.mobilesecurestorage.patterns.mvp.ShadowModel
+import com.vandenbreemen.mobilesecurestorage.patterns.mvp.closed
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.getFileMeta
@@ -12,12 +14,14 @@ import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureF
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric.buildActivity
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import org.robolectric.annotation.Config
 import java.io.File
 
 /**
@@ -76,6 +80,34 @@ class FileImportActivityFunctionalTest {
                 .get()
 
         assertEquals("File import count", 3, sfs().listFiles().size)
+
+    }
+
+    @Test
+    @Config(shadows = [ShadowModel::class])
+    fun shouldCloseOnDone() {
+        //  Arrange
+        var file = File(directoryToImport.absolutePath + File.separator + "file1")
+        file.createNewFile()
+        file = File(directoryToImport.absolutePath + File.separator + "file2")
+        file.createNewFile()
+        file = File(directoryToImport.absolutePath + File.separator + "file3")
+        file.createNewFile()
+
+        val workflow = FileWorkflow()
+        workflow.fileOrDirectory = directoryToImport
+
+        val intent = Intent(RuntimeEnvironment.application, FileImportActivity::class.java)
+        intent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
+        intent.putExtra(SFSCredentials.PARM_CREDENTIALS,
+                SFSCredentials(sfsFile, createPassword()))
+
+        val activityController = buildActivity(FileImportActivity::class.java, intent)
+                .create()
+                .resume()
+        activityController.get()
+
+        assertTrue("Closed", closed)
 
     }
 

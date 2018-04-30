@@ -3,7 +3,6 @@ package com.vandenbreemen.mobilesecurestorage.android
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.ProgressBar
 import android.widget.Toast
 import com.vandenbreemen.mobilesecurestorage.R
@@ -55,13 +54,16 @@ class FileImportActivity : Activity(), FileImportView {
     }
 
     override fun done(sfsCredentials: SFSCredentials) {
-        Log.d("KevinDebug", "done() called", Throwable())
+        fileImportPresenter.close()
+
         val workflow = intent.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME)
         workflow.activityToStartAfterTargetActivityFinished?.let {
             val intent = Intent(this, it)
             intent.putExtra(SFSCredentials.PARM_CREDENTIALS, sfsCredentials)
             startActivity(intent)
         }
+
+        finish()
     }
 
     override fun onReadyToUse() {
