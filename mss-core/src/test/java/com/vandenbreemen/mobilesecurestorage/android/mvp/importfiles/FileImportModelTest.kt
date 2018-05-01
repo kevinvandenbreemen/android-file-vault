@@ -10,6 +10,7 @@ import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureF
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -90,6 +91,27 @@ class FileImportModelTest {
             }
         }
 
+    }
+
+    @Test
+    fun shouldAllowImportingFileWithSameName() {
+        //  Arrange
+        val sfsCredentials = SFSCredentials(sfsFile, createPassword())
+        File(directoryToImport.absolutePath + File.separator + "newfile").createNewFile()
+
+        sfs().touch("newfile")
+
+        //  Act
+        val fileImportModel = FileImportModel(sfsCredentials)
+        fileImportModel.init().subscribe()
+        fileImportModel.importDir(directoryToImport, FileTypes.UNKNOWN).test()
+                .assertComplete()
+                .assertNoErrors()
+
+        //  Assert
+        assertEquals("Two files", 2, sfs().extListFiles().size)
+        assertTrue("Additional file", sfs().exists("newfile_1"))
+        assertEquals("File type", FileTypes.UNKNOWN, sfs().getFileMeta("newfile_1")!!.getFileType())
     }
 
 }

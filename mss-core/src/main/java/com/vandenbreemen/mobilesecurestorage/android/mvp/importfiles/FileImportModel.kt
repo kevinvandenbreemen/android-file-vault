@@ -44,7 +44,9 @@ class FileImportModel(credentials: SFSCredentials) : Model(credentials) {
 
                         val bytes = fileLoader.loadFile(fileToImport)
                         val fileName = fileLoader.getFilenameToUseWhenImporting(fileToImport)
-                        secureFileSystemInteractor.importToFile(bytes, fileName, fileType)
+                        if (!secureFileSystemInteractor.importToFile(bytes, fileName, fileType)) {
+                            secureFileSystemInteractor.importToFile(bytes, fileLoader.getAlternateNameForFileImport(fileToImport, sfs), fileType)
+                        }
 
                         count++
                         emitter.onNext(count)

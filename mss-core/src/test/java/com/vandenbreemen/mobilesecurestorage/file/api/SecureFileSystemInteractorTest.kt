@@ -3,12 +3,10 @@ package com.vandenbreemen.mobilesecurestorage.file.api
 import android.os.Environment
 import com.vandenbreemen.mobilesecurestorage.TestConstants
 import com.vandenbreemen.mobilesecurestorage.file.getFileImporter
-import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.security.Bytes
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertTrue
+import junit.framework.TestCase.*
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils
 import org.junit.Before
 import org.junit.Test
@@ -55,6 +53,11 @@ class SecureFileSystemInteractorTest {
     }
 
     @Test
+    fun shouldReturnTrueWhenImportingFileSuccessfully() {
+        assertTrue("Return true", sut.importToFile(getFileImporter().loadFile(TestConstants.TEST_RES_IMG_1), "1.jpg", null))
+    }
+
+    @Test
     fun shouldStoreFileWithGivenName() {
         sut.importToFile(getFileImporter().loadFile(TestConstants.TEST_RES_IMG_1), "1.jpg", null)
         assertEquals("Imported filename", "1.jpg", sfs().listFiles()[0])
@@ -68,11 +71,18 @@ class SecureFileSystemInteractorTest {
         assertTrue("Persisted bytes", ByteUtils.equals(rawBytes, loadedBytes))
     }
 
-    @Test(expected = ApplicationError::class)
+    @Test
     fun shouldNotOverwriteExistingFile() {
         sfs().storeObject("1.jpg", ArrayList<String>())
         sut = getSecureFileSystemInteractor(sfs())
         sut.importToFile(getFileImporter().loadFile(TestConstants.TEST_RES_IMG_1), "1.jpg", null)
+    }
+
+    @Test
+    fun shouldReturnFalseWhenUnsuccessfulAtImporting() {
+        sfs().storeObject("1.jpg", ArrayList<String>())
+        sut = getSecureFileSystemInteractor(sfs())
+        assertFalse("Expect false", sut.importToFile(getFileImporter().loadFile(TestConstants.TEST_RES_IMG_1), "1.jpg", null))
     }
 
     @Test

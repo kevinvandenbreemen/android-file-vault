@@ -2,6 +2,8 @@ package com.vandenbreemen.mobilesecurestorage.file.api
 
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
 import com.vandenbreemen.mobilesecurestorage.file.ImportedFileData
+import com.vandenbreemen.mobilesecurestorage.log.SystemLog
+import com.vandenbreemen.mobilesecurestorage.log.e
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.security.crypto.getFileMeta
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
@@ -17,7 +19,7 @@ import java.io.Serializable
 interface SecureFileSystemInteractor {
 
     @Throws(ApplicationError::class)
-    fun importToFile(fileDataToImport: ImportedFileData, fileName: String, fileType: FileType?)
+    fun importToFile(fileDataToImport: ImportedFileData, fileName: String, fileType: FileType?): Boolean
 
     fun save(obj: Serializable, fileName: String, fileType: FileTypes)
     fun load(fileName: String, fileTypes: FileTypes): Serializable?
@@ -39,12 +41,14 @@ private class SecureFileSystemInteractorImpl(private val secureFileSystem: Secur
         return null
     }
 
-    override fun importToFile(fileDataToImport: ImportedFileData, fileName: String, fileType: FileType?) {
+    override fun importToFile(fileDataToImport: ImportedFileData, fileName: String, fileType: FileType?): Boolean {
         if (secureFileSystem.exists(fileName)) {
-            throw ApplicationError("File $fileName already exists.  Cannot overwrite existing file.")
+            SystemLog.get().e("SFSInteractor", "File already exists.  Cannot overwrite existing file.", Throwable())
+            return false
         }
         secureFileSystem.storeObject(fileName, fileDataToImport)
         fileType?.let { type -> secureFileSystem.setFileMetadata(fileName, FileMeta(type)) }
+        return true
     }
 
 }

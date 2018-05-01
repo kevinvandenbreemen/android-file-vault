@@ -4,6 +4,7 @@ package com.vandenbreemen.mobilesecurestorage.file
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog
 import com.vandenbreemen.mobilesecurestorage.log.e
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime
 import com.vandenbreemen.mobilesecurestorage.security.Bytes
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
@@ -28,9 +29,27 @@ interface FileLoader {
     fun loadFileReactive(fileToImport: File): Single<ImportedFileData>
 
     fun getFilenameToUseWhenImporting(file: File): String
+
+    fun getAlternateNameForFileImport(file: File, indexedFile: IndexedFile): String
 }
 
 private class FileLoaderImpl : FileLoader {
+    override fun getAlternateNameForFileImport(file: File, indexedFile: IndexedFile): String {
+        if (!indexedFile.exists(getFilenameToUseWhenImporting(file))) {
+            return getFilenameToUseWhenImporting(file)
+        }
+        val filename = getFilenameToUseWhenImporting(file)
+        var index = 0
+        while (indexedFile.exists(filename)) {
+            val altFilename = "${filename}_${++index}"
+            if (!indexedFile.exists(altFilename)) {
+                return altFilename
+            }
+        }
+
+        throw MSSRuntime("Impossible condition - infinitely large file system")
+    }
+
     override fun loadFileReactive(fileToImport: File): Single<ImportedFileData> {
         return Single.create(SingleOnSubscribe<ImportedFileData> { subscriber ->
             try {
