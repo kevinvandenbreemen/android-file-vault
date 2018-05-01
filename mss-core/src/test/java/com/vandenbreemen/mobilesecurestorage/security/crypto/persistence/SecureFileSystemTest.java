@@ -775,6 +775,11 @@ public class SecureFileSystemTest {
 
         Thread.sleep(6000);
 
+        importThread.interrupt();
+        readThread.interrupt();
+        readThread2.interrupt();
+        deleteThread.interrupt();
+
         assertTrue("Error occurred", error.get() == null);
     }
 
