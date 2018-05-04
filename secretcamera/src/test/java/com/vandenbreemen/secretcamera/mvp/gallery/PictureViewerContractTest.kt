@@ -68,6 +68,14 @@ class PictureViewerContractTest {
     }
 
     @Test
+    fun shouldShowSpinnerWhileLoadingImage() {
+        `when`(model.loadImageForDisplay("file2")).thenReturn(Single.just(bitmap))
+        presenter.selectImageToDisplay("file2")
+        verify(view).showLoadingSpinner()
+        verify(view).hideLoadingSpinner()
+    }
+
+    @Test
     fun shouldHideImageSelectorWhenSelectingImageToDisplay() {
         `when`(model.loadImageForDisplay("file2")).thenReturn(Single.just(bitmap))
         presenter.selectImageToDisplay("file2")

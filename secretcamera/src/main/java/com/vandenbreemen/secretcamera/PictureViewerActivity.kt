@@ -141,4 +141,12 @@ class PictureViewerActivity : Activity(), PictureViewerView {
     override fun end() {
 
     }
+
+    override fun showLoadingSpinner() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun hideLoadingSpinner() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }

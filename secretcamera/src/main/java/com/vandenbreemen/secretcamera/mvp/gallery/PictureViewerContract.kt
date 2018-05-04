@@ -34,6 +34,8 @@ interface PictureViewerView : View {
     fun showImageSelector(files: List<String>)
     fun end()
     fun hideImageSelector()
+    fun showLoadingSpinner()
+    fun hideLoadingSpinner()
 }
 
 interface PictureViewerPresenter : PresenterContract {
@@ -50,7 +52,9 @@ interface PictureViewerPresenter : PresenterContract {
 class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: PictureViewerView) : Presenter<PictureViewerModel, PictureViewerView>(model, view), PictureViewerPresenter {
     override fun selectImageToDisplay(fileName: String) {
         model.loadImageForDisplay(fileName).subscribe({ image ->
+            view.showLoadingSpinner()
             view.displayImage(image)
+            view.hideLoadingSpinner()
             view.hideImageSelector()
         })
     }
