@@ -51,39 +51,45 @@ interface PictureViewerPresenter : PresenterContract {
 
 class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: PictureViewerView) : Presenter<PictureViewerModel, PictureViewerView>(model, view), PictureViewerPresenter {
     override fun selectImageToDisplay(fileName: String) {
+        view.showLoadingSpinner()
         model.loadImageForDisplay(fileName).subscribe({ image ->
-            view.showLoadingSpinner()
-            view.displayImage(image)
-            view.hideLoadingSpinner()
+            showImageOnView(image)
             view.hideImageSelector()
         })
     }
 
+    private fun showImageOnView(image: Bitmap) {
+        view.displayImage(image)
+        view.hideLoadingSpinner()
+    }
+
 
     override fun selectImageToDisplay() {
-
+        view.showLoadingSpinner()
         model.currentFile().flatMap { imageFile ->
             model.loadImageForDisplay(imageFile)
-        }.subscribe({ bitmap -> view.displayImage(bitmap) },
+        }.subscribe({ bitmap -> showImageOnView(bitmap) },
                 { error -> view.showError(ApplicationError(error)) }
         )
     }
 
     override fun nextImage() {
+        view.showLoadingSpinner()
         model.nextFile().flatMap { imageFile ->
             model.loadImage(imageFile)
         }
                 .observeOn(mainThread())
                 .subscribeOn(computation())
-                .subscribe({ bitmap -> view.displayImage(bitmap) },
+                .subscribe({ bitmap -> showImageOnView(bitmap) },
                 { error -> view.showError(ApplicationError(error)) }
         )
     }
 
     override fun previousImage() {
+        view.showLoadingSpinner()
         model.prevFile().flatMap { imageFile ->
             model.loadImage(imageFile)
-        }.subscribe({ bitmap -> view.displayImage(bitmap) },
+        }.subscribe({ bitmap -> showImageOnView(bitmap) },
                 { error -> view.showError(ApplicationError(error)) }
         )
     }
