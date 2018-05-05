@@ -106,8 +106,8 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
             val gallerySettings = getGallerySettings()
             val nextFile = getNextFile(gallerySettings)
             gallerySettings.currentFile = nextFile
-            saveGallerySettings(gallerySettings)
             it.onSuccess(gallerySettings.currentFile)
+            saveGallerySettings(gallerySettings)
 
         }).subscribeOn(computation()).observeOn(mainThread())
     }
@@ -130,8 +130,8 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
             val gallerySettings = getGallerySettings()
             val prevFile = getPreviousFile(gallerySettings)
             gallerySettings.currentFile = prevFile
-            saveGallerySettings(gallerySettings)
             it.onSuccess(gallerySettings.currentFile)
+            saveGallerySettings(gallerySettings)
         }).subscribeOn(computation()).observeOn(mainThread())
     }
 
