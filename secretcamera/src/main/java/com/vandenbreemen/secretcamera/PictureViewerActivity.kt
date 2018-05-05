@@ -94,7 +94,7 @@ class PictureViewerActivity : Activity(), PictureViewerView {
 
     override fun onReadyToUse() {
         findViewById<ViewGroup>(R.id.overlay).visibility = View.GONE
-        presenter.selectImageToDisplay()
+        presenter.displayCurrentImage()
     }
 
     override fun showError(error: ApplicationError) {

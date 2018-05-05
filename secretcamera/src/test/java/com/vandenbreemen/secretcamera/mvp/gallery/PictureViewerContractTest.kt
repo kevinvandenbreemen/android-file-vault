@@ -50,7 +50,7 @@ class PictureViewerContractTest {
     fun shouldShowFirstAvailableImage() {
         `when`(model.currentFile()).thenReturn(Single.just("file"))
         `when`(model.loadImageForDisplay("file")).thenReturn(Single.just(bitmap))
-        presenter.selectImageToDisplay()
+        presenter.displayCurrentImage()
         verify(model).currentFile()
         verify(view).displayImage(bitmap)
     }
@@ -58,7 +58,7 @@ class PictureViewerContractTest {
     @Test
     fun shouldHandleNoImagesAvailable() {
         `when`(model.currentFile()).thenReturn(Single.error(ApplicationError("No images available")))
-        presenter.selectImageToDisplay()
+        presenter.displayCurrentImage()
         verify(view, never()).displayImage(bitmap)
     }
 

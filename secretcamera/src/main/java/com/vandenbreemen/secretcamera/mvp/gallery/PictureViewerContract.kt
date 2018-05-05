@@ -39,7 +39,7 @@ interface PictureViewerView : View {
 }
 
 interface PictureViewerPresenter : PresenterContract {
-    fun selectImageToDisplay()
+    fun displayCurrentImage()
     fun nextImage()
     fun previousImage()
     fun showSelector()
@@ -64,7 +64,7 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
     }
 
 
-    override fun selectImageToDisplay() {
+    override fun displayCurrentImage() {
         view.showLoadingSpinner()
         model.currentFile().flatMap { imageFile ->
             model.loadImageForDisplay(imageFile)
