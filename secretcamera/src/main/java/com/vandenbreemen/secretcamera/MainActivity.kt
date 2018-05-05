@@ -51,9 +51,12 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
             fsWorkflow = it.getParcelable(FileWorkflow.PARM_WORKFLOW_NAME)
         } ?: run{
             fsWorkflow = intent.getParcelableExtra(FileWorkflow.PARM_WORKFLOW_NAME)
-        }
 
-        fsWorkflow = fsWorkflow?: FileWorkflow()
+            if (fsWorkflow == null) {
+                fsWorkflow = FileWorkflow()
+                fsWorkflow!!.activityToStartAfterTargetActivityFinished = javaClass
+            }
+        }
 
         if(intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS) != null){
             val credentials = intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)
@@ -66,7 +69,7 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
         }
         else{   //  Otherwise show the FS select fragment!
             val frag = SFSNavFragment()
-            fsWorkflow!!.activityToStartAfterTargetActivityFinished = javaClass
+
             savedInstanceState?.let {
                 frag.arguments = it
             } ?: run{
@@ -76,6 +79,15 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
             fragmentManager.beginTransaction().add(R.id.upperSection, frag).commit()
         }
 
+
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+
+        fsWorkflow?.let {
+            outState?.putParcelable(FileWorkflow.PARM_WORKFLOW_NAME, it)
+        }
 
     }
 
