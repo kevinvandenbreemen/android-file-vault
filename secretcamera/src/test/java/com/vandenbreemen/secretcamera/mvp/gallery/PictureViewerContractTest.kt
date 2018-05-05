@@ -3,13 +3,18 @@ package com.vandenbreemen.secretcamera.mvp.gallery
 import android.graphics.Bitmap
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.plugins.RxJavaPlugins
 import junit.framework.TestCase.assertEquals
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.*
-import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
+import org.robolectric.RobolectricTestRunner
 
 /**
  * <h2>Intro</h2>
@@ -17,8 +22,11 @@ import org.mockito.junit.MockitoJUnitRunner
  * <h2>Other Details</h2>
  * @author kevin
  */
-@RunWith(MockitoJUnitRunner::class)
+@RunWith(RobolectricTestRunner::class)
 class PictureViewerContractTest {
+
+    @get:Rule
+    val rule: MockitoRule = MockitoJUnit.rule()
 
     @Mock
     lateinit var model: PictureViewerModel
@@ -33,13 +41,15 @@ class PictureViewerContractTest {
 
     @Before
     fun setup() {
-        `when`(model.currentFile()).thenReturn(Single.just("file"))
-        `when`(model.loadImageForDisplay("file")).thenReturn(Single.just(bitmap))
+        RxJavaPlugins.setComputationSchedulerHandler { scheduler -> AndroidSchedulers.mainThread() }
+
         this.presenter = PictureViewerPresenterImpl(model, view)
     }
 
     @Test
     fun shouldShowFirstAvailableImage() {
+        `when`(model.currentFile()).thenReturn(Single.just("file"))
+        `when`(model.loadImageForDisplay("file")).thenReturn(Single.just(bitmap))
         presenter.selectImageToDisplay()
         verify(model).currentFile()
         verify(view).displayImage(bitmap)
@@ -65,6 +75,24 @@ class PictureViewerContractTest {
         `when`(model.loadImageForDisplay("file2")).thenReturn(Single.just(bitmap))
         presenter.selectImageToDisplay("file2")
         verify(view).displayImage(bitmap)
+    }
+
+    @Test
+    fun shouldShowHideSpinnerWhenShowingNextImage() {
+        `when`(model.loadImage("file2")).thenReturn(Single.just(bitmap))
+        `when`(model.nextFile()).thenReturn(Single.just("file2"))
+        presenter.nextImage()
+        verify(view).showLoadingSpinner()
+        verify(view).hideLoadingSpinner()
+    }
+
+    @Test
+    fun shouldShowHideSpinnerWhenShowingPrevImage() {
+        `when`(model.loadImage("file2")).thenReturn(Single.just(bitmap))
+        `when`(model.prevFile()).thenReturn(Single.just("file2"))
+        presenter.previousImage()
+        verify(view).showLoadingSpinner()
+        verify(view).hideLoadingSpinner()
     }
 
     @Test
