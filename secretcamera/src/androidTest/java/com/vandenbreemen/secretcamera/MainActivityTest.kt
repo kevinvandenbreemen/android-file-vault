@@ -177,6 +177,9 @@ class MainActivityTest {
 
     @Test
     fun shouldEditNote(){
+
+        IdlingRegistry.getInstance().register(getElapsedTimeIdlingResource())
+
         MainScreenRobot(activityRule.activity).apply {
             deleteTestFile()
             createNewSFS()
@@ -187,12 +190,16 @@ class MainActivityTest {
             }
             clickNotes().apply { selectItem(0) }
 
+
+
             NoteTakingRobot().apply {
                 clickEdit()
                 setTitle("Update Title")
                 setContent("Updated content")
                 clickOK()
             }
+
+
 
             clickNotes().apply { selectItem(0) }
 
