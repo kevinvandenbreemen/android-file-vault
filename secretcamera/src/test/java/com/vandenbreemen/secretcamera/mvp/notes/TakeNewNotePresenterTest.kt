@@ -68,6 +68,16 @@ class TakeNewNotePresenterTest {
     }
 
     @Test
+    fun shouldOnlySaveOnce() {
+        takeNewNotePresenter.provideNoteDetails("new note", "note content")
+        takeNewNotePresenter.saveAndClose("new note", "note content").subscribe()
+        assertEquals("Single file", 1, sfs().extListFiles().size)
+        val note = sfs().loadFile(sfs().extListFiles()[0]) as Note
+        assertEquals("Title", "new note", note.title)
+        assertEquals("Content", "note content", note.content)
+    }
+
+    @Test
     fun shouldSaveAndClose() {
         takeNewNotePresenter.saveAndClose("new note", "note content").subscribe()
         assertEquals("Single file", 1, sfs().extListFiles().size)
