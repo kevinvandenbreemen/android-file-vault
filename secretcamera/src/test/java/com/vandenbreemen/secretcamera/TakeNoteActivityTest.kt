@@ -154,4 +154,29 @@ class TakeNoteActivityTest {
 
     }
 
+    @Test
+    fun shouldStoreNoteOnPause() {
+
+        val password = testPassword.copy()
+
+        val activityController = buildActivity(TakeNoteActivity::class.java, intent)
+                .create()
+                .resume()
+
+        val activity = activityController.get()
+
+        activity.findViewById<TextView>(R.id.title).setText("Test Note")
+        activity.findViewById<TextView>(R.id.content).setText("Testing creating a new new")
+
+        activityController.pause()
+
+        val secureFileSystem = object : SecureFileSystem(sfsFile) {
+            override fun getPassword(): SecureString {
+                return password
+            }
+        }
+
+        assertFalse("New file saved", secureFileSystem.listFiles().isEmpty())
+    }
+
 }

@@ -5,6 +5,7 @@ import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
 import com.vandenbreemen.mobilesecurestorage.file.api.FileType
 import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
+import com.vandenbreemen.mobilesecurestorage.log.SystemLog
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
@@ -39,7 +40,10 @@ enum class NoteFileTypes(override val firstByte: Byte, override val secondByte: 
  * <h2>Other Details</h2>
  * @author kevin
  */
-class TakeNewNoteModel(private val credentials: SFSCredentials) : Model(credentials) {
+open class TakeNewNoteModel(private val credentials: SFSCredentials) : Model(credentials) {
+
+    var saved = false
+
     override fun setup() {
 
     }
@@ -61,6 +65,12 @@ class TakeNewNoteModel(private val credentials: SFSCredentials) : Model(credenti
     }
 
     fun submitNewNote(title: String, content: String): Single<Unit> {
+
+        if (saved) {
+            SystemLog.get().error("TakeNewNoteModel", "Note was previously saved.  Doing nothing")
+            return Single.just(Unit)
+        }
+
         if (title.isBlank()) {
             throw ApplicationError("Title is required")
         }
@@ -72,6 +82,7 @@ class TakeNewNoteModel(private val credentials: SFSCredentials) : Model(credenti
             try {
 
                 storeNote(sfs, title, content)
+                saved = true
 
                 it.onSuccess(Unit)
                 Log.d("TakeNewNote", "New note stored successfully - ${Thread.currentThread()}")

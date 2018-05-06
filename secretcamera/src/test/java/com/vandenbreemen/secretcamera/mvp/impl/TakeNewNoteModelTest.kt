@@ -68,16 +68,15 @@ class TakeNewNoteModelTest {
     }
 
     @Test
-    fun testSavesNoteWithUniqueFileName() {
+    fun shouldSubmitNewNoteOnlyOnce() {
         sut.submitNewNote("Test Title", "Content of the Note").subscribe()
         sut.submitNewNote("Test Title", "Content of the Note").subscribe()
-        //  Stand up SFS
         val secureFileSystem = object : SecureFileSystem(credentials.fileLocation) {
             override fun getPassword(): SecureString {
                 return credentials.password
             }
         }
-        assertEquals("File stored", 2, secureFileSystem.extListFiles().size)
+        assertEquals("File stored once", 1, secureFileSystem.extListFiles().size)
     }
 
     @Test
