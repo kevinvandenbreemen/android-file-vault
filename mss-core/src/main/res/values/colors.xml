@@ -4,6 +4,6 @@
     <color name="colorPrimaryDark">#69656F</color>
     <color name="colorAccent">#F7EFED</color>
     <color name="background">#293249</color>
-    <color name="white">#F7EFED</color>
+    <color name="light_card">#FFFDFC</color>
     <color name="green">#26a69a</color>
 </resources>

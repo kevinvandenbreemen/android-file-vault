@@ -7,7 +7,7 @@
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/light_card"
         android:ems="10"
         android:gravity="top|left"
         android:text="@string/lorem_ipsum" />

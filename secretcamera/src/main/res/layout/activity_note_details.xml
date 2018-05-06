@@ -13,7 +13,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:cardBackgroundColor="@color/white"
+        app:cardBackgroundColor="@color/light_card"
         app:cardElevation="@dimen/card_elevation"
         app:layout_constraintBottom_toBottomOf="@+id/bottomGuide"
         app:layout_constraintEnd_toEndOf="parent"

@@ -18,7 +18,7 @@
     <style name="ButtonAction" parent="Base.Widget.AppCompat.Button.Colored">
         <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="colorControlHighlight">@color/colorPrimary</item>
-        <item name="android:colorButtonNormal">@color/white</item>
+        <item name="android:colorButtonNormal">@color/light_card</item>
     </style>
 
     <style name="SquareButton" parent="ButtonStyle"></style>
