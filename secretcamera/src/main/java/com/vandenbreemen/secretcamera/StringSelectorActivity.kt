@@ -121,6 +121,14 @@ class StringSelectorActivity : Activity() {
     override fun onPause() {
         super.onPause()
         findViewById<ViewGroup>(R.id.overlay).visibility = VISIBLE
+
+        val workflow = intent.getParcelableExtra<StringSelectorWorkflow>(WORKFLOW)!!
+        workflow.credentials?.let {
+            if (!it.finalized()) {
+                it.finalize()
+            }
+        }
+        finish()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -161,4 +169,6 @@ class StringSelectorActivity : Activity() {
         startActivity(intent)
         finish()
     }
+
+
 }

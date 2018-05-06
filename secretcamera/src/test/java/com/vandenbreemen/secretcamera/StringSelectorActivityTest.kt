@@ -8,9 +8,12 @@ import com.vandenbreemen.mobilesecurestorage.android.LoadSecureFileSystem
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.secretcamera.StringSelectorActivity.Companion.WORKFLOW
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.plugins.RxJavaPlugins
 import junit.framework.TestCase.*
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Matchers.notNullValue
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ErrorCollector
@@ -32,6 +35,11 @@ class StringSelectorActivityTest {
 
     @get:Rule
     val errorCollector: ErrorCollector = ErrorCollector()
+
+    @Before
+    fun setup() {
+        RxJavaPlugins.setComputationSchedulerHandler { scheduler -> AndroidSchedulers.mainThread() }
+    }
 
     @Test
     fun shouldDisplaySelections() {
@@ -144,6 +152,24 @@ class StringSelectorActivityTest {
         assertEquals("Next activity", LoadSecureFileSystem::class.java, nextShadow.intentClass)
         assertNotNull("Credentials", nextActivity.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS))
 
+    }
+
+    @Test
+    fun shouldClearSFSCredentialsOnPause() {
+        val testFile = createTempFile("test")
+
+        val credentials = SFSCredentials(testFile, SecureString.fromPassword("teest"))
+
+        val intent = Intent(ShadowApplication.getInstance().applicationContext, StringSelectorActivity::class.java)
+        val arrayList = ArrayList<String>(Arrays.asList("Larry", "Curly", "Moe"))
+        intent.putExtra(StringSelectorActivity.WORKFLOW, StringSelectorWorkflow(FileSelectActivity::class.java, arrayList, credentials).setOnCancelActivity(LoadSecureFileSystem::class.java))
+
+        val activityController = buildActivity(StringSelectorActivity::class.java, intent)
+                .create()
+
+        activityController.pause()
+
+        assertTrue("Finalized credentials", credentials.finalized())
     }
 
 }

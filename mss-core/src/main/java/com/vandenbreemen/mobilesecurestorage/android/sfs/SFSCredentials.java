@@ -77,7 +77,7 @@ public class SFSCredentials implements Parcelable{
      * @return
      */
     public boolean finalized(){
-        return this.password != null;
+        return this.password == null;
     }
 
     public SecureString getPassword() {
