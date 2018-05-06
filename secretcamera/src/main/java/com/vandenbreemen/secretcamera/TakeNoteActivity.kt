@@ -63,7 +63,9 @@ class TakeNoteActivity : Activity(), TakeNewNoteView {
     override fun onPause() {
         super.onPause()
         findViewById<ViewGroup>(R.id.overlay).visibility = VISIBLE
-        presenter.close()
+        presenter.saveAndClose(findViewById<EditText>(R.id.title).text.toString(),
+                findViewById<EditText>(R.id.content).text.toString()
+        ).subscribe()
     }
 
     @SuppressLint("WrongViewCast")
