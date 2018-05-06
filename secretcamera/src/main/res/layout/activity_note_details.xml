@@ -32,6 +32,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:ems="10"
+                android:textCursorDrawable="@null"
                 android:enabled="false"
                 android:hint="@string/specify_title"
                 android:inputType="textShortMessage"
