@@ -20,7 +20,7 @@ class ImageFilesInteractor(private val sfs: SecureFileSystem) {
 
     fun loadImageBytes(fileName: String): ByteArray {
         try {
-            return sfs.loadBytesFromFile(fileName)
+            return sfs.loadAndCacheBytesFromFile(fileName)
         } catch (exception: Exception) {
             Log.e(ImageFilesInteractor::class.java.simpleName, "Failed to load image bytes", exception)
             throw ApplicationError("Error loading $fileName")

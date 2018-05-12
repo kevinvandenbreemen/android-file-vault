@@ -116,6 +116,7 @@ public class IndexedFile {
         this.bytesToBits = new BytesToBits();
         this.fileCache = new Cache2kBuilder<String, CachedByteData>() {
         }
+                .entryCapacity(500)
                 .eternal(true).build();
     }
 
@@ -761,27 +762,11 @@ public class IndexedFile {
      * @return
      */
     public final byte[] loadBytesFromFile(String fileName) throws ChunkedMediumException {
-
-        try {
-            if (!accessLock.readLock().tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
-                errorOutOnLockTimeout();
-
-            if (!fat._exists(fileName))
-                throw new ChunkedMediumException("No such file as '" + fileName + "' exists on the medium");
-
-            Object obj = loadFile(fileName);
-
-            if (obj instanceof ImportedFileData) {
-                return ((ImportedFileData) obj).getFileData();
-            } else
-                throw new ChunkedMediumException("File is not an " + ImportedFileData.class.getSimpleName() + " but is instead a " + obj.getClass());
-        } catch (InterruptedException inter) {
-            errorOutOnLockTimeout();
-            Thread.currentThread().interrupt();
-            throw new ChunkedMediumException("Interrupted", inter);
-        } finally {
-            accessLock.readLock().unlock();
-        }
+        Object obj = loadFile(fileName);
+        if (obj instanceof ImportedFileData) {
+            return ((ImportedFileData) obj).getFileData();
+        } else
+            throw new ChunkedMediumException("File is not an " + ImportedFileData.class.getSimpleName() + " but is instead a " + obj.getClass());
     }
 
     /**
