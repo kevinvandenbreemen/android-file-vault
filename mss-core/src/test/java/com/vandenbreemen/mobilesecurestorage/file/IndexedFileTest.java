@@ -788,6 +788,33 @@ public class IndexedFileTest {
     }
 
     @Test
+    public void shouldImportFile() throws Exception {
+
+        File tempFile = TestConstants.getTestFile("test_jpgimport_persist" + System.currentTimeMillis() + ".dat");
+
+        byte[] expectedBytes =
+                Bytes.loadBytesFromFile(TestConstants.TEST_RES_IMG_1);
+
+
+        IndexedFile idf = new IndexedFile(tempFile);
+
+        idf.importFile(TestConstants.TEST_RES_IMG_1);
+
+        byte[] bytes = idf.loadBytesFromFile(TestConstants.TEST_RES_IMG_1.getName());
+        assertTrue("Loaded bytes", ByteUtils.equals(expectedBytes, bytes));
+
+    }
+
+    @Test
+    public void shouldLoadExistingImportedFile() throws Exception {
+        byte[] expectedBytes =
+                Bytes.loadBytesFromFile(TestConstants.TEST_RES_IMG_1);
+        IndexedFile idf = new IndexedFile(TestConstants.IMPORTED_JPG_EX);
+        byte[] bytes = idf.loadBytesFromFile(TestConstants.TEST_RES_IMG_1.getName());
+        assertTrue("Loaded bytes", ByteUtils.equals(expectedBytes, bytes));
+    }
+
+    @Test
     public void testLoadObjectAcrossMultiChunks() throws Exception {
         int maxItem = 10000;    //	Make a huge object with list with this many items
 

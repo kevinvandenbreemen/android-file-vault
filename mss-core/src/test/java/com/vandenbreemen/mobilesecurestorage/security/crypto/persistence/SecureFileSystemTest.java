@@ -600,6 +600,33 @@ public class SecureFileSystemTest {
 
     }
 
+    @Test
+    public void shouldImportFile() throws Exception {
+
+        File tempFile = TestConstants.getTestFile("test_jpgimport_persist_crypto_" + System.currentTimeMillis() + ".dat");
+
+        byte[] expectedBytes =
+                Bytes.loadBytesFromFile(TestConstants.TEST_RES_IMG_1);
+
+
+        IndexedFile idf = getNewSecureFileSystem(tempFile);
+
+        idf.importFile(TestConstants.TEST_RES_IMG_1);
+
+        byte[] bytes = idf.loadBytesFromFile(TestConstants.TEST_RES_IMG_1.getName());
+        assertTrue("Loaded bytes", org.spongycastle.pqc.math.linearalgebra.ByteUtils.equals(expectedBytes, bytes));
+
+    }
+
+    @Test
+    public void shouldLoadExistingImportedFile() throws Exception {
+        byte[] expectedBytes =
+                Bytes.loadBytesFromFile(TestConstants.TEST_RES_IMG_1);
+        IndexedFile idf = getNewSecureFileSystem(TestConstants.IMPORTED_ENC_JPG_EX);
+        byte[] bytes = idf.loadBytesFromFile(TestConstants.TEST_RES_IMG_1.getName());
+        assertTrue("Loaded bytes", org.spongycastle.pqc.math.linearalgebra.ByteUtils.equals(expectedBytes, bytes));
+    }
+
     /**
      * Generate a new secure file system in test mode
      *

@@ -22,6 +22,8 @@ public class TestConstants {
     public static final File TEST_RES_IMG_1 = new File(testResourcePath.getAbsolutePath() + File.separator + "bright-red-sunset.jpg");
     public static final File TEST_RES_IMG_2 = new File(testResourcePath.getAbsolutePath() + File.separator + "night-fog.jpg");
     public static final File TEST_RES_IMG_3 = new File(testResourcePath.getAbsolutePath() + File.separator + "tractor.jpg");
+    public static final File IMPORTED_JPG_EX = new File(testResourcePath.getAbsolutePath() + File.separator + "plaintextImportedJpgExample.dat");
+    public static final File IMPORTED_ENC_JPG_EX = new File(testResourcePath.getAbsolutePath() + File.separator + "encryptedImportJpgExample.dat");
 
     static {
         if (!testResourcePath.exists()) {
