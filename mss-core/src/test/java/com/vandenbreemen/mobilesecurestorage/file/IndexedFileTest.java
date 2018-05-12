@@ -815,6 +815,25 @@ public class IndexedFileTest {
     }
 
     @Test
+    public void shouldCacheImportedFile() throws Exception {
+        File tempFile = TestConstants.getTestFile("test_jpgimport_persist" + System.currentTimeMillis() + ".dat");
+
+        byte[] expectedBytes =
+                Bytes.loadBytesFromFile(TestConstants.TEST_RES_IMG_1);
+
+
+        IndexedFile idf = new IndexedFile(tempFile);
+
+        idf.importFile(TestConstants.TEST_RES_IMG_1);
+
+        byte[] bytes = idf.loadAndCacheBytesFromFile(TestConstants.TEST_RES_IMG_1.getName());
+        byte[] cachedBytes = idf.loadAndCacheBytesFromFile(TestConstants.TEST_RES_IMG_1.getName());
+
+        assertTrue("Cached and raw", ByteUtils.equals(bytes, cachedBytes));
+        assertTrue("original bytes", ByteUtils.equals(expectedBytes, bytes));
+    }
+
+    @Test
     public void testLoadObjectAcrossMultiChunks() throws Exception {
         int maxItem = 10000;    //	Make a huge object with list with this many items
 

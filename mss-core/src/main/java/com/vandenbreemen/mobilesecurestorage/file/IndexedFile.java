@@ -877,6 +877,14 @@ public class IndexedFile {
         return Serialization.deserializeBytes(bytes);
     }
 
+    public byte[] loadAndCacheBytesFromFile(String fileName) throws ChunkedMediumException {
+        Object obj = loadAndCacheFile(fileName);
+        if (obj instanceof ImportedFileData) {
+            return ((ImportedFileData) obj).getFileData();
+        } else
+            throw new ChunkedMediumException("File is not an " + ImportedFileData.class.getSimpleName() + " but is instead a " + obj.getClass());
+    }
+
     /**
      * Interface that allows client code to make updates to a specific unit at a specific location in the {@link IndexedFile}
      * without needing to worry about where that location is.

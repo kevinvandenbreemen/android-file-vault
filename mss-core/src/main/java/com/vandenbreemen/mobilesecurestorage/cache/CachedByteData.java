@@ -13,7 +13,7 @@ import com.vandenbreemen.mobilesecurestorage.security.Entropy;
  */
 public class CachedByteData {
 
-    private byte[] data;
+    private volatile byte[] data;
 
     public CachedByteData(@NonNull byte[] data) {
         this.data = data;
