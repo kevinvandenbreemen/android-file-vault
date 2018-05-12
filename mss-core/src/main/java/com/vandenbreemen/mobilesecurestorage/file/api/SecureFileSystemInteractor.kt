@@ -35,7 +35,7 @@ private class SecureFileSystemInteractorImpl(private val secureFileSystem: Secur
     override fun load(fileName: String, fileTypes: FileTypes): Serializable? {
         secureFileSystem.getFileMeta(fileName)?.let {
             if (fileTypes.equals(it.getFileType())) {
-                return secureFileSystem.loadFile(fileName) as Serializable
+                return secureFileSystem.loadAndCacheFile(fileName) as Serializable
             }
         }
         return null
