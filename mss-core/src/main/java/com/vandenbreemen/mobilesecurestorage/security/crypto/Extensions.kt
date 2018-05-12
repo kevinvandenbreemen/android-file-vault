@@ -36,7 +36,7 @@ fun SecureFileSystem.setFileMetadata(fileName: String, metadata: FileMeta) {
         fileMetadata = FileMetadata()
         this.storeObject(com.vandenbreemen.mobilesecurestorage.security.crypto.METADATA_FILENAME, fileMetadata)
     } else {
-        fileMetadata = this.loadFile(com.vandenbreemen.mobilesecurestorage.security.crypto.METADATA_FILENAME) as FileMetadata
+        fileMetadata = this.loadAndCacheFile(com.vandenbreemen.mobilesecurestorage.security.crypto.METADATA_FILENAME) as FileMetadata
     }
 
     fileMetadata.setMetadata(fileName, metadata)
@@ -51,7 +51,7 @@ fun SecureFileSystem.getFileMeta(fileName: String): FileMeta? {
         return null
     }
 
-    val metadata = this.loadFile(com.vandenbreemen.mobilesecurestorage.security.crypto.METADATA_FILENAME) as FileMetadata
+    val metadata = this.loadAndCacheFile(com.vandenbreemen.mobilesecurestorage.security.crypto.METADATA_FILENAME) as FileMetadata
     return metadata.getMetadata(fileName)
 }
 
