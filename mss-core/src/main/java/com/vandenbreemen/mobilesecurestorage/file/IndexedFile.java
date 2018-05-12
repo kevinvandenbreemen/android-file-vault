@@ -1,5 +1,6 @@
 package com.vandenbreemen.mobilesecurestorage.file;
 
+import com.vandenbreemen.mobilesecurestorage.cache.CachedByteData;
 import com.vandenbreemen.mobilesecurestorage.data.ControlBytes;
 import com.vandenbreemen.mobilesecurestorage.data.Pair;
 import com.vandenbreemen.mobilesecurestorage.data.Serialization;
@@ -14,6 +15,8 @@ import com.vandenbreemen.mobilesecurestorage.util.NumberUtils;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.cache2k.Cache;
+import org.cache2k.Cache2kBuilder;
 
 import java.io.File;
 import java.io.ObjectInputStream;
@@ -101,11 +104,19 @@ public class IndexedFile {
     private ReentrantReadWriteLock accessLock;
 
     /**
+     * Cached data for files
+     */
+    private Cache<String, CachedByteData> fileCache;
+
+    /**
      * Use this only for testing.
      */
     IndexedFile() {
         this.accessLock = new ReentrantReadWriteLock();
         this.bytesToBits = new BytesToBits();
+        this.fileCache = new Cache2kBuilder<String, CachedByteData>() {
+        }
+                .eternal(true).build();
     }
 
     /**
@@ -296,6 +307,8 @@ public class IndexedFile {
             if (!accessLock.writeLock().tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS)) {
                 errorOutOnLockTimeout();
             }
+
+            fileCache.containsAndRemove(fileName);
 
             //	Now we need to know what units we can write the data to!
             List<Long> unitsToAllocate = null;
@@ -614,6 +627,19 @@ public class IndexedFile {
      * @throws ChunkedMediumException If the file does not exist
      */
     public final Object loadFile(String fileName) throws ChunkedMediumException {
+        byte[] data = doGetBytesForObjectFile(fileName);
+        return Serialization.deserializeBytes(data);
+
+    }
+
+    /**
+     * Loads the raw bytes for a file that was stored using {@link #storeObject(String, Serializable)}
+     *
+     * @param fileName
+     * @return
+     * @throws ChunkedMediumException
+     */
+    private byte[] doGetBytesForObjectFile(String fileName) throws ChunkedMediumException {
         byte[] data;
         try {
 
@@ -635,9 +661,7 @@ public class IndexedFile {
         } finally {
             accessLock.readLock().unlock();
         }
-
-        return Serialization.deserializeBytes(data);
-
+        return data;
     }
 
     /**
@@ -814,6 +838,11 @@ public class IndexedFile {
      * Close the file system
      */
     public void close() {
+        if (fileCache != null) {
+            fileCache.clear();
+            fileCache.clearAndClose();
+            fileCache = null;
+        }
         if (this.fat != null) {
             this.fat.close();
             this.fat = null;
@@ -822,6 +851,7 @@ public class IndexedFile {
 
     @Override
     protected final void finalize() {
+
         close();
     }
 
@@ -840,6 +870,11 @@ public class IndexedFile {
         fat._rename(currentName, newName);
         storeFAT();
 
+    }
+
+    public Object loadAndCacheFile(String fileName) {
+        byte[] bytes = this.fileCache.computeIfAbsent(fileName, () -> new CachedByteData(doGetBytesForObjectFile(fileName))).getData();
+        return Serialization.deserializeBytes(bytes);
     }
 
     /**

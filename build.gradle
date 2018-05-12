@@ -35,4 +35,5 @@ task clean(type: Delete) {
 ext{
     espressoVersion='3.0.1'
     awaitilityVersion='3.0.0'
+    cache2kVersion="1.0.2.Final"
 }

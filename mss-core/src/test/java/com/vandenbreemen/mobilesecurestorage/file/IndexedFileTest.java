@@ -881,6 +881,41 @@ public class IndexedFileTest {
     }
 
     @Test
+    public void shouldCacheFileData() throws Exception {
+        IndexedFile indexedFile = new IndexedFile(TestConstants.getTestFile("cacheObject"));
+        ArrayList<String> testStrings = new ArrayList<>(Arrays.asList("Larry", "Curly", "Moe"));
+
+        indexedFile.storeObject("test", testStrings);
+
+        indexedFile = new IndexedFile(TestConstants.getTestFile("cacheObject"));
+        ArrayList<String> loadedTestStrings = (ArrayList<String>) indexedFile.loadAndCacheFile("test");
+
+        assertEquals("Loaded test strings", testStrings, loadedTestStrings);
+        loadedTestStrings = (ArrayList<String>) indexedFile.loadAndCacheFile("test");
+        assertEquals("Loaded test strings", testStrings, loadedTestStrings);
+
+    }
+
+    @Test
+    public void shouldUpdateCachedFileData() throws Exception {
+        IndexedFile indexedFile = new IndexedFile(TestConstants.getTestFile("cacheObject"));
+        ArrayList<String> testStrings = new ArrayList<>(Arrays.asList("Larry", "Curly", "Moe"));
+
+        indexedFile.storeObject("test", testStrings);
+
+        indexedFile = new IndexedFile(TestConstants.getTestFile("cacheObject"));
+        ArrayList<String> loadedTestStrings = (ArrayList<String>) indexedFile.loadAndCacheFile("test");
+
+        loadedTestStrings.add("Dragon");
+        indexedFile.storeObject("test", loadedTestStrings);
+
+        ArrayList<String> expected = new ArrayList<>(Arrays.asList("Larry", "Curly", "Moe", "Dragon"));
+
+        loadedTestStrings = (ArrayList<String>) indexedFile.loadAndCacheFile("test");
+        assertEquals("Updated", expected, loadedTestStrings);
+    }
+
+    @Test
     public void testUpdateDataUnit() throws Exception {
         IndexedFile indexedFile = new IndexedFile(TestConstants.getTestFile("updateUnit"));
         ChainedDataUnit cdu = new ChainedDataUnit();
