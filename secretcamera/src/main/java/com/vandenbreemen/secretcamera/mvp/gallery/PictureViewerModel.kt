@@ -32,7 +32,7 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
     lateinit var secureFileSystemInteractor: SecureFileSystemInteractor
 
     override fun onClose() {
-
+        imageFilesInteractor.close()
     }
 
     override fun setup() {

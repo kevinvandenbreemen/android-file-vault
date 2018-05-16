@@ -11,11 +11,23 @@ import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureF
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.schedulers.Schedulers.computation
+import org.cache2k.Cache2kBuilder
+import java.util.concurrent.Callable
 
 
 class ImageFilesInteractor(private val sfs: SecureFileSystem) {
+
+    companion object {
+        private const val FILES_LIST_KEY = "__FILES_LIST"
+    }
+
+    private val cache = object : Cache2kBuilder<String, Any>() {
+
+    }.build()
+
     fun listImageFiles(): List<String> {
-        return sfs.listFiles(PicturesFileTypes.IMPORTED_IMAGE, PicturesFileTypes.CAPTURED_IMAGE).sorted()
+        return cache.computeIfAbsent(FILES_LIST_KEY,
+                Callable { sfs.listFiles(PicturesFileTypes.IMPORTED_IMAGE, PicturesFileTypes.CAPTURED_IMAGE).sorted() }) as List<String>
     }
 
     fun loadImageBytes(fileName: String): ByteArray {
@@ -25,6 +37,11 @@ class ImageFilesInteractor(private val sfs: SecureFileSystem) {
             Log.e(ImageFilesInteractor::class.java.simpleName, "Failed to load image bytes", exception)
             throw ApplicationError("Error loading $fileName")
         }
+    }
+
+    fun close() {
+        cache.clear()
+        cache.clearAndClose()
     }
 
 }

@@ -93,7 +93,7 @@ abstract class Model(private val credentials: SFSCredentials) {
     /**
      * Any additional logic you'd like to perform after the model has been closed
      */
-    protected abstract fun onClose()
+    abstract fun onClose()
 
     fun copyCredentials(): SFSCredentials {
         return credentials.copy()

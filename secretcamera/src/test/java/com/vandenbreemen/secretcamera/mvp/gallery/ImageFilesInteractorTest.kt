@@ -16,6 +16,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowLog
 import java.io.File
+import java.lang.Exception
 
 /**
  * <h2>Intro</h2>
@@ -66,6 +67,41 @@ class ImageFilesInteractorTest {
         sfs().setFileMetadata("captured", FileMeta(PicturesFileTypes.CAPTURED_IMAGE))
         this.imageFilesInteractor = ImageFilesInteractor(sfs())
         assertTrue("Captured image", imageFilesInteractor.listImageFiles().contains("captured"))
+    }
+
+    @Test
+    fun shouldCacheImageList() {
+
+        val secureFileSystem = sfs()
+        imageFilesInteractor = ImageFilesInteractor(secureFileSystem)
+        imageFilesInteractor.listImageFiles()
+
+        //  Destroy SFS files to get at the cache!
+        for (i in 1..10) {
+            secureFileSystem.deleteFile("img_$i")
+        }
+
+        val list = imageFilesInteractor.listImageFiles()
+
+        assertEquals("cached files", 10, list.size)
+    }
+
+    @Test(expected = Exception::class)
+    fun shouldDestroyCache() {
+
+        val secureFileSystem = sfs()
+        imageFilesInteractor = ImageFilesInteractor(secureFileSystem)
+        imageFilesInteractor.listImageFiles()
+
+        //  Destroy SFS files to get at the cache!
+        for (i in 1..10) {
+            secureFileSystem.deleteFile("img_$i")
+        }
+
+        imageFilesInteractor.close()
+
+        imageFilesInteractor.listImageFiles()
+
     }
 
 }

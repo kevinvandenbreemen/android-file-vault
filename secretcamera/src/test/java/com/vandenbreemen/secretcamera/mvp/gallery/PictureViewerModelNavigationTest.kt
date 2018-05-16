@@ -214,4 +214,11 @@ class PictureViewerModelTest {
         assertEquals("Current image", TestConstants.TEST_RES_IMG_2.name, model.currentFile().blockingGet())
     }
 
+    @Test
+    @Config(shadows = [ShadowImageFilesInteractor::class])
+    fun shouldCloseInteractor() {
+        model.onClose()
+        assertTrue("Closed", imageFilesInteractorClosed)
+    }
+
 }
