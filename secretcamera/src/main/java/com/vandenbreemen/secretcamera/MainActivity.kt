@@ -47,15 +47,11 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
         setContentView(R.layout.activity_main)
 
         //  Get file workflow
-        savedInstanceState?.let {
-            fsWorkflow = it.getParcelable(FileWorkflow.PARM_WORKFLOW_NAME)
-        } ?: run{
-            fsWorkflow = intent.getParcelableExtra(FileWorkflow.PARM_WORKFLOW_NAME)
+        fsWorkflow = intent.getParcelableExtra(FileWorkflow.PARM_WORKFLOW_NAME)
 
-            if (fsWorkflow == null) {
-                fsWorkflow = FileWorkflow()
-                fsWorkflow!!.activityToStartAfterTargetActivityFinished = javaClass
-            }
+        if (fsWorkflow == null) {
+            fsWorkflow = FileWorkflow()
+            fsWorkflow!!.activityToStartAfterTargetActivityFinished = javaClass
         }
 
         if(intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS) != null){
@@ -79,15 +75,6 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
             fragmentManager.beginTransaction().add(R.id.upperSection, frag).commit()
         }
 
-
-    }
-
-    override fun onSaveInstanceState(outState: Bundle?) {
-        super.onSaveInstanceState(outState)
-
-        fsWorkflow?.let {
-            outState?.putParcelable(FileWorkflow.PARM_WORKFLOW_NAME, it)
-        }
 
     }
 
