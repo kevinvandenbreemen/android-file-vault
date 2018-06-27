@@ -54,28 +54,18 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
             fsWorkflow!!.activityToStartAfterTargetActivityFinished = javaClass
         }
 
-        if(intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS) != null){
-            val credentials = intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)
+        intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)?.let { credentials ->
 
             findViewById<ViewGroup>(R.id.mainSection).addView(
-                layoutInflater.inflate(R.layout.main_screen_selections, findViewById(R.id.mainSection), false))
+                    layoutInflater.inflate(R.layout.main_screen_selections, findViewById(R.id.mainSection), false))
 
             mainMenuPresenter = SFSMainMenuPresenterImpl(SFSMainMenuModel(credentials), this)
-
-        }
-        else{   //  Otherwise show the FS select fragment!
+        } ?: run {
             val frag = SFSNavFragment()
-
-            savedInstanceState?.let {
-                frag.arguments = it
-            } ?: run{
-                frag.workflow = fsWorkflow!!
-            }
-            frag.setCancelAction(javaClass)
+            frag.workflow = fsWorkflow!!
+            frag.setCancelAction(this@MainActivity.javaClass)
             fragmentManager.beginTransaction().add(R.id.upperSection, frag).commit()
         }
-
-
     }
 
     override fun onResume() {
