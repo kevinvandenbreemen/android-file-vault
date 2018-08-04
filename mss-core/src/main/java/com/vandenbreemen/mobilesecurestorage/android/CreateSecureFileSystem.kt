@@ -3,7 +3,6 @@ package com.vandenbreemen.mobilesecurestorage.android
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.widget.TextView
@@ -19,12 +18,14 @@ import java.util.function.Consumer
 
 class CreateSecureFileSystem : Activity(), CreateSecureFileSystemView {
 
+    companion object {
+        const val SELECT_DIR = 2
+    }
+
     /**
      * Capture created secure file system
      */
     private var onCompleteListener: Consumer<SFSCredentials> = Consumer { doNextStep(it) }
-
-    private lateinit var workflow: FileWorkflow
 
     override fun onComplete(credentials: SFSCredentials) {
         onCompleteListener.accept(credentials)
@@ -40,19 +41,32 @@ class CreateSecureFileSystem : Activity(), CreateSecureFileSystemView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_secure_file_system)
 
-        val newFileWorkflow: FileWorkflow? = intent.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME) as FileWorkflow?
-        val model = CreateSecureFileSystemModel(newFileWorkflow!!.fileOrDirectory)
-        this.workflow = newFileWorkflow
+        val intent = Intent(this, FileSelectActivity::class.java)
+        intent.putExtra(FileSelectActivity.PARM_DIR_ONLY, true)
+        intent.putExtra(FileSelectActivity.PARM_TITLE, resources.getText(R.string.loc_for_new_sfs))
+        startActivityForResult(intent, SELECT_DIR)
 
-        this.controller = CreateSecureFileSystemController(model, this)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        if (requestCode == SELECT_DIR) {
+            if (resultCode == RESULT_OK) {
+                val tempWorkflow: FileWorkflow = data.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME)
+                val model = CreateSecureFileSystemModel(tempWorkflow.fileOrDirectory)
+                this.controller = CreateSecureFileSystemController(model, this)
+            } else {
+                setResult(RESULT_CANCELED)
+                finish()
+            }
+        }
     }
 
     fun onCancel(view: View) {
-        handleWorkflowCancel(this, workflow)
+        setResult(RESULT_CANCELED)
+        finish()
     }
 
     fun onOkay(view: View) {
-
         onProvidedDetails()
     }
 
@@ -69,16 +83,10 @@ class CreateSecureFileSystem : Activity(), CreateSecureFileSystemView {
     }
 
     private fun doNextStep(credentials: SFSCredentials) {
-        val newFileWorkflow: FileWorkflow? = intent.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME) as FileWorkflow?
-        if (newFileWorkflow!!.activityToStartAfterTargetActivityFinished != null) {
-            val nextActivity = Intent(this, newFileWorkflow!!.activityToStartAfterTargetActivityFinished)
-            nextActivity.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
-            nextActivity.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
-            startActivity(nextActivity)
-            finish()
-            return
-        }
-        Log.w("CreateSecureFileSystem", "No final activity once SFS created")
+        val result = Intent()
+        result.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
+        setResult(RESULT_OK, result)
+        finish()
     }
 
     /**

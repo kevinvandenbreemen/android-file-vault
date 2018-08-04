@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import com.vandenbreemen.mobilesecurestorage.R
 import com.vandenbreemen.mobilesecurestorage.android.CreateSecureFileSystem
-import com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity
 import com.vandenbreemen.mobilesecurestorage.android.LoadSecureFileSystem
 import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow
 
@@ -22,6 +21,10 @@ import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow
  * @author kevin
  */
 class SFSNavFragment(): Fragment() {
+
+    companion object {
+        const val GET_CREDENTIALS_ACTION = 42
+    }
 
     /**
      * Workflow for file access
@@ -41,22 +44,14 @@ class SFSNavFragment(): Fragment() {
 
         var button = viewGroup.findViewById<Button>(R.id.createNew)
         button.setOnClickListener {
-            val intent: Intent = Intent(activity, FileSelectActivity::class.java)
-            this.workflow.targetActivity = CreateSecureFileSystem::class.java
-            intent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, this.workflow)
-            intent.putExtra(FileSelectActivity.PARM_DIR_ONLY, true)
-            intent.putExtra(FileSelectActivity.PARM_TITLE, resources.getText(R.string.loc_for_new_sfs))
-            activity.startActivity(intent)
+            val intent: Intent = Intent(activity, CreateSecureFileSystem::class.java)
+            activity.startActivityForResult(intent, GET_CREDENTIALS_ACTION)
         }
 
         button = viewGroup.findViewById(R.id.loadExisting)
         button.setOnClickListener {
-            val intent: Intent = Intent(activity, FileSelectActivity::class.java)
-            intent.putExtra(FileSelectActivity.PARM_NO_CONFIRM_NEEDED, true)
-            intent.putExtra(FileSelectActivity.PARM_TITLE, resources.getText(R.string.select_file))
-            this.workflow.targetActivity = LoadSecureFileSystem::class.java
-            intent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, this.workflow)
-            activity.startActivity(intent)
+            val intent = Intent(activity, LoadSecureFileSystem::class.java)
+            activity.startActivityForResult(intent, GET_CREDENTIALS_ACTION)
         }
 
 
