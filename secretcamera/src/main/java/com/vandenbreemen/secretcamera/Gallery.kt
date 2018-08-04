@@ -1,5 +1,6 @@
 package com.vandenbreemen.secretcamera
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -7,8 +8,6 @@ import android.view.View
 import com.vandenbreemen.mobilesecurestorage.android.FileImportActivity
 import com.vandenbreemen.mobilesecurestorage.android.FileImportDataProvider
 import com.vandenbreemen.mobilesecurestorage.android.FileImportFutureIntent
-import com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity
-import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.api.FileType
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
@@ -20,6 +19,9 @@ import javax.inject.Inject
 
 class Gallery : AppCompatActivity(), GalleryView {
 
+    companion object {
+        const val ACTION_IMPORT = 34
+    }
 
     @Inject
     lateinit var presenter: GalleryPresenter
@@ -32,8 +34,9 @@ class Gallery : AppCompatActivity(), GalleryView {
 
     override fun onPause() {
         super.onPause()
-        presenter.close()
-        finish()
+        if (!presenter.isClosed()) {
+            presenter.close()
+        }
     }
 
     fun onImportDir(view: View) {
@@ -52,21 +55,29 @@ class Gallery : AppCompatActivity(), GalleryView {
     }
 
     override fun loadDirectoryImport(sfsCredentials: SFSCredentials) {
-        val intent: Intent = Intent(this, FileSelectActivity::class.java)
-        val workflow: FileWorkflow = FileWorkflow()
-        workflow.targetActivity = FileImportActivity::class.java
-        workflow.activityToStartAfterTargetActivityFinished = Gallery::class.java
-        workflow.setTargetActivityFutureIntent(FileImportFutureIntent::class.java)
+        val intent: Intent = Intent(this, FileImportActivity::class.java)
+        intent.putExtra(SFSCredentials.PARM_CREDENTIALS, sfsCredentials)
+
         FileImportFutureIntent().populateIntentWithDetailsAboutFutureActivity(intent, object : FileImportDataProvider {
             override fun getFileTypeToBeImported(): FileType {
                 return PicturesFileTypes.IMPORTED_IMAGE
             }
         })
-        intent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
-        intent.putExtra(FileSelectActivity.PARM_DIR_ONLY, true)
-        intent.putExtra(FileSelectActivity.PARM_TITLE, resources.getText(com.vandenbreemen.mobilesecurestorage.R.string.loc_for_new_sfs))
-        intent.putExtra(SFSCredentials.PARM_CREDENTIALS, sfsCredentials)
-        startActivity(intent)
+
+        startActivityForResult(intent, ACTION_IMPORT)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        if (requestCode == ACTION_IMPORT) {
+            if (resultCode == Activity.RESULT_OK) {
+                val credentials = data.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)
+                val startIntent = Intent(this, Gallery::class.java)
+                startIntent.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
+                startActivity(startIntent)
+            } else {
+                finish()
+            }
+        }
     }
 
     override fun onResume() {
