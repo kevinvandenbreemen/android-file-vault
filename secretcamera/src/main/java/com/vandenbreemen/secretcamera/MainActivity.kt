@@ -56,6 +56,9 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
                 val credentials = data.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)
                 findViewById<ViewGroup>(R.id.mainSection).addView(
                         layoutInflater.inflate(R.layout.main_screen_selections, findViewById(R.id.mainSection), false))
+
+                findViewById<ViewGroup>(R.id.upperSection).removeAllViews()
+
                 mainMenuPresenter = SFSMainMenuPresenterImpl(SFSMainMenuModel(credentials), this)
                 mainMenuPresenter!!.start()
             } else {
