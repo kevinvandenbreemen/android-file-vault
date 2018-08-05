@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import com.vandenbreemen.mobilesecurestorage.R;
 import com.vandenbreemen.mobilesecurestorage.android.CreateSecureFileSystem;
-import com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity;
 import com.vandenbreemen.mobilesecurestorage.android.LoadSecureFileSystem;
 import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow;
 
@@ -53,9 +52,9 @@ public class SFSNavFragmentTest {
 
         fragment.getView().findViewById(R.id.createNew).performClick();
 
-        Intent nextActivity = shadowOf(fragment.getActivity()).getNextStartedActivity();
+        Intent nextActivity = shadowOf(fragment.getActivity()).getNextStartedActivityForResult().intent;
         assertThat("Kick off Start New SFS", nextActivity, allOf(
-                notNullValue(), matchesActivity(FileSelectActivity.class)
+                notNullValue(), matchesActivity(CreateSecureFileSystem.class)
         ));
     }
 
@@ -72,9 +71,9 @@ public class SFSNavFragmentTest {
 
         fragment.getView().findViewById(R.id.loadExisting).performClick();
 
-        Intent nextActivity = shadowOf(fragment.getActivity()).getNextStartedActivity();
+        Intent nextActivity = shadowOf(fragment.getActivity()).getNextStartedActivityForResult().intent;
         assertThat("Kick off Loading Existing SFS", nextActivity, allOf(
-                notNullValue(), matchesActivity(FileSelectActivity.class)
+                notNullValue(), matchesActivity(LoadSecureFileSystem.class)
         ));
     }
 
