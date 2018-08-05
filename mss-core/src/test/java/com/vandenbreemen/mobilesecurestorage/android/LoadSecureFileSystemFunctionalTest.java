@@ -18,8 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.Shadows;
-import org.robolectric.shadows.ShadowIntent;
+import org.robolectric.shadows.ShadowActivity;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -28,9 +27,11 @@ import java.util.concurrent.atomic.AtomicReference;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.plugins.RxJavaPlugins;
 
+import static android.app.Activity.RESULT_OK;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
+import static org.robolectric.Shadows.shadowOf;
 
 /**
  * <h2>Intro</h2>
@@ -76,15 +77,15 @@ public class LoadSecureFileSystemFunctionalTest {
     }
 
     @Test
-    public void sanityTestLoadFile() {
+    public void shouldStartFileLoadActivityForResult() {
         LoadSecureFileSystem load = Robolectric.buildActivity(LoadSecureFileSystem.class, startLoadSFS)
                 .create()
                 .get();
 
-        TextView textView = load.findViewById(R.id.password);
-        textView.setText(password);
 
-        load.findViewById(R.id.ok).performClick();
+        ShadowActivity.IntentForResult intentForResult = shadowOf(load).getNextStartedActivityForResult();
+        assertNotNull(intentForResult);
+        assertEquals(FileSelectActivity.class, shadowOf(intentForResult.intent).getIntentClass());
     }
 
     @Test
@@ -99,14 +100,21 @@ public class LoadSecureFileSystemFunctionalTest {
     @Test
     public void testGetCredentails() {
 
+        //  Arrange
         AtomicReference<SFSCredentials> credentials = new AtomicReference<>(null);
-
         LoadSecureFileSystem load = Robolectric.buildActivity(LoadSecureFileSystem.class, startLoadSFS)
                 .create()
                 .get();
 
+        //  Simulate that we've selected a file to load
+        Intent successfullyLoadedFile = new Intent();
+        successfullyLoadedFile.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
+        ShadowActivity.IntentForResult intentForResult = shadowOf(load).getNextStartedActivityForResult();
+        shadowOf(load).receiveResult(intentForResult.intent, RESULT_OK, successfullyLoadedFile);
+
         load.setListener(cred -> credentials.set(cred));
 
+        //  Act
         TextView textView = load.findViewById(R.id.password);
         textView.setText(password);
 
@@ -114,6 +122,7 @@ public class LoadSecureFileSystemFunctionalTest {
 
         Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> credentials.get() != null);
 
+        //  Assert
         assertTrue("Password",
                 SecureFileSystem.generatePassword(SecureString.fromPassword(password)).equals(credentials.get().getPassword()));
     }
@@ -129,6 +138,12 @@ public class LoadSecureFileSystemFunctionalTest {
 
         load.setListener(cred -> credentials.set(cred));
 
+        //  Simulate that we've selected a file to load
+        Intent successfullyLoadedFile = new Intent();
+        successfullyLoadedFile.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
+        ShadowActivity.IntentForResult intentForResult = shadowOf(load).getNextStartedActivityForResult();
+        shadowOf(load).receiveResult(intentForResult.intent, RESULT_OK, successfullyLoadedFile);
+
         TextView textView = load.findViewById(R.id.password);
         textView.setText(password);
 
@@ -138,36 +153,6 @@ public class LoadSecureFileSystemFunctionalTest {
 
         assertTrue("Password",
                 SecureFileSystem.generatePassword(SecureString.fromPassword(password)).equals(credentials.get().getPassword()));
-    }
-
-    @Test
-    public void testGoToFinalActivity() {
-        FileSelectActivity activity = Robolectric.setupActivity(FileSelectActivity.class);
-        workflow.setActivityToStartAfterTargetActivityFinished(SecureFileSystemDetails.class);
-        startLoadSFS = new Intent(activity, LoadSecureFileSystem.class);
-        this.startLoadSFS.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
-
-        LoadSecureFileSystem load = Robolectric.buildActivity(LoadSecureFileSystem.class, startLoadSFS)
-                .create()
-                .get();
-
-        TextView textView = load.findViewById(R.id.password);
-        textView.setText(password);
-
-        AtomicReference<Intent> nxtActivityRef = new AtomicReference<>(null);
-        load.findViewById(R.id.ok).performClick();
-        Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> {
-            nxtActivityRef.set(Shadows.shadowOf(load).getNextStartedActivity());
-            return nxtActivityRef.get() != null;
-        });
-
-        //  Validate activity started
-        //  https://stackoverflow.com/a/39674693
-        Intent nextActivity = nxtActivityRef.get();
-        ShadowIntent nxtActivityIntent = Shadows.shadowOf(nextActivity);
-        assertEquals("Next activity", SecureFileSystemDetails.class, nxtActivityIntent.getIntentClass());
-        assertNotNull("Credentials", nextActivity.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS));
-        assertNotNull("FS workflow", nextActivity.getParcelableExtra(FileWorkflow.PARM_WORKFLOW_NAME));
     }
 
 }
