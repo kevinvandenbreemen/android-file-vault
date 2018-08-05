@@ -81,6 +81,11 @@ class FileImportActivityFunctionalTest {
                 .resume()
                 .get()
 
+        val startedActivityForResult = shadowOf(sut).nextStartedActivityForResult
+        val resultIntent = Intent()
+        resultIntent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
+        shadowOf(sut).receiveResult(startedActivityForResult.intent, RESULT_OK, resultIntent)
+
         assertEquals("File import count", 3, sfs().listFiles().size)
 
     }
@@ -107,7 +112,13 @@ class FileImportActivityFunctionalTest {
         val activityController = buildActivity(FileImportActivity::class.java, intent)
                 .create()
                 .resume()
-        activityController.get()
+
+        val sut = activityController.get()
+
+        val startedActivityForResult = shadowOf(sut).nextStartedActivityForResult
+        val resultIntent = Intent()
+        resultIntent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
+        shadowOf(sut).receiveResult(startedActivityForResult.intent, RESULT_OK, resultIntent)
 
         assertTrue("Closed", closed)
 
