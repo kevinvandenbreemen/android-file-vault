@@ -155,4 +155,32 @@ public class LoadSecureFileSystemFunctionalTest {
                 SecureFileSystem.generatePassword(SecureString.fromPassword(password)).equals(credentials.get().getPassword()));
     }
 
+    @Test
+    public void shouldReturnCredentialsResult() {
+        FileSelectActivity activity = Robolectric.setupActivity(FileSelectActivity.class);
+        workflow.setActivityToStartAfterTargetActivityFinished(SecureFileSystemDetails.class);
+        startLoadSFS = new Intent(activity, LoadSecureFileSystem.class);
+        this.startLoadSFS.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
+
+        LoadSecureFileSystem load = Robolectric.buildActivity(LoadSecureFileSystem.class, startLoadSFS)
+                .create()
+                .get();
+
+        //  Simulate that we've selected a file to load
+        Intent successfullyLoadedFile = new Intent();
+        successfullyLoadedFile.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
+        ShadowActivity.IntentForResult intentForResult = shadowOf(load).getNextStartedActivityForResult();
+        shadowOf(load).receiveResult(intentForResult.intent, RESULT_OK, successfullyLoadedFile);
+
+        TextView textView = load.findViewById(R.id.password);
+        textView.setText(password);
+
+
+        load.findViewById(R.id.ok).performClick();
+
+        Intent result = shadowOf(load).getResultIntent();
+        assertEquals(RESULT_OK, shadowOf(load).getResultCode());
+        assertNotNull("Credentials", result.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS));
+    }
+
 }
