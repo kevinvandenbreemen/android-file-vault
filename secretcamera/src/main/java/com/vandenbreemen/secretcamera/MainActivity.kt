@@ -50,10 +50,10 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == SFSNavFragment.GET_CREDENTIALS_ACTION) {
             if (resultCode == RESULT_OK) {
-                val credentials = data.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)
+                val credentials = data!!.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)
                 findViewById<ViewGroup>(R.id.mainSection).addView(
                         layoutInflater.inflate(R.layout.main_screen_selections, findViewById(R.id.mainSection), false))
 

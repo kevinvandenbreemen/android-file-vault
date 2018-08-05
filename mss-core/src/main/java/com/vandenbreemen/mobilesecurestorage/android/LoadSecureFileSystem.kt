@@ -53,10 +53,10 @@ class LoadSecureFileSystem : Activity(), LoadFileSystemView {
         startActivityForResult(intent, SELECT_FILE)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (SELECT_FILE == requestCode) {
             if (resultCode == RESULT_OK) {
-                val tempWorkflow: FileWorkflow = data.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME)
+                val tempWorkflow: FileWorkflow = data!!.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME)
                 this.fileToLoad = tempWorkflow.fileOrDirectory
                 controller = LoadFileSystemController(LoadFileSystemModel(this.fileToLoad), this)
             } else {
