@@ -29,6 +29,7 @@ import static com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity.P
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNotSame;
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
@@ -122,7 +123,7 @@ public class FileSelectActivityFunctionalTest {
     }
 
     @Test
-    public void testCancelActivity() {
+    public void shouldFinishOnCancel() {
         ShadowLog.stream = System.out;
         Intent startFileSelect = new Intent(sut.getApplication(), FileSelectActivity.class);
         startFileSelect.putExtra(PARM_DIR_ONLY, Boolean.TRUE);
@@ -138,6 +139,8 @@ public class FileSelectActivityFunctionalTest {
 
         sut.findViewById(R.id.cancel).performClick();
         assertEquals(RESULT_CANCELED, shadowOf(sut).getResultCode());
+        assertTrue(shadowOf(sut).isFinishing());
+
     }
 
     @Test

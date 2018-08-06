@@ -60,6 +60,7 @@ class LoadSecureFileSystem : Activity(), LoadFileSystemView {
                 this.fileToLoad = tempWorkflow.fileOrDirectory
                 controller = LoadFileSystemController(LoadFileSystemModel(this.fileToLoad), this)
             } else {
+                setResult(RESULT_CANCELED)
                 finish()
             }
 

@@ -156,5 +156,6 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
 
     fun onCancel(view: View?) {
         setResult(RESULT_CANCELED)
+        finish()
     }
 }

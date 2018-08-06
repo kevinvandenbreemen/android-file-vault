@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.plugins.RxJavaPlugins;
 
+import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.TestCase.assertEquals;
@@ -89,12 +90,14 @@ public class LoadSecureFileSystemFunctionalTest {
     }
 
     @Test
-    public void testCancel() {
+    public void shouldFinishAndSendCancelOnCancel() {
         LoadSecureFileSystem load = Robolectric.buildActivity(LoadSecureFileSystem.class, startLoadSFS)
                 .create()
                 .get();
 
         load.findViewById(R.id.cancel).performClick();
+        assertEquals(RESULT_CANCELED, shadowOf(load).getResultCode());
+        assertTrue(shadowOf(load).isFinishing());
     }
 
     @Test
