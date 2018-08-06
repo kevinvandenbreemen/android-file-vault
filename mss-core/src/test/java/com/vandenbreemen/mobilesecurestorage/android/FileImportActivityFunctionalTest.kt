@@ -1,5 +1,6 @@
 package com.vandenbreemen.mobilesecurestorage.android
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Environment
 import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow
@@ -21,6 +22,7 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric.buildActivity
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import java.io.File
 
@@ -79,6 +81,11 @@ class FileImportActivityFunctionalTest {
                 .resume()
                 .get()
 
+        val startedActivityForResult = shadowOf(sut).nextStartedActivityForResult
+        val resultIntent = Intent()
+        resultIntent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
+        shadowOf(sut).receiveResult(startedActivityForResult.intent, RESULT_OK, resultIntent)
+
         assertEquals("File import count", 3, sfs().listFiles().size)
 
     }
@@ -105,7 +112,13 @@ class FileImportActivityFunctionalTest {
         val activityController = buildActivity(FileImportActivity::class.java, intent)
                 .create()
                 .resume()
-        activityController.get()
+
+        val sut = activityController.get()
+
+        val startedActivityForResult = shadowOf(sut).nextStartedActivityForResult
+        val resultIntent = Intent()
+        resultIntent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
+        shadowOf(sut).receiveResult(startedActivityForResult.intent, RESULT_OK, resultIntent)
 
         assertTrue("Closed", closed)
 
@@ -125,7 +138,6 @@ class FileImportActivityFunctionalTest {
         workflow.fileOrDirectory = directoryToImport
 
         val intent = Intent(RuntimeEnvironment.application, FileImportActivity::class.java)
-        intent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
         intent.putExtra(FileImportActivity.PARM_FILE_TYPE_BYTES, byteArrayOf(FileTypes.DATA.firstByte, FileTypes.DATA.secondByte!!))
         intent.putExtra(SFSCredentials.PARM_CREDENTIALS,
                 SFSCredentials(sfsFile, createPassword()))
@@ -134,6 +146,11 @@ class FileImportActivityFunctionalTest {
                 .create()
                 .resume()
                 .get()
+
+        val startedActivityForResult = shadowOf(sut).nextStartedActivityForResult
+        val resultIntent = Intent()
+        resultIntent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
+        shadowOf(sut).receiveResult(startedActivityForResult.intent, RESULT_OK, resultIntent)
 
         assertEquals("File import count", 3, sfs().extListFiles().size)
         sfs().extListFiles().forEach { file ->

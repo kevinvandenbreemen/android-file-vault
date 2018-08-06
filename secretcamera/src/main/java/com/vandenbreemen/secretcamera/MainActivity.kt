@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
-import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow
 import com.vandenbreemen.mobilesecurestorage.android.fragment.SFSNavFragment
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
@@ -27,12 +26,6 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
         Toast.makeText(this, error.localizedMessage, LENGTH_SHORT)
     }
 
-
-    /**
-     * File access workflow (containing the file we're going to be working with)
-     */
-    var fsWorkflow: FileWorkflow? = null
-
     var mainMenuPresenter: SFSMenuContract.SFSMainMenuPresenter? = null
 
     override fun onPause() {
@@ -46,25 +39,31 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
 
         setContentView(R.layout.activity_main)
 
-        //  Get file workflow
-        fsWorkflow = intent.getParcelableExtra(FileWorkflow.PARM_WORKFLOW_NAME)
-
-        if (fsWorkflow == null) {
-            fsWorkflow = FileWorkflow()
-            fsWorkflow!!.activityToStartAfterTargetActivityFinished = javaClass
-        }
-
         intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)?.let { credentials ->
-
             findViewById<ViewGroup>(R.id.mainSection).addView(
                     layoutInflater.inflate(R.layout.main_screen_selections, findViewById(R.id.mainSection), false))
 
             mainMenuPresenter = SFSMainMenuPresenterImpl(SFSMainMenuModel(credentials), this)
         } ?: run {
             val frag = SFSNavFragment()
-            frag.workflow = fsWorkflow!!
-            frag.setCancelAction(this@MainActivity.javaClass)
             fragmentManager.beginTransaction().add(R.id.upperSection, frag).commit()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == SFSNavFragment.GET_CREDENTIALS_ACTION) {
+            if (resultCode == RESULT_OK) {
+                val credentials = data!!.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)
+                findViewById<ViewGroup>(R.id.mainSection).addView(
+                        layoutInflater.inflate(R.layout.main_screen_selections, findViewById(R.id.mainSection), false))
+
+                findViewById<ViewGroup>(R.id.upperSection).removeAllViews()
+
+                mainMenuPresenter = SFSMainMenuPresenterImpl(SFSMainMenuModel(credentials), this)
+                mainMenuPresenter!!.start()
+            } else {
+                startActivity(intent)
+            }
         }
     }
 

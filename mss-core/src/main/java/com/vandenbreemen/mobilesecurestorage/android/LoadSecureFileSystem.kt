@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
@@ -17,9 +16,15 @@ import com.vandenbreemen.mobilesecurestorage.android.mvp.loadfilesystem.LoadFile
 import com.vandenbreemen.mobilesecurestorage.android.mvp.loadfilesystem.LoadFileSystemView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import java.io.File
 import java.util.function.Consumer
 
 class LoadSecureFileSystem : Activity(), LoadFileSystemView {
+
+    companion object {
+        const val SELECT_FILE = 1
+    }
+
     override fun onLoadSuccess(credentials: SFSCredentials) {
         listener.accept(credentials)
     }
@@ -30,20 +35,36 @@ class LoadSecureFileSystem : Activity(), LoadFileSystemView {
 
     private lateinit var controller: LoadFileSystemController
 
-    private var listener: Consumer<SFSCredentials> = Consumer { onCredentialsEntered(it) }
+    private lateinit var fileToLoad: File
 
-    private lateinit var workflow: FileWorkflow
+    private var listener: Consumer<SFSCredentials> = Consumer { onCredentialsEntered(it) }
 
     @SuppressLint("WrongViewCast")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_load_secure_file_system)
 
-        this.workflow = intent.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME)
-        controller = LoadFileSystemController(LoadFileSystemModel(workflow.fileOrDirectory), this)
-
         //  Set up enter key
         findViewById<EditText>(R.id.password)
+
+        val intent = Intent(this, FileSelectActivity::class.java)
+        intent.putExtra(FileSelectActivity.PARM_NO_CONFIRM_NEEDED, true)
+        intent.putExtra(FileSelectActivity.PARM_TITLE, resources.getText(R.string.select_file))
+        startActivityForResult(intent, SELECT_FILE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (SELECT_FILE == requestCode) {
+            if (resultCode == RESULT_OK) {
+                val tempWorkflow: FileWorkflow = data!!.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME)
+                this.fileToLoad = tempWorkflow.fileOrDirectory
+                controller = LoadFileSystemController(LoadFileSystemModel(this.fileToLoad), this)
+            } else {
+                setResult(RESULT_CANCELED)
+                finish()
+            }
+
+        }
     }
 
     /**
@@ -54,16 +75,10 @@ class LoadSecureFileSystem : Activity(), LoadFileSystemView {
     }
 
     private fun onCredentialsEntered(credentials: SFSCredentials) {
-        val workflow = intent.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME)
-        if (workflow.activityToStartAfterTargetActivityFinished != null) {
-            val startNextActivity = Intent(this, workflow.activityToStartAfterTargetActivityFinished)
-            startNextActivity.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
-            startNextActivity.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
-            startActivity(startNextActivity)
-            finish()
-            return
-        }
-        Log.w("LoadSecureFileSystem", "Credentials successfully provided but ${workflow.activityToStartAfterTargetActivityFinished} is null")
+        val result = Intent()
+        result.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
+        setResult(RESULT_OK, result)
+        finish()
     }
 
     fun onOkay(view: View) {
@@ -72,7 +87,8 @@ class LoadSecureFileSystem : Activity(), LoadFileSystemView {
     }
 
     fun onCancel(view: View) {
-        handleWorkflowCancel(this, workflow)
+        setResult(RESULT_CANCELED)
+        finish()
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {

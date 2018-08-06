@@ -34,6 +34,7 @@ interface View{
 interface PresenterContract {
     fun start()
     fun close()
+    fun isClosed(): Boolean
 }
 
 abstract class Presenter<out M : Model, out V : View>(private val model: M, private val view: V) : PresenterContract {
@@ -57,6 +58,10 @@ abstract class Presenter<out M : Model, out V : View>(private val model: M, priv
 
     override fun close() {
         model.close()
+    }
+
+    override fun isClosed(): Boolean {
+        return model.isClosed()
     }
 
 }
@@ -97,6 +102,10 @@ abstract class Model(private val credentials: SFSCredentials) {
 
     fun copyCredentials(): SFSCredentials {
         return credentials.copy()
+    }
+
+    fun isClosed(): Boolean {
+        return credentials.finalized()
     }
 
     /**

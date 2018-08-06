@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -19,7 +18,6 @@ import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow
 import com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect.FileSelectController
 import com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect.FileSelectModel
 import com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect.FileSelectView
-import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import java.io.File
 
@@ -67,8 +65,6 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
 
     }
 
-    private var workflow: FileWorkflow = FileWorkflow()  //  Default value for null safety...
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_file_select)
@@ -82,11 +78,6 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
         findViewById<TextView>(R.id.title).setText(title)
 
         controller = FileSelectController(model, this)
-
-        this.workflow =
-                if (intent.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME) as? FileWorkflow != null)
-                    intent.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME) as FileWorkflow
-                else FileWorkflow()
     }
 
     /**
@@ -126,24 +117,13 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
     }
 
     private fun onSelectedFile(selected: File) {
-        if (workflow.targetActivity != null) {
-            val intent = Intent(this, workflow.targetActivity)
-            intent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
-            workflow.fileOrDirectory = selected //  Pass the selected file/directory on to the next activity
+        val tmpWorkflow = FileWorkflow()
+        tmpWorkflow.fileOrDirectory = selected
 
-            //  Credentials if available
-            getIntent().getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)?.let {
-                intent.putExtra(SFSCredentials.PARM_CREDENTIALS, it.copy())
-                it.finalize()
-            }
-
-            workflow.targetFutureIntent?.let { futureIntent -> futureIntent.populateIntentToStartFutureActivity(intent, getIntent()) }
-
-            startActivity(intent)
-            finish()
-        } else {
-            Log.w("NextStepInFileSelect", "No target activity found!  Did you forget to include a ${FileWorkflow::class.java.simpleName} in your intent?")
-        }
+        val result = Intent()
+        result.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, tmpWorkflow)
+        setResult(RESULT_OK, result)
+        finish()
     }
 
     override fun listFiles(files: MutableList<File>?) {
@@ -175,6 +155,7 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
     }
 
     fun onCancel(view: View?) {
-        handleWorkflowCancel(this, workflow)
+        setResult(RESULT_CANCELED)
+        finish()
     }
 }

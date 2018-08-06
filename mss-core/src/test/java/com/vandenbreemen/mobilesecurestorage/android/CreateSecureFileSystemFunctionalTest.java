@@ -17,23 +17,23 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowIntent;
+import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowToast;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.plugins.RxJavaPlugins;
 
+import static android.app.Activity.RESULT_OK;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
+import static org.robolectric.Shadows.shadowOf;
 
 /**
  * <h2>Intro</h2>
@@ -71,12 +71,15 @@ public class CreateSecureFileSystemFunctionalTest {
     }
 
     @Test
-    public void sanityTestStartActivity() {
+    public void shouldStartFileSelectActivity() {
 
         CreateSecureFileSystem createSecureFileSystem = Robolectric.buildActivity(CreateSecureFileSystem.class, startCreateSFS)
                 .create()
                 .get();
 
+        ShadowActivity.IntentForResult intentForResult = shadowOf(createSecureFileSystem).getNextStartedActivityForResult();
+        assertNotNull(intentForResult);
+        assertEquals(FileSelectActivity.class, shadowOf(intentForResult.intent).getIntentClass());
 
 
     }
@@ -90,6 +93,13 @@ public class CreateSecureFileSystemFunctionalTest {
         CreateSecureFileSystem createSecureFileSystem = Robolectric.buildActivity(CreateSecureFileSystem.class, startCreateSFS)
                 .create()
                 .get();
+
+        ShadowActivity.IntentForResult startFileSelect = shadowOf(createSecureFileSystem).getNextStartedActivityForResult();
+        FileWorkflow tempWorkflow = new FileWorkflow();
+        tempWorkflow.setFileOrDirectory(directory);
+        Intent resultOfSelectDir = new Intent();
+        resultOfSelectDir.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, tempWorkflow);
+        shadowOf(createSecureFileSystem).receiveResult(startFileSelect.intent, RESULT_OK, resultOfSelectDir);
 
         EditText fileName = createSecureFileSystem.findViewById(R.id.fileName);
         fileName.setText(expectedFileName);
@@ -111,6 +121,13 @@ public class CreateSecureFileSystemFunctionalTest {
         CreateSecureFileSystem createSecureFileSystem = Robolectric.buildActivity(CreateSecureFileSystem.class, startCreateSFS)
                 .create()
                 .get();
+
+        ShadowActivity.IntentForResult startFileSelect = shadowOf(createSecureFileSystem).getNextStartedActivityForResult();
+        FileWorkflow tempWorkflow = new FileWorkflow();
+        tempWorkflow.setFileOrDirectory(directory);
+        Intent resultOfSelectDir = new Intent();
+        resultOfSelectDir.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, tempWorkflow);
+        shadowOf(createSecureFileSystem).receiveResult(startFileSelect.intent, RESULT_OK, resultOfSelectDir);
 
         EditText password = createSecureFileSystem.findViewById(R.id.password);
         password.setText("password");
@@ -139,6 +156,13 @@ public class CreateSecureFileSystemFunctionalTest {
                 .create()
                 .get();
 
+        ShadowActivity.IntentForResult startFileSelect = shadowOf(createSecureFileSystem).getNextStartedActivityForResult();
+        FileWorkflow tempWorkflow = new FileWorkflow();
+        tempWorkflow.setFileOrDirectory(directory);
+        Intent resultOfSelectDir = new Intent();
+        resultOfSelectDir.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, tempWorkflow);
+        shadowOf(createSecureFileSystem).receiveResult(startFileSelect.intent, RESULT_OK, resultOfSelectDir);
+
         EditText fileName = createSecureFileSystem.findViewById(R.id.fileName);
         fileName.setText("filename");
 
@@ -158,6 +182,13 @@ public class CreateSecureFileSystemFunctionalTest {
         CreateSecureFileSystem createSecureFileSystem = Robolectric.buildActivity(CreateSecureFileSystem.class, startCreateSFS)
                 .create()
                 .get();
+
+        ShadowActivity.IntentForResult startFileSelect = shadowOf(createSecureFileSystem).getNextStartedActivityForResult();
+        FileWorkflow tempWorkflow = new FileWorkflow();
+        tempWorkflow.setFileOrDirectory(directory);
+        Intent resultOfSelectDir = new Intent();
+        resultOfSelectDir.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, tempWorkflow);
+        shadowOf(createSecureFileSystem).receiveResult(startFileSelect.intent, RESULT_OK, resultOfSelectDir);
 
         EditText fileName = createSecureFileSystem.findViewById(R.id.fileName);
         fileName.setText("filename");
@@ -181,6 +212,13 @@ public class CreateSecureFileSystemFunctionalTest {
         CreateSecureFileSystem createSecureFileSystem = Robolectric.buildActivity(CreateSecureFileSystem.class, startCreateSFS)
                 .create()
                 .get();
+
+        ShadowActivity.IntentForResult startFileSelect = shadowOf(createSecureFileSystem).getNextStartedActivityForResult();
+        FileWorkflow tempWorkflow = new FileWorkflow();
+        tempWorkflow.setFileOrDirectory(directory);
+        Intent resultOfSelectDir = new Intent();
+        resultOfSelectDir.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, tempWorkflow);
+        shadowOf(createSecureFileSystem).receiveResult(startFileSelect.intent, RESULT_OK, resultOfSelectDir);
 
         createSecureFileSystem.setOnCompleteListener(credentials -> {
             try {
@@ -215,11 +253,9 @@ public class CreateSecureFileSystemFunctionalTest {
     }
 
     @Test
-    public void testGoToFinalActivity() {
+    public void shouldReturnCredentials() {
 
         String expectedFileName = "expectedFile";
-
-        workflow.setActivityToStartAfterTargetActivityFinished(SecureFileSystemDetails.class);
 
         FileSelectActivity activity = Robolectric.setupActivity(FileSelectActivity.class);
         this.startCreateSFS = new Intent(activity, CreateSecureFileSystem.class);
@@ -228,6 +264,13 @@ public class CreateSecureFileSystemFunctionalTest {
         CreateSecureFileSystem createSecureFileSystem = Robolectric.buildActivity(CreateSecureFileSystem.class, startCreateSFS)
                 .create()
                 .get();
+
+        ShadowActivity.IntentForResult startFileSelect = shadowOf(createSecureFileSystem).getNextStartedActivityForResult();
+        FileWorkflow tempWorkflow = new FileWorkflow();
+        tempWorkflow.setFileOrDirectory(directory);
+        Intent resultOfSelectDir = new Intent();
+        resultOfSelectDir.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, tempWorkflow);
+        shadowOf(createSecureFileSystem).receiveResult(startFileSelect.intent, RESULT_OK, resultOfSelectDir);
 
         EditText fileName = createSecureFileSystem.findViewById(R.id.fileName);
         fileName.setText(expectedFileName);
@@ -238,20 +281,11 @@ public class CreateSecureFileSystemFunctionalTest {
         password = createSecureFileSystem.findViewById(R.id.confirmPassword);
         password.setText("password");
 
-        AtomicReference<Intent> nxtActivityRef = new AtomicReference<>(null);
         createSecureFileSystem.findViewById(R.id.ok).performClick();
 
-        Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> {
-            nxtActivityRef.set(Shadows.shadowOf(createSecureFileSystem).getNextStartedActivity());
-            return nxtActivityRef.get() != null;
-        });
-
-        Intent nextActivity = nxtActivityRef.get();
-        ShadowIntent nxtActivityIntent = Shadows.shadowOf(nextActivity);
-
-        assertEquals("Next activity", SecureFileSystemDetails.class, nxtActivityIntent.getIntentClass());
-        assertNotNull("Credentials", nextActivity.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS));
-        assertNotNull("FS workflow", nextActivity.getParcelableExtra(FileWorkflow.PARM_WORKFLOW_NAME));
+        Intent result = shadowOf(createSecureFileSystem).getResultIntent();
+        assertEquals(RESULT_OK, shadowOf(createSecureFileSystem).getResultCode());
+        assertNotNull("Credentials", result.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS));
     }
 
 }
