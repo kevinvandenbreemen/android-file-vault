@@ -171,10 +171,11 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
     override fun deleteSelected() {
         if (model.hasSelectedImages()) {
             router.hideActions()
+            view.hideImageSelector()
             view.showLoadingSpinner()
             model.deleteSelected().observeOn(mainThread()).subscribe {
-                router.disableSelectMultiple()
                 view.hideLoadingSpinner()
+                displayCurrentImage()
             }
         } else {
             view.showError(ApplicationError("No Images Selected For Delete"))

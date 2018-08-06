@@ -109,7 +109,6 @@ class PictureViewerPresenterTest {
 
         //  Assert
         verify(router).hideActions()
-        verify(router).disableSelectMultiple()
 
         assertEquals(1, model.listImages().blockingGet().size)
 
