@@ -98,10 +98,10 @@ class FileImportActivity : Activity(), FileImportView {
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == SELECT_DIR) {
             if (resultCode == RESULT_OK) {
-                this.directoryToImport = data.getParcelableExtra<FileWorkflow>(PARM_WORKFLOW_NAME).fileOrDirectory
+                this.directoryToImport = data!!.getParcelableExtra<FileWorkflow>(PARM_WORKFLOW_NAME).fileOrDirectory
                 this.fileImportPresenter = FileImportPresenterImpl(FileImportModel(intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS)), this)
                 fileImportPresenter.start()
             } else {
