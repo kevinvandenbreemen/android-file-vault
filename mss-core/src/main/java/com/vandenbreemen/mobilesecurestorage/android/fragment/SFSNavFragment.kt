@@ -1,6 +1,5 @@
 package com.vandenbreemen.mobilesecurestorage.android.fragment
 
-import android.app.Activity
 import android.app.Fragment
 import android.content.Intent
 import android.os.Bundle
@@ -33,10 +32,6 @@ class SFSNavFragment(): Fragment() {
 
     override fun setArguments(args: Bundle?) {
         this.workflow = args?.getParcelable(FileWorkflow.PARM_WORKFLOW_NAME)?: FileWorkflow()
-    }
-
-    fun setCancelAction(clz: Class<Activity>){
-        this.workflow.cancelActivity = clz
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {

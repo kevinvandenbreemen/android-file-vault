@@ -161,7 +161,6 @@ public class LoadSecureFileSystemFunctionalTest {
     @Test
     public void shouldReturnCredentialsResult() {
         FileSelectActivity activity = Robolectric.setupActivity(FileSelectActivity.class);
-        workflow.setActivityToStartAfterTargetActivityFinished(SecureFileSystemDetails.class);
         startLoadSFS = new Intent(activity, LoadSecureFileSystem.class);
         this.startLoadSFS.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
 

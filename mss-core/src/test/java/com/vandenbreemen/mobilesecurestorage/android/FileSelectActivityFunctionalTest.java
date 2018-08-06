@@ -128,7 +128,6 @@ public class FileSelectActivityFunctionalTest {
         Intent startFileSelect = new Intent(sut.getApplication(), FileSelectActivity.class);
         startFileSelect.putExtra(PARM_DIR_ONLY, Boolean.TRUE);
         FileWorkflow workflow = new FileWorkflow();
-        workflow.setCancelActivity(FileSelectActivity.class);
         startFileSelect.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
 
         sut = Robolectric.buildActivity(FileSelectActivity.class, startFileSelect)
@@ -328,7 +327,6 @@ public class FileSelectActivityFunctionalTest {
     public void shouldReturnSelectedFileResult() {
 
         FileWorkflow workflow = new FileWorkflow();
-        workflow.setTargetActivity(CreateSecureFileSystem.class);
 
         Intent startFileSelect = new Intent(sut.getApplication(), FileSelectActivity.class);
         startFileSelect.putExtra(PARM_DIR_ONLY, Boolean.TRUE);

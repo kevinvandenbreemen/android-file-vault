@@ -257,8 +257,6 @@ public class CreateSecureFileSystemFunctionalTest {
 
         String expectedFileName = "expectedFile";
 
-        workflow.setActivityToStartAfterTargetActivityFinished(SecureFileSystemDetails.class);
-
         FileSelectActivity activity = Robolectric.setupActivity(FileSelectActivity.class);
         this.startCreateSFS = new Intent(activity, CreateSecureFileSystem.class);
         this.startCreateSFS.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow);
