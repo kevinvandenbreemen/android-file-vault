@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SecretCamera</string>
+    <string name="app_name">Grant Sidecar</string>
     <string name="take_picture">Take a\nPicture</string>
     <string name="take_note">Take a\nNote</string>
     <string name="title_please">Specify Title</string>
