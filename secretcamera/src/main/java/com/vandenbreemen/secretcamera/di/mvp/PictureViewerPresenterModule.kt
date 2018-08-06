@@ -21,6 +21,7 @@ class PictureViewerPresenterModule {
     fun providesPictureViewerPresenter(activity: PictureViewerActivity): PictureViewerPresenter {
         return PictureViewerPresenterImpl(
                 PictureViewerModel(activity.intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS)),
+                activity,
                 activity
         )
     }

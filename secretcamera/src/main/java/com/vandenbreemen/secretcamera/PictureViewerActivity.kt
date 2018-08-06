@@ -11,6 +11,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.LinearLayout.HORIZONTAL
 import android.widget.ProgressBar
@@ -19,6 +20,7 @@ import android.widget.Toast.LENGTH_SHORT
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewRouter
 import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewerPresenter
 import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewerView
 import dagger.android.AndroidInjection
@@ -32,6 +34,9 @@ class ThumbnailViewHolder(val view: ViewGroup) : RecyclerView.ViewHolder(view) {
 class ThumbnailAdapter(private val fileNames: List<String>,
                        private val presenter: PictureViewerPresenter
 ) : RecyclerView.Adapter<ThumbnailViewHolder>() {
+
+    var selectEnabled: Boolean = false
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThumbnailViewHolder {
         return ThumbnailViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.image_select_item, parent, false) as ViewGroup)
     }
@@ -47,6 +52,14 @@ class ThumbnailAdapter(private val fileNames: List<String>,
             imageView.visibility = VISIBLE
             imageView.setImageBitmap(bitmap)
 
+            //  Image select checkbox
+
+            holder.view.findViewById<CheckBox>(R.id.checkBox).visibility = if (selectEnabled) VISIBLE else GONE
+            if (selectEnabled) {
+                val checkbox = holder.view.findViewById<CheckBox>(R.id.checkBox)
+                //checkbox.isChecked = presenter.sel
+            }
+
             val loadingSpinner = holder.view.findViewById<ProgressBar>(R.id.loading)
             loadingSpinner.visibility = GONE
         })
@@ -54,11 +67,13 @@ class ThumbnailAdapter(private val fileNames: List<String>,
 
 }
 
-class PictureViewerActivity : Activity(), PictureViewerView {
+class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter {
 
 
     @Inject
     lateinit var presenter: PictureViewerPresenter
+
+    private var adapter: ThumbnailAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -122,6 +137,7 @@ class PictureViewerActivity : Activity(), PictureViewerView {
         presenter.currentImageFileName().subscribe({ currentImageFilename ->
             val recyclerView = findViewById<RecyclerView>(R.id.pictureSelector)
             val adapter = ThumbnailAdapter(files, presenter)
+            this.adapter = adapter
 
             recyclerView.adapter = adapter
             recyclerView.layoutManager.scrollToPosition(files.indexOf(currentImageFilename))
@@ -136,6 +152,7 @@ class PictureViewerActivity : Activity(), PictureViewerView {
         val recyclerView = findViewById<RecyclerView>(R.id.pictureSelector)
         recyclerView.removeAllViews()
         recyclerView.visibility = GONE
+        adapter = null
     }
 
     override fun end() {
@@ -148,5 +165,21 @@ class PictureViewerActivity : Activity(), PictureViewerView {
 
     override fun hideLoadingSpinner() {
         findViewById<View>(R.id.imageDisplayProgress).visibility = GONE
+    }
+
+    override fun showActions() {
+        findViewById<ViewGroup>(R.id.pictureViewerActions).visibility = VISIBLE
+    }
+
+    override fun hideActions() {
+        findViewById<ViewGroup>(R.id.pictureViewerActions).visibility = GONE
+    }
+
+    override fun enableSelectMultiple() {
+        adapter!!.notifyDataSetChanged()
+    }
+
+    override fun disableSelectMultiple() {
+        adapter!!.notifyDataSetChanged()
     }
 }

@@ -23,6 +23,8 @@ interface SecureFileSystemInteractor {
 
     fun save(obj: Serializable, fileName: String, fileType: FileTypes)
     fun load(fileName: String, fileTypes: FileTypes): Serializable?
+    fun delete(fileName: String)
+    fun delete(fileNames: List<String>)
 
 }
 
@@ -51,6 +53,13 @@ private class SecureFileSystemInteractorImpl(private val secureFileSystem: Secur
         return true
     }
 
+    override fun delete(fileName: String) {
+        secureFileSystem.deleteFile(fileName)
+    }
+
+    override fun delete(fileNames: List<String>) {
+        this.secureFileSystem.deleteFiles(*fileNames.toTypedArray())
+    }
 }
 
 fun getSecureFileSystemInteractor(secureFileSystem: SecureFileSystem): SecureFileSystemInteractor {

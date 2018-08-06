@@ -35,6 +35,9 @@ class PictureViewerContractTest {
     lateinit var view: PictureViewerView
 
     @Mock
+    lateinit var router: PictureViewRouter
+
+    @Mock
     lateinit var bitmap: Bitmap
 
     lateinit var presenter: PictureViewerPresenter
@@ -43,7 +46,7 @@ class PictureViewerContractTest {
     fun setup() {
         RxJavaPlugins.setComputationSchedulerHandler { scheduler -> AndroidSchedulers.mainThread() }
 
-        this.presenter = PictureViewerPresenterImpl(model, view)
+        this.presenter = PictureViewerPresenterImpl(model, view, router)
     }
 
     @Test

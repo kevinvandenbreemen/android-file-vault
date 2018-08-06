@@ -55,6 +55,13 @@ interface PictureViewerView : View {
     fun hideLoadingSpinner()
 }
 
+interface PictureViewRouter {
+    fun showActions()
+    fun hideActions()
+    fun enableSelectMultiple()
+    fun disableSelectMultiple()
+}
+
 interface PictureViewerPresenter : PresenterContract {
     fun displayCurrentImage()
     fun nextImage()
@@ -63,10 +70,24 @@ interface PictureViewerPresenter : PresenterContract {
     fun thumbnail(fileName: String): Single<Bitmap>
     fun selectImageToDisplay(fileName: String)
     fun currentImageFileName(): Single<String>
-
+    fun toggleSelectImages()
+    fun selectImage(fileName: String)
+    fun deleteSelected()
 }
 
-class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: PictureViewerView) : Presenter<PictureViewerModel, PictureViewerView>(model, view), PictureViewerPresenter {
+class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: PictureViewerView, val router: PictureViewRouter) : Presenter<PictureViewerModel, PictureViewerView>(model, view), PictureViewerPresenter {
+    override fun toggleSelectImages() {
+        if (model.isImageMultiselectOn()) {
+            model.enableImageMultiSelect(false)
+            router.disableSelectMultiple()
+            router.hideActions()
+        } else {
+            model.enableImageMultiSelect(true)
+            router.enableSelectMultiple()
+            router.showActions()
+        }
+    }
+
     override fun selectImageToDisplay(fileName: String) {
         view.showLoadingSpinner()
         model.loadImageForDisplay(fileName).subscribe({ image ->
@@ -131,4 +152,20 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
 
     }
 
+    override fun selectImage(fileName: String) {
+        model.selectImage(fileName)
+    }
+
+    override fun deleteSelected() {
+        if (model.hasSelectedImages()) {
+            view.showLoadingSpinner()
+            model.deleteSelected().observeOn(mainThread()).subscribe {
+                router.hideActions()
+                router.disableSelectMultiple()
+                view.hideLoadingSpinner()
+            }
+        } else {
+            view.showError(ApplicationError("No Images Selected For Delete"))
+        }
+    }
 }

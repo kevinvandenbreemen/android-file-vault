@@ -8,6 +8,8 @@ import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInterac
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.secretcamera.api.GallerySettings
+import io.reactivex.Completable
+import io.reactivex.CompletableOnSubscribe
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -31,6 +33,8 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
     lateinit var androidImageInteractor: AndroidImageInteractor
     lateinit var secureFileSystemInteractor: SecureFileSystemInteractor
 
+    private var selectedFiles: MutableList<String>? = null
+
     override fun onClose() {
         imageFilesInteractor.close()
     }
@@ -39,6 +43,26 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
         this.imageFilesInteractor = ImageFilesInteractor(sfs)
         this.androidImageInteractor = AndroidImageInteractor()
         this.secureFileSystemInteractor = getSecureFileSystemInteractor(sfs)
+    }
+
+    fun selectImage(fileName: String) {
+        this.selectedFiles!!.add(fileName)
+    }
+
+    fun deselectImage(fileName: String) {
+        this.selectedFiles!!.remove(fileName)
+    }
+
+    fun enableImageMultiSelect(enabled: Boolean) {
+        if (enabled) {
+            this.selectedFiles = mutableListOf()
+        } else {
+            this.selectedFiles = null
+        }
+    }
+
+    fun isImageMultiselectOn(): Boolean {
+        return this.selectedFiles != null
     }
 
     fun loadImageForDisplay(fileName: String): Single<Bitmap> {
@@ -154,6 +178,19 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
 
     fun getThumbnail(imageBitmap: Bitmap): Single<Bitmap> {
         return androidImageInteractor.generateThumbnail(imageBitmap)
+    }
+
+    fun deleteSelected(): Completable {
+        return Completable.create(CompletableOnSubscribe {
+            this.secureFileSystemInteractor.delete(this.selectedFiles!!.toList())
+            it.onComplete()
+        }).subscribeOn(computation())
+    }
+
+    fun hasSelectedImages(): Boolean {
+        return if (this.selectedFiles == null) false else {
+            selectedFiles!!.size > 0
+        }
     }
 
 }
