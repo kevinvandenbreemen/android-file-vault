@@ -2,6 +2,8 @@ package com.vandenbreemen.secretcamera.mvp.gallery
 
 import android.graphics.Bitmap
 import android.util.Log
+import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Presenter
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.PresenterContract
@@ -21,6 +23,7 @@ class ImageFilesInteractor(private val sfs: SecureFileSystem) {
         private const val FILES_LIST_KEY = "__FILES_LIST"
     }
 
+    private val sfsInteractor = getSecureFileSystemInteractor(sfs)
     private val cache = object : Cache2kBuilder<String, Any>() {
 
     }.build()
@@ -39,6 +42,11 @@ class ImageFilesInteractor(private val sfs: SecureFileSystem) {
         }
     }
 
+    fun deleteImages(fileNames: List<String>) {
+        this.sfsInteractor.delete(fileNames)
+        this.cache.clear()  //  Force cache to reload since files were deleted
+    }
+
     fun close() {
         cache.clear()
         cache.clearAndClose()
@@ -55,6 +63,14 @@ interface PictureViewerView : View {
     fun hideLoadingSpinner()
 }
 
+interface PictureViewRouter {
+    fun showActions()
+    fun hideActions()
+    fun enableSelectMultiple()
+    fun disableSelectMultiple()
+    fun navigateBack(sfsCredentials: SFSCredentials)
+}
+
 interface PictureViewerPresenter : PresenterContract {
     fun displayCurrentImage()
     fun nextImage()
@@ -63,10 +79,25 @@ interface PictureViewerPresenter : PresenterContract {
     fun thumbnail(fileName: String): Single<Bitmap>
     fun selectImageToDisplay(fileName: String)
     fun currentImageFileName(): Single<String>
-
+    fun toggleSelectImages()
+    fun selectImage(fileName: String)
+    fun deleteSelected()
+    fun selected(filename: String): Boolean
 }
 
-class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: PictureViewerView) : Presenter<PictureViewerModel, PictureViewerView>(model, view), PictureViewerPresenter {
+class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: PictureViewerView, val router: PictureViewRouter) : Presenter<PictureViewerModel, PictureViewerView>(model, view), PictureViewerPresenter {
+    override fun toggleSelectImages() {
+        if (model.isImageMultiselectOn()) {
+            model.enableImageMultiSelect(false)
+            router.disableSelectMultiple()
+            router.hideActions()
+        } else {
+            model.enableImageMultiSelect(true)
+            router.enableSelectMultiple()
+            router.showActions()
+        }
+    }
+
     override fun selectImageToDisplay(fileName: String) {
         view.showLoadingSpinner()
         model.loadImageForDisplay(fileName).subscribe({ image ->
@@ -131,4 +162,35 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
 
     }
 
+    override fun selectImage(fileName: String) {
+        if (model.isSelected(fileName)) {
+            model.deselectImage(fileName)
+        } else {
+            model.selectImage(fileName)
+        }
+    }
+
+    override fun deleteSelected() {
+        if (model.hasSelectedImages()) {
+            router.hideActions()
+            view.hideImageSelector()
+            view.showLoadingSpinner()
+            model.deleteSelected().observeOn(mainThread()).subscribe {
+                model.hasMoreImages().subscribe { hasMore ->
+                    if (!hasMore) {
+                        router.navigateBack(model.copyCredentials())
+                    } else {
+                        view.hideLoadingSpinner()
+                        displayCurrentImage()
+                    }
+                }
+            }
+        } else {
+            view.showError(ApplicationError("No Images Selected For Delete"))
+        }
+    }
+
+    override fun selected(filename: String): Boolean {
+        return model.isSelected(filename)
+    }
 }

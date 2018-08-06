@@ -109,4 +109,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:numberOfDots="3" />
 
+    <include
+        layout="@layout/actions_menu"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/pictureSelector"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
 </android.support.constraint.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.vandenbreemen.secretcamera
 
 import android.app.Activity
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -11,14 +12,14 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.ImageView
+import android.widget.*
 import android.widget.LinearLayout.HORIZONTAL
-import android.widget.ProgressBar
-import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewRouter
 import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewerPresenter
 import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewerView
 import dagger.android.AndroidInjection
@@ -32,6 +33,9 @@ class ThumbnailViewHolder(val view: ViewGroup) : RecyclerView.ViewHolder(view) {
 class ThumbnailAdapter(private val fileNames: List<String>,
                        private val presenter: PictureViewerPresenter
 ) : RecyclerView.Adapter<ThumbnailViewHolder>() {
+
+    var selectEnabled: Boolean = false
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThumbnailViewHolder {
         return ThumbnailViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.image_select_item, parent, false) as ViewGroup)
     }
@@ -41,24 +45,39 @@ class ThumbnailAdapter(private val fileNames: List<String>,
     }
 
     override fun onBindViewHolder(holder: ThumbnailViewHolder, position: Int) {
-        presenter.thumbnail(fileNames[position]).subscribe({ bitmap ->
+        presenter.thumbnail(fileNames[position]).subscribe { bitmap ->
             val imageView = holder.view.findViewById<ImageView>(R.id.preview)
             imageView.setOnClickListener(View.OnClickListener { view -> presenter.selectImageToDisplay(fileNames[position]) })
             imageView.visibility = VISIBLE
             imageView.setImageBitmap(bitmap)
 
+            //  Image select checkbox
+            holder.view.findViewById<CheckBox>(R.id.checkBox).visibility = if (selectEnabled) VISIBLE else GONE
+            if (selectEnabled) {
+                val checkbox = holder.view.findViewById<CheckBox>(R.id.checkBox)
+                checkbox.isChecked = presenter.selected(fileNames[position])
+                checkbox.setOnClickListener { v -> presenter.selectImage(fileNames[position]) }
+            } else {   //  Allow turning on multiselect
+                imageView.setOnLongClickListener({ v ->
+                    presenter.toggleSelectImages()
+                    true
+                })
+            }
+
             val loadingSpinner = holder.view.findViewById<ProgressBar>(R.id.loading)
             loadingSpinner.visibility = GONE
-        })
+        }
     }
 
 }
 
-class PictureViewerActivity : Activity(), PictureViewerView {
+class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter {
 
 
     @Inject
     lateinit var presenter: PictureViewerPresenter
+
+    private var adapter: ThumbnailAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -77,6 +96,14 @@ class PictureViewerActivity : Activity(), PictureViewerView {
         val recyclerView = findViewById<RecyclerView>(R.id.pictureSelector)
         recyclerView.layoutManager = layoutManager
         recyclerView.visibility = GONE
+
+        //  Set up the actions
+        findViewById<ViewGroup>(R.id.pictureViewerActions).findViewById<Button>(R.id.cancel).setOnClickListener { v ->
+            presenter.toggleSelectImages()
+        }
+        findViewById<ViewGroup>(R.id.pictureViewerActions).findViewById<Button>(R.id.delete).setOnClickListener { v ->
+            presenter.deleteSelected()
+        }
 
     }
 
@@ -122,6 +149,7 @@ class PictureViewerActivity : Activity(), PictureViewerView {
         presenter.currentImageFileName().subscribe({ currentImageFilename ->
             val recyclerView = findViewById<RecyclerView>(R.id.pictureSelector)
             val adapter = ThumbnailAdapter(files, presenter)
+            this.adapter = adapter
 
             recyclerView.adapter = adapter
             recyclerView.layoutManager.scrollToPosition(files.indexOf(currentImageFilename))
@@ -136,6 +164,13 @@ class PictureViewerActivity : Activity(), PictureViewerView {
         val recyclerView = findViewById<RecyclerView>(R.id.pictureSelector)
         recyclerView.removeAllViews()
         recyclerView.visibility = GONE
+        adapter = null
+    }
+
+    override fun navigateBack(sfsCredentials: SFSCredentials) {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra(SFSCredentials.PARM_CREDENTIALS, sfsCredentials)
+        startActivity(intent)
     }
 
     override fun end() {
@@ -148,5 +183,23 @@ class PictureViewerActivity : Activity(), PictureViewerView {
 
     override fun hideLoadingSpinner() {
         findViewById<View>(R.id.imageDisplayProgress).visibility = GONE
+    }
+
+    override fun showActions() {
+        findViewById<ViewGroup>(R.id.pictureViewerActions).visibility = VISIBLE
+    }
+
+    override fun hideActions() {
+        findViewById<ViewGroup>(R.id.pictureViewerActions).visibility = GONE
+    }
+
+    override fun enableSelectMultiple() {
+        adapter!!.selectEnabled = true
+        adapter!!.notifyDataSetChanged()
+    }
+
+    override fun disableSelectMultiple() {
+        adapter!!.selectEnabled = false
+        adapter!!.notifyDataSetChanged()
     }
 }

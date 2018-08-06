@@ -9,12 +9,13 @@ import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
 import com.vandenbreemen.secretcamera.shittySolutionPleaseDelete.TestConstants
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
-import junit.framework.TestCase.assertFalse
+import junit.framework.TestCase.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowLog
@@ -40,6 +41,9 @@ class PictureViewerPresenterTest {
     @Mock
     lateinit var view: PictureViewerView
 
+    @Mock
+    lateinit var router: PictureViewRouter
+
     @Before
     fun setup() {
         generateThumbnailCalled = false
@@ -62,7 +66,7 @@ class PictureViewerPresenterTest {
         this.model = PictureViewerModel(credentials)
         this.model.init().subscribe()
 
-        pictureViewerPresenter = PictureViewerPresenterImpl(this.model, view)
+        pictureViewerPresenter = PictureViewerPresenterImpl(this.model, view, router)
     }
 
     private fun sfs(): SecureFileSystem {
@@ -76,4 +80,77 @@ class PictureViewerPresenterTest {
         pictureViewerPresenter.thumbnail(TestConstants.TEST_RES_IMG_3.name).blockingGet()
         assertFalse("Current image", TestConstants.TEST_RES_IMG_3.name.equals(model.currentFile().blockingGet()))
     }
+
+    @Test
+    fun shouldToggleSelectImages() {
+        pictureViewerPresenter.toggleSelectImages()
+        verify(router).enableSelectMultiple()
+    }
+
+    @Test
+    fun shouldTurnOffSelectMultipleOnDoubleToggle() {
+        pictureViewerPresenter.toggleSelectImages()
+        verify(router).enableSelectMultiple()
+        pictureViewerPresenter.toggleSelectImages()
+        verify(router).disableSelectMultiple()
+    }
+
+    @Test
+    fun shouldDeleteImage() {
+
+        //  Arrange
+        pictureViewerPresenter.toggleSelectImages()
+        pictureViewerPresenter.selectImageToDisplay("bright-red-sunset.jpg")
+        pictureViewerPresenter.selectImage("bright-red-sunset.jpg")
+        pictureViewerPresenter.selectImage("tractor.jpg")
+
+        //  Act
+        pictureViewerPresenter.deleteSelected()
+
+        //  Assert
+        verify(router).hideActions()
+
+        assertEquals(1, model.listImages().blockingGet().size)
+
+        //  Verify no crash
+        pictureViewerPresenter.displayCurrentImage()
+    }
+
+    @Test
+    fun shouldNavigateBackWhenNoMorePicturesAfterDelete() {
+        //  Arrange
+        pictureViewerPresenter.toggleSelectImages()
+        pictureViewerPresenter.selectImageToDisplay("bright-red-sunset.jpg")
+        pictureViewerPresenter.selectImage("bright-red-sunset.jpg")
+        pictureViewerPresenter.selectImage("tractor.jpg")
+        pictureViewerPresenter.selectImage("night-fog.jpg")
+
+        //  Act
+        pictureViewerPresenter.deleteSelected()
+
+    }
+
+    @Test
+    fun shouldDeselectImage() {
+        //  Arrange
+        pictureViewerPresenter.toggleSelectImages()
+        pictureViewerPresenter.selectImage("bright-red-sunset.jpg")
+
+        //  Act
+        pictureViewerPresenter.selectImage("bright-red-sunset.jpg")
+
+        //  Assert
+        assertFalse("Selected", pictureViewerPresenter.selected("bright-red-sunset.jpg"))
+    }
+
+    @Test
+    fun shouldIndicateImageSelected() {
+        //  Arrange
+        pictureViewerPresenter.toggleSelectImages()
+        pictureViewerPresenter.selectImage("bright-red-sunset.jpg")
+
+        //  Assert
+        assertTrue("Selected", pictureViewerPresenter.selected("bright-red-sunset.jpg"))
+    }
+
 }
