@@ -182,7 +182,12 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
 
     fun deleteSelected(): Completable {
         return Completable.create(CompletableOnSubscribe {
-            this.secureFileSystemInteractor.delete(this.selectedFiles!!.toList())
+            val gallerySettings = getGallerySettings()
+            this.imageFilesInteractor.deleteImages(this.selectedFiles!!.toList())
+            if (gallerySettings.currentFile != null && selectedFiles!!.contains(gallerySettings.currentFile!!)) {
+                gallerySettings.currentFile = getNextFile(gallerySettings)
+                saveGallerySettings(gallerySettings)
+            }
             it.onComplete()
         }).subscribeOn(computation())
     }
@@ -191,6 +196,10 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
         return if (this.selectedFiles == null) false else {
             selectedFiles!!.size > 0
         }
+    }
+
+    fun isSelected(fileName: String): Boolean {
+        return if (this.selectedFiles != null) this.selectedFiles!!.contains(fileName) else false
     }
 
 }

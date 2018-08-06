@@ -9,8 +9,7 @@ import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
 import com.vandenbreemen.secretcamera.shittySolutionPleaseDelete.TestConstants
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertFalse
+import junit.framework.TestCase.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -101,6 +100,7 @@ class PictureViewerPresenterTest {
 
         //  Arrange
         pictureViewerPresenter.toggleSelectImages()
+        pictureViewerPresenter.selectImageToDisplay("bright-red-sunset.jpg")
         pictureViewerPresenter.selectImage("bright-red-sunset.jpg")
         pictureViewerPresenter.selectImage("tractor.jpg")
 
@@ -112,6 +112,32 @@ class PictureViewerPresenterTest {
         verify(router).disableSelectMultiple()
 
         assertEquals(1, model.listImages().blockingGet().size)
+
+        //  Verify no crash
+        pictureViewerPresenter.displayCurrentImage()
+    }
+
+    @Test
+    fun shouldDeselectImage() {
+        //  Arrange
+        pictureViewerPresenter.toggleSelectImages()
+        pictureViewerPresenter.selectImage("bright-red-sunset.jpg")
+
+        //  Act
+        pictureViewerPresenter.selectImage("bright-red-sunset.jpg")
+
+        //  Assert
+        assertFalse("Selected", pictureViewerPresenter.selected("bright-red-sunset.jpg"))
+    }
+
+    @Test
+    fun shouldIndicateImageSelected() {
+        //  Arrange
+        pictureViewerPresenter.toggleSelectImages()
+        pictureViewerPresenter.selectImage("bright-red-sunset.jpg")
+
+        //  Assert
+        assertTrue("Selected", pictureViewerPresenter.selected("bright-red-sunset.jpg"))
     }
 
 }

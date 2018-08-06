@@ -2,6 +2,7 @@ package com.vandenbreemen.secretcamera.mvp.gallery
 
 import android.graphics.Bitmap
 import android.util.Log
+import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Presenter
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.PresenterContract
@@ -21,6 +22,7 @@ class ImageFilesInteractor(private val sfs: SecureFileSystem) {
         private const val FILES_LIST_KEY = "__FILES_LIST"
     }
 
+    private val sfsInteractor = getSecureFileSystemInteractor(sfs)
     private val cache = object : Cache2kBuilder<String, Any>() {
 
     }.build()
@@ -37,6 +39,11 @@ class ImageFilesInteractor(private val sfs: SecureFileSystem) {
             Log.e(ImageFilesInteractor::class.java.simpleName, "Failed to load image bytes", exception)
             throw ApplicationError("Error loading $fileName")
         }
+    }
+
+    fun deleteImages(fileNames: List<String>) {
+        this.sfsInteractor.delete(fileNames)
+        this.cache.clear()  //  Force cache to reload since files were deleted
     }
 
     fun close() {
@@ -73,6 +80,7 @@ interface PictureViewerPresenter : PresenterContract {
     fun toggleSelectImages()
     fun selectImage(fileName: String)
     fun deleteSelected()
+    fun selected(filename: String): Boolean
 }
 
 class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: PictureViewerView, val router: PictureViewRouter) : Presenter<PictureViewerModel, PictureViewerView>(model, view), PictureViewerPresenter {
@@ -153,19 +161,27 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
     }
 
     override fun selectImage(fileName: String) {
-        model.selectImage(fileName)
+        if (model.isSelected(fileName)) {
+            model.deselectImage(fileName)
+        } else {
+            model.selectImage(fileName)
+        }
     }
 
     override fun deleteSelected() {
         if (model.hasSelectedImages()) {
+            router.hideActions()
             view.showLoadingSpinner()
             model.deleteSelected().observeOn(mainThread()).subscribe {
-                router.hideActions()
                 router.disableSelectMultiple()
                 view.hideLoadingSpinner()
             }
         } else {
             view.showError(ApplicationError("No Images Selected For Delete"))
         }
+    }
+
+    override fun selected(filename: String): Boolean {
+        return model.isSelected(filename)
     }
 }

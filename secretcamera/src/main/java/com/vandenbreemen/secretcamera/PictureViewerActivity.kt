@@ -11,11 +11,8 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.CheckBox
-import android.widget.ImageView
+import android.widget.*
 import android.widget.LinearLayout.HORIZONTAL
-import android.widget.ProgressBar
-import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
@@ -46,23 +43,28 @@ class ThumbnailAdapter(private val fileNames: List<String>,
     }
 
     override fun onBindViewHolder(holder: ThumbnailViewHolder, position: Int) {
-        presenter.thumbnail(fileNames[position]).subscribe({ bitmap ->
+        presenter.thumbnail(fileNames[position]).subscribe { bitmap ->
             val imageView = holder.view.findViewById<ImageView>(R.id.preview)
             imageView.setOnClickListener(View.OnClickListener { view -> presenter.selectImageToDisplay(fileNames[position]) })
             imageView.visibility = VISIBLE
             imageView.setImageBitmap(bitmap)
 
             //  Image select checkbox
-
             holder.view.findViewById<CheckBox>(R.id.checkBox).visibility = if (selectEnabled) VISIBLE else GONE
             if (selectEnabled) {
                 val checkbox = holder.view.findViewById<CheckBox>(R.id.checkBox)
-                //checkbox.isChecked = presenter.sel
+                checkbox.isChecked = presenter.selected(fileNames[position])
+                checkbox.setOnClickListener { v -> presenter.selectImage(fileNames[position]) }
+            } else {   //  Allow turning on multiselect
+                imageView.setOnLongClickListener({ v ->
+                    presenter.toggleSelectImages()
+                    true
+                })
             }
 
             val loadingSpinner = holder.view.findViewById<ProgressBar>(R.id.loading)
             loadingSpinner.visibility = GONE
-        })
+        }
     }
 
 }
@@ -92,6 +94,14 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter {
         val recyclerView = findViewById<RecyclerView>(R.id.pictureSelector)
         recyclerView.layoutManager = layoutManager
         recyclerView.visibility = GONE
+
+        //  Set up the actions
+        findViewById<ViewGroup>(R.id.pictureViewerActions).findViewById<Button>(R.id.cancel).setOnClickListener { v ->
+            presenter.toggleSelectImages()
+        }
+        findViewById<ViewGroup>(R.id.pictureViewerActions).findViewById<Button>(R.id.delete).setOnClickListener { v ->
+            presenter.deleteSelected()
+        }
 
     }
 
@@ -176,10 +186,12 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter {
     }
 
     override fun enableSelectMultiple() {
+        adapter!!.selectEnabled = true
         adapter!!.notifyDataSetChanged()
     }
 
     override fun disableSelectMultiple() {
+        adapter!!.selectEnabled = false
         adapter!!.notifyDataSetChanged()
     }
 }
