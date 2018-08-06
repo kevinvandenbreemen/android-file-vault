@@ -30,7 +30,10 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
 
     override fun onPause() {
         super.onPause()
-        mainMenuPresenter?.let { it.close() }
+        mainMenuPresenter?.let {
+            it.close()
+            finish()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
