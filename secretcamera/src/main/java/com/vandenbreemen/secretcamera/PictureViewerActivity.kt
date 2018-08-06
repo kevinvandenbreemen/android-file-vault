@@ -1,6 +1,7 @@
 package com.vandenbreemen.secretcamera
 
 import android.app.Activity
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -16,6 +17,7 @@ import android.widget.LinearLayout.HORIZONTAL
 import android.widget.Toast.LENGTH_SHORT
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewRouter
 import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewerPresenter
@@ -163,6 +165,12 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter {
         recyclerView.removeAllViews()
         recyclerView.visibility = GONE
         adapter = null
+    }
+
+    override fun navigateBack(sfsCredentials: SFSCredentials) {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra(SFSCredentials.PARM_CREDENTIALS, sfsCredentials)
+        startActivity(intent)
     }
 
     override fun end() {

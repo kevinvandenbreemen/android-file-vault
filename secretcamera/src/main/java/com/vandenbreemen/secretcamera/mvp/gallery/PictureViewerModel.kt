@@ -185,7 +185,11 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
             val gallerySettings = getGallerySettings()
             this.imageFilesInteractor.deleteImages(this.selectedFiles!!.toList())
             if (gallerySettings.currentFile != null && selectedFiles!!.contains(gallerySettings.currentFile!!)) {
-                gallerySettings.currentFile = getNextFile(gallerySettings)
+                if (imageFilesInteractor.listImageFiles().isNotEmpty()) {
+                    gallerySettings.currentFile = getNextFile(gallerySettings)
+                } else {
+                    gallerySettings.currentFile = null
+                }
                 saveGallerySettings(gallerySettings)
             }
             it.onComplete()
@@ -200,6 +204,12 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
 
     fun isSelected(fileName: String): Boolean {
         return if (this.selectedFiles != null) this.selectedFiles!!.contains(fileName) else false
+    }
+
+    fun hasMoreImages(): Single<Boolean> {
+        return listImages().flatMap<Boolean> { files ->
+            Single.just(files.isNotEmpty())
+        }.subscribeOn(computation())
     }
 
 }

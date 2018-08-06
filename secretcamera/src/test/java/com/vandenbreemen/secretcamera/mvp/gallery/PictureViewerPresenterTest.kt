@@ -117,6 +117,20 @@ class PictureViewerPresenterTest {
     }
 
     @Test
+    fun shouldNavigateBackWhenNoMorePicturesAfterDelete() {
+        //  Arrange
+        pictureViewerPresenter.toggleSelectImages()
+        pictureViewerPresenter.selectImageToDisplay("bright-red-sunset.jpg")
+        pictureViewerPresenter.selectImage("bright-red-sunset.jpg")
+        pictureViewerPresenter.selectImage("tractor.jpg")
+        pictureViewerPresenter.selectImage("night-fog.jpg")
+
+        //  Act
+        pictureViewerPresenter.deleteSelected()
+
+    }
+
+    @Test
     fun shouldDeselectImage() {
         //  Arrange
         pictureViewerPresenter.toggleSelectImages()

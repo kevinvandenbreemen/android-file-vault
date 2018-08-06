@@ -2,6 +2,7 @@ package com.vandenbreemen.secretcamera.mvp.gallery
 
 import android.graphics.Bitmap
 import android.util.Log
+import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Presenter
@@ -67,6 +68,7 @@ interface PictureViewRouter {
     fun hideActions()
     fun enableSelectMultiple()
     fun disableSelectMultiple()
+    fun navigateBack(sfsCredentials: SFSCredentials)
 }
 
 interface PictureViewerPresenter : PresenterContract {
@@ -174,8 +176,14 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
             view.hideImageSelector()
             view.showLoadingSpinner()
             model.deleteSelected().observeOn(mainThread()).subscribe {
-                view.hideLoadingSpinner()
-                displayCurrentImage()
+                model.hasMoreImages().subscribe { hasMore ->
+                    if (!hasMore) {
+                        router.navigateBack(model.copyCredentials())
+                    } else {
+                        view.hideLoadingSpinner()
+                        displayCurrentImage()
+                    }
+                }
             }
         } else {
             view.showError(ApplicationError("No Images Selected For Delete"))
