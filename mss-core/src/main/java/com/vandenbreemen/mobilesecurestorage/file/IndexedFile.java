@@ -1,6 +1,5 @@
 package com.vandenbreemen.mobilesecurestorage.file;
 
-import com.vandenbreemen.mobilesecurestorage.cache.CachedByteData;
 import com.vandenbreemen.mobilesecurestorage.data.ControlBytes;
 import com.vandenbreemen.mobilesecurestorage.data.Pair;
 import com.vandenbreemen.mobilesecurestorage.data.Serialization;
@@ -106,7 +105,7 @@ public class IndexedFile {
     /**
      * Cached data for files
      */
-    private Cache<String, CachedByteData> fileCache;
+    private Cache<String, Object> fileCache;
 
     /**
      * Use this only for testing.
@@ -114,7 +113,7 @@ public class IndexedFile {
     IndexedFile() {
         this.accessLock = new ReentrantReadWriteLock();
         this.bytesToBits = new BytesToBits();
-        this.fileCache = new Cache2kBuilder<String, CachedByteData>() {
+        this.fileCache = new Cache2kBuilder<String, Object>() {
         }
                 .entryCapacity(500)
                 .eternal(true).build();
@@ -857,9 +856,15 @@ public class IndexedFile {
 
     }
 
+    /**
+     * Load the given file, caching it if it has not already been cached
+     *
+     * @param fileName
+     * @return
+     */
     public Object loadAndCacheFile(String fileName) {
-        byte[] bytes = this.fileCache.computeIfAbsent(fileName, () -> new CachedByteData(doGetBytesForObjectFile(fileName))).getData();
-        return Serialization.deserializeBytes(bytes);
+        Object ret = this.fileCache.computeIfAbsent(fileName, () -> Serialization.deserializeBytes(doGetBytesForObjectFile(fileName)));
+        return ret;
     }
 
     public byte[] loadAndCacheBytesFromFile(String fileName) throws ChunkedMediumException {
