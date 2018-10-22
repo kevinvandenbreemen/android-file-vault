@@ -7,7 +7,6 @@ import com.vandenbreemen.mobilesecurestorage.file.IndexedFile.Chunk;
 import com.vandenbreemen.mobilesecurestorage.security.Bytes;
 import com.vandenbreemen.mobilesecurestorage.security.SecureString;
 import com.vandenbreemen.mobilesecurestorage.security.crypto.DualLayerEncryptionService;
-import com.vandenbreemen.mobilesecurestorage.security.crypto.EncryptionService;
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureDataUnit;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -42,17 +41,7 @@ public class IndexedFileTest {
     private SecureString password = DualLayerEncryptionService.generateKeys(new SecureString("Password123".getBytes()));
 
     @Test
-    public void testEncodeChunk() throws Exception {
-        byte[] toEncode = "this is a test".getBytes();
-        byte[] encoded = new IndexedFile().encodeChunk(toEncode);
-        assertEquals("Start of medium expected as first byte", ControlBytes.START_OF_MEDIUM, encoded[0]);
-        assertEquals("length index expected as next byte", ControlBytes.LENGTH_IND, encoded[1]);
-
-
-    }
-
-    @Test
-    public void testReadChunk() throws Exception {
+    public void testReadChunk() {
         byte[] toEncode = "this is a test".getBytes();
         byte[] encoded = new IndexedFile().encodeChunk(toEncode);
         byte[] decoded = new IndexedFile().readChunk(encoded);
@@ -83,6 +72,16 @@ public class IndexedFileTest {
         for (int i = 0; i < decoded.length; i++) {
             assertEquals("Byte at index " + i + " is incorrect", expected[i], decoded[i]);
         }
+    }
+
+    @Test
+    public void testEncodeChunk() {
+        byte[] toEncode = "this is a test".getBytes();
+        byte[] encoded = new IndexedFile().encodeChunk(toEncode);
+        assertEquals("Start of medium expected as first byte", ControlBytes.START_OF_MEDIUM, encoded[0]);
+        assertEquals("length index expected as next byte", ControlBytes.LENGTH_IND, encoded[1]);
+
+
     }
 
     @Test
@@ -214,10 +213,6 @@ public class IndexedFileTest {
         assertEquals("Possible corruption in serialized data!", "Secret", secureList.get(1));
     }
 
-    private EncryptionService getEncryptionService() {
-        return new DualLayerEncryptionService();
-    }
-
     //	Ultimate test:  Can we encrypt a chunk of data?
     @Test
     public void testEncryptedChunk() throws Exception {
@@ -247,7 +242,7 @@ public class IndexedFileTest {
 
     //	This is a smoke test.  No verification is performed
     @Test
-    public void testSavingAFileOneUnit() throws Exception {
+    public void testSavingAFileOneUnit() {
 
         File tempFile = TestConstants.getTestFile(("test_single_unit" + System.currentTimeMillis() + ".dat"));
 
@@ -262,7 +257,7 @@ public class IndexedFileTest {
     }
 
     @Test
-    public void testSavingAFileOneUnitAndThenRecovering() throws Exception {
+    public void testSavingAFileOneUnitAndThenRecovering() {
         File tempFile = TestConstants.getTestFile(("test_rw_single_unit" + System.currentTimeMillis() + ".dat"));
 
 
@@ -338,7 +333,7 @@ public class IndexedFileTest {
     }
 
     @Test
-    public void testAllocateMultipleChunksBecauseObjectTooLarge() throws Exception {
+    public void testAllocateMultipleChunksBecauseObjectTooLarge() {
 
         int maxItem = 10000;    //	Make a huge object with list with this many items
 
@@ -428,7 +423,7 @@ public class IndexedFileTest {
 
     //	This test causes blocks from two files to criss-cross
     @Test
-    public void testAllocateAccrossMultipleFiles() throws Exception {
+    public void testAllocateAccrossMultipleFiles() {
 
 
         int maxItem = 10000;    //	Make a huge object with list with this many items
@@ -489,7 +484,7 @@ public class IndexedFileTest {
 
 
     @Test
-    public void testAllocateAccrossMultipleFilesAndThenDeleteOne() throws Exception {
+    public void testAllocateAccrossMultipleFilesAndThenDeleteOne() {
 
 
         int maxItem = 10000;    //	Make a huge object with list with this many items
@@ -589,7 +584,7 @@ public class IndexedFileTest {
 
     //	Simulate reducing a file in size.  The medium should in turn reclaim previous units for storage
     @Test
-    public void testAllocateAccrossMultipleFilesAndThenTruncateOne() throws Exception {
+    public void testAllocateAccrossMultipleFilesAndThenTruncateOne() {
 
         FileSystemTestListener listener = new DefaultFileSystemTestListener();
 
@@ -747,7 +742,7 @@ public class IndexedFileTest {
 
     //	Validate importing files from disk into an indexed file
     @Test
-    public void testImportFile() throws Exception {
+    public void testImportFile() {
 
         FileSystemTestListener listener = new DefaultFileSystemTestListener();
 
