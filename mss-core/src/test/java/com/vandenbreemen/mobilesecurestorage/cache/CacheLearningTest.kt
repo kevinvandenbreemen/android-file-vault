@@ -4,7 +4,6 @@ import junit.framework.TestCase.*
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils
 import org.cache2k.Cache2kBuilder
 import org.junit.Test
-import java.util.concurrent.Callable
 
 /**
  * <h2>Intro</h2>
@@ -47,7 +46,7 @@ class CacheLearningTest {
 
 
         assertTrue("Bytes", ByteUtils.equals(byteArrayOf(2, 5, 0, 1),
-                fileBytesExample.computeIfAbsent("fileContent", Callable { CachedByteData(byteArrayOf(2, 5, 0, 1)) }).data))
+                fileBytesExample.computeIfAbsent("fileContent") { CachedByteData(byteArrayOf(2, 5, 0, 1)) }.data))
     }
 
     @Test
