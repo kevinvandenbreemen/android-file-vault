@@ -174,7 +174,7 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter {
     }
 
     override fun end() {
-
+        findViewById<ViewGroup>(R.id.overlay).visibility = VISIBLE
     }
 
     override fun showLoadingSpinner() {

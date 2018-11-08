@@ -193,4 +193,9 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
     override fun selected(filename: String): Boolean {
         return model.isSelected(filename)
     }
+
+    override fun close() {
+        super.close()
+        view.end()
+    }
 }
