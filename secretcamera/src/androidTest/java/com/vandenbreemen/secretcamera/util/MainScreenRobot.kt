@@ -111,5 +111,10 @@ class MainScreenRobot(val activity: Activity) {
         return GalleryRobot()
     }
 
+    fun clickProjects(): ProjectsRobot {
+        clickOn(R.id.projects)
+        return ProjectsRobot()
+    }
+
 
 }

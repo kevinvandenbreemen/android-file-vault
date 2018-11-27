@@ -102,6 +102,10 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
         mainMenuPresenter!!.takePicture()
     }
 
+    fun onSelectProjects(view: View) {
+
+    }
+
     override fun gotoTakeNote(credentials: SFSCredentials) {
         val takeNote = Intent(this, TakeNoteActivity::class.java)
         takeNote.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)

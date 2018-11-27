@@ -211,4 +211,20 @@ class MainActivityTest {
         }
     }
 
+    @Test
+    fun shouldAllowGoToProjectScreen() {
+        IdlingRegistry.getInstance().register(getElapsedTimeIdlingResource())
+
+        MainScreenRobot(activityRule.activity).apply {
+            deleteTestFile()
+            createNewSFS()
+
+            //  Select the Projects Section
+            clickProjects().apply {
+                checkOnProjectsPage()
+            }
+
+        }
+    }
+
 }
