@@ -8,6 +8,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -84,7 +85,18 @@ class NoteDetailsActivity : Activity(), NoteDetailsView {
     }
 
     fun onOkay(view:View){
+
+        val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        //Find the currently focused view, so we can grab the correct window token from it.
+        var view = getCurrentFocus()
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = View(this)
+        }
+        imm.hideSoftInputFromWindow(view!!.getWindowToken(), 0)
+
         presenter.onOk()
+
     }
 
     fun onEdit(view: View) {
