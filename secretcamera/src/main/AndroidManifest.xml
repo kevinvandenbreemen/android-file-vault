@@ -63,6 +63,11 @@
             android:configChanges="orientation|screenSize"
             android:excludeFromRecents="true"
             android:parentActivityName=".MainActivity"></activity>
+        <activity
+            android:name=".ProjectsActivity"
+            android:configChanges="orientation|screenSize"
+            android:excludeFromRecents="true"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

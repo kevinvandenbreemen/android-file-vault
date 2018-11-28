@@ -21,6 +21,10 @@ class SFSMainMenuPresenterImpl(val model:SFSMainMenuModel, val mainMenuView: SFS
         model.getNotes().subscribe({notes->mainMenuView.gotoNotesList(model.credentials, ArrayList<String>(notes))})
     }
 
+    override fun openProjects() {
+        mainMenuView.goToProjects(model.copyCredentials())
+    }
+
     override fun takeNote() {
         mainMenuView.gotoTakeNote(model.copyCredentials())
     }

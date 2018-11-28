@@ -16,6 +16,7 @@ class SFSMenuContract{
         fun takeNote()
         fun viewNotes()
         fun openGallery()
+        fun openProjects()
     }
 
     /**
@@ -26,6 +27,7 @@ class SFSMenuContract{
         fun gotoTakeNote(credentials: SFSCredentials)
         fun gotoNotesList(credentials:SFSCredentials, strings:ArrayList<String>)
         fun gotoGallery(credentials: SFSCredentials)
+        fun goToProjects(credentials: SFSCredentials)
     }
 }
 
