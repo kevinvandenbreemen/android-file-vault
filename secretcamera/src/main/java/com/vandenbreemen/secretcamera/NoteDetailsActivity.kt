@@ -86,6 +86,7 @@ class NoteDetailsActivity : Activity(), NoteDetailsView {
 
     fun onOkay(view:View){
 
+        //  See also https://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
         val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         //Find the currently focused view, so we can grab the correct window token from it.
         var view = getCurrentFocus()
