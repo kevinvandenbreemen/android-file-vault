@@ -221,7 +221,7 @@ class MainActivityTest {
 
             //  Select the Projects Section
             clickProjects().apply {
-                checkOnProjectsPage()
+                clickAddProject()
             }
 
         }

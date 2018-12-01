@@ -15,4 +15,6 @@
     <string name="delete">Delete</string>
     <string name="select">Select</string>
     <string name="projects">Projects</string>
+    <string name="project_name">Project Name</string>
+    <string name="project_description">Description of Project</string>
 </resources>

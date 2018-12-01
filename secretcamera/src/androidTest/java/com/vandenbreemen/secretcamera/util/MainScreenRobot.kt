@@ -8,6 +8,7 @@ import android.support.test.espresso.IdlingPolicies
 import android.support.test.espresso.IdlingRegistry
 import android.support.test.uiautomator.UiDevice
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
+import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotDisplayed
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotExist
 import com.schibsted.spain.barista.interaction.BaristaClickInteractions.clickOn
 import com.schibsted.spain.barista.interaction.BaristaEditTextInteractions.writeTo
@@ -113,6 +114,8 @@ class MainScreenRobot(val activity: Activity) {
 
     fun clickProjects(): ProjectsRobot {
         clickOn(R.id.projects)
+        assertDisplayed(R.id.addProjectFab)
+        assertNotDisplayed(R.id.addProjectDialog)
         return ProjectsRobot()
     }
 
