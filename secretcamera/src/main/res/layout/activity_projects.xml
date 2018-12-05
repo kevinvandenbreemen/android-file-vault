@@ -15,11 +15,12 @@
         android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:onClick="onAddProject"
         app:srcCompat="@android:drawable/ic_menu_add" />
 
-    <include
+    <LinearLayout
         android:id="@+id/addProjectDialog"
-        layout="@layout/add_project_details"
+        android:visibility="gone"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="24dp"
@@ -29,6 +30,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            layout="@layout/add_project_details"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
 
 </android.support.constraint.ConstraintLayout>
