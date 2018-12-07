@@ -54,17 +54,17 @@ dependencies {
 
     //  Testing dependencies
     testImplementation 'junit:junit:4.12'
-    testCompile group: 'org.robolectric', name: 'robolectric', version: '3.6.1'
-    testCompile group: 'org.hamcrest', name: 'java-hamcrest', version: '2.0.0.0'
+    testImplementation group: 'org.robolectric', name: 'robolectric', version: '3.6.1'
+    testImplementation group: 'org.hamcrest', name: 'java-hamcrest', version: '2.0.0.0'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
+    androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
     androidTestUtil 'com.android.support.test:orchestrator:1.0.1'
-    testCompile "org.awaitility:awaitility:$rootProject.ext.awaitilityVersion"
-    androidTestCompile "org.awaitility:awaitility:$rootProject.ext.awaitilityVersion"
-    androidTestCompile ('com.android.support.test.espresso:espresso-idling-resource:3.0.1') {
+    testImplementation "org.awaitility:awaitility:$rootProject.ext.awaitilityVersion"
+    androidTestImplementation "org.awaitility:awaitility:$rootProject.ext.awaitilityVersion"
+    androidTestImplementation ('com.android.support.test.espresso:espresso-idling-resource:3.0.1') {
         exclude module: 'support-annotations'
     }
-    androidTestCompile ("com.android.support.test.espresso:espresso-intents:$rootProject.ext.espressoVersion")
+    androidTestImplementation ("com.android.support.test.espresso:espresso-intents:$rootProject.ext.espressoVersion")
 
 }
