@@ -69,7 +69,7 @@ dependencies {
     implementation "com.google.dagger:dagger:$daggerVersion"
     implementation "com.google.dagger:dagger-android-support:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
-    provided 'javax.annotation:jsr250-api:1.0'
+    compileOnly 'javax.annotation:jsr250-api:1.0'
     kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
     implementation group: 'com.camerakit', name:'camerakit', version:'1.0.0-Snapshot', changing: true
@@ -85,11 +85,11 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin'
     }
     testImplementation 'junit:junit:4.12'
-    testCompile group: 'org.robolectric', name: 'robolectric', version: '3.6.1'
-    testCompile group: 'org.hamcrest', name: 'java-hamcrest', version: '2.0.0.0'
-    testCompile "org.mockito:mockito-core:$mockitoVersion"
-    testCompile "org.mockito:mockito-inline:$mockitoVersion"
-    androidTestCompile "org.awaitility:awaitility:$rootProject.ext.awaitilityVersion"
+    testImplementation group: 'org.robolectric', name: 'robolectric', version: '3.6.1'
+    testImplementation group: 'org.hamcrest', name: 'java-hamcrest', version: '2.0.0.0'
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "org.mockito:mockito-inline:$mockitoVersion"
+    androidTestImplementation "org.awaitility:awaitility:$rootProject.ext.awaitilityVersion"
 
 
     implementation 'com.android.support:design:26.1.0'
