@@ -80,7 +80,7 @@ dependencies {
     implementation project(path: ':mss-core')
     kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVersion"
     kaptTest "com.google.dagger:dagger-compiler:$daggerVersion"
-    androidTestCompile('com.schibsted.spain:barista:2.4.0') {
+    androidTestImplementation('com.schibsted.spain:barista:2.4.0') {
         exclude group: 'com.android.support'
         exclude group: 'org.jetbrains.kotlin'
     }
@@ -90,7 +90,6 @@ dependencies {
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
     testImplementation "org.mockito:mockito-inline:$mockitoVersion"
     androidTestImplementation "org.awaitility:awaitility:$rootProject.ext.awaitilityVersion"
-
 
     implementation 'com.android.support:design:26.1.0'
 }
