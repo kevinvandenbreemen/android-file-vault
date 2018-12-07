@@ -67,7 +67,7 @@ dependencies {
 
     //  Dagger
     implementation "com.google.dagger:dagger:$daggerVersion"
-    compile "com.google.dagger:dagger-android-support:$daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
     provided 'javax.annotation:jsr250-api:1.0'
     kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
@@ -77,7 +77,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    compile project(path: ':mss-core')
+    implementation project(path: ':mss-core')
     kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVersion"
     kaptTest "com.google.dagger:dagger-compiler:$daggerVersion"
     androidTestCompile('com.schibsted.spain:barista:2.4.0') {
