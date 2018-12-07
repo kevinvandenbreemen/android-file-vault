@@ -8,6 +8,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
@@ -77,6 +78,8 @@ class NoteDetailsActivity : Activity(), NoteDetailsView {
         super.onCreate(savedInstanceState)
         ActivitySecurity.setSecurity(this)
         setContentView(R.layout.activity_note_details)
+
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
     }
 
     override fun onResume() {
