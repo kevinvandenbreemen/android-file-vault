@@ -12,6 +12,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
 import junit.framework.TestCase
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -64,8 +65,8 @@ class ProjectListModelTest {
                 return credentials.password
             }
         }
-        TestCase.assertTrue(forVerification.exists("Test Project"))
-        TestCase.assertEquals(1, forVerification.listFiles(ProjectFileTypes.PROJECT).size)
+        assertTrue(forVerification.exists("Test Project"))
+        assertEquals(1, forVerification.listFiles(ProjectFileTypes.PROJECT).size)
     }
 
     @Test
@@ -90,7 +91,7 @@ class ProjectListModelTest {
             }
         }
 
-        TestCase.assertEquals(1, forVerification.listFiles(ProjectFileTypes.PROJECT).size)
+        assertEquals(1, forVerification.listFiles(ProjectFileTypes.PROJECT).size)
     }
 
 }
