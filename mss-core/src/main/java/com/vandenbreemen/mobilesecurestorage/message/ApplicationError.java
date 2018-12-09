@@ -17,6 +17,14 @@ public class ApplicationError extends Exception {
         super(message);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ApplicationError){
+            return ((ApplicationError) obj).getMessage() == getMessage();
+        }
+        return false;
+    }
+
     public ApplicationError(String message, Throwable cause) {
         super(message, cause);
     }

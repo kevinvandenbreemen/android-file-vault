@@ -1,5 +1,6 @@
 package com.vandenbreemen.secretcamera.mvp.impl.projects
 
+import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.api.Project
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListPresenter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListRouter
@@ -86,6 +87,24 @@ class ProjectListPresenterTest {
                         Project("New Project", "Test adding a new project")
                 )
         )
+
+    }
+
+    @Test
+    fun shouldDisplayErrorOnAddNewProject() {
+
+        //  Arrange
+        `when`(model.addNewProject(Project("New Project", "Test adding a new project"))).thenReturn(Completable.error(
+                ApplicationError("Failed to add Project"))
+        )
+
+        presenter.start()
+
+        //  Act
+        presenter.addProject(Project("New Project", "Test adding a new project"))
+
+        //  Assert
+        verify(view).showError(ApplicationError("Failed to add Project"))
 
     }
 
