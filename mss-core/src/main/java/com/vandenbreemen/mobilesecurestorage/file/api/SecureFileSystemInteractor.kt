@@ -21,7 +21,7 @@ interface SecureFileSystemInteractor {
     @Throws(ApplicationError::class)
     fun importToFile(fileDataToImport: ImportedFileData, fileName: String, fileType: FileType?): Boolean
 
-    fun save(obj: Serializable, fileName: String, fileType: FileTypes)
+    fun save(obj: Serializable, fileName: String, fileType: FileType)
     fun load(fileName: String, fileTypes: FileTypes): Serializable?
     fun delete(fileName: String)
     fun delete(fileNames: List<String>)
@@ -29,7 +29,7 @@ interface SecureFileSystemInteractor {
 }
 
 private class SecureFileSystemInteractorImpl(private val secureFileSystem: SecureFileSystem) : SecureFileSystemInteractor {
-    override fun save(obj: Serializable, fileName: String, fileTypes: FileTypes) {
+    override fun save(obj: Serializable, fileName: String, fileTypes: FileType) {
         secureFileSystem.storeObject(fileName, obj)
         secureFileSystem.setFileMetadata(fileName, FileMeta(fileTypes))
     }
