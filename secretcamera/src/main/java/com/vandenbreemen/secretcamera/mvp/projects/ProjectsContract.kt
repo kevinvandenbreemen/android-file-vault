@@ -12,8 +12,7 @@ VIPER-based pattern for managing projects
  */
 
 interface ProjectListPresenter : PresenterContract {
-
-
+    fun addProject(project: Project)
 }
 
 interface ProjectListView : View {

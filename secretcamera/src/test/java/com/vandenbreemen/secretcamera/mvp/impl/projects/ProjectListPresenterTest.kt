@@ -4,6 +4,7 @@ import com.vandenbreemen.secretcamera.api.Project
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListPresenter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListRouter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListView
+import io.reactivex.Completable
 import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
@@ -32,12 +33,6 @@ class ProjectListPresenterTest {
 
         `when`(model.init()).thenReturn(Single.just(Unit))
 
-        presenter = ProjectListPresenterImpl(model, view, router)
-    }
-
-    @Test
-    fun shouldDisplayProjectsOnStart(){
-
         //  Arrange
         `when`(model.getProjects()).thenReturn(Single.just(
                 listOf(
@@ -45,6 +40,12 @@ class ProjectListPresenterTest {
                         Project("Project 2", "The second Project")
                 )
         ))
+
+        presenter = ProjectListPresenterImpl(model, view, router)
+    }
+
+    @Test
+    fun shouldDisplayProjectsOnStart(){
 
         //  Act
         presenter.start()
@@ -54,6 +55,38 @@ class ProjectListPresenterTest {
                 Project("Project 1", "The first Project"),
                 Project("Project 2", "The second Project")
         ))
+    }
+
+    @Test
+    fun shouldTakeInNewProject() {
+
+        //  Arrange
+
+        `when`(model.addNewProject(Project("New Project", "Test adding a new project"))).thenReturn(Completable.complete())
+
+        presenter.start()
+
+        `when`(model.getProjects()).thenReturn(Single.just(
+                listOf(
+                        Project("Project 1", "The first Project"),
+                        Project("Project 2", "The second Project"),
+                        Project("New Project", "Test adding a new project")
+                )
+        ))
+
+        //  Act
+        presenter.addProject(Project("New Project", "Test adding a new project"))
+
+        //  Assert
+        verify(model).addNewProject(Project("New Project", "Test adding a new project"))
+        verify(view).showProjects(
+                listOf(
+                        Project("Project 1", "The first Project"),
+                        Project("Project 2", "The second Project"),
+                        Project("New Project", "Test adding a new project")
+                )
+        )
+
     }
 
 }
