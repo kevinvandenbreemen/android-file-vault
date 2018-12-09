@@ -2,13 +2,16 @@ package com.vandenbreemen.secretcamera.mvp.impl.projects
 
 import android.os.Environment
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.file.FileMeta
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.listFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
+import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
 import com.vandenbreemen.secretcamera.api.Project
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
 import junit.framework.TestCase
+import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -50,7 +53,35 @@ class ProjectListModelTest {
         val newProject = Project("Test Project", "This is a test description of the project")
 
         //  Act
-        model.addNewProject(newProject).subscribe()
+        val testObserver = model.addNewProject(newProject).test()
+
+        //  Assert
+        assertEquals(0, testObserver.errorCount())
+        testObserver.assertComplete()
+
+        val forVerification = object : SecureFileSystem(credentials.fileLocation){
+            override fun getPassword(): SecureString {
+                return credentials.password
+            }
+        }
+        TestCase.assertTrue(forVerification.exists("Test Project"))
+        TestCase.assertEquals(1, forVerification.listFiles(ProjectFileTypes.PROJECT).size)
+    }
+
+    @Test
+    fun shouldPreventAddingProjectWithSameTitleAsExistingProject() {
+
+        //  Arrange
+
+        sfs.storeObject("tEsT project", Project("other Projet", "Some other project"))
+        sfs.setFileMetadata("tEsT project", FileMeta(fileType = ProjectFileTypes.PROJECT))
+        model = ProjectListModel(credentials)
+        model.init().subscribe()
+
+        val newProject = Project("Test Project", "This is a test description of the project")
+
+        //  Act
+        assertEquals(1, model.addNewProject(newProject).test().errorCount())
 
         //  Assert
         val forVerification = object : SecureFileSystem(credentials.fileLocation){
@@ -58,7 +89,7 @@ class ProjectListModelTest {
                 return credentials.password
             }
         }
-        TestCase.assertTrue(forVerification.exists("Test Project"))
+
         TestCase.assertEquals(1, forVerification.listFiles(ProjectFileTypes.PROJECT).size)
     }
 

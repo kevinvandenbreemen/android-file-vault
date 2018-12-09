@@ -3,7 +3,9 @@ package com.vandenbreemen.secretcamera.mvp.impl.projects
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractor
 import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
+import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
+import com.vandenbreemen.mobilesecurestorage.security.crypto.listFiles
 import com.vandenbreemen.secretcamera.api.Project
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -29,7 +31,14 @@ class ProjectListModel(credentials: SFSCredentials): Model(credentials) {
 
             var projectTitle = project.title
 
+            sfs.listFiles(ProjectFileTypes.PROJECT).filter { fileName->fileName.toUpperCase().equals(projectTitle.toUpperCase()) }
+                    .firstOrNull()?.let {
+                        subscriber.onError(ApplicationError("Project named $projectTitle already exists"))
+                        return@create
+                    }
+
             sfsInteractor.save(project, projectTitle, ProjectFileTypes.PROJECT)
+            subscriber.onComplete()
         }
     }
 
