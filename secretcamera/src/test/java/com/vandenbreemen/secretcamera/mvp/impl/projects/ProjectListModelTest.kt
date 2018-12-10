@@ -105,6 +105,14 @@ class ProjectListModelTest {
         //  Assert
         test.assertNotComplete()
         assertEquals(1, test.errorCount())
+
+        val forVerification = object : SecureFileSystem(credentials.fileLocation){
+            override fun getPassword(): SecureString {
+                return credentials.password
+            }
+        }
+
+        assertEquals(0, forVerification.listFiles(ProjectFileTypes.PROJECT).size)
     }
 
 }
