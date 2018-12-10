@@ -29,7 +29,11 @@ class ProjectListModel(credentials: SFSCredentials): Model(credentials) {
     fun addNewProject(project: Project): Completable{
         return Completable.create { subscriber->
 
-            var projectTitle = project.title
+            val projectTitle = project.title
+            if(projectTitle.isBlank()){
+                subscriber.onError(ApplicationError("Project name is required"))
+                return@create
+            }
 
             sfs.listFiles(ProjectFileTypes.PROJECT).filter { fileName->fileName.toUpperCase().equals(projectTitle.toUpperCase()) }
                     .firstOrNull()?.let {

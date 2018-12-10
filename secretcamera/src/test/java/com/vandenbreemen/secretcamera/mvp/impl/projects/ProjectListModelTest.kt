@@ -10,7 +10,6 @@ import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
 import com.vandenbreemen.secretcamera.api.Project
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
-import junit.framework.TestCase
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import org.junit.Before
@@ -92,6 +91,20 @@ class ProjectListModelTest {
         }
 
         assertEquals(1, forVerification.listFiles(ProjectFileTypes.PROJECT).size)
+    }
+
+    @Test
+    fun shouldPreventAddingProjectWithNoTitle() {
+
+        //  Arrange
+        val completable = model.addNewProject(Project("", "Blabkab"))
+
+        //  Act
+        val test = completable.test()
+
+        //  Assert
+        test.assertNotComplete()
+        assertEquals(1, test.errorCount())
     }
 
 }
