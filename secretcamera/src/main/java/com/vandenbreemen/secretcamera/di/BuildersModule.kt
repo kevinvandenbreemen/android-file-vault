@@ -29,4 +29,7 @@ abstract class BuildersModule {
     @ContributesAndroidInjector(modules = [TakePicturePresenterModule::class])
     abstract fun bindTakePictureActivity(): TakePictureActivity
 
+    @ContributesAndroidInjector(modules = [ProjectManagementModule::class])
+    abstract fun bindProjectManagementActivity(): ProjectsActivity
+
 }

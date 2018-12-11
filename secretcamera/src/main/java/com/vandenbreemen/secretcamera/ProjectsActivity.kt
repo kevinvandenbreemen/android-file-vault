@@ -7,6 +7,8 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.AnimationUtils
+import android.widget.Button
+import android.widget.EditText
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.api.Project
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListPresenter
@@ -34,16 +36,32 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter {
 
     override fun onResume() {
         super.onResume()
+
+        presenter.start()
     }
 
     override fun onPause() {
         super.onPause()
     }
 
+    private fun onSubmitProjectDetails(dialog: View) {
+        val projectName = dialog.findViewById<EditText>(R.id.projectName)
+        val projectDescription = dialog.findViewById<EditText>(R.id.projectDescription)
+
+        val newProject = Project(projectName.text.toString(), projectDescription.text.toString())
+        presenter.addProject(newProject)
+    }
+
     fun showCreateProject() {
 
         val animation = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
         val dialog = findViewById<ViewGroup>(R.id.addProjectDialog)
+
+        val okButton = dialog.findViewById<Button>(R.id.ok)
+        okButton.setOnClickListener { v ->
+            onSubmitProjectDetails(dialog)
+        }
+
         dialog.visibility = VISIBLE
         dialog.startAnimation(animation)
 
