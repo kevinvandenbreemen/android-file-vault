@@ -2,6 +2,9 @@ package com.vandenbreemen.secretcamera
 
 import android.app.Activity
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
@@ -9,6 +12,7 @@ import android.view.WindowManager
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.api.Project
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListPresenter
@@ -16,6 +20,32 @@ import com.vandenbreemen.secretcamera.mvp.projects.ProjectListRouter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListView
 import dagger.android.AndroidInjection
 import javax.inject.Inject
+
+class ProjectViewHolder(val projectView: ViewGroup): RecyclerView.ViewHolder(projectView)
+
+class ProjectAdapter(private val dataSet: List<Project>): RecyclerView.Adapter<ProjectViewHolder>() {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProjectViewHolder {
+        val group = LayoutInflater.from(parent.context).inflate(
+                R.layout.project_list_item, parent, false
+        ) as ViewGroup
+
+        return ProjectViewHolder(group)
+
+    }
+
+    override fun getItemCount(): Int {
+        return dataSet.size
+    }
+
+    override fun onBindViewHolder(holder: ProjectViewHolder, position: Int) {
+        val viewGroup = holder.projectView
+        viewGroup.findViewById<TextView>(R.id.projectName).text = dataSet[position].title
+    }
+
+}
+
+
 
 /**
  *
@@ -32,6 +62,12 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter {
 
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         setContentView(R.layout.activity_projects)
+
+        findViewById<RecyclerView>(R.id.projectList).apply {
+
+            layoutManager = LinearLayoutManager(this@ProjectsActivity)
+
+        }
     }
 
     override fun onResume() {
@@ -72,6 +108,9 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter {
     }
 
     override fun showProjects(projects: List<Project>) {
+        findViewById<RecyclerView>(R.id.projectList).apply {
+            adapter = ProjectAdapter(projects)
+        }
     }
 
     override fun onReadyToUse() {
