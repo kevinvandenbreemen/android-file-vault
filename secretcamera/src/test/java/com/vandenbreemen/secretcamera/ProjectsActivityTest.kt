@@ -59,7 +59,7 @@ class ProjectsActivityTest {
         activity.findViewById<FloatingActionButton>(R.id.addProjectFab).performClick()
 
         //  Act
-        assertEquals(View.VISIBLE, activity.findViewById<FloatingActionButton>(R.id.addProjectDialog).visibility)
+        assertEquals(View.VISIBLE, activity.findViewById<ViewGroup>(R.id.addProjectDialog).visibility)
         activity.findViewById<EditText>(R.id.projectName).setText("Test Project")
         activity.findViewById<EditText>(R.id.projectDescription).setText("This is a test of adding a project to the system!")
         activity.findViewById<Button>(R.id.ok).performClick()

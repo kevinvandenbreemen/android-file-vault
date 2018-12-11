@@ -69,6 +69,25 @@ class ProjectListModelTest {
     }
 
     @Test
+    fun shouldGetProjectList() {
+        //  Arrange
+        model.addNewProject(Project("Project 1", "First Project")).subscribe()
+        model.addNewProject(Project("Project 2", "Second Project")).subscribe()
+
+        //  Act
+        val testObserver = model.getProjects().test()
+
+        //  Assert
+        testObserver.assertNoErrors()
+        testObserver.assertResult(
+                listOf(
+                        Project("Project 1", "First Project"),
+                        Project("Project 2", "Second Project")
+                )
+        )
+    }
+
+    @Test
     fun shouldPreventAddingProjectWithSameTitleAsExistingProject() {
 
         //  Arrange

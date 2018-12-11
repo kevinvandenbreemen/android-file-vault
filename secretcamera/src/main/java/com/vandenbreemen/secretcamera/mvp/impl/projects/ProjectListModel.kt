@@ -8,7 +8,12 @@ import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.mobilesecurestorage.security.crypto.listFiles
 import com.vandenbreemen.secretcamera.api.Project
 import io.reactivex.Completable
+import io.reactivex.CompletableOnSubscribe
 import io.reactivex.Single
+import io.reactivex.SingleOnSubscribe
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import io.reactivex.schedulers.Schedulers.computation
 
 class ProjectListModel(credentials: SFSCredentials): Model(credentials) {
 
@@ -23,27 +28,30 @@ class ProjectListModel(credentials: SFSCredentials): Model(credentials) {
     }
 
     fun getProjects(): Single<List<Project>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return Single.create(SingleOnSubscribe<List<Project>> {  subscriber ->
+            val fileNames = sfs.listFiles(ProjectFileTypes.PROJECT)
+            subscriber.onSuccess(fileNames.map { fileName -> sfs.loadFile(fileName) as Project })
+        }).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread())
     }
 
     fun addNewProject(project: Project): Completable{
-        return Completable.create { subscriber->
+        return Completable.create(CompletableOnSubscribe { subscriber->
 
             val projectTitle = project.title
             if(projectTitle.isBlank()){
                 subscriber.onError(ApplicationError("Project name is required"))
-                return@create
+                return@CompletableOnSubscribe
             }
 
             sfs.listFiles(ProjectFileTypes.PROJECT).filter { fileName->fileName.toUpperCase().equals(projectTitle.toUpperCase()) }
                     .firstOrNull()?.let {
                         subscriber.onError(ApplicationError("Project named $projectTitle already exists"))
-                        return@create
+                        return@CompletableOnSubscribe
                     }
 
             sfsInteractor.save(project, projectTitle, ProjectFileTypes.PROJECT)
             subscriber.onComplete()
-        }
+        }).subscribeOn(computation()).observeOn(AndroidSchedulers.mainThread())
     }
 
 
