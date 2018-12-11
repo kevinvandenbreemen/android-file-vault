@@ -4,6 +4,8 @@ import android.content.Intent
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
@@ -97,6 +99,23 @@ class ProjectsActivityTest {
 
         assertEquals("Projects not listed", 2, projectList.childCount)
 
+    }
+
+    @Test
+    fun shouldDestroySFSOnPause() {
+        val activity = buildActivity(ProjectsActivity::class.java, intent).create().resume().pause().get()
+
+        assertTrue(activity.presenter.isClosed())
+        Assert.assertEquals(VISIBLE, activity.findViewById<ViewGroup>(R.id.overlay).visibility)
+    }
+
+    @Test
+    fun shouldNotShowOverlayOnStart(){
+        //  Arrange
+        val activity = buildActivity(ProjectsActivity::class.java, intent).create().resume().get()
+
+        //  Assert
+        Assert.assertEquals(GONE, activity.findViewById<ViewGroup>(R.id.overlay).visibility)
     }
 
 }

@@ -78,6 +78,10 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter {
 
     override fun onPause() {
         super.onPause()
+
+        findViewById<ViewGroup>(R.id.overlay).visibility = View.VISIBLE
+        presenter.close()
+        finish()
     }
 
     private fun onSubmitProjectDetails(dialog: View) {

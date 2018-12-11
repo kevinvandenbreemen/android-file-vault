@@ -18,14 +18,6 @@ class ProjectListPresenterImpl(val model: ProjectListModel, val view: ProjectLis
         }
     }
 
-    override fun close() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun isClosed(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun addProject(project: Project) {
         model.addNewProject(project).subscribe({
             model.getProjects().subscribe { projects ->
