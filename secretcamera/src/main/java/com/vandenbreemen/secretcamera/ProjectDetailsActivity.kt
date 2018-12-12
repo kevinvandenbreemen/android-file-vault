@@ -6,6 +6,10 @@ import android.view.WindowManager
 
 class ProjectDetailsActivity: Activity() {
 
+    companion object {
+        val PARM_PROJECT_NAME = "__projectName"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

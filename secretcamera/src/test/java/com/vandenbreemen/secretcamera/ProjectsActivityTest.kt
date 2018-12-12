@@ -126,6 +126,7 @@ class ProjectsActivityTest {
 
         assertEquals(ProjectDetailsActivity::class.java, shadowOf(nextActivity).intentClass)
         assertNotNull(nextActivity.getSerializableExtra(SFSCredentials.PARM_CREDENTIALS))
+        assertEquals("Project 2", nextActivity.getStringExtra(ProjectDetailsActivity.PARM_PROJECT_NAME))
 
     }
 
