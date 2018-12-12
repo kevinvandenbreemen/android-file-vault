@@ -19,13 +19,13 @@ import com.vandenbreemen.secretcamera.mvp.impl.projects.ProjectListModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
 import junit.framework.Assert
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertTrue
+import junit.framework.TestCase.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric.buildActivity
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowApplication
 
 @RunWith(RobolectricTestRunner::class)
@@ -98,6 +98,34 @@ class ProjectsActivityTest {
         projectList.layout(0,0,100,1000)
 
         assertEquals("Projects not listed", 2, projectList.childCount)
+
+    }
+
+    @Test
+    fun shouldGoToProjectDetailsOnSelectProject() {
+
+        //  Arrange
+        val tempModel = ProjectListModel(sfsCredentials)
+        tempModel.init().subscribe()
+        tempModel.addNewProject(Project("Project 1", "The first Project")).subscribe()
+        tempModel.addNewProject(Project("Project 2", "The Second Project")).subscribe()
+
+        //  Act
+        val activity = buildActivity(ProjectsActivity::class.java, intent).create().resume().get()
+        val projectList = activity.findViewById<RecyclerView>(R.id.projectList)
+
+        //  Robolectric hack
+        projectList.measure(0,0)
+        projectList.layout(0,0,100,1000)
+
+        projectList.findViewHolderForAdapterPosition(1).itemView.performClick()
+
+        //  Assert
+        val nextActivity = shadowOf(activity).resultIntent
+        assertNotNull(nextActivity)
+
+        assertEquals(ProjectDetailsActivity::class.java, shadowOf(nextActivity).intentClass)
+        assertNotNull(nextActivity.getSerializableExtra(SFSCredentials.PARM_CREDENTIALS))
 
     }
 
