@@ -1,5 +1,6 @@
 package com.vandenbreemen.secretcamera.mvp.projects
 
+import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.PresenterContract
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.View
 import com.vandenbreemen.secretcamera.api.Project
@@ -20,6 +21,6 @@ interface ProjectListView : View {
 }
 
 interface ProjectListRouter {
-    fun gotoProjectDetails(project: Project)
+    fun gotoProjectDetails(projectName: String, credentials: SFSCredentials)
 
 }

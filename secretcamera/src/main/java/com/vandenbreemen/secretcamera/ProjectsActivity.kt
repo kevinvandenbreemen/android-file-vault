@@ -13,6 +13,7 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.api.Project
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListPresenter
@@ -70,7 +71,7 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter {
         }
     }
 
-    override fun gotoProjectDetails(project: Project) {
+    override fun gotoProjectDetails(projectName: String, credentials: SFSCredentials) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

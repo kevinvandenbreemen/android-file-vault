@@ -19,7 +19,7 @@ class ProjectListPresenterImpl(val model: ProjectListModel, val view: ProjectLis
     }
 
     override fun viewProjectDetails(project: Project) {
-        router.gotoProjectDetails(project)
+        router.gotoProjectDetails(project.title, model.copyCredentials())
     }
 
     override fun addProject(project: Project) {

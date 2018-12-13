@@ -1,5 +1,6 @@
 package com.vandenbreemen.secretcamera.mvp.impl.projects
 
+import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.api.Project
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListPresenter
@@ -11,8 +12,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
@@ -113,12 +113,14 @@ class ProjectListPresenterTest {
 
         //  Arrange
         val project = Project("New Project", "Details on the new Project")
+        val credentials = mock(SFSCredentials::class.java)
+        `when`(model.copyCredentials()).thenReturn(credentials)
 
         //  Act
         presenter.viewProjectDetails(project)
 
         //  Assert
-        verify(router).gotoProjectDetails(project)
+        verify(router).gotoProjectDetails("New Project", credentials)
     }
 
 }
