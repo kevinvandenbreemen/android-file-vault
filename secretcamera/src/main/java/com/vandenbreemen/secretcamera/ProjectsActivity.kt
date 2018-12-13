@@ -70,6 +70,10 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter {
         }
     }
 
+    override fun gotoProjectDetails(project: Project) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun onResume() {
         super.onResume()
 

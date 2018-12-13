@@ -108,4 +108,17 @@ class ProjectListPresenterTest {
 
     }
 
+    @Test
+    fun shouldViewProjectDetails() {
+
+        //  Arrange
+        val project = Project("New Project", "Details on the new Project")
+
+        //  Act
+        presenter.viewProjectDetails(project)
+
+        //  Assert
+        verify(router).gotoProjectDetails(project)
+    }
+
 }

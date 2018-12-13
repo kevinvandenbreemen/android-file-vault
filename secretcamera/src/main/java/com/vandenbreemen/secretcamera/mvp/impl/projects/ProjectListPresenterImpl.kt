@@ -18,6 +18,10 @@ class ProjectListPresenterImpl(val model: ProjectListModel, val view: ProjectLis
         }
     }
 
+    override fun viewProjectDetails(project: Project) {
+        router.gotoProjectDetails(project)
+    }
+
     override fun addProject(project: Project) {
         model.addNewProject(project).subscribe({
             model.getProjects().subscribe { projects ->
