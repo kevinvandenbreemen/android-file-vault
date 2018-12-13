@@ -113,6 +113,27 @@ class ProjectListModelTest {
     }
 
     @Test
+    fun shouldPreventAddingProjectWithSameTitleAsExistingFileName(){
+        //  Arrange
+        sfs.storeObject("TEST", "This is a test")
+        val newProject = Project("Test", "This is a test description of the project")
+        model = ProjectListModel(credentials)
+        model.init().subscribe()
+
+        //  Act
+        assertEquals(1, model.addNewProject(newProject).test().errorCount())
+
+        //  Assert
+        val forVerification = object : SecureFileSystem(credentials.fileLocation){
+            override fun getPassword(): SecureString {
+                return credentials.password
+            }
+        }
+
+        assertEquals(0, forVerification.listFiles(ProjectFileTypes.PROJECT).size)
+    }
+
+    @Test
     fun shouldPreventAddingProjectWithNoTitle() {
 
         //  Arrange

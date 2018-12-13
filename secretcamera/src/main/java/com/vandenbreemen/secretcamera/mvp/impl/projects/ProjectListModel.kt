@@ -5,6 +5,7 @@ import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractor
 import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
+import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.listFiles
 import com.vandenbreemen.secretcamera.api.Project
 import io.reactivex.Completable
@@ -42,6 +43,12 @@ class ProjectListModel(credentials: SFSCredentials): Model(credentials) {
                 subscriber.onError(ApplicationError("Project name is required"))
                 return@CompletableOnSubscribe
             }
+
+            sfs.extListFiles().asSequence().filter { fileName -> fileName.toUpperCase().equals(project.title.toUpperCase()) }
+                            .firstOrNull() ?.let { match ->
+                                subscriber.onError(ApplicationError("File named $match already exists"))
+                                return@CompletableOnSubscribe
+                            }
 
             sfs.listFiles(ProjectFileTypes.PROJECT).filter { fileName->fileName.toUpperCase().equals(projectTitle.toUpperCase()) }
                     .firstOrNull()?.let {
