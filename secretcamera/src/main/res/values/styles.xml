@@ -13,4 +13,9 @@
         <item name="android:textSize">8pt</item>
     </style>
 
+    <style name="mainHeaderDarkBackground">
+        <item name="android:textColor">@color/light_card</item>
+        <item name="android:textSize">14pt</item>
+    </style>
+
 </resources>

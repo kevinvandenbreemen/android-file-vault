@@ -14,7 +14,7 @@ class ProjectDetailsActivity: Activity() {
         super.onCreate(savedInstanceState)
 
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
-        //setContentView(R.layout.activity_project_detail)
+        setContentView(R.layout.activity_project_detail)
     }
 
 }
