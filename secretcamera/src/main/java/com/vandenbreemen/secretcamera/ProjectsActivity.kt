@@ -1,6 +1,7 @@
 package com.vandenbreemen.secretcamera
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -24,7 +25,7 @@ import javax.inject.Inject
 
 class ProjectViewHolder(val projectView: ViewGroup): RecyclerView.ViewHolder(projectView)
 
-class ProjectAdapter(private val dataSet: List<Project>): RecyclerView.Adapter<ProjectViewHolder>() {
+class ProjectAdapter(private val dataSet: List<Project>, private val projectListPresenter: ProjectListPresenter): RecyclerView.Adapter<ProjectViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProjectViewHolder {
         val group = LayoutInflater.from(parent.context).inflate(
@@ -42,6 +43,10 @@ class ProjectAdapter(private val dataSet: List<Project>): RecyclerView.Adapter<P
     override fun onBindViewHolder(holder: ProjectViewHolder, position: Int) {
         val viewGroup = holder.projectView
         viewGroup.findViewById<TextView>(R.id.projectName).text = dataSet[position].title
+
+        viewGroup.setOnClickListener{ v->
+            projectListPresenter.viewProjectDetails(dataSet[position])
+        }
     }
 
 }
@@ -72,7 +77,11 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter {
     }
 
     override fun gotoProjectDetails(projectName: String, credentials: SFSCredentials) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val intent = Intent(this, ProjectDetailsActivity::class.java)
+        intent.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
+        intent.putExtra(ProjectDetailsActivity.PARM_PROJECT_NAME, projectName)
+
+        startActivity(intent)
     }
 
     override fun onResume() {
@@ -118,7 +127,7 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter {
 
     override fun showProjects(projects: List<Project>) {
         findViewById<RecyclerView>(R.id.projectList).apply {
-            adapter = ProjectAdapter(projects)
+            adapter = ProjectAdapter(projects, presenter)
         }
     }
 

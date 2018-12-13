@@ -121,11 +121,11 @@ class ProjectsActivityTest {
         projectList.findViewHolderForAdapterPosition(1).itemView.performClick()
 
         //  Assert
-        val nextActivity = shadowOf(activity).resultIntent
+        val nextActivity = shadowOf(activity).nextStartedActivity
         assertNotNull(nextActivity)
 
         assertEquals(ProjectDetailsActivity::class.java, shadowOf(nextActivity).intentClass)
-        assertNotNull(nextActivity.getSerializableExtra(SFSCredentials.PARM_CREDENTIALS))
+        assertNotNull(nextActivity.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS))
         assertEquals("Project 2", nextActivity.getStringExtra(ProjectDetailsActivity.PARM_PROJECT_NAME))
 
     }
