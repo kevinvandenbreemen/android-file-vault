@@ -68,6 +68,11 @@
             android:configChanges="orientation|screenSize"
             android:excludeFromRecents="true"
             android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".ProjectDetailsActivity"
+            android:excludeFromRecents="true"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
