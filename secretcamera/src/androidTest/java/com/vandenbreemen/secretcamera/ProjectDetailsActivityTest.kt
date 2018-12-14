@@ -8,6 +8,7 @@ import android.support.test.espresso.IdlingRegistry
 import android.support.test.rule.ActivityTestRule
 import android.util.Log
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
+import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotDisplayed
 import com.schibsted.spain.barista.interaction.BaristaClickInteractions.clickOn
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
@@ -78,6 +79,12 @@ class ProjectDetailsActivityTest {
         waitResource?.let {
             IdlingRegistry.getInstance().unregister(it)
         }
+    }
+
+    @Test
+    fun shouldHideProjectDescriptionOnInitialLoad() {
+        //  Assert
+        assertNotDisplayed(R.id.projectDescription)
     }
 
     @Test

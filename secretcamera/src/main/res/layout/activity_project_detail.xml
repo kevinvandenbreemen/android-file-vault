@@ -37,8 +37,22 @@
 
     </LinearLayout>
 
+
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleCard"
+        tools:layout_editor_absoluteX="8dp">
+
+    </android.support.constraint.ConstraintLayout>
+
     <android.support.v7.widget.CardView
-        android:id="@+id/cardView2"
+        android:id="@+id/descriptionCard"
         android:layout_width="0dp"
         android:layout_height="100dp"
         android:layout_marginTop="8dp"
@@ -58,17 +72,17 @@
             <TextView
                 android:id="@+id/projectDescription"
                 style="@style/title"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:ellipsize="end"
-                android:fadingEdgeLength="20dp"
-                android:inputType="textMultiLine"
-                android:layout_width="wrap_content"
-                android:lines="4"
-                android:requiresFadingEdge="vertical"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
+                android:ellipsize="end"
+                android:fadingEdgeLength="20dp"
+                android:inputType="textMultiLine"
+                android:lines="4"
+                android:requiresFadingEdge="vertical"
                 android:text="@string/lorem_ipsum"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -77,18 +91,6 @@
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.CardView>
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleCard"
-        tools:layout_editor_absoluteX="8dp">
-
-    </android.support.constraint.ConstraintLayout>
 
     <android.support.v7.widget.CardView
         android:id="@+id/actionsButton"
@@ -101,7 +103,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/cardView2"
+        app:layout_constraintStart_toEndOf="@+id/descriptionCard"
         app:layout_constraintTop_toBottomOf="@+id/titleCard"
         app:layout_constraintVertical_bias="0.0">
 
