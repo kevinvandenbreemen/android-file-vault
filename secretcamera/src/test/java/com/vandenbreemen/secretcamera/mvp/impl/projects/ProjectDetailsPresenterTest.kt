@@ -37,11 +37,12 @@ class ProjectDetailsPresenterTest {
         projectDetailsPresenter = ProjectDetailsPresenterImpl(projectDetailsModel, projectDetailsView, projectDetailsRouter)
 
         `when`(projectDetailsModel.getDescription()).thenReturn(project.details)
+        `when`(projectDetailsModel.getProjectTitle()).thenReturn(project.title)
 
     }
 
     @Test
-    fun shouldDisplayProjectNameOnStart() {
+    fun shouldDisplayProjectDescriptionOnStart() {
 
         //  Arrange
         projectDetailsPresenter.start()
@@ -49,6 +50,15 @@ class ProjectDetailsPresenterTest {
         //  Act
         verify(projectDetailsView).showDescription(project.details)
 
+    }
+
+    @Test
+    fun shouldDisplayProjectNameOnStart() {
+        //  Arrange
+        projectDetailsPresenter.start()
+
+        //  Act
+        verify(projectDetailsView).showName(project.title)
     }
 
 }

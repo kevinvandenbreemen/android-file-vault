@@ -6,6 +6,7 @@ import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.secretcamera.R.id.projectDescription
+import com.vandenbreemen.secretcamera.R.id.projectName
 import com.vandenbreemen.secretcamera.api.Project
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
@@ -59,6 +60,15 @@ class ProjectDetailsActivityFunctionalTest {
         //  Assert
         assertEquals(project.details, activity.findViewById<TextView>(projectDescription).text.toString())
 
+    }
+
+    @Test
+    fun projectNameShouldShowOnScreen() {
+        //  Act
+        val activity = Robolectric.buildActivity(ProjectsActivity::class.java, intent).create().resume().get()
+
+        //  Assert
+        assertEquals(project.title, activity.findViewById<TextView>(projectName).text.toString())
     }
 
 }

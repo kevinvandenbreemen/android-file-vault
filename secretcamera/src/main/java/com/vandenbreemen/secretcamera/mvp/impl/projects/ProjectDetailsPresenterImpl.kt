@@ -11,5 +11,6 @@ class ProjectDetailsPresenterImpl(val projectDetailsModel: ProjectDetailsModel, 
 
     override fun setupView() {
         projectDetailsView.showDescription(projectDetailsModel.getDescription())
+        projectDetailsView.showName(projectDetailsModel.getProjectTitle())
     }
 }

@@ -31,6 +31,7 @@ interface ProjectDetailsPresenter : PresenterContract {
 
 interface ProjectDetailsView : View {
     fun showDescription(description: String)
+    fun showName(title: String)
 }
 
 interface ProjectDetailsRouter {
