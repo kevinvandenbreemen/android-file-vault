@@ -18,11 +18,15 @@ class ProjectDetailsModel(val projectName: String, credentials: SFSCredentials):
 
     override fun setup() {
         sfsInteractor = getSecureFileSystemInteractor(sfs)
-
+        project = sfsInteractor.load(projectName, ProjectFileTypes.PROJECT) as Project
     }
 
     fun getDescription(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return project.details
+    }
+
+    fun getProjectTitle(): String {
+        return project.title
     }
 
 
