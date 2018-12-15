@@ -1,5 +1,6 @@
 package com.vandenbreemen.secretcamera
 
+import android.animation.Animator
 import android.app.Activity
 import android.graphics.Point
 import android.os.Bundle
@@ -13,6 +14,8 @@ class ProjectDetailsActivity: Activity() {
     }
 
     var screenWidth: Int = 0
+
+    var actionsShowing = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +33,74 @@ class ProjectDetailsActivity: Activity() {
 
         actionsButton.translationX = -1 * (screenWidth.toFloat() - 50)
         descriptionCard.translationX = -1 * (screenWidth.toFloat() - 50)
+
+        actionsButton.setOnClickListener { v ->
+            if (actionsShowing) {
+                hideActionsSection()
+            } else {
+                showActionsSection()
+            }
+        }
+    }
+
+    fun showActionsSection() {
+
+        val animationListener = object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {
+
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {
+                actionsShowing = true
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {
+
+            }
+
+            override fun onAnimationStart(animation: Animator?) {
+
+            }
+
+        }
+
+        actionsButton.animate()
+                .translationXBy(screenWidth.toFloat())
+                .setListener(animationListener).duration = 300
+
+        descriptionCard.animate()
+                .translationXBy(screenWidth.toFloat())
+                .setListener(animationListener).duration = 300
+
+    }
+
+    fun hideActionsSection() {
+        val animationListener = object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {
+
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {
+                actionsShowing = false
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {
+
+            }
+
+            override fun onAnimationStart(animation: Animator?) {
+
+            }
+
+        }
+
+        actionsButton.animate()
+                .translationXBy(-screenWidth.toFloat())
+                .setListener(animationListener).duration = 300
+
+        descriptionCard.animate()
+                .translationXBy(-screenWidth.toFloat())
+                .setListener(animationListener).duration = 300
     }
 
 }

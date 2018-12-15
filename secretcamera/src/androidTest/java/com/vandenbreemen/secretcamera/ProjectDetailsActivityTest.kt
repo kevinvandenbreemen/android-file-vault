@@ -7,15 +7,17 @@ import android.support.test.espresso.IdlingPolicies
 import android.support.test.espresso.IdlingRegistry
 import android.support.test.rule.ActivityTestRule
 import android.util.Log
+import android.view.View
+import android.widget.TextView
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotDisplayed
-import com.schibsted.spain.barista.interaction.BaristaClickInteractions.clickOn
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.secretcamera.api.Project
 import com.vandenbreemen.secretcamera.mvp.impl.projects.ProjectListModel
 import com.vandenbreemen.secretcamera.util.ElapsedTimeIdlingResource
+import junit.framework.TestCase.assertEquals
 import org.awaitility.Awaitility
 import org.junit.After
 import org.junit.Before
@@ -91,7 +93,55 @@ class ProjectDetailsActivityTest {
     fun shouldShowProjectDetailsOnClickOfActionsButton() {
 
         //  Act
-        clickOn(R.id.actionsButton)
+        activityRule.activity.runOnUiThread {
+            activityRule.activity.findViewById<View>(R.id.actionsButton).performClick()
+        }
+        Thread.sleep(1000)
+
+
+
+        //  Assert
+        assertDisplayed(R.id.projectDescription)
+        assertEquals(
+                project.details,
+                activityRule.activity.findViewById<TextView>(R.id.projectDescription).text.toString()
+        )
+
+    }
+
+    @Test
+    fun shouldHideProjectDetailsOnSecondClickOfActionsButton() {
+        //  Act
+        activityRule.activity.runOnUiThread {
+            activityRule.activity.findViewById<View>(R.id.actionsButton).performClick()
+        }
+        Thread.sleep(500)
+        //  Act
+        activityRule.activity.runOnUiThread {
+            activityRule.activity.findViewById<View>(R.id.actionsButton).performClick()
+        }
+        Thread.sleep(500)
+
+        assertNotDisplayed(R.id.projectDescription)
+    }
+
+    @Test
+    fun shouldBeAbleToReUseActionsButtonAfterHidingItAgain() {
+
+        activityRule.activity.runOnUiThread {
+            activityRule.activity.findViewById<View>(R.id.actionsButton).performClick()
+        }
+        Thread.sleep(500)
+
+        activityRule.activity.runOnUiThread {
+            activityRule.activity.findViewById<View>(R.id.actionsButton).performClick()
+        }
+        Thread.sleep(500)
+
+        activityRule.activity.runOnUiThread {
+            activityRule.activity.findViewById<View>(R.id.actionsButton).performClick()
+        }
+        Thread.sleep(500)
 
         //  Assert
         assertDisplayed(R.id.projectDescription)
