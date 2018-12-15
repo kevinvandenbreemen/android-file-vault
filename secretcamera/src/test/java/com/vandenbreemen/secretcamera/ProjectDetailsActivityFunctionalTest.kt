@@ -3,11 +3,14 @@ package com.vandenbreemen.secretcamera
 import android.content.Intent
 import android.widget.TextView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.file.FileMeta
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
+import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
 import com.vandenbreemen.secretcamera.R.id.projectDescription
 import com.vandenbreemen.secretcamera.R.id.projectName
 import com.vandenbreemen.secretcamera.api.Project
+import com.vandenbreemen.secretcamera.mvp.impl.projects.ProjectFileTypes
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
 import org.junit.Assert.assertEquals
@@ -45,6 +48,9 @@ class ProjectDetailsActivityFunctionalTest {
         }
 
         project = Project("Project Detail Test", "Project details functional test")
+        sfs.storeObject(project.title, project)
+        sfs.setFileMetadata(project.title, FileMeta(ProjectFileTypes.PROJECT))
+
         intent = Intent(ShadowApplication.getInstance().applicationContext, ProjectDetailsActivity::class.java)
         intent.putExtra(SFSCredentials.PARM_CREDENTIALS, sfsCredentials)
         intent.putExtra(ProjectDetailsActivity.PARM_PROJECT_NAME, "Project Detail Test")
@@ -55,7 +61,7 @@ class ProjectDetailsActivityFunctionalTest {
     fun projectDescriptionSectionShouldShowProjectDescription() {
 
         //  Act
-        val activity = Robolectric.buildActivity(ProjectsActivity::class.java, intent).create().resume().get()
+        val activity = Robolectric.buildActivity(ProjectDetailsActivity::class.java, intent).create().resume().get()
 
         //  Assert
         assertEquals(project.details, activity.findViewById<TextView>(projectDescription).text.toString())
@@ -65,7 +71,7 @@ class ProjectDetailsActivityFunctionalTest {
     @Test
     fun projectNameShouldShowOnScreen() {
         //  Act
-        val activity = Robolectric.buildActivity(ProjectsActivity::class.java, intent).create().resume().get()
+        val activity = Robolectric.buildActivity(ProjectDetailsActivity::class.java, intent).create().resume().get()
 
         //  Assert
         assertEquals(project.title, activity.findViewById<TextView>(projectName).text.toString())

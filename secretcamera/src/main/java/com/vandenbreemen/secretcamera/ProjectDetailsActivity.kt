@@ -5,9 +5,16 @@ import android.app.Activity
 import android.graphics.Point
 import android.os.Bundle
 import android.view.WindowManager
+import android.widget.TextView
+import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsPresenter
+import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsRouter
+import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsView
+import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_project_detail.*
+import javax.inject.Inject
 
-class ProjectDetailsActivity: Activity() {
+class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRouter {
 
     companion object {
         val PARM_PROJECT_NAME = "__projectName"
@@ -17,7 +24,12 @@ class ProjectDetailsActivity: Activity() {
 
     var actionsShowing = false
 
+    @Inject
+    lateinit var presenter: ProjectDetailsPresenter
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
+
         super.onCreate(savedInstanceState)
 
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
@@ -41,6 +53,12 @@ class ProjectDetailsActivity: Activity() {
                 showActionsSection()
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        presenter.start()
     }
 
     fun showActionsSection() {
@@ -103,4 +121,18 @@ class ProjectDetailsActivity: Activity() {
                 .setListener(animationListener).duration = 300
     }
 
+    override fun showDescription(description: String) {
+        projectDescription.text = description
+    }
+
+    override fun showName(title: String) {
+        findViewById<TextView>(R.id.projectName).text = title
+    }
+
+    override fun onReadyToUse() {
+    }
+
+    override fun showError(error: ApplicationError) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }

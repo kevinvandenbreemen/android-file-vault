@@ -32,4 +32,7 @@ abstract class BuildersModule {
     @ContributesAndroidInjector(modules = [ProjectManagementModule::class])
     abstract fun bindProjectManagementActivity(): ProjectsActivity
 
+    @ContributesAndroidInjector(modules=[ProjectDetailsModule::class])
+    abstract  fun bindProjectDetailsActivity(): ProjectDetailsActivity
+
 }
