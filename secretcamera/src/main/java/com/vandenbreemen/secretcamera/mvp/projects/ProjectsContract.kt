@@ -24,3 +24,15 @@ interface ProjectListRouter {
     fun gotoProjectDetails(projectName: String, credentials: SFSCredentials)
 
 }
+
+interface ProjectDetailsPresenter : PresenterContract {
+
+}
+
+interface ProjectDetailsView : View {
+    fun showDescription(description: String)
+}
+
+interface ProjectDetailsRouter {
+
+}
