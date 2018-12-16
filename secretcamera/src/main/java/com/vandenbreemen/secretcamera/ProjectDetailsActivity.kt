@@ -23,6 +23,8 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
 
     var screenWidth: Int = 0
 
+    var transitionDistance: Int = 0
+
     var actionsShowing = false
 
     @Inject
@@ -44,8 +46,9 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
 
         //  Move the actions off to the left
 
-        actionsButton.translationX = -1 * (screenWidth.toFloat() - 50)
-        descriptionCard.translationX = -1 * (screenWidth.toFloat() - 50)
+        transitionDistance = 50
+        actionsButton.translationX = -1 * (screenWidth.toFloat() - transitionDistance)
+        descriptionCard.translationX = -1 * (screenWidth.toFloat() - transitionDistance)
 
         actionsButton.setOnClickListener { v ->
             if (actionsShowing) {
@@ -84,11 +87,11 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
         }
 
         actionsButton.animate()
-                .translationXBy(screenWidth.toFloat())
+                .translationXBy(screenWidth.toFloat() - transitionDistance)
                 .setListener(animationListener).duration = 300
 
         descriptionCard.animate()
-                .translationXBy(screenWidth.toFloat())
+                .translationXBy(screenWidth.toFloat() - transitionDistance)
                 .setListener(animationListener).duration = 300
 
     }
@@ -114,11 +117,11 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
         }
 
         actionsButton.animate()
-                .translationXBy(-screenWidth.toFloat())
+                .translationXBy(-(screenWidth.toFloat() - transitionDistance))
                 .setListener(animationListener).duration = 300
 
         descriptionCard.animate()
-                .translationXBy(-screenWidth.toFloat())
+                .translationXBy(-(screenWidth.toFloat() - transitionDistance))
                 .setListener(animationListener).duration = 300
     }
 
