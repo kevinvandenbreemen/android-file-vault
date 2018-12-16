@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="10dp"
+    android:id="@+id/addProjectDetails"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -26,7 +27,9 @@
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Name"
+        tools:text="Project Name"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintBottom_toTopOf="@id/textView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="51dp" />
@@ -50,6 +53,7 @@
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:inputType="textImeMultiLine"
+        android:minLines="10"
         android:maxLines="10"
         android:singleLine="false"
         android:text=""
@@ -66,7 +70,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Button"
+        android:text="@string/ok"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

@@ -7,9 +7,11 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.EditText
@@ -129,6 +131,31 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter {
         findViewById<RecyclerView>(R.id.projectList).apply {
             adapter = ProjectAdapter(projects, presenter)
         }
+        hideCreateProject()
+    }
+
+    private fun hideCreateProject() {
+        val dialog = findViewById<ViewGroup>(R.id.addProjectDialog)
+        if(dialog.visibility == GONE){
+            return
+        }
+
+        val animation = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out)
+        animation.setAnimationListener(object : Animation.AnimationListener{
+            override fun onAnimationRepeat(animation: Animation?) {
+
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+                dialog.visibility = GONE
+            }
+
+            override fun onAnimationStart(animation: Animation?) {
+
+            }
+        })
+
+        dialog.startAnimation(animation)
     }
 
     override fun onReadyToUse() {
