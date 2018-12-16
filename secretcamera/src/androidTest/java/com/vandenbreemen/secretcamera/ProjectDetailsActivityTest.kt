@@ -1,11 +1,13 @@
 package com.vandenbreemen.secretcamera
 
+import android.Manifest
 import android.content.Intent
 import android.os.Environment
 import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.IdlingPolicies
 import android.support.test.espresso.IdlingRegistry
 import android.support.test.rule.ActivityTestRule
+import android.support.test.rule.GrantPermissionRule
 import android.util.Log
 import android.view.View
 import android.widget.TextView
@@ -21,6 +23,7 @@ import junit.framework.TestCase.assertEquals
 import org.awaitility.Awaitility
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -43,6 +46,9 @@ class ProjectDetailsActivityTest {
 
     val activityRule: ActivityTestRule<ProjectDetailsActivity> = ActivityTestRule(ProjectDetailsActivity::class.java)
 
+    @get:Rule
+    val permissions = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+
     @Before
     fun setup() {
 
@@ -50,7 +56,9 @@ class ProjectDetailsActivityTest {
         IdlingPolicies.setMasterPolicyTimeout(60, TimeUnit.SECONDS);
         IdlingPolicies.setIdlingResourceTimeout(26, TimeUnit.SECONDS);
 
-        this.sfsFile = File(Environment.getExternalStorageDirectory().absolutePath + File.separator + GalleryTest.TESTDIR + File.separator + fileName)
+
+        this.sfsFile = File(Environment.getExternalStorageDirectory().absolutePath + File.separator + fileName)
+        this.sfsFile.createNewFile()
         //  Set up secure file system
         val sfs = object : SecureFileSystem(sfsFile) {
             override fun getPassword(): SecureString {
@@ -62,7 +70,10 @@ class ProjectDetailsActivityTest {
         sfsCredentials = SFSCredentials(sfsFile, SecureFileSystem.generatePassword(SecureString.fromPassword(GalleryTest.PASSWORD)))
 
         project = Project("UI Test Project", "Project of validating that the project details screen works as expected")
-        ProjectListModel(sfsCredentials).addNewProject(project)
+        val tempModel = ProjectListModel(sfsCredentials)
+        tempModel.init().blockingGet()
+        tempModel.addNewProject(project).blockingAwait()
+
 
 
         //  Fire up the activity now

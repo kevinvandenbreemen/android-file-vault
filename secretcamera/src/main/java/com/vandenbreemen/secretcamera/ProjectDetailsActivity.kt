@@ -6,6 +6,7 @@ import android.graphics.Point
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.TextView
+import android.widget.Toast
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsPresenter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsRouter
@@ -133,6 +134,6 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
     }
 
     override fun showError(error: ApplicationError) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Toast.makeText(this, error.localizedMessage, Toast.LENGTH_LONG).show()
     }
 }
