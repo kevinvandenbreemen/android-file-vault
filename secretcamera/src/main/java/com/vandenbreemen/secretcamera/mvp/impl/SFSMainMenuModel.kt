@@ -7,6 +7,7 @@ import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.getFileMeta
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.secretcamera.mvp.gallery.PicturesFileTypes
+import com.vandenbreemen.secretcamera.mvp.impl.projects.ProjectFileTypes
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
@@ -21,7 +22,7 @@ import io.reactivex.schedulers.Schedulers.computation
 class SFSMainMenuModel( val credentials: SFSCredentials):Model(credentials) {
     override fun setup() {
         SystemLog.get().debug("SFSMainMenu Engaged.  The following file type collections available: " +
-                "${NoteFileTypes.values()}, ${PicturesFileTypes.values()}")
+                "${NoteFileTypes.values()}, ${PicturesFileTypes.values()}, ${ProjectFileTypes.values()}")
     }
 
     override fun onClose() {

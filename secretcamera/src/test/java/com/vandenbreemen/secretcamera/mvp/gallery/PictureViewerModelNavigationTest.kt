@@ -221,4 +221,18 @@ class PictureViewerModelTest {
         assertTrue("Closed", imageFilesInteractorClosed)
     }
 
+    @Test
+    @Config(shadows = [FailingBitmapFactory::class])
+    fun shouldGracefullyHandleFailedImageLoad() {
+        //  Arrange
+        sfs().importFile(TestConstants.NON_IMAGE)
+        sfs().setFileMetadata(TestConstants.NON_IMAGE.name, FileMeta(PicturesFileTypes.IMPORTED_IMAGE))
+        this.model = PictureViewerModel(credentials)
+        this.model.init().subscribe()
+
+        //  Act
+        val observer = model.loadImage(TestConstants.NON_IMAGE.name).test()
+        assertEquals(1, observer.errorCount())
+    }
+
 }

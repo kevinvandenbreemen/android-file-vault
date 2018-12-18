@@ -3,6 +3,8 @@ package com.vandenbreemen.secretcamera.mvp.gallery
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.ThumbnailUtils
+import com.vandenbreemen.mobilesecurestorage.log.SystemLog
+import com.vandenbreemen.mobilesecurestorage.log.e
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
 import io.reactivex.schedulers.Schedulers.computation
@@ -16,8 +18,13 @@ import io.reactivex.schedulers.Schedulers.computation
 class AndroidImageInteractor {
     fun convertByteArrayToBitmap(imageBytes: ByteArray): Single<Bitmap> {
         return Single.create(SingleOnSubscribe<Bitmap> {
-            val ret = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-            it.onSuccess(ret)
+            try {
+                val ret = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size) ?: throw NullPointerException("Decoded bitmap was null")
+                it.onSuccess(ret)
+            } catch (ex:Exception) {
+                SystemLog.get().e(AndroidImageInteractor::class.java.simpleName, "Failed to convert bytes to bitmap", ex)
+                it.onError(ex)
+            }
         }).subscribeOn(computation())
     }
 

@@ -45,7 +45,9 @@ class ThumbnailAdapter(private val fileNames: List<String>,
     }
 
     override fun onBindViewHolder(holder: ThumbnailViewHolder, position: Int) {
-        presenter.thumbnail(fileNames[position]).subscribe { bitmap ->
+        val loadingSpinner = holder.view.findViewById<ProgressBar>(R.id.loading)
+
+        presenter.thumbnail(fileNames[position]).subscribe ({ bitmap ->
             val imageView = holder.view.findViewById<ImageView>(R.id.preview)
             imageView.setOnClickListener(View.OnClickListener { view -> presenter.selectImageToDisplay(fileNames[position]) })
             imageView.visibility = VISIBLE
@@ -64,9 +66,12 @@ class ThumbnailAdapter(private val fileNames: List<String>,
                 })
             }
 
-            val loadingSpinner = holder.view.findViewById<ProgressBar>(R.id.loading)
+
             loadingSpinner.visibility = GONE
-        }
+        }, {error ->
+
+            loadingSpinner.visibility = GONE
+        })
     }
 
 }

@@ -23,6 +23,8 @@ public class TestConstants {
     public static final File TEST_RES_IMG_2 = new File(testResourcePath.getAbsolutePath() + File.separator + "night-fog.jpg");
     public static final File TEST_RES_IMG_3 = new File(testResourcePath.getAbsolutePath() + File.separator + "tractor.jpg");
 
+    public static final File NON_IMAGE = new File(testResourcePath.getAbsolutePath() + File.separator + "README.md");
+
     static {
         if (!testResourcePath.exists()) {
             testResourcePath = new File("../mss-core" + File.separator + "testResources");
