@@ -4,10 +4,13 @@ import android.support.test.espresso.IdlingPolicies
 import android.support.test.espresso.IdlingRegistry
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
+import com.vandenbreemen.AppsLoadingIdlingResource
+import com.vandenbreemen.mobilesecurestorage.android.LoadSecureFileSystem
 import com.vandenbreemen.secretcamera.di.turnOffSecureActivities
 import com.vandenbreemen.secretcamera.util.ElapsedTimeIdlingResource
 import com.vandenbreemen.secretcamera.util.MainScreenRobot
 import com.vandenbreemen.secretcamera.util.NoteTakingRobot
+import com.vandenbreemen.test.BackgroundCompletionCallback
 import org.junit.After
 import org.junit.Before
 import org.junit.FixMethodOrder
@@ -35,13 +38,31 @@ class MainActivityTest {
 
     var waitResource: ElapsedTimeIdlingResource? = null
 
+    var loadResource = AppsLoadingIdlingResource()
+
     lateinit var fileName:String
 
     @Before
     fun setup(){
 
         //  Arrange
+        IdlingRegistry.getInstance().register(loadResource)
+        MainActivity.sfsLoadedCallback = object: BackgroundCompletionCallback {
+            override fun onStart() {
+                loadResource.startLoading()
+                println("START LOADING")
+            }
+
+            override fun onFinish() {
+                loadResource.doneLoading()
+                println("DONE LOADING")
+            }
+        }
+
+        LoadSecureFileSystem.sfsLoadedCallback = MainActivity.sfsLoadedCallback
+
         activityRule.launchActivity(null)
+
 
         fileName = "unitTestFile"
         IdlingPolicies.setMasterPolicyTimeout(60, TimeUnit.SECONDS);
@@ -60,6 +81,7 @@ class MainActivityTest {
         waitResource?.let {
             IdlingRegistry.getInstance().unregister(it)
         }
+        IdlingRegistry.getInstance().unregister(loadResource)
     }
 
     @Test

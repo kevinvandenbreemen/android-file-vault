@@ -13,10 +13,14 @@ import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.mvp.SFSMenuContract
 import com.vandenbreemen.secretcamera.mvp.impl.SFSMainMenuModel
 import com.vandenbreemen.secretcamera.mvp.impl.SFSMainMenuPresenterImpl
+import com.vandenbreemen.test.BackgroundCompletionCallback
 import dagger.android.AndroidInjection
 
 class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
 
+    companion object {
+        var sfsLoadedCallback: BackgroundCompletionCallback? = null
+    }
 
     override fun onReadyToUse() {
 
@@ -47,6 +51,8 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
                     layoutInflater.inflate(R.layout.main_screen_selections, findViewById(R.id.mainSection), false))
 
             mainMenuPresenter = SFSMainMenuPresenterImpl(SFSMainMenuModel(credentials), this)
+
+
         } ?: run {
             val frag = SFSNavFragment()
             fragmentManager.beginTransaction().add(R.id.upperSection, frag).commit()
@@ -72,7 +78,10 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
 
     override fun onResume() {
         super.onResume()
-        mainMenuPresenter?.let { it.start() }
+        mainMenuPresenter?.let {
+            it.start()
+            sfsLoadedCallback ?. let { sfsLoadedCallback!!.onFinish() }
+        }
     }
 
     fun onTakeNote(view:View){

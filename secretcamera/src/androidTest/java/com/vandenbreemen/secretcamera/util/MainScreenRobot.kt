@@ -5,7 +5,6 @@ import android.os.Environment
 import android.support.test.InstrumentationRegistry
 import android.support.test.InstrumentationRegistry.getInstrumentation
 import android.support.test.espresso.IdlingPolicies
-import android.support.test.espresso.IdlingRegistry
 import android.support.test.uiautomator.UiDevice
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotDisplayed
@@ -61,8 +60,6 @@ class MainScreenRobot(val activity: Activity) {
         clickOn(FILENAME)
         writeTo(R.id.password, "password")
         clickOn(R.id.ok)
-
-        IdlingRegistry.getInstance().register(getElapsedTimeIdlingResource())
     }
 
     fun loadExistingSFS(dir: String, fileName: String, password: String) {
@@ -71,8 +68,6 @@ class MainScreenRobot(val activity: Activity) {
         clickOn(fileName)
         writeTo(R.id.password, "password")
         clickOn(R.id.ok)
-
-        IdlingRegistry.getInstance().register(getElapsedTimeIdlingResource())
     }
 
     fun rotateToLandscape() {

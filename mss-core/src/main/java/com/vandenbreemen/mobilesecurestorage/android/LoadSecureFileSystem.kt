@@ -16,6 +16,7 @@ import com.vandenbreemen.mobilesecurestorage.android.mvp.loadfilesystem.LoadFile
 import com.vandenbreemen.mobilesecurestorage.android.mvp.loadfilesystem.LoadFileSystemView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.test.BackgroundCompletionCallback
 import java.io.File
 import java.util.function.Consumer
 
@@ -23,6 +24,7 @@ class LoadSecureFileSystem : Activity(), LoadFileSystemView {
 
     companion object {
         const val SELECT_FILE = 1
+        var sfsLoadedCallback: BackgroundCompletionCallback? = null
     }
 
     override fun onLoadSuccess(credentials: SFSCredentials) {
@@ -84,6 +86,7 @@ class LoadSecureFileSystem : Activity(), LoadFileSystemView {
     fun onOkay(view: View) {
         val passView = findViewById<TextView>(R.id.password)
         controller.providePassword(passView.text.toString())
+        sfsLoadedCallback?.let { it.onStart() }
     }
 
     fun onCancel(view: View) {
