@@ -7,13 +7,16 @@ import android.support.test.espresso.IdlingRegistry
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import android.util.Log
+import com.vandenbreemen.AppsLoadingIdlingResource
+import com.vandenbreemen.mobilesecurestorage.android.CreateSecureFileSystem
+import com.vandenbreemen.mobilesecurestorage.android.LoadSecureFileSystem
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.getFileMeta
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.secretcamera.mvp.gallery.PicturesFileTypes
-import com.vandenbreemen.secretcamera.util.ElapsedTimeIdlingResource
 import com.vandenbreemen.secretcamera.util.MainScreenRobot
+import com.vandenbreemen.test.BackgroundCompletionCallback
 import junit.framework.TestCase.assertEquals
 import org.awaitility.Awaitility.await
 import org.junit.After
@@ -38,7 +41,7 @@ class GalleryTest {
 
     val activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
 
-    var waitResource: ElapsedTimeIdlingResource? = null
+    var loadingResource = AppsLoadingIdlingResource()
 
     lateinit var fileName: String
 
@@ -48,6 +51,18 @@ class GalleryTest {
     fun setup() {
 
         //  Arrange
+        IdlingRegistry.getInstance().register(loadingResource)
+        MainActivity.sfsLoadedCallback = object:BackgroundCompletionCallback {
+            override fun onStart() {
+                loadingResource.startLoading()
+            }
+
+            override fun onFinish() {
+                loadingResource.doneLoading()
+            }
+        }
+        LoadSecureFileSystem.sfsLoadedCallback = MainActivity.sfsLoadedCallback
+        CreateSecureFileSystem.sfsLoadedCallback = MainActivity.sfsLoadedCallback
         activityRule.launchActivity(null)
 
 
@@ -66,20 +81,13 @@ class GalleryTest {
 
     }
 
-    fun getElapsedTimeIdlingResource(): ElapsedTimeIdlingResource {
-        waitResource = ElapsedTimeIdlingResource(MainActivityTest.TIME_TO_WAIT)
-        return waitResource!!
-    }
-
     @After
     fun tearDown() {
         val command = "rm -rf ${sfsFile.absolutePath}"
         Log.d(TAG, "Delete using command $command")
         InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(command)
         await().atMost(30, TimeUnit.SECONDS).until { !sfsFile.exists() }
-        waitResource?.let {
-            IdlingRegistry.getInstance().unregister(it)
-        }
+        IdlingRegistry.getInstance().unregister(loadingResource)
     }
 
     @Test

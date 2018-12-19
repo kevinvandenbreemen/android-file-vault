@@ -14,12 +14,14 @@ import com.vandenbreemen.mobilesecurestorage.android.mvp.createfilesystem.Create
 import com.vandenbreemen.mobilesecurestorage.android.mvp.createfilesystem.CreateSecureFileSystemView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.test.BackgroundCompletionCallback
 import java.util.function.Consumer
 
 class CreateSecureFileSystem : Activity(), CreateSecureFileSystemView {
 
     companion object {
         const val SELECT_DIR = 2
+        var sfsLoadedCallback: BackgroundCompletionCallback? = null
     }
 
     /**
@@ -67,6 +69,7 @@ class CreateSecureFileSystem : Activity(), CreateSecureFileSystemView {
     }
 
     fun onOkay(view: View) {
+        sfsLoadedCallback?.let { it.onStart() }
         onProvidedDetails()
     }
 
