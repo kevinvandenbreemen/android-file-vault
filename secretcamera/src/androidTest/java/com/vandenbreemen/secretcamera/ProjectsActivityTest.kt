@@ -6,11 +6,13 @@ import android.os.Environment
 import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.IdlingPolicies
+import android.support.test.espresso.IdlingRegistry
 import android.support.test.espresso.action.ViewActions.replaceText
 import android.support.test.espresso.matcher.ViewMatchers.withId
 import android.support.test.espresso.matcher.ViewMatchers.withParent
 import android.support.test.rule.ActivityTestRule
 import android.support.test.rule.GrantPermissionRule
+import android.util.Log
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotDisplayed
 import com.schibsted.spain.barista.interaction.BaristaClickInteractions.clickOn
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
@@ -18,7 +20,9 @@ import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.secretcamera.api.Project
 import com.vandenbreemen.secretcamera.util.ElapsedTimeIdlingResource
+import org.awaitility.Awaitility
 import org.hamcrest.CoreMatchers.allOf
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -67,6 +71,17 @@ class ProjectsActivityUITest {
         val intent = Intent(InstrumentationRegistry.getTargetContext(), ProjectsActivity::class.java)
         intent.putExtra(SFSCredentials.PARM_CREDENTIALS, sfsCredentials)
         activityRule.launchActivity(intent)
+    }
+
+    @After
+    fun tearDown() {
+        val command = "rm -rf ${sfsFile.absolutePath}"
+        Log.d(GalleryTest.TAG, "Delete using command $command")
+        InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(command)
+        Awaitility.await().atMost(30, TimeUnit.SECONDS).until { !sfsFile.exists() }
+        waitResource?.let {
+            IdlingRegistry.getInstance().unregister(it)
+        }
     }
 
     @Test
