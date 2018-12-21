@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import android.view.ViewGroup
 import com.vandenbreemen.mobilesecurestorage.android.FileImportActivity
 import com.vandenbreemen.mobilesecurestorage.android.FileImportDataProvider
 import com.vandenbreemen.mobilesecurestorage.android.FileImportFutureIntent
@@ -34,6 +35,7 @@ class Gallery : AppCompatActivity(), GalleryView {
 
     override fun onPause() {
         super.onPause()
+        findViewById<ViewGroup>(R.id.overlay).visibility = View.VISIBLE
         if (!presenter.isClosed()) {
             presenter.close()
         }
@@ -74,6 +76,7 @@ class Gallery : AppCompatActivity(), GalleryView {
                 val startIntent = Intent(this, Gallery::class.java)
                 startIntent.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
                 startActivity(startIntent)
+                finish()
             } else {
                 finish()
             }
