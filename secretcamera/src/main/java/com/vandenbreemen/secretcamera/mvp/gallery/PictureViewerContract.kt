@@ -61,6 +61,8 @@ interface PictureViewerView : View {
     fun hideImageSelector()
     fun showLoadingSpinner()
     fun hideLoadingSpinner()
+    fun showPictureViewerActions()
+    fun hidePictureViewerActions()
 }
 
 interface PictureViewRouter {
@@ -83,9 +85,15 @@ interface PictureViewerPresenter : PresenterContract {
     fun selectImage(fileName: String)
     fun deleteSelected()
     fun selected(filename: String): Boolean
+    fun onSelectPictureViewerActions()
+    fun deleteAllImages()
 }
 
 class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: PictureViewerView, val router: PictureViewRouter) : Presenter<PictureViewerModel, PictureViewerView>(model, view), PictureViewerPresenter {
+
+
+    var isShowingPictureViewerActions = false
+
     override fun toggleSelectImages() {
         if (model.isImageMultiselectOn()) {
             model.enableImageMultiSelect(false)
@@ -197,5 +205,22 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
     override fun close() {
         super.close()
         view.end()
+    }
+
+    override fun onSelectPictureViewerActions() {
+        if (!isShowingPictureViewerActions) {
+            view.showPictureViewerActions()
+        } else {
+            view.hidePictureViewerActions()
+        }
+        isShowingPictureViewerActions = !isShowingPictureViewerActions
+    }
+
+    override fun deleteAllImages() {
+        view.showLoadingSpinner()
+        model.deleteAllImages().observeOn(mainThread()).subscribe {
+            view.hideLoadingSpinner()
+            router.navigateBack(model.copyCredentials())
+        }
     }
 }

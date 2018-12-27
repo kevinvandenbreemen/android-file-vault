@@ -8,14 +8,14 @@ import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.getFileMeta
+import com.vandenbreemen.mobilesecurestorage.security.crypto.listFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
 import com.vandenbreemen.secretcamera.shittySolutionPleaseDelete.TestConstants
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertTrue
+import junit.framework.TestCase.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -242,8 +242,28 @@ class PictureViewerModelTest {
         model.deleteAllImages().test().assertComplete()
 
         //  Assert
-        println(sfs().extListFiles())
-        assertTrue(sfs().extListFiles().isEmpty())
+        assertTrue(sfs().listFiles(PicturesFileTypes.IMPORTED_IMAGE).isEmpty())
+    }
+
+    @Test
+    fun shouldNotPreserveCurrentFileAfterDeleteAllImages() {
+        //  Arrange
+        model.loadImageForDisplay(TestConstants.TEST_RES_IMG_1.name)
+        println(model.currentFile().blockingGet())
+
+        //  Act
+        model.deleteAllImages().test().assertComplete()
+
+        //  Assert
+        var validated = false
+        model.currentFile().subscribe({ img ->
+            fail("Should not have succeeded")
+        }, { err ->
+            System.err.println(err.localizedMessage)
+            validated = true
+        })
+
+        assertTrue("System should have failed to get the current file since it was deleted", validated)
     }
 
     @Test
@@ -261,7 +281,7 @@ class PictureViewerModelTest {
         model.deleteAllImages().test().assertComplete()
 
         //  Assert
-        assertEquals(2, sfs().extListFiles().size)
+        assertEquals(3, sfs().extListFiles().size)
         assertEquals(arrayListOf("Larry", "Curly", "Moe"), sfs().loadFile("NoType"))
     }
 

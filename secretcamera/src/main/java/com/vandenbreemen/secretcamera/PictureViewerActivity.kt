@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -110,6 +111,14 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter {
             presenter.deleteSelected()
         }
 
+        findViewById<FloatingActionButton>(R.id.actions).setOnClickListener { v ->
+            presenter.onSelectPictureViewerActions()
+        }
+
+        findViewById<Button>(R.id.deleteAllImages).setOnClickListener { v ->
+            presenter.deleteAllImages()
+        }
+
     }
 
     override fun onResume() {
@@ -130,7 +139,9 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter {
     }
 
     override fun showError(error: ApplicationError) {
-        Toast.makeText(this, error.localizedMessage, LENGTH_SHORT).show()
+        runOnUiThread {
+            Toast.makeText(this, error.localizedMessage, LENGTH_SHORT).show()
+        }
     }
 
     override fun displayImage(imageToDisplay: Bitmap) {
@@ -196,6 +207,14 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter {
 
     override fun hideActions() {
         findViewById<ViewGroup>(R.id.pictureViewerActions).visibility = GONE
+    }
+
+    override fun showPictureViewerActions() {
+        findViewById<ViewGroup>(R.id.actionsWindow).visibility = VISIBLE
+    }
+
+    override fun hidePictureViewerActions() {
+        findViewById<ViewGroup>(R.id.actionsWindow).visibility = GONE
     }
 
     override fun enableSelectMultiple() {

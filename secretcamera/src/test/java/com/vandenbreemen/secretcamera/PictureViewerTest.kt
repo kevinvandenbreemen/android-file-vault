@@ -5,6 +5,8 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.RecyclerView
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.ViewGroup
+import android.widget.Button
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
@@ -15,13 +17,13 @@ import com.vandenbreemen.secretcamera.mvp.gallery.PicturesFileTypes
 import com.vandenbreemen.secretcamera.shittySolutionPleaseDelete.TestConstants
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertTrue
+import junit.framework.TestCase.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric.buildActivity
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows
 import org.robolectric.shadows.ShadowApplication
 import org.robolectric.shadows.ShadowToast
 
@@ -148,6 +150,71 @@ class PictureViewerTest {
                 .get()
 
         assertEquals("No image Message", "No images available", ShadowToast.getTextOfLatestToast())
+    }
+
+    @Test
+    fun shouldNowShowPictureViewerActionsByDefault() {
+        val activity = buildActivity(PictureViewerActivity::class.java, intent)
+                .create()
+                .resume()
+                .get()
+
+        //  Assert
+        assertEquals(GONE, activity.findViewById<ViewGroup>(R.id.actionsWindow).visibility)
+    }
+
+    @Test
+    fun shouldHidePictureViewerActionsOnTapOfActionsFAB() {
+        //  Arrange
+        val activity = buildActivity(PictureViewerActivity::class.java, intent)
+                .create()
+                .resume()
+                .get()
+
+
+        activity.findViewById<FloatingActionButton>(R.id.actions).performClick()
+
+        //  Act (actions is visible now tap the FAB again)
+        activity.findViewById<FloatingActionButton>(R.id.actions).performClick()
+
+
+        //  Assert
+        assertEquals(GONE, activity.findViewById<ViewGroup>(R.id.actionsWindow).visibility)
+    }
+
+    @Test
+    fun shouldProvideForRemovingAllImageFiles() {
+        //  Arrange
+        sfs.importFile(TestConstants.TEST_RES_IMG_1)
+        sfs.setFileMetadata(TestConstants.TEST_RES_IMG_1.name, FileMeta(PicturesFileTypes.IMPORTED_IMAGE))
+        sfs.storeObject("NotAnImage", "This isn't an image")
+
+
+        val activity = buildActivity(PictureViewerActivity::class.java, intent)
+                .create()
+                .resume()
+                .get()
+
+        //  Act
+        activity.findViewById<FloatingActionButton>(R.id.actions).performClick()
+        assertEquals("Actions should be visible", VISIBLE, activity.findViewById<ViewGroup>(R.id.actionsWindow).visibility)
+        activity.findViewById<ViewGroup>(R.id.actionsWindow).findViewById<Button>(R.id.deleteAllImages).performClick()
+
+        //  Assert
+        sfs = object : SecureFileSystem(sfsCredentials.fileLocation) {
+            override fun getPassword(): SecureString {
+                return sfsCredentials.password
+            }
+        }
+        assertFalse(sfs.exists(TestConstants.TEST_RES_IMG_1.name))
+        assertTrue(sfs.exists("NotAnImage"))
+
+        val nextActivity = Shadows.shadowOf(activity).nextStartedActivity
+        assertNotNull(nextActivity)
+
+        assertEquals(MainActivity::class.java, Shadows.shadowOf(nextActivity).intentClass)
+        assertNotNull(nextActivity.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS))
+
     }
 
 }

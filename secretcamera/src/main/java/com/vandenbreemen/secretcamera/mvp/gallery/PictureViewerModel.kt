@@ -9,7 +9,6 @@ import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.secretcamera.api.GallerySettings
 import io.reactivex.Completable
-import io.reactivex.CompletableOnSubscribe
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -213,10 +212,13 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
     }
 
     fun deleteAllImages(): Completable {
-        return Completable.create(CompletableOnSubscribe {
+        return Completable.create {
             imageFilesInteractor.deleteImages(imageFilesInteractor.listImageFiles())
+            val settings = getGallerySettings()
+            settings.currentFile = null
+            saveGallerySettings(settings)
             it.onComplete()
-        }).subscribeOn(computation())
+        }.subscribeOn(computation())
     }
 
 }

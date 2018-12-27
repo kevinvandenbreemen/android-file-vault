@@ -18,4 +18,5 @@
     <string name="project_name">Project Name</string>
     <string name="project_description">Description of Project</string>
     <string name="editDescription">Description</string>
+    <string name="delete_all_images">Delete all Images</string>
 </resources>
