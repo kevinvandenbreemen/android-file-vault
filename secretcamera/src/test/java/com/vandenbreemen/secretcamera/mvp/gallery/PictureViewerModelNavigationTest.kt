@@ -6,6 +6,7 @@ import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
 import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
+import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.getFileMeta
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
@@ -233,6 +234,35 @@ class PictureViewerModelTest {
         //  Act
         val observer = model.loadImage(TestConstants.NON_IMAGE.name).test()
         assertEquals(1, observer.errorCount())
+    }
+
+    @Test
+    fun shouldDeleteAllImages() {
+        //  Act
+        model.deleteAllImages().test().assertComplete()
+
+        //  Assert
+        println(sfs().extListFiles())
+        assertTrue(sfs().extListFiles().isEmpty())
+    }
+
+    @Test
+    fun shouldNotDeleteNonImageFiles() {
+        //  Arrange
+        sfs().storeObject("NotAnImage", "This is a test")
+        sfs().setFileMetadata("NotAnImage", FileMeta(FileTypes.DATA))
+        sfs().storeObject("NoType", arrayListOf("Larry", "Curly", "Moe"))
+
+        //  Recreate the model with current picture of what's on the SFS
+        this.model = PictureViewerModel(credentials)
+        this.model.init().subscribe()
+
+        //  Act
+        model.deleteAllImages().test().assertComplete()
+
+        //  Assert
+        assertEquals(2, sfs().extListFiles().size)
+        assertEquals(arrayListOf("Larry", "Curly", "Moe"), sfs().loadFile("NoType"))
     }
 
 }
