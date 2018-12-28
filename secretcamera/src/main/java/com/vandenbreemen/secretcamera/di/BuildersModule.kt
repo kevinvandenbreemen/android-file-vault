@@ -35,4 +35,7 @@ abstract class BuildersModule {
     @ContributesAndroidInjector(modules=[ProjectDetailsModule::class])
     abstract  fun bindProjectDetailsActivity(): ProjectDetailsActivity
 
+    @ContributesAndroidInjector(modules = [SFSActionsModule::class])
+    abstract fun bindSFSActionsActivity(): SFSActionsActivity
+
 }

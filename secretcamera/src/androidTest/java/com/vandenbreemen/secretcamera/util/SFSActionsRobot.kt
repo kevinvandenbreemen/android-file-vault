@@ -7,7 +7,7 @@ import com.vandenbreemen.secretcamera.R
 class SFSActionsRobot {
     fun clickChangePassword(): PasswordChangeRobot {
         clickOn(R.id.changePassword)
-        assertDisplayed(R.id.changePasswordDetailsContainer)
+        assertDisplayed(R.id.reEnterNewPassword)
         return PasswordChangeRobot()
     }
 
