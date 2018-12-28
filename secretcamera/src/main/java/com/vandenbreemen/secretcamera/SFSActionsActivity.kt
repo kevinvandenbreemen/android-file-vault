@@ -6,6 +6,7 @@ import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.EditText
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.SFSActionsPresenter
@@ -53,5 +54,13 @@ class SFSActionsActivity : Activity(), SFSActionsView, SFSActionsRouter {
 
     override fun openChangePassword() {
         findViewById<ViewGroup>(R.id.incl_chane_pass_details).visibility = VISIBLE
+    }
+
+    fun onEnterChangePasswordDetails(view: View) {
+        val currentPassword = findViewById<EditText>(R.id.currentPassword).text.toString()
+        val newPassword = findViewById<EditText>(R.id.newPassword).text.toString()
+        val reEnter = findViewById<EditText>(R.id.reEnterNewPassword).text.toString()
+
+        presenter.changePassword(currentPassword, newPassword, reEnter)
     }
 }
