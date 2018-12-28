@@ -94,4 +94,16 @@ class SFSActionsModelTest {
 
     }
 
+    @Test
+    fun shouldProvideUpdatedPasswordOnCompleteChange() {
+        //  Act
+        val test = model.changePassword("password", "update", "update", progress).blockingGet()
+
+        credentials = SFSCredentials(sfsFile, test)
+
+        object : SecureFileSystem(credentials.fileLocation){
+            override fun getPassword(): SecureString = credentials.password
+        }.listFiles()
+    }
+
 }
