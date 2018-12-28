@@ -1,28 +1,43 @@
 package com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions
 
+import com.vandenbreemen.mobilesecurestorage.patterns.ProgressListener
+import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Presenter
+
 /**
  *
  * @author kevin
  */
-class SFSActionsPresenterImpl(val view: SFSActionsView, private val router: SFSActionsRouter) : SFSActionsPresenter {
+class SFSActionsPresenterImpl(val view: SFSActionsView, private val router: SFSActionsRouter, private val model: SFSActionsModel) : Presenter<SFSActionsModel, SFSActionsView>(model, view),  SFSActionsPresenter {
+
+
+    var progress: ProgressListener<Long>
+
+    init {
+        progress = object: ProgressListener<Long> {
+            override fun setMax(progressMax: Long?) {
+
+            }
+
+            override fun update(progress: Long?) {
+
+            }
+        }
+    }
 
     override fun selectChangePassword() {
         router.openChangePassword()
     }
 
     override fun changePassword(currentPassword: String, newPassword: String, reEnterNewPassword: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        model.changePassword(currentPassword, newPassword, reEnterNewPassword, progress).subscribe({ newPass ->
+            router.returnToMain(model.generateCredentials(newPass))
+        }, {error ->
+
+        })
     }
 
-    override fun start() {
 
-    }
+    override fun setupView() {
 
-    override fun close() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun isClosed(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

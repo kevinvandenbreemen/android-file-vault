@@ -5,6 +5,7 @@ import android.support.test.espresso.IdlingRegistry
 import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import com.vandenbreemen.AppsLoadingIdlingResource
+import com.vandenbreemen.mobilesecurestorage.android.CreateSecureFileSystem
 import com.vandenbreemen.mobilesecurestorage.android.LoadSecureFileSystem
 import com.vandenbreemen.secretcamera.di.turnOffSecureActivities
 import com.vandenbreemen.secretcamera.util.ElapsedTimeIdlingResource
@@ -251,6 +252,11 @@ class MainActivityTest {
 
     @Test
     fun shouldAllowForChangingPassword() {
+
+        IdlingRegistry.getInstance().register(getElapsedTimeIdlingResource())
+        CreateSecureFileSystem.sfsLoadedCallback = MainActivity.sfsLoadedCallback
+        SFSActionsActivity.loading = MainActivity.sfsLoadedCallback
+
         MainScreenRobot(activityRule.activity).apply {
             deleteTestFile()
             createNewSFS()

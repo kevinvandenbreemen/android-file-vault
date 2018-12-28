@@ -1,6 +1,7 @@
 package com.vandenbreemen.secretcamera
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.View.VISIBLE
@@ -14,6 +15,7 @@ import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.SFSActionsRo
 import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.SFSActionsView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.test.BackgroundCompletionCallback
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 
@@ -22,6 +24,10 @@ import javax.inject.Inject
  * @author kevin
  */
 class SFSActionsActivity : Activity(), SFSActionsView, SFSActionsRouter {
+
+    companion object {
+        var loading: BackgroundCompletionCallback? = null
+    }
 
     @Inject
     lateinit var presenter: SFSActionsPresenter
@@ -38,6 +44,11 @@ class SFSActionsActivity : Activity(), SFSActionsView, SFSActionsRouter {
         presenter.selectChangePassword()
     }
 
+    override fun onResume() {
+        super.onResume()
+        presenter.start()
+    }
+
     override fun onReadyToUse() {
 
     }
@@ -50,6 +61,15 @@ class SFSActionsActivity : Activity(), SFSActionsView, SFSActionsRouter {
 
     override fun returnToMain(sfsCredentials: SFSCredentials) {
 
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra(SFSCredentials.PARM_CREDENTIALS, sfsCredentials)
+        startActivity(intent)
+        finish()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        presenter.close()
     }
 
     override fun openChangePassword() {
@@ -61,6 +81,7 @@ class SFSActionsActivity : Activity(), SFSActionsView, SFSActionsRouter {
         val newPassword = findViewById<EditText>(R.id.newPassword).text.toString()
         val reEnter = findViewById<EditText>(R.id.reEnterNewPassword).text.toString()
 
+        loading?.let { it.onStart() }
         presenter.changePassword(currentPassword, newPassword, reEnter)
     }
 }
