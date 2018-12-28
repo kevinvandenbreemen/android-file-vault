@@ -120,4 +120,14 @@ class SFSActionsModelTest {
         }.listFiles()
     }
 
+    @Test
+    fun shouldPreventChangePasswordIfPasswordsDoNotMatch() {
+        //  Act
+        val test = model.changePassword("password", "update", "update1", progress).test()
+
+        //  Assert
+        test.assertNotComplete()
+        test.assertError(ApplicationError::class.java)
+    }
+
 }

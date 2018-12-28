@@ -24,6 +24,11 @@ class SFSActionsModel(credentials: SFSCredentials): Model(credentials) {
         return Single.create(SingleOnSubscribe<SecureString> {
             subscriber ->
 
+            if(newPassword != reEnterNewPassword) {
+                subscriber.onError(ApplicationError("Passwords do not match"))
+                return@SingleOnSubscribe
+            }
+
             if(!sfs.testPassword(SecureString.fromPassword(currentPassword))){
                 subscriber.onError(ApplicationError("Current password is not correct"))
                 return@SingleOnSubscribe
