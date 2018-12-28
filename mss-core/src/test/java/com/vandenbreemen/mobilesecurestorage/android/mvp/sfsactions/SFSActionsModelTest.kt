@@ -106,4 +106,18 @@ class SFSActionsModelTest {
         }.listFiles()
     }
 
+    @Test
+    fun shouldCreateCredentialsUsingChangedPassword() {
+        //  Arrange
+        val test = model.changePassword("password", "update", "update", progress).blockingGet()
+
+        //  Act
+        val credentials = model.generateCredentials(test)
+
+        //  Assert
+        object : SecureFileSystem(credentials.fileLocation){
+            override fun getPassword(): SecureString = credentials.password
+        }.listFiles()
+    }
+
 }

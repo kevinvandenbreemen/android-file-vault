@@ -35,5 +35,14 @@ class SFSActionsModel(credentials: SFSCredentials): Model(credentials) {
         }).subscribeOn(computation())
     }
 
+    fun generateCredentials(password: SecureString): SFSCredentials {
+
+        var copied = copyCredentials()
+        val ret = SFSCredentials(copied.fileLocation, password)
+
+        copied.finalize()
+        return  ret
+    }
+
 
 }
