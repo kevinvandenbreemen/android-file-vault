@@ -135,7 +135,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:onClick="onSelectProjects"
+            android:onClick="onSelectActions"
             android:text="@string/sfs_actions"
             android:theme="@style/SquareButton"
             app:layout_constraintBottom_toBottomOf="parent"

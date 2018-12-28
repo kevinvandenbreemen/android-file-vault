@@ -73,6 +73,11 @@
             android:excludeFromRecents="true"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".SFSActionsActivity"
+            android:excludeFromRecents="true"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

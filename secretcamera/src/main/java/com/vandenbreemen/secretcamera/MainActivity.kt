@@ -115,6 +115,17 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
         mainMenuPresenter!!.openProjects()
     }
 
+    fun onSelectActions(view: View) {
+        mainMenuPresenter!!.openActions()
+    }
+
+    override fun openActions(credentials: SFSCredentials) {
+        val toActions = Intent(this, SFSActionsActivity::class.java)
+        toActions.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
+        startActivity(toActions)
+        finish()
+    }
+
     override fun goToProjects(credentials: SFSCredentials) {
         val projects = Intent(this, ProjectsActivity::class.java)
         projects.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)

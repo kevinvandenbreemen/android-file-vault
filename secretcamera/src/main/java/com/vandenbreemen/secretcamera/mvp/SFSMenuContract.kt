@@ -17,6 +17,7 @@ class SFSMenuContract{
         fun viewNotes()
         fun openGallery()
         fun openProjects()
+        fun openActions()
     }
 
     /**
@@ -28,6 +29,7 @@ class SFSMenuContract{
         fun gotoNotesList(credentials:SFSCredentials, strings:ArrayList<String>)
         fun gotoGallery(credentials: SFSCredentials)
         fun goToProjects(credentials: SFSCredentials)
+        fun openActions(credentials: SFSCredentials)
     }
 }
 

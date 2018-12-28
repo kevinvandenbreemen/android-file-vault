@@ -13,12 +13,17 @@ class SFSMainMenuPresenterImpl(val model:SFSMainMenuModel, val mainMenuView: SFS
         Presenter<SFSMainMenuModel, SFSMenuContract.SFSMainMenuView>(model, mainMenuView) , SFSMenuContract.SFSMainMenuPresenter {
 
 
+
     override fun setupView() {
 
     }
 
     override fun viewNotes() {
         model.getNotes().subscribe({notes->mainMenuView.gotoNotesList(model.credentials, ArrayList<String>(notes))})
+    }
+
+    override fun openActions() {
+        mainMenuView.openActions(model.copyCredentials())
     }
 
     override fun openProjects() {
