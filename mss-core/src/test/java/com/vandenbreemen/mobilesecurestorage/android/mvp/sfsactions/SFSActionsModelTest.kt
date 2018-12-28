@@ -3,6 +3,7 @@ package com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions
 import android.os.Environment
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.ChunkedMediumException
+import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.ProgressListener
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
@@ -79,6 +80,17 @@ class SFSActionsModelTest {
             override fun getPassword(): SecureString = credentials.password
         }.listFiles()
 
+
+    }
+
+    @Test
+    fun shouldPreventChangePasswordIfCurrentPasswordNotCorrect() {
+        //  Act
+        val test = model.changePassword("assword", "update", "update", progress).test()
+
+        //  Assert
+        test.assertNotComplete()
+        test.assertError(ApplicationError::class.java)
 
     }
 
