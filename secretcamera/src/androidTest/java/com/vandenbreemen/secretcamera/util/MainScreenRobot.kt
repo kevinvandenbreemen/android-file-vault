@@ -114,5 +114,11 @@ class MainScreenRobot(val activity: Activity) {
         return ProjectsRobot()
     }
 
+    fun clickSFSActions(): SFSActionsRobot {
+        clickOn(R.id.sfs_actions)
+        assertDisplayed(R.id.sfsActionsContainer)
+        return SFSActionsRobot()
+    }
+
 
 }

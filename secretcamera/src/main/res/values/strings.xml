@@ -19,4 +19,9 @@
     <string name="project_description">Description of Project</string>
     <string name="editDescription">Description</string>
     <string name="delete_all_images">Delete all Images</string>
+    <string name="sfs_actions">SFS Actions</string>
+    <string name="change_password">Change Password</string>
+    <string name="current_pass">Current Password</string>
+    <string name="new_pass">New Password</string>
+    <string name="re_enter_new_pass">Re-enter New Password</string>
 </resources>

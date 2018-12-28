@@ -249,4 +249,21 @@ class MainActivityTest {
         }
     }
 
+    @Test
+    fun shouldAllowForChangingPassword() {
+        MainScreenRobot(activityRule.activity).apply {
+            deleteTestFile()
+            createNewSFS()
+
+            clickSFSActions().clickChangePassword().apply {
+                currentPassword("password")
+                newPassword("updated")
+                reenterNewPassword("updated")
+                clickOK()
+            }
+
+            clickNotes()
+        }
+    }
+
 }
