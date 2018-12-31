@@ -1,8 +1,11 @@
 package com.vandenbreemen.secretcamera
 
 import android.content.Intent
+import android.view.View
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ProgressBar
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
@@ -71,6 +74,20 @@ class SFSActionsActivityTest {
         //  Assert
         val progressBar = activity.findViewById<ViewGroup>(R.id.progressContainer).findViewById<ProgressBar>(R.id.progressBar)
         assertEquals(45, progressBar.progress)
+    }
+
+    @Test
+    fun shouldHideChangePasswordDialogOnCancel() {
+        //  Arrange
+        val activity = buildActivity(SFSActionsActivity::class.java, intent).create().resume().get()
+        activity.findViewById<Button>(R.id.changePassword).performClick()
+
+        //  Act
+        activity.findViewById<Button>(R.id.cancel).performClick()
+
+        //  Assert
+        assertEquals(GONE, activity.findViewById<View>(R.id.incl_chane_pass_details).visibility)
+
     }
 
 }

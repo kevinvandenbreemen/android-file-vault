@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -43,6 +44,17 @@ class SFSActionsActivity : Activity(), SFSActionsView, SFSActionsRouter {
 
     fun onClickChangePassword(view: View) {
         presenter.selectChangePassword()
+    }
+
+    fun onCancelChangePassword(view: View) {
+        presenter.cancelChangePassword()
+    }
+
+    override fun closeChangePassword() {
+        findViewById<ViewGroup>(R.id.incl_chane_pass_details).visibility = GONE
+        findViewById<EditText>(R.id.currentPassword).setText("")
+        findViewById<EditText>(R.id.newPassword).setText("")
+        findViewById<EditText>(R.id.reEnterNewPassword).setText("")
     }
 
     override fun onResume() {

@@ -20,6 +20,7 @@ interface SFSActionsRouter {
 
     fun returnToMain(sfsCredentials: SFSCredentials)
     fun openChangePassword()
+    fun closeChangePassword()
 
 }
 
@@ -27,5 +28,6 @@ interface SFSActionsPresenter : PresenterContract {
 
     fun selectChangePassword()
     fun changePassword(currentPassword: String, newPassword: String, reEnterNewPassword: String)
+    fun cancelChangePassword()
 
 }

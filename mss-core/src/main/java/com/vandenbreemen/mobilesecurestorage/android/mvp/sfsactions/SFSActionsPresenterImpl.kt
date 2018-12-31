@@ -36,6 +36,10 @@ class SFSActionsPresenterImpl(val view: SFSActionsView, private val router: SFSA
         })
     }
 
+    override fun cancelChangePassword() {
+        router.closeChangePassword()
+    }
+
 
     override fun setupView() {
 
