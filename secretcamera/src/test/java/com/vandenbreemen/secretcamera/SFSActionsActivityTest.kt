@@ -12,12 +12,15 @@ import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
+import junit.framework.TestCase.assertFalse
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric.buildActivity
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowApplication
 
 /**
@@ -87,6 +90,22 @@ class SFSActionsActivityTest {
 
         //  Assert
         assertEquals(GONE, activity.findViewById<View>(R.id.incl_chane_pass_details).visibility)
+
+    }
+
+    @Test
+    fun shouldShowErrorDuringFailedChangePassword() {
+
+        //  Arrange
+        val activity = buildActivity(SFSActionsActivity::class.java, intent).create().resume().get()
+        activity.findViewById<Button>(R.id.changePassword).performClick()
+
+        //  Act
+        activity.findViewById<Button>(R.id.ok).performClick()
+
+        //  Assert
+        val toasts = shadowOf(RuntimeEnvironment.application).shownToasts
+        assertFalse(toasts.isEmpty())
 
     }
 
