@@ -8,6 +8,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.SFSActionsPresenter
@@ -83,5 +84,19 @@ class SFSActionsActivity : Activity(), SFSActionsView, SFSActionsRouter {
 
         loading?.let { it.onStart() }
         presenter.changePassword(currentPassword, newPassword, reEnter)
+    }
+
+    override fun setProgressMax(max: Long) {
+        runOnUiThread {
+            findViewById<ViewGroup>(R.id.progressContainer).visibility = VISIBLE
+            findViewById<ViewGroup>(R.id.progressContainer).findViewById<ProgressBar>(R.id.progressBar).max = max.toInt()
+        }
+
+    }
+
+    override fun setCurrentProgress(currentProgress: Long) {
+        runOnUiThread {
+            findViewById<ViewGroup>(R.id.progressContainer).findViewById<ProgressBar>(R.id.progressBar).progress = currentProgress.toInt()
+        }
     }
 }

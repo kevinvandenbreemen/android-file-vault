@@ -11,6 +11,9 @@ import com.vandenbreemen.mobilesecurestorage.patterns.mvp.View
 
 interface SFSActionsView : View {
 
+    fun setProgressMax(max: Long)
+    fun setCurrentProgress(currentProgress: Long)
+
 }
 
 interface SFSActionsRouter {
