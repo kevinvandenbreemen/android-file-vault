@@ -130,4 +130,14 @@ class SFSActionsModelTest {
         test.assertError(ApplicationError::class.java)
     }
 
+    @Test
+    fun shouldPreventChangePasswordIfNewPasswordIsBlank() {
+        //  Act
+        val test = model.changePassword("password", "", "", progress).test()
+
+        //  Assert
+        test.assertNotComplete()
+        test.assertError(ApplicationError::class.java)
+    }
+
 }
