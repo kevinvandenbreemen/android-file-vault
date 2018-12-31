@@ -14,12 +14,12 @@ class SFSActionsPresenterImpl(val view: SFSActionsView, private val router: SFSA
 
     init {
         progress = object: ProgressListener<Long> {
-            override fun setMax(progressMax: Long?) {
-
+            override fun setMax(progressMax: Long) {
+                view.setProgressMax(progressMax)
             }
 
-            override fun update(progress: Long?) {
-
+            override fun update(progress: Long) {
+                view.setCurrentProgress(progress)
             }
         }
     }
