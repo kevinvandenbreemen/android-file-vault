@@ -4,8 +4,12 @@ import android.Manifest
 import android.content.Intent
 import android.os.Environment
 import android.support.test.InstrumentationRegistry
+import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.IdlingPolicies
 import android.support.test.espresso.IdlingRegistry
+import android.support.test.espresso.assertion.ViewAssertions.matches
+import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
+import android.support.test.espresso.matcher.ViewMatchers.withId
 import android.support.test.rule.ActivityTestRule
 import android.support.test.rule.GrantPermissionRule
 import android.util.Log
@@ -98,6 +102,17 @@ class ProjectDetailsActivityTest {
     fun shouldHideProjectDescriptionOnInitialLoad() {
         //  Assert
         assertNotDisplayed(R.id.projectDescription)
+    }
+
+    @Test
+    fun shouldAddNewTaskToProject() {
+        //  Act
+        activityRule.activity.runOnUiThread {
+            activityRule.activity.findViewById<View>(R.id.addTask)
+        }
+
+        //  Assert
+        onView(withId(R.id.taskDetails)).check(matches(isDisplayed()))
     }
 
     @Test
