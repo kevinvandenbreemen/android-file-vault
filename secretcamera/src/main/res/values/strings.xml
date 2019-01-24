@@ -24,4 +24,5 @@
     <string name="current_pass">Current Password</string>
     <string name="new_pass">New Password</string>
     <string name="re_enter_new_pass">Re-enter New Password</string>
+    <string name="task_description">Details</string>
 </resources>
