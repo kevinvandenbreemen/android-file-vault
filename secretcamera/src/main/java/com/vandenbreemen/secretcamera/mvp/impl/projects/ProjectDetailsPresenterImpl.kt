@@ -9,8 +9,13 @@ class ProjectDetailsPresenterImpl(val projectDetailsModel: ProjectDetailsModel, 
         Presenter<ProjectDetailsModel, ProjectDetailsView>(projectDetailsModel, projectDetailsView),
         ProjectDetailsPresenter {
 
+
     override fun setupView() {
         projectDetailsView.showDescription(projectDetailsModel.getDescription())
         projectDetailsView.showName(projectDetailsModel.getProjectTitle())
+    }
+
+    override fun selectAddTask() {
+        projectDetailsRouter.showTaskDetails(null)
     }
 }

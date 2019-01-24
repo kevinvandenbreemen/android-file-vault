@@ -8,6 +8,7 @@ import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.secretcamera.api.Task
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsPresenter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsRouter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsView
@@ -16,6 +17,7 @@ import kotlinx.android.synthetic.main.activity_project_detail.*
 import javax.inject.Inject
 
 class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRouter {
+
 
     companion object {
         val PARM_PROJECT_NAME = "__projectName"
@@ -56,6 +58,10 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
             } else {
                 showActionsSection()
             }
+        }
+
+        addTask.setOnClickListener { v ->
+            presenter.selectAddTask()
         }
     }
 
@@ -138,5 +144,9 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
 
     override fun showError(error: ApplicationError) {
         Toast.makeText(this, error.localizedMessage, Toast.LENGTH_LONG).show()
+    }
+
+    override fun showTaskDetails(task: Task?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

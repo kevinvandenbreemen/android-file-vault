@@ -17,6 +17,7 @@ import android.view.View
 import android.widget.TextView
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotDisplayed
+import com.schibsted.spain.barista.interaction.BaristaClickInteractions.clickOn
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
@@ -107,9 +108,7 @@ class ProjectDetailsActivityTest {
     @Test
     fun shouldAddNewTaskToProject() {
         //  Act
-        activityRule.activity.runOnUiThread {
-            activityRule.activity.findViewById<View>(R.id.addTask)
-        }
+        clickOn(R.id.addTask)
 
         //  Assert
         onView(withId(R.id.taskDetails)).check(matches(isDisplayed()))

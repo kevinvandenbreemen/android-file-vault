@@ -4,6 +4,7 @@ import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.PresenterContract
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.View
 import com.vandenbreemen.secretcamera.api.Project
+import com.vandenbreemen.secretcamera.api.Task
 
 /*
 
@@ -26,6 +27,7 @@ interface ProjectListRouter {
 }
 
 interface ProjectDetailsPresenter : PresenterContract {
+    fun selectAddTask()
 
 }
 
@@ -35,5 +37,6 @@ interface ProjectDetailsView : View {
 }
 
 interface ProjectDetailsRouter {
+    fun showTaskDetails(task: Task?)
 
 }

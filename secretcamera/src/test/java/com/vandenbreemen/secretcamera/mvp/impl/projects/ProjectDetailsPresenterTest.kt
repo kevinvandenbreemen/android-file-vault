@@ -61,4 +61,16 @@ class ProjectDetailsPresenterTest {
         verify(projectDetailsView).showName(project.title)
     }
 
+    @Test
+    fun shouldShowTaskDetailsWhenSelectingToAddTask() {
+        //  arrange
+        projectDetailsPresenter.start()
+
+        //  Act
+        projectDetailsPresenter.selectAddTask()
+
+        //  Assert
+        verify(projectDetailsRouter).showTaskDetails(null)
+    }
+
 }
