@@ -155,14 +155,6 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
         builder.setView(layoutInflater.inflate(R.layout.layout_task_details, null))
 
         val view = builder.create()
-
-        val lp = WindowManager.LayoutParams()
-        lp.copyFrom(view.window.attributes)
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT
-        lp.height = WindowManager.LayoutParams.MATCH_PARENT
-
         view.show()
-
-        view.window.attributes = lp
     }
 }
