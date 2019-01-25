@@ -2,6 +2,7 @@ package com.vandenbreemen.secretcamera
 
 import android.animation.Animator
 import android.app.Activity
+import android.app.AlertDialog
 import android.graphics.Point
 import android.os.Bundle
 import android.view.WindowManager
@@ -15,6 +16,7 @@ import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsView
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_project_detail.*
 import javax.inject.Inject
+
 
 class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRouter {
 
@@ -147,6 +149,20 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
     }
 
     override fun showTaskDetails(task: Task?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        val builder = AlertDialog.Builder(this)
+
+        builder.setView(layoutInflater.inflate(R.layout.layout_task_details, null))
+
+        val view = builder.create()
+
+        val lp = WindowManager.LayoutParams()
+        lp.copyFrom(view.window.attributes)
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT
+
+        view.show()
+
+        view.window.attributes = lp
     }
 }

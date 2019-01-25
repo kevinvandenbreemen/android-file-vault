@@ -106,7 +106,7 @@ class ProjectDetailsActivityTest {
     }
 
     @Test
-    fun shouldAddNewTaskToProject() {
+    fun shouldShowAddTaskDialogWhenClickingAddTask() {
         //  Act
         clickOn(R.id.addTask)
 
