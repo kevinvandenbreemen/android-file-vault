@@ -106,4 +106,19 @@ class ProjectDetailsPresenterTest {
         verify(projectDetailsView).showError(ApplicationError("Missing task text"))
     }
 
+    @Test
+    fun shouldShowErrorIfOccursDuringValidationBeforeAddTask() {
+        //  Arrange
+        projectDetailsPresenter.start()
+        projectDetailsPresenter.selectAddTask()
+        val task = Task("")
+        `when`(projectDetailsModel.addTask(task)).thenThrow(ApplicationError("Task description is required"))
+
+        //  Act
+        projectDetailsPresenter.submitTaskDetails(task)
+
+        //  Assert
+        verify(projectDetailsView).showError(ApplicationError("Task description is required"))
+    }
+
 }

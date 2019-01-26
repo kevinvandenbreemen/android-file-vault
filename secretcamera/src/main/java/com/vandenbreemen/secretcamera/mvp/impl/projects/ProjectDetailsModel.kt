@@ -3,6 +3,7 @@ package com.vandenbreemen.secretcamera.mvp.impl.projects
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractor
 import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
+import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.secretcamera.api.Project
 import com.vandenbreemen.secretcamera.api.Task
@@ -33,7 +34,13 @@ class ProjectDetailsModel(val projectName: String, credentials: SFSCredentials):
         return project.title
     }
 
+    @Throws(ApplicationError::class)
     fun addTask(task: Task): Single<List<Task>> {
+
+        if (task.text.isBlank()) {
+            throw ApplicationError("Task description is required")
+        }
+
         return Single.create(SingleOnSubscribe<List<Task>> { subscriber ->
             project.tasks.add(task)
             sfsInteractor.save(project, projectName, ProjectFileTypes.PROJECT)

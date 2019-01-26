@@ -3,6 +3,7 @@ package com.vandenbreemen.secretcamera.mvp.impl.projects
 import android.os.Environment
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
+import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
@@ -11,6 +12,7 @@ import com.vandenbreemen.secretcamera.api.Task
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
+import junit.framework.TestCase.fail
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -74,6 +76,20 @@ class ProjectDetailsModelTest {
         assertEquals(1, test.values()[0].size)
         assertEquals(expected, test.values()[0][0])
 
+    }
+
+    @Test
+    fun shouldNotAddTaskIfDescriptionIsBlank() {
+        //  Arrange
+        val task = Task("")
+
+        //  Act/assert
+        try {
+            model.addTask(task)
+            fail("Task description is blank")
+        } catch (err: ApplicationError) {
+            err.printStackTrace()
+        }
     }
 
 }
