@@ -7,17 +7,19 @@ import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.IdlingPolicies
 import android.support.test.espresso.IdlingRegistry
+import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.assertion.ViewAssertions.matches
-import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
-import android.support.test.espresso.matcher.ViewMatchers.withId
+import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.rule.ActivityTestRule
 import android.support.test.rule.GrantPermissionRule
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotDisplayed
 import com.schibsted.spain.barista.interaction.BaristaClickInteractions.clickOn
+import com.schibsted.spain.barista.interaction.BaristaEditTextInteractions.writeTo
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
@@ -26,6 +28,7 @@ import com.vandenbreemen.secretcamera.mvp.impl.projects.ProjectListModel
 import com.vandenbreemen.secretcamera.util.ElapsedTimeIdlingResource
 import junit.framework.TestCase.assertEquals
 import org.awaitility.Awaitility
+import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -112,6 +115,19 @@ class ProjectDetailsActivityTest {
 
         //  Assert
         onView(withId(R.id.taskDetails)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun shouldAddTaskToProject() {
+        //  Arrange
+        clickOn(R.id.addTask)
+
+        //  Act
+        writeTo(R.id.taskDescription, "This is a test Task")
+        onView(allOf(withParent(withId(R.id.taskDetails)), withId(R.id.ok))).perform(click())
+
+        //  Assert
+        assertEquals(1, activityRule.activity.findViewById<RecyclerView>(R.id.taskList).adapter.itemCount)
     }
 
     @Test
