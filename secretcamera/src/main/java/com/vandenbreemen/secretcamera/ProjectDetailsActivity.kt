@@ -6,6 +6,8 @@ import android.app.AlertDialog
 import android.graphics.Point
 import android.os.Bundle
 import android.view.WindowManager
+import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
@@ -156,7 +158,12 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
 
         val builder = AlertDialog.Builder(this)
 
-        builder.setView(layoutInflater.inflate(R.layout.layout_task_details, null))
+        val taskDetailView = layoutInflater.inflate(R.layout.layout_task_details, null)
+        taskDetailView.findViewById<Button>(R.id.ok).setOnClickListener { v ->
+            val task = Task(taskDetailView.findViewById<EditText>(R.id.taskDescription).text.toString())
+            presenter.submitTaskDetails(task)
+        }
+        builder.setView(taskDetailView)
 
         val view = builder.create()
         view.show()
