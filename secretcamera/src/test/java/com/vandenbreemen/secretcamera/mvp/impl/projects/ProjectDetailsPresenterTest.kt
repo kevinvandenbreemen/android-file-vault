@@ -1,6 +1,8 @@
 package com.vandenbreemen.secretcamera.mvp.impl.projects
 
+import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.api.Project
+import com.vandenbreemen.secretcamera.api.Task
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsPresenter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsRouter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsView
@@ -71,6 +73,37 @@ class ProjectDetailsPresenterTest {
 
         //  Assert
         verify(projectDetailsRouter).showTaskDetails(null)
+    }
+
+    @Test
+    fun shouldAddTaskToProject() {
+        //  Arrange
+        projectDetailsPresenter.start()
+        projectDetailsPresenter.selectAddTask()
+        val task = Task("Test Task")
+        `when`(projectDetailsModel.addTask(task)).thenReturn(Single.just(listOf(task)))
+
+        //  Act
+        projectDetailsPresenter.submitTaskDetails(task)
+
+        //  Assert
+        verify(projectDetailsModel).addTask(task)
+        verify(projectDetailsView).displayTasks(listOf(task))
+    }
+
+    @Test
+    fun shouldShowErrorIfOccursDuringAddTask() {
+        //  Arrange
+        projectDetailsPresenter.start()
+        projectDetailsPresenter.selectAddTask()
+        val task = Task("")
+        `when`(projectDetailsModel.addTask(task)).thenReturn(Single.error(ApplicationError("Missing task text")))
+
+        //  Act
+        projectDetailsPresenter.submitTaskDetails(task)
+
+        //  Assert
+        verify(projectDetailsView).showError(ApplicationError("Missing task text"))
     }
 
 }

@@ -148,6 +148,10 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
         Toast.makeText(this, error.localizedMessage, Toast.LENGTH_LONG).show()
     }
 
+    override fun displayTasks(tasks: List<Task>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun showTaskDetails(task: Task?) {
 
         val builder = AlertDialog.Builder(this)

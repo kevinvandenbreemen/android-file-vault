@@ -7,6 +7,8 @@ import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
 import com.vandenbreemen.secretcamera.api.Project
+import com.vandenbreemen.secretcamera.api.Task
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
 import org.junit.Assert.assertEquals
@@ -55,6 +57,23 @@ class ProjectDetailsModelTest {
     @Test
     fun shouldGetProjectDescription(){
         assertEquals(project.details, model.getDescription())
+    }
+
+    @Test
+    fun shouldAddTaskToModel() {
+
+        //  Arrange
+        val expected = Task("Unit test task")
+
+        //  Act
+        val single: Single<List<Task>> = model.addTask(expected)
+
+        //  Assert
+        val test = single.test()
+        test.assertComplete()
+        assertEquals(1, test.values()[0].size)
+        assertEquals(expected, test.values()[0][0])
+
     }
 
 }

@@ -28,12 +28,14 @@ interface ProjectListRouter {
 
 interface ProjectDetailsPresenter : PresenterContract {
     fun selectAddTask()
+    fun submitTaskDetails(task: Task)
 
 }
 
 interface ProjectDetailsView : View {
     fun showDescription(description: String)
     fun showName(title: String)
+    fun displayTasks(tasks: List<Task>)
 }
 
 interface ProjectDetailsRouter {
