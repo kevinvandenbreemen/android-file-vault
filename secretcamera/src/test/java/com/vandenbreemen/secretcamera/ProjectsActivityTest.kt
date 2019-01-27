@@ -27,6 +27,7 @@ import org.robolectric.Robolectric.buildActivity
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowApplication
+import org.robolectric.shadows.ShadowToast
 
 @RunWith(RobolectricTestRunner::class)
 class ProjectsActivityTest {
@@ -75,6 +76,20 @@ class ProjectsActivityTest {
         assertTrue(forVerification.exists("Test Project"))
         assertEquals(1, forVerification.listFiles(ProjectFileTypes.PROJECT).size)
 
+    }
+
+    @Test
+    fun shouldRaiseErrorOnNoTitle() {
+        //  Arrange
+        val activity = buildActivity(ProjectsActivity::class.java, intent).create().resume().get()
+        activity.findViewById<FloatingActionButton>(R.id.addProjectFab).performClick()
+
+        //  Act
+        activity.findViewById<Button>(R.id.ok).performClick()
+
+        //  Assert
+        val toast = ShadowToast.getLatestToast()
+        assertNotNull("Toast", toast)
     }
 
     @Test

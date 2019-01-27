@@ -16,6 +16,7 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.api.Project
@@ -169,6 +170,9 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter {
     }
 
     override fun showError(error: ApplicationError) {
+        runOnUiThread {
+            Toast.makeText(this, error.localizedMessage, Toast.LENGTH_SHORT).show()
+        }
     }
 
 }
