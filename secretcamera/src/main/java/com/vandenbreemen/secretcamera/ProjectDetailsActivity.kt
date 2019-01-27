@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
@@ -107,6 +108,15 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
         super.onResume()
 
         presenter.start()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        findViewById<ViewGroup>(R.id.overlay).visibility = View.VISIBLE
+        dismissAllDialogs()
+
+        presenter.close()
     }
 
     fun showActionsSection() {

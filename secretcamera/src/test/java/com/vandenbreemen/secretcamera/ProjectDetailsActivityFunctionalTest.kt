@@ -3,6 +3,8 @@ package com.vandenbreemen.secretcamera
 import android.content.Intent
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.RecyclerView
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
@@ -17,6 +19,8 @@ import com.vandenbreemen.secretcamera.api.Task
 import com.vandenbreemen.secretcamera.mvp.impl.projects.ProjectFileTypes
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
+import junit.framework.Assert
+import junit.framework.TestCase
 import junit.framework.TestCase.assertNotNull
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -119,6 +123,14 @@ class ProjectDetailsActivityFunctionalTest {
 
         //  Assert
         assertNotNull("Toast", ShadowToast.getLatestToast())
+    }
+
+    @Test
+    fun shouldClosePresenterOnPause() {
+        val activity = Robolectric.buildActivity(ProjectDetailsActivity::class.java, intent).create().resume().pause().get()
+
+        TestCase.assertTrue(activity.presenter.isClosed())
+        Assert.assertEquals(View.VISIBLE, activity.findViewById<ViewGroup>(R.id.overlay).visibility)
     }
 
 }
