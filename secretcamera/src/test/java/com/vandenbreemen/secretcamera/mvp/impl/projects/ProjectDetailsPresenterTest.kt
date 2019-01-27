@@ -133,4 +133,81 @@ class ProjectDetailsPresenterTest {
         verify(projectDetailsView).showError(ApplicationError("Task description is required"))
     }
 
+    @Test
+    fun shouldViewTaskDetails() {
+        //  Arrange
+        projectDetailsPresenter.start()
+
+        //  Act
+        projectDetailsPresenter.viewTask(Task("Test Task"))
+
+        //  Assert
+        verify(projectDetailsRouter).showTaskDetails(Task("Test Task"))
+    }
+
+    @Test
+    fun shouldUpdateTask() {
+        //  Arrange
+        projectDetailsPresenter.start()
+        `when`(projectDetailsModel.submitUpdateTaskDetails(Task("Existing"), Task("Updated"))).thenReturn(Single.just(listOf(Task("Updated"))))
+
+        //  Act
+        projectDetailsPresenter.submitUpdateTaskDetails(Task("Existing"), Task("Updated"))
+
+        //  Assert
+        verify(projectDetailsModel).submitUpdateTaskDetails(Task("Existing"), Task("Updated"))
+    }
+
+    @Test
+    fun shouldDisplayUpdatedTasksOnUpdateTasks() {
+        //  Arrange
+        projectDetailsPresenter.start()
+        `when`(projectDetailsModel.submitUpdateTaskDetails(Task("Existing"), Task("Updated"))).thenReturn(Single.just(listOf(Task("Updated"))))
+
+        //  Act
+        projectDetailsPresenter.submitUpdateTaskDetails(Task("Existing"), Task("Updated"))
+
+        //  Assert
+        verify(projectDetailsView).displayTasks(listOf(Task("Updated")))
+    }
+
+    @Test
+    fun shouldShowErrorDuringUpdateTask() {
+        //  Arrange
+        projectDetailsPresenter.start()
+        `when`(projectDetailsModel.submitUpdateTaskDetails(Task("Existing"), Task(""))).thenThrow(ApplicationError("Missing Description"))
+
+        //  Act
+        projectDetailsPresenter.submitUpdateTaskDetails(Task("Existing"), Task(""))
+
+        //  Assert
+        verify(projectDetailsView).showError(ApplicationError("Missing Description"))
+    }
+
+    @Test
+    fun shouldShowErrorDuringUpdateTaskProcessing() {
+        //  Arrange
+        projectDetailsPresenter.start()
+        `when`(projectDetailsModel.submitUpdateTaskDetails(Task("Existing"), Task("fasdfasdf"))).thenReturn(Single.error(RuntimeException("Oh shit")))
+
+        //  Act
+        projectDetailsPresenter.submitUpdateTaskDetails(Task("Existing"), Task("fasdfasdf"))
+
+        //  Assert
+        verify(projectDetailsView).showError(ApplicationError("Unknown error occurred"))
+    }
+
+    @Test
+    fun shouldShowAppErrorDuringUpdateTaskProcessing() {
+        //  Arrange
+        projectDetailsPresenter.start()
+        `when`(projectDetailsModel.submitUpdateTaskDetails(Task("Existing"), Task("fasdfasdf"))).thenReturn(Single.error(ApplicationError("Oh shit")))
+
+        //  Act
+        projectDetailsPresenter.submitUpdateTaskDetails(Task("Existing"), Task("fasdfasdf"))
+
+        //  Assert
+        verify(projectDetailsView).showError(ApplicationError("Oh shit"))
+    }
+
 }

@@ -44,6 +44,10 @@ class TaskAdapter(private val dataSet: List<Task>, private val projectDetailsPre
         val group = holder.taskView
         val task = dataSet[position]
         group.findViewById<TextView>(R.id.taskDescription).setText(task.text)
+
+        group.setOnClickListener { v ->
+            projectDetailsPresenter.viewTask(task)
+        }
     }
 
 
@@ -222,9 +226,22 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
         val builder = AlertDialog.Builder(this)
 
         val taskDetailView = layoutInflater.inflate(R.layout.layout_task_details, null)
+
+        task?.let { existingTask ->
+            taskDetailView.findViewById<EditText>(R.id.taskDescription).setText(existingTask.text)
+        }
+
         taskDetailView.findViewById<Button>(R.id.ok).setOnClickListener { v ->
-            val task = Task(taskDetailView.findViewById<EditText>(R.id.taskDescription).text.toString())
-            presenter.submitTaskDetails(task)
+
+            task?.let { existingTask ->
+                val updatedTask = Task(taskDetailView.findViewById<EditText>(R.id.taskDescription).text.toString())
+                presenter.submitUpdateTaskDetails(existingTask, updatedTask)
+            } ?: run {
+                val task = Task(taskDetailView.findViewById<EditText>(R.id.taskDescription).text.toString())
+                presenter.submitTaskDetails(task)
+            }
+
+
         }
 
         builder.setView(taskDetailView)

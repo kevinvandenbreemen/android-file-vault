@@ -9,6 +9,7 @@ import android.support.test.espresso.IdlingPolicies
 import android.support.test.espresso.IdlingRegistry
 import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.assertion.ViewAssertions.matches
+import android.support.test.espresso.contrib.RecyclerViewActions
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.rule.ActivityTestRule
 import android.support.test.rule.GrantPermissionRule
@@ -16,6 +17,7 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertContains
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotDisplayed
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotExist
@@ -142,6 +144,40 @@ class ProjectDetailsActivityTest {
         //  Assert
         assertEquals(1, activityRule.activity.findViewById<RecyclerView>(R.id.taskList).adapter.itemCount)
         assertNotExist(R.id.taskDetails)
+    }
+
+    @Test
+    fun shouldViewTaskInProject() {
+        //  Arrange
+        clickOn(R.id.addTask)
+        writeTo(R.id.taskDescription, "This is a test Task")
+        onView(allOf(withParent(withId(R.id.taskDetails)), withId(R.id.ok))).perform(click())
+
+        //  Act
+        onView(withId(R.id.taskList)).perform(RecyclerViewActions.actionOnItemAtPosition<TaskViewHolder>(0, click()))
+
+        //  Assert
+        assertDisplayed(R.id.taskDetails)
+        assertContains(R.id.taskDescription, "This is a test Task")
+    }
+
+    @Test
+    fun shouldEditTaskInProject() {
+        //  Arrange
+        clickOn(R.id.addTask)
+        writeTo(R.id.taskDescription, "This is a test Task")
+        onView(allOf(withParent(withId(R.id.taskDetails)), withId(R.id.ok))).perform(click())
+        onView(withId(R.id.taskList)).perform(RecyclerViewActions.actionOnItemAtPosition<TaskViewHolder>(0, click()))
+
+        //  Act
+        writeTo(R.id.taskDescription, "Update Task Description")
+        onView(allOf(withParent(withId(R.id.taskDetails)), withId(R.id.ok))).perform(click())
+
+        //  Assert
+        assertEquals(1, activityRule.activity.findViewById<RecyclerView>(R.id.taskList).adapter.itemCount)
+        onView(withId(R.id.taskList)).perform(RecyclerViewActions.actionOnItemAtPosition<TaskViewHolder>(0, click()))
+        assertContains(R.id.taskDescription, "Update Task Description")
+
     }
 
     @Test

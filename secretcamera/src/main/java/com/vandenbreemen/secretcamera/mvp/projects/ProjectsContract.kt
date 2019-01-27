@@ -29,6 +29,8 @@ interface ProjectListRouter {
 interface ProjectDetailsPresenter : PresenterContract {
     fun selectAddTask()
     fun submitTaskDetails(task: Task)
+    fun viewTask(task: Task)
+    fun submitUpdateTaskDetails(existingTask: Task, updateTaskData: Task)
 
 }
 

@@ -52,5 +52,18 @@ class ProjectDetailsModel(val projectName: String, credentials: SFSCredentials):
         return ArrayList<Task>(project.tasks)
     }
 
+    @Throws(ApplicationError::class)
+    fun submitUpdateTaskDetails(existingTask: Task, updatedTaskValues: Task): Single<List<Task>> {
+        if (updatedTaskValues.text.isBlank()) {
+            throw ApplicationError("Task description is required")
+        }
+
+        return Single.create(SingleOnSubscribe<List<Task>> { subscriber ->
+            existingTask.text = updatedTaskValues.text
+            sfsInteractor.save(project, projectName, ProjectFileTypes.PROJECT)
+            subscriber.onSuccess(project.tasks)
+        }).subscribeOn(computation())
+    }
+
 
 }

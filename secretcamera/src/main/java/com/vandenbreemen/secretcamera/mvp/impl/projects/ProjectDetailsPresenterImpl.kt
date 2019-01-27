@@ -22,6 +22,26 @@ class ProjectDetailsPresenterImpl(val projectDetailsModel: ProjectDetailsModel, 
         projectDetailsRouter.showTaskDetails(null)
     }
 
+    override fun submitUpdateTaskDetails(existingTask: Task, updateTaskData: Task) {
+        try {
+            projectDetailsModel.submitUpdateTaskDetails(existingTask, updateTaskData).subscribe({ tasks ->
+                projectDetailsView.displayTasks(tasks)
+            }, { error ->
+                if (error is ApplicationError) {
+                    projectDetailsView.showError(error)
+                } else {
+                    projectDetailsView.showError(ApplicationError("Unknown error occurred"))
+                }
+            })
+        } catch (err: ApplicationError) {
+            projectDetailsView.showError(err)
+        }
+    }
+
+    override fun viewTask(task: Task) {
+        projectDetailsRouter.showTaskDetails(task)
+    }
+
     override fun submitTaskDetails(task: Task) {
         try {
             projectDetailsModel.addTask(task).subscribe({ taskList ->

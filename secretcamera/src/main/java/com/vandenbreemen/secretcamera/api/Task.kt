@@ -6,5 +6,5 @@ import java.io.Serializable
  *
  * @author kevin
  */
-data class Task(val text: String) : Serializable {
+data class Task(var text: String) : Serializable {
 }

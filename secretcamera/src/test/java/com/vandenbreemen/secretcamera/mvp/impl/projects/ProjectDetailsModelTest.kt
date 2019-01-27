@@ -76,6 +76,10 @@ class ProjectDetailsModelTest {
         assertEquals(1, test.values()[0].size)
         assertEquals(expected, test.values()[0][0])
 
+        model.init().subscribe()
+        assertEquals(1, model.getTasks().size)
+        assertEquals(Task("Unit test task"), model.getTasks()[0])
+
     }
 
     @Test
@@ -87,6 +91,41 @@ class ProjectDetailsModelTest {
         try {
             model.addTask(task)
             fail("Task description is blank")
+        } catch (err: ApplicationError) {
+            err.printStackTrace()
+        }
+    }
+
+    @Test
+    fun shouldUpdateTask() {
+        //  Arrange
+        val task = Task("New Task")
+        val addedTask = model.addTask(task).blockingGet()[0]
+        val updatedTask = Task("Updated Task Details")
+
+        //  Act
+        val updateSubscribe: Single<List<Task>> = model.submitUpdateTaskDetails(addedTask, Task("Updated Task Details"))
+        val test = updateSubscribe.test()
+
+        assertEquals(1, test.values()[0].size)
+        assertEquals(updatedTask, test.values()[0][0])
+
+        model.init().subscribe()
+        assertEquals(1, model.getTasks().size)
+        assertEquals(Task("Updated Task Details"), model.getTasks()[0])
+    }
+
+    @Test
+    fun shouldPreventUpdateTaskToBlank() {
+        //  Arrange
+        val task = Task("New Task")
+        val addedTask = model.addTask(task).blockingGet()[0]
+        val updatedTask = Task("")
+
+        //  Act/assert
+        try {
+            model.submitUpdateTaskDetails(addedTask, updatedTask)
+            fail("Missing details")
         } catch (err: ApplicationError) {
             err.printStackTrace()
         }
