@@ -1,7 +1,9 @@
 package com.vandenbreemen.secretcamera
 
 import android.content.Intent
+import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.RecyclerView
+import android.widget.Button
 import android.widget.TextView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
@@ -15,6 +17,7 @@ import com.vandenbreemen.secretcamera.api.Task
 import com.vandenbreemen.secretcamera.mvp.impl.projects.ProjectFileTypes
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
+import junit.framework.TestCase.assertNotNull
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -22,6 +25,8 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowApplication
+import org.robolectric.shadows.ShadowDialog
+import org.robolectric.shadows.ShadowToast
 
 /**
  * @author kevin
@@ -101,6 +106,19 @@ class ProjectDetailsActivityFunctionalTest {
         //  Assert
         assertEquals(2, recyclerView.childCount)
 
+    }
+
+    @Test
+    fun shouldShowErrorDuringAddTask() {
+        //  Arrange
+        val activity = Robolectric.buildActivity(ProjectDetailsActivity::class.java, intent).create().resume().get()
+        activity.findViewById<FloatingActionButton>(R.id.addTask).performClick()
+
+        //  Act
+        ShadowDialog.getLatestDialog().findViewById<Button>(R.id.ok).performClick()
+
+        //  Assert
+        assertNotNull("Toast", ShadowToast.getLatestToast())
     }
 
 }

@@ -3,6 +3,7 @@ package com.vandenbreemen.secretcamera
 import android.animation.Animator
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.Dialog
 import android.graphics.Point
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -59,6 +60,8 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
     var transitionDistance: Int = 0
 
     var actionsShowing = false
+
+    val dialogs = mutableListOf<Dialog>()
 
     @Inject
     lateinit var presenter: ProjectDetailsPresenter
@@ -178,14 +181,27 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
     }
 
     override fun showError(error: ApplicationError) {
-        Toast.makeText(this, error.localizedMessage, Toast.LENGTH_LONG).show()
+        runOnUiThread {
+            Toast.makeText(this, error.localizedMessage, Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun displayTasks(tasks: List<Task>) {
         runOnUiThread {
+
+            //  Hide all dialogs
+            dismissAllDialogs()
+
             findViewById<RecyclerView>(R.id.taskList).apply {
                 adapter = TaskAdapter(tasks, presenter)
             }
+        }
+    }
+
+    private fun dismissAllDialogs() {
+        dialogs.forEach { dialog ->
+            dialog.dismiss()
+            dialogs.remove(dialog)
         }
     }
 
@@ -201,7 +217,8 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
 
         builder.setView(taskDetailView)
 
-        val view = builder.create()
+        val view: Dialog = builder.create()
+        dialogs.add(view)
 
         taskDetailView.findViewById<Button>(R.id.cancel).setOnClickListener { v ->
             view.dismiss()

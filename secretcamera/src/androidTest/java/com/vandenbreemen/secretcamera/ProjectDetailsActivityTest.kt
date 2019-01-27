@@ -141,6 +141,7 @@ class ProjectDetailsActivityTest {
 
         //  Assert
         assertEquals(1, activityRule.activity.findViewById<RecyclerView>(R.id.taskList).adapter.itemCount)
+        assertNotExist(R.id.taskDetails)
     }
 
     @Test
