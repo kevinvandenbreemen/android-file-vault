@@ -102,4 +102,13 @@ class ProjectsActivityUITest {
 
     }
 
+    @Test
+    fun shouldCancelAddNewProject() {
+        clickOn(R.id.addProjectFab)
+
+        clickOn(R.id.cancel)
+
+        assertNotDisplayed(R.id.addProjectDialog)
+    }
+
 }

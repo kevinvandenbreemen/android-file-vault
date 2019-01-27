@@ -113,9 +113,16 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter {
         val animation = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
         val dialog = findViewById<ViewGroup>(R.id.addProjectDialog)
 
+        dialog.findViewById<EditText>(R.id.projectName).text.clear()
+        dialog.findViewById<EditText>(R.id.projectDescription).text.clear()
+
         val okButton = dialog.findViewById<Button>(R.id.ok)
         okButton.setOnClickListener { v ->
             onSubmitProjectDetails(dialog)
+        }
+
+        dialog.findViewById<Button>(R.id.cancel).setOnClickListener { v ->
+            hideCreateProject()
         }
 
         dialog.visibility = VISIBLE
