@@ -5,6 +5,9 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.graphics.Point
 import android.os.Bundle
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
@@ -19,6 +22,29 @@ import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_project_detail.*
 import javax.inject.Inject
 
+class TaskViewHolder(val taskView: ViewGroup) : RecyclerView.ViewHolder(taskView)
+
+class TaskAdapter(private val dataSet: List<Task>, private val projectDetailsPresenter: ProjectDetailsPresenter) : RecyclerView.Adapter<TaskViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
+        val group = LayoutInflater.from(parent.context).inflate(
+                R.layout.project_task_item, parent, false
+        ) as ViewGroup
+
+        return TaskViewHolder(group)
+    }
+
+    override fun getItemCount(): Int {
+        return dataSet.size
+    }
+
+    override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
+        val group = holder.taskView
+        val task = dataSet[position]
+        group.findViewById<TextView>(R.id.taskDescription).setText(task.text)
+    }
+
+
+}
 
 class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRouter {
 
@@ -151,7 +177,11 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
     }
 
     override fun displayTasks(tasks: List<Task>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        runOnUiThread {
+            findViewById<RecyclerView>(R.id.taskList).apply {
+                adapter = TaskAdapter(tasks, presenter)
+            }
+        }
     }
 
     override fun showTaskDetails(task: Task?) {
