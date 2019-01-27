@@ -39,6 +39,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView4">
 
         <EditText
+            android:gravity="start|top"
             android:id="@+id/taskDescription"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
