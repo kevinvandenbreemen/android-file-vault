@@ -65,5 +65,15 @@ class ProjectDetailsModel(val projectName: String, credentials: SFSCredentials):
         }).subscribeOn(computation())
     }
 
+    fun markTaskCompleted(task: Task, completed: Boolean): Single<List<Task>> {
+        return Single.create(SingleOnSubscribe<List<Task>> { subscriber ->
+            task.complete = completed
+            sfsInteractor.save(project, projectName, ProjectFileTypes.PROJECT)
+            subscriber.onSuccess(project.tasks)
+        }).subscribeOn(computation())
+
+
+    }
+
 
 }

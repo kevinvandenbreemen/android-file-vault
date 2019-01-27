@@ -6,16 +6,14 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.graphics.Point
 import android.os.Bundle
+import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.api.Task
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsPresenter
@@ -47,6 +45,20 @@ class TaskAdapter(private val dataSet: List<Task>, private val projectDetailsPre
 
         group.setOnClickListener { v ->
             projectDetailsPresenter.viewTask(task)
+        }
+
+        val checkBackground: CardView = group.findViewById<CardView>(R.id.completedContainer)
+        val checkbox = group.findViewById<CheckBox>(R.id.completed)
+
+        checkbox.isChecked = task.complete
+        if (task.complete) {
+            checkBackground.setCardBackgroundColor(checkbox.resources.getColor(R.color.green))
+        } else {
+            checkBackground.setCardBackgroundColor(checkbox.resources.getColor(R.color.cardview_light_background))
+        }
+
+        checkbox.setOnCheckedChangeListener { buttonView, isChecked ->
+            projectDetailsPresenter.setCompleted(task, isChecked)
         }
     }
 
@@ -217,8 +229,9 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
     private fun dismissAllDialogs() {
         dialogs.forEach { dialog ->
             dialog.dismiss()
-            dialogs.remove(dialog)
         }
+
+        dialogs.clear()
     }
 
     override fun showTaskDetails(task: Task?) {

@@ -38,6 +38,12 @@ class ProjectDetailsPresenterImpl(val projectDetailsModel: ProjectDetailsModel, 
         }
     }
 
+    override fun setCompleted(task: Task, completed: Boolean) {
+        projectDetailsModel.markTaskCompleted(task, completed).subscribe { tasks ->
+            projectDetailsView.displayTasks(tasks)
+        }
+    }
+
     override fun viewTask(task: Task) {
         projectDetailsRouter.showTaskDetails(task)
     }
