@@ -5,9 +5,12 @@
     android:padding="10dp"
     android:id="@+id/addProjectDetails"
     android:layout_width="match_parent"
+    android:background="@color/cardview_dark_background"
     android:layout_height="match_parent">
 
     <TextView
+        style="@style/title"
+        android:textColor="@color/colorAccent"
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,6 +23,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
+        android:textColor="@color/colorPrimary"
         android:id="@+id/projectName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -35,6 +39,8 @@
         tools:layout_editor_absoluteY="51dp" />
 
     <TextView
+        style="@style/title"
+        android:textColor="@color/colorAccent"
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -45,6 +51,8 @@
         app:layout_constraintTop_toBottomOf="@+id/projectName" />
 
     <EditText
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
         android:id="@+id/projectDescription"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -52,12 +60,11 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
-        android:inputType="textImeMultiLine"
-        android:minLines="10"
-        android:maxLines="10"
-        android:singleLine="false"
+        android:scrollHorizontally="false"
+        android:textAlignment="gravity"
         android:text=""
-        android:textAlignment="viewStart"
+        android:textColor="@color/colorPrimary"
+        tools:text="@string/lorem_ipsum"
         app:layout_constraintBottom_toTopOf="@id/ok"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
