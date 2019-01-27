@@ -18,6 +18,7 @@ import android.view.View
 import android.widget.TextView
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotDisplayed
+import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotExist
 import com.schibsted.spain.barista.interaction.BaristaClickInteractions.clickOn
 import com.schibsted.spain.barista.interaction.BaristaEditTextInteractions.writeTo
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
@@ -115,6 +116,18 @@ class ProjectDetailsActivityTest {
 
         //  Assert
         onView(withId(R.id.taskDetails)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun shouldCancelAddTask() {
+        //  Arrange
+        clickOn(R.id.addTask)
+
+        //  Act
+        clickOn(R.id.cancel)
+
+        //  Assert
+        assertNotExist(R.id.taskDetails)
     }
 
     @Test

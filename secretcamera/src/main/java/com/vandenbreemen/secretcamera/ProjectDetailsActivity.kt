@@ -198,9 +198,15 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
             val task = Task(taskDetailView.findViewById<EditText>(R.id.taskDescription).text.toString())
             presenter.submitTaskDetails(task)
         }
+
         builder.setView(taskDetailView)
 
         val view = builder.create()
+
+        taskDetailView.findViewById<Button>(R.id.cancel).setOnClickListener { v ->
+            view.dismiss()
+        }
+
         view.show()
     }
 }
