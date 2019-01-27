@@ -117,6 +117,8 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
         dismissAllDialogs()
 
         presenter.close()
+
+        finish()
     }
 
     fun showActionsSection() {
