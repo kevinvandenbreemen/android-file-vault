@@ -48,5 +48,9 @@ class ProjectDetailsModel(val projectName: String, credentials: SFSCredentials):
         }).subscribeOn(computation())
     }
 
+    fun getTasks(): List<Task> {
+        return ArrayList<Task>(project.tasks)
+    }
+
 
 }

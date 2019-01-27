@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.graphics.Point
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -92,6 +93,10 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
 
         addTask.setOnClickListener { v ->
             presenter.selectAddTask()
+        }
+
+        findViewById<RecyclerView>(R.id.taskList).apply {
+            layoutManager = LinearLayoutManager(this@ProjectDetailsActivity)
         }
     }
 

@@ -97,7 +97,7 @@ class ProjectsActivityTest {
         projectList.measure(0,0)
         projectList.layout(0,0,100,1000)
 
-        assertEquals("Projects not listed", 2, projectList.childCount)
+        assertEquals("Projects not listed", 2, projectList.adapter.itemCount)
 
     }
 

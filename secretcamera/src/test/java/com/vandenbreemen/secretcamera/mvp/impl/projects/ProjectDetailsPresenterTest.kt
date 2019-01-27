@@ -76,6 +76,18 @@ class ProjectDetailsPresenterTest {
     }
 
     @Test
+    fun shouldLoadAndDisplayTasksOnStart() {
+        //  Arrange
+        `when`(projectDetailsModel.getTasks()).thenReturn(listOf(Task("Test Task 2"), Task("Test Task 2")))
+
+        //  Act
+        projectDetailsPresenter.start()
+
+        //  Assert
+        verify(projectDetailsView).displayTasks(listOf(Task("Test Task 2"), Task("Test Task 2")))
+    }
+
+    @Test
     fun shouldAddTaskToProject() {
         //  Arrange
         projectDetailsPresenter.start()

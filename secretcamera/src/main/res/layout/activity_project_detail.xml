@@ -52,6 +52,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/taskList"
+            tools:background="@color/red"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="8dp"

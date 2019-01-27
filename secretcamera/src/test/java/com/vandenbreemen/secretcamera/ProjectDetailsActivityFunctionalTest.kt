@@ -1,6 +1,7 @@
 package com.vandenbreemen.secretcamera
 
 import android.content.Intent
+import android.support.v7.widget.RecyclerView
 import android.widget.TextView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
@@ -10,6 +11,7 @@ import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
 import com.vandenbreemen.secretcamera.R.id.projectDescription
 import com.vandenbreemen.secretcamera.R.id.projectName
 import com.vandenbreemen.secretcamera.api.Project
+import com.vandenbreemen.secretcamera.api.Task
 import com.vandenbreemen.secretcamera.mvp.impl.projects.ProjectFileTypes
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
@@ -75,6 +77,30 @@ class ProjectDetailsActivityFunctionalTest {
 
         //  Assert
         assertEquals(project.title, activity.findViewById<TextView>(projectName).text.toString())
+    }
+
+    @Test
+    fun shouldShowTaskListOnInitialLoad() {
+        //  Arrange
+        project.tasks.add(Task("Test Task 1"))
+        project.tasks.add(Task("Test Task 2"))
+        sfs.storeObject(project.title, project)
+
+        //  Act
+        val activity = Robolectric.buildActivity(ProjectDetailsActivity::class.java, intent).create().resume().get()
+        val recyclerView = activity.findViewById<RecyclerView>(R.id.taskList)
+
+
+        //  Robolectric - force ui thread runs
+        //flushBackgroundThreadScheduler()
+
+        //  Hack - force a redraw
+        recyclerView.measure(0, 0)
+        recyclerView.layout(0, 0, 100, 1000)
+
+        //  Assert
+        assertEquals(2, recyclerView.childCount)
+
     }
 
 }
