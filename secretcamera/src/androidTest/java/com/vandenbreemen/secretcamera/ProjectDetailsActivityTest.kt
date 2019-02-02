@@ -239,5 +239,19 @@ class ProjectDetailsActivityTest {
 
     }
 
+    @Test
+    fun actionsSectionShouldAllowUserToReturnToMain() {
+
+        activityRule.activity.runOnUiThread {
+            activityRule.activity.findViewById<View>(R.id.actionsButton).performClick()
+        }
+        Thread.sleep(500)
+
+        clickOn(R.id.returnToMain)
+
+        assertDisplayed(R.id.addProjectFab)
+
+    }
+
 
 }

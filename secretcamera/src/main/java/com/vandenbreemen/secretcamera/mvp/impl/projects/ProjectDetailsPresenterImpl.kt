@@ -18,6 +18,10 @@ class ProjectDetailsPresenterImpl(val projectDetailsModel: ProjectDetailsModel, 
         projectDetailsView.displayTasks(projectDetailsModel.getTasks())
     }
 
+    override fun returnToMain() {
+        projectDetailsRouter.returnToMain(projectDetailsModel.copyCredentials())
+    }
+
     override fun selectAddTask() {
         projectDetailsRouter.showTaskDetails(null)
     }

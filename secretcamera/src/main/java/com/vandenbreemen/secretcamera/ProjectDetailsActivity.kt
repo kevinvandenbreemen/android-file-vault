@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Point
 import android.os.Bundle
 import android.support.v7.widget.CardView
@@ -14,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.*
+import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.api.Task
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsPresenter
@@ -267,5 +269,17 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
         }
 
         view.show()
+    }
+
+    fun onReturnToMain(view: View) {
+        presenter.returnToMain()
+    }
+
+    override fun returnToMain(credentials: SFSCredentials) {
+
+        val intent = Intent(this, ProjectsActivity::class.java)
+        intent.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
+        startActivity(intent)
+
     }
 }
