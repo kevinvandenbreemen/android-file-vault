@@ -75,5 +75,10 @@ class ProjectDetailsModel(val projectName: String, credentials: SFSCredentials):
 
     }
 
+    @Throws(ApplicationError::class)
+    fun submitUpdatedProjectDetails(projectDescription: String): Single<Project> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
 
 }

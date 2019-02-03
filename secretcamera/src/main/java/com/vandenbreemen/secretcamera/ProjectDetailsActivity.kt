@@ -17,6 +17,7 @@ import android.view.WindowManager
 import android.widget.*
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.secretcamera.api.Project
 import com.vandenbreemen.secretcamera.api.Task
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsPresenter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsRouter
@@ -120,6 +121,35 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
         findViewById<RecyclerView>(R.id.taskList).apply {
             layoutManager = LinearLayoutManager(this@ProjectDetailsActivity)
         }
+
+        findViewById<TextView>(R.id.projectDescription).apply {
+            setOnClickListener { v ->
+                presenter.selectProjectDetails()
+            }
+        }
+    }
+
+    override fun displayProjectDetails(project: Project) {
+        val builder = AlertDialog.Builder(this)
+
+        val projectDetailsView = layoutInflater.inflate(R.layout.layout_edit_project_details, null)
+
+        projectDetailsView.findViewById<EditText>(R.id.projectDescriptionForEdit).setText(project.details)
+
+        projectDetailsView.findViewById<Button>(R.id.ok).setOnClickListener { v ->
+            presenter.submitUpdatedProjectDetails(projectDetailsView.findViewById<EditText>(R.id.projectDescriptionForEdit).text.toString())
+        }
+
+        builder.setView(projectDetailsView)
+
+        val view: Dialog = builder.create()
+        dialogs.add(view)
+
+        projectDetailsView.findViewById<Button>(R.id.cancel).setOnClickListener { v ->
+            view.dismiss()
+        }
+
+        view.show()
     }
 
     override fun onResume() {

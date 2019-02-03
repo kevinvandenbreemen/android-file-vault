@@ -68,4 +68,25 @@ class ProjectDetailsPresenterImpl(val projectDetailsModel: ProjectDetailsModel, 
             projectDetailsView.showError(err)
         }
     }
+
+    override fun selectProjectDetails() {
+        projectDetailsRouter.displayProjectDetails(projectDetailsModel.project)
+    }
+
+    override fun submitUpdatedProjectDetails(projectDescription: String) {
+        try {
+            projectDetailsModel.submitUpdatedProjectDetails(projectDescription).subscribe({ project ->
+                projectDetailsView.showDescription(project.details)
+            }, { error ->
+                if (error is ApplicationError) {
+                    projectDetailsView.showError(error)
+                } else {
+                    error.printStackTrace()
+                    projectDetailsView.showError(ApplicationError("Unknown error occurred"))
+                }
+            })
+        } catch (err: ApplicationError) {
+            projectDetailsView.showError(err)
+        }
+    }
 }

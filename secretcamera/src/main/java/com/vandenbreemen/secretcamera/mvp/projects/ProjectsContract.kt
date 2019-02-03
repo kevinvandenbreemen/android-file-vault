@@ -33,6 +33,8 @@ interface ProjectDetailsPresenter : PresenterContract {
     fun submitUpdateTaskDetails(existingTask: Task, updateTaskData: Task)
     fun setCompleted(task: Task, completed: Boolean)
     fun returnToMain()
+    fun selectProjectDetails()
+    fun submitUpdatedProjectDetails(projectDescription: String)
 
 }
 
@@ -45,5 +47,6 @@ interface ProjectDetailsView : View {
 interface ProjectDetailsRouter {
     fun showTaskDetails(task: Task?)
     fun returnToMain(credentials: SFSCredentials)
+    fun displayProjectDetails(project: Project)
 
 }

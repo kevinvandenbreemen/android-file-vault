@@ -112,6 +112,43 @@ class ProjectDetailsActivityTest {
     }
 
     @Test
+    fun shouldShowProjectDetailsDialogWhenClickingProjectDescription() {
+
+        //  Arrange
+        activityRule.activity.runOnUiThread {
+            activityRule.activity.findViewById<View>(R.id.actionsButton).performClick()
+        }
+        Thread.sleep(500)
+
+        //  Act
+        clickOn(R.id.projectDescription)
+
+        //  Assert
+        onView(withId(R.id.projectDetails)).check(matches(isDisplayed()))
+        onView(allOf(withId(R.id.projectDescriptionForEdit))).check(matches(withText(project.details)))
+
+    }
+
+    @Test
+    fun shouldEditProjectDetailsProjectDescription() {
+        //  Arrange
+        activityRule.activity.runOnUiThread {
+            activityRule.activity.findViewById<View>(R.id.actionsButton).performClick()
+        }
+        Thread.sleep(500)
+
+        clickOn(R.id.projectDescription)
+
+        //  Act
+        writeTo(R.id.projectDescriptionForEdit, "Update the project's details")
+        onView(allOf(withParent(withId(R.id.projectDetails)), withId(R.id.ok))).perform(click())
+
+        //  Assert
+        onView(withId(R.id.projectDescription)).check(matches(withText("Update the project's details")))
+
+    }
+
+    @Test
     fun shouldShowAddTaskDialogWhenClickingAddTask() {
         //  Act
         clickOn(R.id.addTask)

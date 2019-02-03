@@ -210,4 +210,43 @@ class ProjectDetailsPresenterTest {
         verify(projectDetailsView).showError(ApplicationError("Oh shit"))
     }
 
+    @Test
+    fun shouldAllowEditOfProjectDescription() {
+        //  Arrange
+        projectDetailsPresenter.start()
+        `when`(projectDetailsModel.submitUpdatedProjectDetails("Update description")).thenReturn(Single.just(Project("Title", "Update description", ArrayList<Task>())))
+
+        //  Act
+        projectDetailsPresenter.submitUpdatedProjectDetails("Update description")
+
+        //  assert
+        verify(projectDetailsView).showDescription("Update description")
+    }
+
+    @Test
+    fun shouldShowErrorIfProjectDescriptionBlankOnEditProject() {
+        //  Arrange
+        projectDetailsPresenter.start()
+        `when`(projectDetailsModel.submitUpdatedProjectDetails("")).thenThrow(ApplicationError("Missing project description"))
+
+        //  Act
+        projectDetailsPresenter.submitUpdatedProjectDetails("")
+
+        //  Assert
+        verify(projectDetailsView).showError(ApplicationError("Missing project description"))
+    }
+
+    @Test
+    fun shouldShowErrorIfErrorOccursDuringUpdateProjectDetails() {
+        //  Arrange
+        projectDetailsPresenter.start()
+        `when`(projectDetailsModel.submitUpdatedProjectDetails("")).thenReturn(Single.error(ApplicationError("Missing project description")))
+
+        //  Act
+        projectDetailsPresenter.submitUpdatedProjectDetails("")
+
+        //  Assert
+        verify(projectDetailsView).showError(ApplicationError("Missing project description"))
+    }
+
 }
