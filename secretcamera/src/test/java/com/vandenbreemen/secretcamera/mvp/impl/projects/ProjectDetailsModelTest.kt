@@ -131,4 +131,28 @@ class ProjectDetailsModelTest {
         }
     }
 
+    @Test
+    fun shouldUpdateProjectDescription() {
+
+        //  Arrange
+        val test = model.submitUpdatedProjectDetails("Update Project Description").test()
+
+        //  Assert
+        assertEquals(Project("Unit Test", "Update Project Description", ArrayList()), test.values()[0])
+
+        model.init().subscribe()
+        assertEquals(Project("Unit Test", "Update Project Description", ArrayList()), model.project)
+
+    }
+
+    @Test
+    fun shouldPreventUpdateProjectDescriptionToBlank() {
+        try {
+            model.submitUpdatedProjectDetails("")
+            fail("Project description is blank")
+        } catch (err: ApplicationError) {
+            err.printStackTrace()
+        }
+    }
+
 }

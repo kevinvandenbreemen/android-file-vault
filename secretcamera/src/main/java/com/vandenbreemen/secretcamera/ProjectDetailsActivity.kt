@@ -230,7 +230,10 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
     }
 
     override fun showDescription(description: String) {
-        projectDescription.text = description
+        runOnUiThread {
+            dismissAllDialogs()
+            projectDescription.text = description
+        }
     }
 
     override fun showName(title: String) {

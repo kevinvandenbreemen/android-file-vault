@@ -144,6 +144,7 @@ class ProjectDetailsActivityTest {
         onView(allOf(withParent(withId(R.id.projectDetails)), withId(R.id.ok))).perform(click())
 
         //  Assert
+        assertNotExist(R.id.projectDetails)
         onView(withId(R.id.projectDescription)).check(matches(withText("Update the project's details")))
 
     }

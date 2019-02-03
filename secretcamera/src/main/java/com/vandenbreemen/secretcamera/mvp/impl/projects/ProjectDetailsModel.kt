@@ -77,7 +77,16 @@ class ProjectDetailsModel(val projectName: String, credentials: SFSCredentials):
 
     @Throws(ApplicationError::class)
     fun submitUpdatedProjectDetails(projectDescription: String): Single<Project> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        if (projectDescription.isBlank()) {
+            throw ApplicationError("Project description is required")
+        }
+
+        return Single.create(SingleOnSubscribe<Project> { subscriber ->
+            project.details = projectDescription
+            sfsInteractor.save(project, projectName, ProjectFileTypes.PROJECT)
+            subscriber.onSuccess(project)
+        }).subscribeOn(computation())
     }
 
 
