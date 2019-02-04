@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,13 +23,15 @@ import com.vandenbreemen.secretcamera.api.Task
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsPresenter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsRouter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsView
+import com.vandenbreemen.secretcamera.ui.DragListener
+import com.vandenbreemen.secretcamera.ui.DragUpAndDownHelper
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_project_detail.*
 import javax.inject.Inject
 
 class TaskViewHolder(val taskView: ViewGroup) : RecyclerView.ViewHolder(taskView)
 
-class TaskAdapter(private val dataSet: List<Task>, private val projectDetailsPresenter: ProjectDetailsPresenter) : RecyclerView.Adapter<TaskViewHolder>() {
+class TaskAdapter(var dataSet: MutableList<Task>, private val projectDetailsPresenter: ProjectDetailsPresenter) : RecyclerView.Adapter<TaskViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         val group = LayoutInflater.from(parent.context).inflate(
                 R.layout.project_task_item, parent, false
@@ -44,7 +47,7 @@ class TaskAdapter(private val dataSet: List<Task>, private val projectDetailsPre
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val group = holder.taskView
         val task = dataSet[position]
-        group.findViewById<TextView>(R.id.taskDescription).setText(task.text)
+        group.findViewById<TextView>(R.id.taskDescription).text = task.text
 
         group.setOnClickListener { v ->
             projectDetailsPresenter.viewTask(task)
@@ -53,6 +56,7 @@ class TaskAdapter(private val dataSet: List<Task>, private val projectDetailsPre
         val checkBackground: CardView = group.findViewById<CardView>(R.id.completedContainer)
         val checkbox = group.findViewById<CheckBox>(R.id.completed)
 
+        checkbox.setOnCheckedChangeListener(null)
         checkbox.isChecked = task.complete
         if (task.complete) {
             checkBackground.setCardBackgroundColor(checkbox.resources.getColor(R.color.green))
@@ -128,6 +132,7 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
             }
         }
     }
+
 
     override fun displayProjectDetails(project: Project) {
         val builder = AlertDialog.Builder(this)
@@ -249,14 +254,42 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
         }
     }
 
+    private fun setupDragAndDropForTasks() {
+        findViewById<RecyclerView>(R.id.taskList).apply {
+
+            val adapter = this.adapter as TaskAdapter
+
+            val touchHelper = ItemTouchHelper(DragUpAndDownHelper(object : DragListener {
+                override fun onViewMoved(oldPosition: Int, newPosition: Int) {
+                    println("View has moved")
+                    val taskAtOldPosition = adapter.dataSet.removeAt(oldPosition)
+                    adapter.dataSet.add(newPosition, taskAtOldPosition)
+                    adapter.notifyItemMoved(oldPosition, newPosition)
+                }
+            }))
+
+            touchHelper.attachToRecyclerView(this)
+        }
+    }
+
     override fun displayTasks(tasks: List<Task>) {
+
         runOnUiThread {
 
             //  Hide all dialogs
             dismissAllDialogs()
 
             findViewById<RecyclerView>(R.id.taskList).apply {
-                adapter = TaskAdapter(tasks, presenter)
+                val taskList = mutableListOf<Task>()
+                taskList.addAll(tasks)
+                if (adapter == null) {
+                    adapter = TaskAdapter(taskList, presenter)
+                    setupDragAndDropForTasks()
+                } else {
+                    val tasksAdapter = adapter as TaskAdapter
+                    tasksAdapter.dataSet = taskList
+                    tasksAdapter.notifyDataSetChanged()
+                }
             }
         }
     }
