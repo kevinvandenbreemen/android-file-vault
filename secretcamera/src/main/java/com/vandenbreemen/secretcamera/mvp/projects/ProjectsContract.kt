@@ -35,6 +35,7 @@ interface ProjectDetailsPresenter : PresenterContract {
     fun returnToMain()
     fun selectProjectDetails()
     fun submitUpdatedProjectDetails(projectDescription: String)
+    fun notifyItemMoved(oldPosition: Int, newPosition: Int)
 
 }
 

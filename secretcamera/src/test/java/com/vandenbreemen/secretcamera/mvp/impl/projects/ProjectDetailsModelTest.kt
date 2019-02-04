@@ -155,4 +155,48 @@ class ProjectDetailsModelTest {
         }
     }
 
+    @Test
+    fun shouldUpdatePositionOfItems() {
+        //  Arrange
+        model.addTask(Task("Task 1")).subscribe()
+        model.addTask(Task("Task 2")).subscribe()
+
+        //  Act
+        model.updateItemPosition(0, 1).subscribe()
+
+        //  Assert
+        val tasks = model.getTasks()
+        assertEquals(Task("Task 2"), tasks[0])
+        assertEquals(Task("Task 1"), tasks[1])
+    }
+
+    @Test
+    fun shouldRaiseErrorIfPositionsAreOutOfBounds() {
+        //  Arrange
+        model.addTask(Task("Task 1")).subscribe()
+        model.addTask(Task("Task 2")).subscribe()
+
+        //  Act
+        val test = model.updateItemPosition(1, 2).test()
+
+        //  Assert
+        test.assertNotComplete()
+        test.assertError(ApplicationError("Unable to move task!"))
+    }
+
+    @Test
+    fun shouldLeaveTasksAloneIfErrorOccurs() {
+        //  Arrange
+        model.addTask(Task("Task 1")).subscribe()
+        model.addTask(Task("Task 2")).subscribe()
+
+        //  Act
+        model.updateItemPosition(1, 2).subscribe()
+
+        //  Assert
+        val tasks = model.getTasks()
+        assertEquals(Task("Task 1"), tasks[0])
+        assertEquals(Task("Task 2"), tasks[1])
+    }
+
 }

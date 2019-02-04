@@ -89,4 +89,12 @@ class ProjectDetailsPresenterImpl(val projectDetailsModel: ProjectDetailsModel, 
             projectDetailsView.showError(err)
         }
     }
+
+    override fun notifyItemMoved(oldPosition: Int, newPosition: Int) {
+        projectDetailsModel.updateItemPosition(oldPosition, newPosition).subscribe({}, { error ->
+            if (error is ApplicationError) {
+                projectDetailsView.showError(error)
+            }
+        })
+    }
 }

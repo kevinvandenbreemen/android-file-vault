@@ -261,10 +261,10 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
 
             val touchHelper = ItemTouchHelper(DragUpAndDownHelper(object : DragListener {
                 override fun onViewMoved(oldPosition: Int, newPosition: Int) {
-                    println("View has moved")
                     val taskAtOldPosition = adapter.dataSet.removeAt(oldPosition)
                     adapter.dataSet.add(newPosition, taskAtOldPosition)
                     adapter.notifyItemMoved(oldPosition, newPosition)
+                    presenter.notifyItemMoved(oldPosition, newPosition)
                 }
             }))
 

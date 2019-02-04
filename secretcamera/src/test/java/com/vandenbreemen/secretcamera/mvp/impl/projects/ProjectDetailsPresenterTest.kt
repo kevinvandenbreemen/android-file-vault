@@ -6,6 +6,7 @@ import com.vandenbreemen.secretcamera.api.Task
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsPresenter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsRouter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsView
+import io.reactivex.Completable
 import io.reactivex.Single
 import org.junit.Before
 import org.junit.Test
@@ -247,6 +248,32 @@ class ProjectDetailsPresenterTest {
 
         //  Assert
         verify(projectDetailsView).showError(ApplicationError("Missing project description"))
+    }
+
+    @Test
+    fun shouldNotifyModelOfItemPositionChange() {
+        //  Arrange
+        projectDetailsPresenter.start()
+        `when`(projectDetailsModel.updateItemPosition(0, 1)).thenReturn(Completable.complete())
+
+        //  Act
+        projectDetailsPresenter.notifyItemMoved(0, 1)
+
+        //  Assert
+        verify(projectDetailsModel).updateItemPosition(0, 1)
+    }
+
+    @Test
+    fun shouldRaiseErrorIfMoveFails() {
+        //  Arrange
+        projectDetailsPresenter.start()
+        `when`(projectDetailsModel.updateItemPosition(0, 1)).thenReturn(Completable.error(ApplicationError("An unknown error occurred")))
+
+        //  Act
+        projectDetailsPresenter.notifyItemMoved(0, 1)
+
+        //  Assert
+        verify(projectDetailsView).showError(ApplicationError("An unknown error occurred"))
     }
 
 }

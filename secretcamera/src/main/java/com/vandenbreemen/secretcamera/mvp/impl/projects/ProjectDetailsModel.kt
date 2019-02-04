@@ -3,10 +3,12 @@ package com.vandenbreemen.secretcamera.mvp.impl.projects
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractor
 import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
+import com.vandenbreemen.mobilesecurestorage.log.SystemLog
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.secretcamera.api.Project
 import com.vandenbreemen.secretcamera.api.Task
+import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
 import io.reactivex.schedulers.Schedulers.computation
@@ -87,6 +89,30 @@ class ProjectDetailsModel(val projectName: String, credentials: SFSCredentials):
             sfsInteractor.save(project, projectName, ProjectFileTypes.PROJECT)
             subscriber.onSuccess(project)
         }).subscribeOn(computation())
+    }
+
+    fun updateItemPosition(oldPosition: Int, newPosition: Int): Completable {
+        return Completable.create { subscriber ->
+
+            val taskListCopy = ArrayList<Task>(project.tasks)
+
+            try {
+                val atOldPosition = taskListCopy.removeAt(oldPosition)
+                taskListCopy.add(newPosition, atOldPosition)
+            } catch (error: Exception) {
+
+                SystemLog.get().error("${ProjectDetailsModel::class.java.simpleName} -- Failed to move task from $oldPosition to $newPosition due to", error)
+
+                subscriber.onError(ApplicationError("Unable to move task!"))
+                return@create
+            }
+
+            project.tasks.clear()
+            project.tasks.addAll(taskListCopy)
+
+            sfsInteractor.save(project, projectName, ProjectFileTypes.PROJECT)
+            subscriber.onComplete()
+        }.subscribeOn(computation())
     }
 
 
