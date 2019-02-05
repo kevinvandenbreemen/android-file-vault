@@ -28,7 +28,7 @@ class TakeNewNotePresenterImpl(val view: TakeNewNoteView, val model: TakeNewNote
 
     override fun provideNoteDetails(title: String?, note: String?) {
         try {
-            model.submitNewNote(title ?: "", note ?: "")
+            addForDisposal(model.submitNewNote(title ?: "", note ?: "")
                     .subscribe({ _ ->
                         Log.d("TakeNewNotePresenter", "New note taken - ${Thread.currentThread()}")
                         view.onNoteSucceeded("New note created")
@@ -39,7 +39,7 @@ class TakeNewNotePresenterImpl(val view: TakeNewNoteView, val model: TakeNewNote
                                 view.showError(ApplicationError("Unexpected error"))
                                 view.close(model.copyCredentials())
                             }
-                    )
+                    ))
         } catch (error: ApplicationError) {
             view.showError(error)
         }
@@ -47,13 +47,13 @@ class TakeNewNotePresenterImpl(val view: TakeNewNoteView, val model: TakeNewNote
 
     override fun saveAndClose(noteTitle: String?, noteContent: String?): Single<Unit> {
         try {
-            return model.submitNewNote(noteTitle ?: "", noteContent
+            addForDisposal(return model.submitNewNote(noteTitle ?: "", noteContent
                     ?: "").observeOn(computation()).subscribeOn(computation())
                     .flatMap { unit ->
                         Single.create<Unit>(SingleOnSubscribe {
                             model.close()
                         })
-                    }.observeOn(computation()).subscribeOn(computation())
+                    }.observeOn(computation()).subscribeOn(computation()))
         } catch (error: ApplicationError) {
             SystemLog.get().e("TakeNotePresenterImpl", "Failed to save and close", error)
             return Single.just(Unit)

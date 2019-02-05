@@ -8,6 +8,8 @@ import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureF
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 /*
@@ -39,6 +41,8 @@ interface PresenterContract {
 
 abstract class Presenter<out M : Model, out V : View>(private val model: M, private val view: V) : PresenterContract {
 
+    private val disposal: CompositeDisposable = CompositeDisposable()
+
     override fun start() {
         model.init().subscribe(
                 {
@@ -58,10 +62,18 @@ abstract class Presenter<out M : Model, out V : View>(private val model: M, priv
 
     override fun close() {
         model.close()
+        disposal.dispose()
     }
 
     override fun isClosed(): Boolean {
         return model.isClosed()
+    }
+
+    /**
+     * Ensure that on closing of this presenter the given disposable will be disposed of
+     */
+    fun addForDisposal(disposable: Disposable) {
+        disposal.add(disposable)
     }
 
 }

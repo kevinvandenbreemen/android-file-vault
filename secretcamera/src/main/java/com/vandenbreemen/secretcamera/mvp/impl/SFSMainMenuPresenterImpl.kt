@@ -19,7 +19,7 @@ class SFSMainMenuPresenterImpl(val model:SFSMainMenuModel, val mainMenuView: SFS
     }
 
     override fun viewNotes() {
-        model.getNotes().subscribe({notes->mainMenuView.gotoNotesList(model.credentials, ArrayList<String>(notes))})
+        addForDisposal(model.getNotes().subscribe({ notes -> mainMenuView.gotoNotesList(model.credentials, ArrayList<String>(notes)) }))
     }
 
     override fun openActions() {

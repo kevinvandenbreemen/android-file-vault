@@ -32,7 +32,7 @@ class SFSActionsPresenterImpl(val view: SFSActionsView, private val router: SFSA
     }
 
     override fun changePassword(currentPassword: String, newPassword: String, reEnterNewPassword: String) {
-        model.changePassword(currentPassword, newPassword, reEnterNewPassword, progress).subscribe({ newPass ->
+        addForDisposal(model.changePassword(currentPassword, newPassword, reEnterNewPassword, progress).subscribe({ newPass ->
             router.returnToMain(model.generateCredentials(newPass))
         }, {error ->
             if (error is ApplicationError) {
@@ -41,7 +41,7 @@ class SFSActionsPresenterImpl(val view: SFSActionsView, private val router: SFSA
                 SystemLog.get().e("SFSActions", "Error changing password", error)
                 view.showError(ApplicationError("Unknown error occurred"))
             }
-        })
+        }))
     }
 
     override fun cancelChangePassword() {

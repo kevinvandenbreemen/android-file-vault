@@ -13,9 +13,9 @@ class ProjectListPresenterImpl(val model: ProjectListModel, val view: ProjectLis
 
 
     override fun setupView() {
-        model.getProjects().subscribe { projects ->
+        addForDisposal(model.getProjects().subscribe { projects ->
             view.showProjects(projects)
-        }
+        })
     }
 
     override fun viewProjectDetails(project: Project) {
@@ -23,7 +23,7 @@ class ProjectListPresenterImpl(val model: ProjectListModel, val view: ProjectLis
     }
 
     override fun addProject(project: Project) {
-        model.addNewProject(project).subscribe({
+        addForDisposal(model.addNewProject(project).subscribe({
             model.getProjects().subscribe { projects ->
                 view.showProjects(projects)
             }
@@ -34,7 +34,7 @@ class ProjectListPresenterImpl(val model: ProjectListModel, val view: ProjectLis
                 SystemLog.get().e("CreateProject", "Error adding project", error)
                 view.showError(ApplicationError("Unknown error occurred"))
             }
-        })
+        }))
     }
 
 }

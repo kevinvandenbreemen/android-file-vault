@@ -24,13 +24,15 @@ class NoteDetailsPresenterImpl(private val model: NoteDetailsModel, private val 
     override fun onOk() {
         if (model.isEditing()) {
             val note = view.getNoteOnUI()
-            model.updateNote(note.title, note.content).subscribe(
-                    { view.close(model.copyCredentials()) },
-                    { error ->
-                        SystemLog.get().e(NoteDetailsPresenterImpl::class.java.simpleName, "Error updating note", error)
-                        view.showError(if (error is ApplicationError) error as ApplicationError
-                        else ApplicationError("Unknown error"))
-                    }
+            addForDisposal(
+                    model.updateNote(note.title, note.content).subscribe(
+                            { view.close(model.copyCredentials()) },
+                            { error ->
+                                SystemLog.get().e(NoteDetailsPresenterImpl::class.java.simpleName, "Error updating note", error)
+                                view.showError(if (error is ApplicationError) error as ApplicationError
+                                else ApplicationError("Unknown error"))
+                            }
+                    )
             )
             return
         }

@@ -122,44 +122,52 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
 
     override fun displayCurrentImage() {
         view.showLoadingSpinner()
-        model.currentFile().flatMap { imageFile ->
-            model.loadImageForDisplay(imageFile)
-        }.subscribe({ bitmap -> showImageOnView(bitmap) },
-                { error -> view.showError(ApplicationError(error)) }
+        addForDisposal(
+                model.currentFile().flatMap { imageFile ->
+                    model.loadImageForDisplay(imageFile)
+                }.subscribe({ bitmap -> showImageOnView(bitmap) },
+                        { error -> view.showError(ApplicationError(error)) }
+                )
         )
     }
 
     override fun nextImage() {
         view.showLoadingSpinner()
-        model.nextFile().flatMap { imageFile ->
-            model.loadImage(imageFile)
-        }
-                .observeOn(mainThread())
-                .subscribeOn(computation())
-                .subscribe({ bitmap -> showImageOnView(bitmap) },
-                { error -> view.showError(ApplicationError(error)) }
+        addForDisposal(
+                model.nextFile().flatMap { imageFile ->
+                    model.loadImage(imageFile)
+                }
+                        .observeOn(mainThread())
+                        .subscribeOn(computation())
+                        .subscribe({ bitmap -> showImageOnView(bitmap) },
+                                { error -> view.showError(ApplicationError(error)) }
+                        )
         )
     }
 
     override fun previousImage() {
         view.showLoadingSpinner()
-        model.prevFile().flatMap { imageFile ->
-            model.loadImage(imageFile)
-        }.subscribe({ bitmap -> showImageOnView(bitmap) },
-                { error -> view.showError(ApplicationError(error)) }
+        addForDisposal(
+                model.prevFile().flatMap { imageFile ->
+                    model.loadImage(imageFile)
+                }.subscribe({ bitmap -> showImageOnView(bitmap) },
+                        { error -> view.showError(ApplicationError(error)) }
+                )
         )
     }
 
     override fun thumbnail(fileName: String): Single<Bitmap> {
-        return model.loadImage(fileName).observeOn(mainThread())
-                .flatMap { bitmap ->
-                    model.getThumbnail(bitmap)
-                }.observeOn(mainThread())
-                .subscribeOn(computation())
+        addForDisposal(
+                return model.loadImage(fileName).observeOn(mainThread())
+                        .flatMap { bitmap ->
+                            model.getThumbnail(bitmap)
+                        }.observeOn(mainThread())
+                        .subscribeOn(computation())
+        )
     }
 
     override fun showSelector() {
-        model.listImages().subscribe({ imageFiles -> view.showImageSelector(imageFiles) })
+        addForDisposal(model.listImages().subscribe({ imageFiles -> view.showImageSelector(imageFiles) }))
     }
 
     override fun currentImageFileName(): Single<String> {
@@ -183,16 +191,18 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
             router.hideActions()
             view.hideImageSelector()
             view.showLoadingSpinner()
-            model.deleteSelected().observeOn(mainThread()).subscribe {
-                model.hasMoreImages().subscribe { hasMore ->
-                    if (!hasMore) {
-                        router.navigateBack(model.copyCredentials())
-                    } else {
-                        view.hideLoadingSpinner()
-                        displayCurrentImage()
+            addForDisposal(
+                    model.deleteSelected().observeOn(mainThread()).subscribe {
+                        model.hasMoreImages().subscribe { hasMore ->
+                            if (!hasMore) {
+                                router.navigateBack(model.copyCredentials())
+                            } else {
+                                view.hideLoadingSpinner()
+                                displayCurrentImage()
+                            }
+                        }
                     }
-                }
-            }
+            )
         } else {
             view.showError(ApplicationError("No Images Selected For Delete"))
         }
@@ -218,9 +228,11 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
 
     override fun deleteAllImages() {
         view.showLoadingSpinner()
-        model.deleteAllImages().observeOn(mainThread()).subscribe {
-            view.hideLoadingSpinner()
-            router.navigateBack(model.copyCredentials())
-        }
+        addForDisposal(
+                model.deleteAllImages().observeOn(mainThread()).subscribe {
+                    view.hideLoadingSpinner()
+                    router.navigateBack(model.copyCredentials())
+                }
+        )
     }
 }

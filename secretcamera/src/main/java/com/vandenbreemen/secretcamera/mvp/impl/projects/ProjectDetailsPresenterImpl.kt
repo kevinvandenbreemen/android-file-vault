@@ -28,24 +28,28 @@ class ProjectDetailsPresenterImpl(val projectDetailsModel: ProjectDetailsModel, 
 
     override fun submitUpdateTaskDetails(existingTask: Task, updateTaskData: Task) {
         try {
-            projectDetailsModel.submitUpdateTaskDetails(existingTask, updateTaskData).subscribe({ tasks ->
-                projectDetailsView.displayTasks(tasks)
-            }, { error ->
-                if (error is ApplicationError) {
-                    projectDetailsView.showError(error)
-                } else {
-                    projectDetailsView.showError(ApplicationError("Unknown error occurred"))
-                }
-            })
+            addForDisposal(
+                    projectDetailsModel.submitUpdateTaskDetails(existingTask, updateTaskData).subscribe({ tasks ->
+                        projectDetailsView.displayTasks(tasks)
+                    }, { error ->
+                        if (error is ApplicationError) {
+                            projectDetailsView.showError(error)
+                        } else {
+                            projectDetailsView.showError(ApplicationError("Unknown error occurred"))
+                        }
+                    })
+            )
         } catch (err: ApplicationError) {
             projectDetailsView.showError(err)
         }
     }
 
     override fun setCompleted(task: Task, completed: Boolean) {
-        projectDetailsModel.markTaskCompleted(task, completed).subscribe { tasks ->
-            projectDetailsView.displayTasks(tasks)
-        }
+        addForDisposal(
+                projectDetailsModel.markTaskCompleted(task, completed).subscribe { tasks ->
+                    projectDetailsView.displayTasks(tasks)
+                }
+        )
     }
 
     override fun viewTask(task: Task) {
@@ -54,16 +58,18 @@ class ProjectDetailsPresenterImpl(val projectDetailsModel: ProjectDetailsModel, 
 
     override fun submitTaskDetails(task: Task) {
         try {
-            projectDetailsModel.addTask(task).subscribe({ taskList ->
-                projectDetailsView.displayTasks(taskList)
-            }, { error ->
-                if (error is ApplicationError) {
-                    projectDetailsView.showError(error)
-                } else {
-                    error.printStackTrace()
-                    projectDetailsView.showError(ApplicationError("Unknown error occurred"))
-                }
-            })
+            addForDisposal(
+                    projectDetailsModel.addTask(task).subscribe({ taskList ->
+                        projectDetailsView.displayTasks(taskList)
+                    }, { error ->
+                        if (error is ApplicationError) {
+                            projectDetailsView.showError(error)
+                        } else {
+                            error.printStackTrace()
+                            projectDetailsView.showError(ApplicationError("Unknown error occurred"))
+                        }
+                    })
+            )
         } catch (err: ApplicationError) {
             projectDetailsView.showError(err)
         }
@@ -75,26 +81,30 @@ class ProjectDetailsPresenterImpl(val projectDetailsModel: ProjectDetailsModel, 
 
     override fun submitUpdatedProjectDetails(projectDescription: String) {
         try {
-            projectDetailsModel.submitUpdatedProjectDetails(projectDescription).subscribe({ project ->
-                projectDetailsView.showDescription(project.details)
-            }, { error ->
-                if (error is ApplicationError) {
-                    projectDetailsView.showError(error)
-                } else {
-                    error.printStackTrace()
-                    projectDetailsView.showError(ApplicationError("Unknown error occurred"))
-                }
-            })
+            addForDisposal(
+                    projectDetailsModel.submitUpdatedProjectDetails(projectDescription).subscribe({ project ->
+                        projectDetailsView.showDescription(project.details)
+                    }, { error ->
+                        if (error is ApplicationError) {
+                            projectDetailsView.showError(error)
+                        } else {
+                            error.printStackTrace()
+                            projectDetailsView.showError(ApplicationError("Unknown error occurred"))
+                        }
+                    })
+            )
         } catch (err: ApplicationError) {
             projectDetailsView.showError(err)
         }
     }
 
     override fun notifyItemMoved(oldPosition: Int, newPosition: Int) {
-        projectDetailsModel.updateItemPosition(oldPosition, newPosition).subscribe({}, { error ->
-            if (error is ApplicationError) {
-                projectDetailsView.showError(error)
-            }
-        })
+        addForDisposal(
+                projectDetailsModel.updateItemPosition(oldPosition, newPosition).subscribe({}, { error ->
+                    if (error is ApplicationError) {
+                        projectDetailsView.showError(error)
+                    }
+                })
+        )
     }
 }

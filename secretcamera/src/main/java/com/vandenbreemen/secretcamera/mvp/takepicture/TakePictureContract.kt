@@ -23,7 +23,7 @@ class TakePicturePresenterImpl(val model: TakePictureModel, val view: TakePictur
     }
 
     override fun capture(pictureBytes: ByteArray) {
-        model.storePicture(pictureBytes).subscribe()
+        addForDisposal(model.storePicture(pictureBytes).subscribe())
     }
 
     override fun setupView() {
