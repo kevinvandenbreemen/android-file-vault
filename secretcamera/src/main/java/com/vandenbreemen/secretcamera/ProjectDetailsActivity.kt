@@ -131,6 +131,12 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
                 presenter.selectProjectDetails()
             }
         }
+
+        findViewById<CardView>(R.id.titleCard).apply {
+            setOnClickListener { v ->
+                presenter.selectProjectDetails()
+            }
+        }
     }
 
 

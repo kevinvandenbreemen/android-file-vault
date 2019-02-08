@@ -291,5 +291,22 @@ class ProjectDetailsActivityTest {
 
     }
 
+    @Test
+    fun shouldRenameProject() {
+
+        //  Arrange
+        clickOn(R.id.titleCard)
+
+        //  Act
+        writeTo(R.id.projectNameForEdit, "Update the project's Name")
+        onView(allOf(withParent(withId(R.id.projectDetails)), withId(R.id.ok))).perform(click())
+
+        //  Assert
+        assertNotExist(R.id.projectNameForEdit)
+        onView(withId(R.id.projectName)).check(matches(withText("Update the project's Name")))
+
+
+    }
+
 
 }
