@@ -146,9 +146,13 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
         val projectDetailsView = layoutInflater.inflate(R.layout.layout_edit_project_details, null)
 
         projectDetailsView.findViewById<EditText>(R.id.projectDescriptionForEdit).setText(project.details)
+        projectDetailsView.findViewById<EditText>(R.id.projectNameForEdit).setText(project.title)
 
         projectDetailsView.findViewById<Button>(R.id.ok).setOnClickListener { v ->
-            presenter.submitUpdatedProjectDetails(projectDetailsView.findViewById<EditText>(R.id.projectDescriptionForEdit).text.toString())
+            presenter.submitUpdatedProjectDetails(
+                    projectDetailsView.findViewById<EditText>(R.id.projectNameForEdit).text.toString(),
+                    projectDetailsView.findViewById<EditText>(R.id.projectDescriptionForEdit).text.toString()
+            )
         }
 
         builder.setView(projectDetailsView)

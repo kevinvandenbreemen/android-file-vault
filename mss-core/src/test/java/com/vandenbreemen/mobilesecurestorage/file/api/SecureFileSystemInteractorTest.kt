@@ -5,6 +5,7 @@ import com.vandenbreemen.mobilesecurestorage.TestConstants
 import com.vandenbreemen.mobilesecurestorage.file.getFileImporter
 import com.vandenbreemen.mobilesecurestorage.security.Bytes
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
+import com.vandenbreemen.mobilesecurestorage.security.crypto.listFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import junit.framework.TestCase.*
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils
@@ -90,6 +91,22 @@ class SecureFileSystemInteractorTest {
         val settings = "SettingsDummy"
         sut.save(settings, "settings", FileTypes.DATA)
         assertEquals("Load file", "SettingsDummy", sut.load("settings", FileTypes.DATA))
+    }
+
+    @Test
+    fun shouldRenameFilePreservingType() {
+
+        //  Arrange
+        val settings = "SettingsDummy"
+        sut.save(settings, "settings", FileTypes.DATA)
+
+        //  Act
+        sut.rename("settings", "diffName")
+
+        //  Assert
+        assertEquals(1, sfs().listFiles(FileTypes.DATA).size)
+        assertEquals(listOf("diffName"), sfs().listFiles(FileTypes.DATA))
+
     }
 
 }

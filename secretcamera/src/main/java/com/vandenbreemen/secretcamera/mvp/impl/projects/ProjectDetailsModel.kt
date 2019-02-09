@@ -13,7 +13,7 @@ import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
 import io.reactivex.schedulers.Schedulers.computation
 
-class ProjectDetailsModel(val projectName: String, credentials: SFSCredentials): Model(credentials) {
+class ProjectDetailsModel(var projectName: String, credentials: SFSCredentials) : Model(credentials) {
 
     lateinit var sfsInteractor: SecureFileSystemInteractor
 
@@ -78,14 +78,26 @@ class ProjectDetailsModel(val projectName: String, credentials: SFSCredentials):
     }
 
     @Throws(ApplicationError::class)
-    fun submitUpdatedProjectDetails(projectDescription: String): Single<Project> {
+    fun submitUpdatedProjectDetails(projectName: String, projectDescription: String): Single<Project> {
 
         if (projectDescription.isBlank()) {
             throw ApplicationError("Project description is required")
         }
 
+        if (projectName.isBlank()) {
+            throw ApplicationError("Project name is required")
+        }
+
         return Single.create(SingleOnSubscribe<Project> { subscriber ->
+
+            val currentName = project.title
+            if (currentName != projectName) {
+                sfsInteractor.rename(project.title, projectName)
+                this.projectName = projectName
+            }
+
             project.details = projectDescription
+            project.title = projectName
             sfsInteractor.save(project, projectName, ProjectFileTypes.PROJECT)
             subscriber.onSuccess(project)
         }).subscribeOn(computation())

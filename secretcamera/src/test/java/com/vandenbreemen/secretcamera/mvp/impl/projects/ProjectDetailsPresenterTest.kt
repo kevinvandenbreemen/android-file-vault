@@ -215,23 +215,24 @@ class ProjectDetailsPresenterTest {
     fun shouldAllowEditOfProjectDescription() {
         //  Arrange
         projectDetailsPresenter.start()
-        `when`(projectDetailsModel.submitUpdatedProjectDetails("Update description")).thenReturn(Single.just(Project("Title", "Update description", ArrayList<Task>())))
+        `when`(projectDetailsModel.submitUpdatedProjectDetails("Title", "Update description")).thenReturn(Single.just(Project("Title", "Update description", ArrayList<Task>())))
 
         //  Act
-        projectDetailsPresenter.submitUpdatedProjectDetails("Update description")
+        projectDetailsPresenter.submitUpdatedProjectDetails("Title", "Update description")
 
         //  assert
         verify(projectDetailsView).showDescription("Update description")
+        verify(projectDetailsView).showName("Title")
     }
 
     @Test
     fun shouldShowErrorIfProjectDescriptionBlankOnEditProject() {
         //  Arrange
         projectDetailsPresenter.start()
-        `when`(projectDetailsModel.submitUpdatedProjectDetails("")).thenThrow(ApplicationError("Missing project description"))
+        `when`(projectDetailsModel.submitUpdatedProjectDetails("Title", "")).thenThrow(ApplicationError("Missing project description"))
 
         //  Act
-        projectDetailsPresenter.submitUpdatedProjectDetails("")
+        projectDetailsPresenter.submitUpdatedProjectDetails("Title", "")
 
         //  Assert
         verify(projectDetailsView).showError(ApplicationError("Missing project description"))
@@ -241,10 +242,10 @@ class ProjectDetailsPresenterTest {
     fun shouldShowErrorIfErrorOccursDuringUpdateProjectDetails() {
         //  Arrange
         projectDetailsPresenter.start()
-        `when`(projectDetailsModel.submitUpdatedProjectDetails("")).thenReturn(Single.error(ApplicationError("Missing project description")))
+        `when`(projectDetailsModel.submitUpdatedProjectDetails("Title", "")).thenReturn(Single.error(ApplicationError("Missing project description")))
 
         //  Act
-        projectDetailsPresenter.submitUpdatedProjectDetails("")
+        projectDetailsPresenter.submitUpdatedProjectDetails("Title", "")
 
         //  Assert
         verify(projectDetailsView).showError(ApplicationError("Missing project description"))

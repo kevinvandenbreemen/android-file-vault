@@ -42,6 +42,21 @@ class SecureFileSystemExtensionsTest {
     }
 
     @Test
+    fun shouldUpdateFileMetadataOnFileRename() {
+        val sfs = getSUT()
+        sfs.storeObject("test", "Ramana")
+
+        val metadata = FileMeta(FileTypes.DATA)
+        sfs.setFileMetadata("test", metadata)
+
+        sfs.rename("test", "update")
+        val retrieved = sfs.getFileMeta("update")
+        assertNotNull("File metadata for renamed", retrieved)
+        assertEquals(FileTypes.DATA, retrieved!!.getFileType())
+
+    }
+
+    @Test
     fun shouldPersistFileType() {
         val sfs = getSUT()
         sfs.storeObject("test", "Ramana")

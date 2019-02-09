@@ -1,6 +1,7 @@
 package com.vandenbreemen.mobilesecurestorage.security.crypto
 
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
+import com.vandenbreemen.mobilesecurestorage.file.IndexedFile
 import com.vandenbreemen.mobilesecurestorage.file.api.FileType
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import java.io.Serializable
@@ -12,6 +13,25 @@ import java.util.function.Supplier
  * Filename to store the metadata in
  */
 private const val METADATA_FILENAME = ".__FILEMETADATA"
+
+class SFSExtensionsHelper {
+
+    companion object {
+        fun updateMetadataForFileRename(sfs: IndexedFile, oldFileName: String, newFileName: String) {
+            if (sfs.exists(METADATA_FILENAME)) {
+                val fileMeta = sfs.loadAndCacheFile(com.vandenbreemen.mobilesecurestorage.security.crypto.METADATA_FILENAME) as FileMetadata
+
+                fileMeta.getMetadata(oldFileName)?.let { existingMeta ->
+                    fileMeta.setMetadata(newFileName, existingMeta)
+                }
+
+                sfs.storeObject(com.vandenbreemen.mobilesecurestorage.security.crypto.METADATA_FILENAME, fileMeta)
+
+            }
+        }
+    }
+
+}
 
 private class FileMetadata : Serializable {
 

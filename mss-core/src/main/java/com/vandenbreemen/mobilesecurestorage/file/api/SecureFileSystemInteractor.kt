@@ -25,10 +25,15 @@ interface SecureFileSystemInteractor {
     fun load(fileName: String, fileTypes: FileType): Serializable?
     fun delete(fileName: String)
     fun delete(fileNames: List<String>)
+    fun rename(originalName: String, newName: String)
 
 }
 
 private class SecureFileSystemInteractorImpl(private val secureFileSystem: SecureFileSystem) : SecureFileSystemInteractor {
+    override fun rename(originalName: String, newName: String) {
+        secureFileSystem.rename(originalName, newName)
+    }
+
     override fun save(obj: Serializable, fileName: String, fileTypes: FileType) {
         secureFileSystem.storeObject(fileName, obj)
         secureFileSystem.setFileMetadata(fileName, FileMeta(fileTypes))

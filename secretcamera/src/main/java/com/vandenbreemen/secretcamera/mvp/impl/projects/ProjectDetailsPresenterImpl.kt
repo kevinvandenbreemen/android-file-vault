@@ -79,11 +79,12 @@ class ProjectDetailsPresenterImpl(val projectDetailsModel: ProjectDetailsModel, 
         projectDetailsRouter.displayProjectDetails(projectDetailsModel.project)
     }
 
-    override fun submitUpdatedProjectDetails(projectDescription: String) {
+    override fun submitUpdatedProjectDetails(name: String, projectDescription: String) {
         try {
             addForDisposal(
-                    projectDetailsModel.submitUpdatedProjectDetails(projectDescription).subscribe({ project ->
+                    projectDetailsModel.submitUpdatedProjectDetails(name, projectDescription).subscribe({ project ->
                         projectDetailsView.showDescription(project.details)
+                        projectDetailsView.showName(project.title)
                     }, { error ->
                         if (error is ApplicationError) {
                             projectDetailsView.showError(error)

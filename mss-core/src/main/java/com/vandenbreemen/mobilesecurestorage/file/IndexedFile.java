@@ -9,6 +9,7 @@ import com.vandenbreemen.mobilesecurestorage.message.ApplicationError;
 import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime;
 import com.vandenbreemen.mobilesecurestorage.security.BytesToBits;
 import com.vandenbreemen.mobilesecurestorage.security.SecureString;
+import com.vandenbreemen.mobilesecurestorage.security.crypto.SFSExtensionsHelper;
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureDataUnit;
 import com.vandenbreemen.mobilesecurestorage.util.NumberUtils;
 
@@ -851,8 +852,20 @@ public class IndexedFile {
         if (fat._exists(newName))
             throw new MSSRuntime("File '" + newName + "' already exists");
 
-        fat._rename(currentName, newName);
-        storeFAT();
+        try {
+            if (!accessLock.writeLock().tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS)) {
+                errorOutOnLockTimeout();
+            }
+
+            fat._rename(currentName, newName);
+            SFSExtensionsHelper.Companion.updateMetadataForFileRename(this, currentName, newName);
+            storeFAT();
+        } catch (InterruptedException inter) {
+            errorOutOnLockTimeout();
+            Thread.currentThread().interrupt();
+        } finally {
+            accessLock.writeLock().unlock();
+        }
 
     }
 
