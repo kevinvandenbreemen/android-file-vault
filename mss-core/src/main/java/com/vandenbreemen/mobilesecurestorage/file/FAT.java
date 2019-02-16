@@ -1,5 +1,6 @@
 package com.vandenbreemen.mobilesecurestorage.file;
 
+import com.vandenbreemen.mobilesecurestorage.file.api.FileDetails;
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
 import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime;
 
@@ -55,10 +56,16 @@ public class FAT implements Serializable {
      */
     private Map<String, List<Long>> fileAllocations;
 
+    /**
+     * Metadata (optional) for files
+     */
+    private Map<String, FileDetails> fileMetadata;
+
     public FAT() {
         this.accessLock = new ReentrantReadWriteLock();
         this.freeUnitIndexes = new LinkedList<>();
         this.fileAllocations = new HashMap<>();
+        this.fileMetadata = new HashMap<>();
         this.totalUnits = 0;
 
         //	Unit allocation for the FAT
@@ -286,4 +293,12 @@ public class FAT implements Serializable {
 
     }
 
+    FileDetails fileDetails(String fileName) {
+        return fileMetadata.computeIfAbsent(fileName, (name) -> new FileDetails());
+    }
+
+    void setFileMeta(String fileName, FileMeta fileMeta) {
+        FileDetails details = fileDetails(fileName);
+        details.setFileMeta(fileMeta);
+    }
 }

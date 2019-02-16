@@ -1,5 +1,8 @@
 package com.vandenbreemen.mobilesecurestorage.file;
 
+import com.vandenbreemen.mobilesecurestorage.file.api.FileDetails;
+import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -7,6 +10,7 @@ import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
@@ -141,6 +145,22 @@ public class FATTest {
                 iterableWithSize(1),
                 hasItem("test1")
         ));
+    }
+
+    @Test
+    public void shouldProvideForGettingFileDetailsForFile() {
+        sut._touch("test1");
+        FileDetails details = sut.fileDetails("test1");
+        assertNotNull("File Details", details);
+    }
+
+    @Test
+    public void shouldSetFileTypeOnFileDetails() {
+        sut._touch("test1");
+        sut.setFileMeta("test1", new FileMeta(FileTypes.DATA));
+        FileDetails details = sut.fileDetails("test1");
+
+        assertEquals("File Meta", new FileMeta(FileTypes.DATA), details.getFileMeta());
     }
 
 }
