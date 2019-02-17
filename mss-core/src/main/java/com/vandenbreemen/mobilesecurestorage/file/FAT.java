@@ -247,6 +247,7 @@ public class FAT implements Serializable {
 
         //	Finally remove the allocated file
         fileAllocations.remove(fileName);
+        fileMetadata.remove(fileName);
     }
 
     /**

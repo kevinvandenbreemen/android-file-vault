@@ -989,6 +989,45 @@ public class IndexedFileTest {
     }
 
     @Test
+    public void shouldPreserveFileTypeOnUpdate() throws Exception {
+        IndexedFile indexedFile = new IndexedFile(TestConstants.getTestFile("fileTypeTest"));
+        ArrayList<String> testStrings = new ArrayList<>(Arrays.asList("Larry", "Curly", "Moe"));
+
+        indexedFile.storeObject("test", testStrings);
+        indexedFile.setFileType("test", FileTypes.DATA);
+
+        indexedFile = new IndexedFile(TestConstants.getTestFile("fileTypeTest"));
+        ArrayList<String> loadedTestStrings = (ArrayList<String>) indexedFile.loadAndCacheFile("test");
+
+        loadedTestStrings.add("Dragon");
+        indexedFile.storeObject("test", loadedTestStrings);
+
+        indexedFile = new IndexedFile(TestConstants.getTestFile("fileTypeTest"));
+        assertEquals("File Type After Update of File", FileTypes.DATA, indexedFile.getDetails("test").getFileType());
+    }
+
+    @Test
+    public void shouldRemoveFileDetailsAfterDeleteFile() throws Exception{
+        IndexedFile indexedFile = new IndexedFile(TestConstants.getTestFile("fileTypeTest"));
+        ArrayList<String> testStrings = new ArrayList<>(Arrays.asList("Larry", "Curly", "Moe"));
+
+        indexedFile.storeObject("test", testStrings);
+        indexedFile.setFileType("test", FileTypes.DATA);
+
+        indexedFile = new IndexedFile(TestConstants.getTestFile("fileTypeTest"));
+        indexedFile.deleteFile("test");
+
+        indexedFile = new IndexedFile(TestConstants.getTestFile("fileTypeTest"));
+        try {
+            indexedFile.getDetails("test");
+            fail("File does not exist.  Details should not be available");
+        }
+        catch (ChunkedMediumException cmx){
+            cmx.printStackTrace();
+        }
+    }
+
+    @Test
     public void testUpdateDataUnit() throws Exception {
         IndexedFile indexedFile = new IndexedFile(TestConstants.getTestFile("updateUnit"));
         ChainedDataUnit cdu = new ChainedDataUnit();

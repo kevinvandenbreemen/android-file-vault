@@ -906,7 +906,12 @@ public class IndexedFile {
 
     }
 
-    public final FileDetails getDetails(String fileName) {
+    public final FileDetails getDetails(String fileName) throws ChunkedMediumException {
+
+        if(!exists(fileName)){
+            throw new ChunkedMediumException("File "+fileName + " does not exist");
+        }
+
         try {
             if(!accessLock.readLock().tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
                 errorOutOnLockTimeout();
