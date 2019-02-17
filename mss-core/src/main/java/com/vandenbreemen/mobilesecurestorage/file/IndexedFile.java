@@ -4,6 +4,7 @@ import com.vandenbreemen.mobilesecurestorage.data.ControlBytes;
 import com.vandenbreemen.mobilesecurestorage.data.Pair;
 import com.vandenbreemen.mobilesecurestorage.data.Serialization;
 import com.vandenbreemen.mobilesecurestorage.file.api.FileDetails;
+import com.vandenbreemen.mobilesecurestorage.file.api.FileType;
 import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes;
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
 import com.vandenbreemen.mobilesecurestorage.log.slf4j.MessageFormatter;
@@ -11,7 +12,6 @@ import com.vandenbreemen.mobilesecurestorage.message.ApplicationError;
 import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime;
 import com.vandenbreemen.mobilesecurestorage.security.BytesToBits;
 import com.vandenbreemen.mobilesecurestorage.security.SecureString;
-import com.vandenbreemen.mobilesecurestorage.security.crypto.SFSExtensionsHelper;
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureDataUnit;
 import com.vandenbreemen.mobilesecurestorage.util.NumberUtils;
 
@@ -860,7 +860,6 @@ public class IndexedFile {
             }
 
             fat._rename(currentName, newName);
-            SFSExtensionsHelper.Companion.updateMetadataForFileRename(this, currentName, newName);
             storeFAT();
         } catch (InterruptedException inter) {
             errorOutOnLockTimeout();
@@ -890,7 +889,7 @@ public class IndexedFile {
             throw new ChunkedMediumException("File is not an " + ImportedFileData.class.getSimpleName() + " but is instead a " + obj.getClass());
     }
 
-    public final void setFileType(String fileName, FileTypes fileType) {
+    public final void setFileType(String fileName, FileType fileType) {
         try {
             if (!accessLock.writeLock().tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
                 errorOutOnLockTimeout();

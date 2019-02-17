@@ -989,6 +989,26 @@ public class IndexedFileTest {
     }
 
     @Test
+    public void shouldPreserveFileTypeOnRename() throws Exception {
+        IndexedFile indexedFile = new IndexedFile(TestConstants.getTestFile("fileTypeTest"));
+        ArrayList<String> testStrings = new ArrayList<>(Arrays.asList("Larry", "Curly", "Moe"));
+
+        indexedFile.storeObject("test", testStrings);
+        indexedFile.setFileType("test", FileTypes.SYSTEM);
+        indexedFile = new IndexedFile(TestConstants.getTestFile("fileTypeTest"));
+
+        indexedFile.rename("test", "newName");
+        assertEquals("File type after rename", FileTypes.SYSTEM, indexedFile.getDetails("newName").getFileType());
+
+        try {
+            indexedFile.getDetails("test");
+            fail("File renamed");
+        } catch (ChunkedMediumException xmx){
+            xmx.printStackTrace();
+        }
+    }
+
+    @Test
     public void shouldPreserveFileTypeOnUpdate() throws Exception {
         IndexedFile indexedFile = new IndexedFile(TestConstants.getTestFile("fileTypeTest"));
         ArrayList<String> testStrings = new ArrayList<>(Arrays.asList("Larry", "Curly", "Moe"));
