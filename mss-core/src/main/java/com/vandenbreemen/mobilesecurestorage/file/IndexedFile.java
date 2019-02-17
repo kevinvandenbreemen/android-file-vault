@@ -3,6 +3,8 @@ package com.vandenbreemen.mobilesecurestorage.file;
 import com.vandenbreemen.mobilesecurestorage.data.ControlBytes;
 import com.vandenbreemen.mobilesecurestorage.data.Pair;
 import com.vandenbreemen.mobilesecurestorage.data.Serialization;
+import com.vandenbreemen.mobilesecurestorage.file.api.FileDetails;
+import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes;
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
 import com.vandenbreemen.mobilesecurestorage.log.slf4j.MessageFormatter;
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError;
@@ -886,6 +888,37 @@ public class IndexedFile {
             return ((ImportedFileData) obj).getFileData();
         } else
             throw new ChunkedMediumException("File is not an " + ImportedFileData.class.getSimpleName() + " but is instead a " + obj.getClass());
+    }
+
+    public final void setFileType(String fileName, FileTypes fileType) {
+        try {
+            if (!accessLock.writeLock().tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
+                errorOutOnLockTimeout();
+            fat.fileDetails(fileName).setFileMeta(new FileMeta(fileType));
+            storeFAT();
+        } catch(InterruptedException in){
+            errorOutOnLockTimeout();
+            Thread.currentThread().interrupt();
+        }
+        finally {
+            accessLock.writeLock().unlock();
+        }
+
+    }
+
+    public final FileDetails getDetails(String fileName) {
+        try {
+            if(!accessLock.readLock().tryLock(MAX_LOCK_WAIT_MILLIS, TimeUnit.MILLISECONDS))
+                errorOutOnLockTimeout();
+            return fat.fileDetails(fileName);
+        } catch (InterruptedException in){
+            errorOutOnLockTimeout();
+            Thread.currentThread().interrupt();
+            throw new MSSRuntime("Failed to read file details", in);
+        }
+        finally {
+            accessLock.readLock().unlock();
+        }
     }
 
     /**

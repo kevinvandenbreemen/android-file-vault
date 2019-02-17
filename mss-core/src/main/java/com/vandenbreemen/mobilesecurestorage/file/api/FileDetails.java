@@ -24,4 +24,8 @@ public class FileDetails implements Serializable {
     public void setFileMeta(FileMeta fileMeta) {
         this.fileMeta = fileMeta;
     }
+
+    public FileType getFileType() {
+        return fileMeta.getFileType();
+    }
 }

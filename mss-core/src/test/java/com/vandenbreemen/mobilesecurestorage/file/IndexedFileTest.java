@@ -4,6 +4,7 @@ import com.vandenbreemen.mobilesecurestorage.TestConstants;
 import com.vandenbreemen.mobilesecurestorage.data.ControlBytes;
 import com.vandenbreemen.mobilesecurestorage.data.Serialization;
 import com.vandenbreemen.mobilesecurestorage.file.IndexedFile.Chunk;
+import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes;
 import com.vandenbreemen.mobilesecurestorage.security.Bytes;
 import com.vandenbreemen.mobilesecurestorage.security.SecureString;
 import com.vandenbreemen.mobilesecurestorage.security.crypto.DualLayerEncryptionService;
@@ -954,6 +955,37 @@ public class IndexedFileTest {
 
         loadedTestStrings = (ArrayList<String>) indexedFile.loadAndCacheFile("test");
         assertEquals("Updated", expected, loadedTestStrings);
+    }
+
+    @Test
+    public void shouldSetFileType() throws Exception {
+        IndexedFile indexedFile = new IndexedFile(TestConstants.getTestFile("fileTypeTest"));
+        ArrayList<String> testStrings = new ArrayList<>(Arrays.asList("Larry", "Curly", "Moe"));
+
+        indexedFile.storeObject("test", testStrings);
+
+        indexedFile.setFileType("test", FileTypes.SYSTEM);
+
+        indexedFile = new IndexedFile(TestConstants.getTestFile("fileTypeTest"));
+        assertEquals("File Type", FileTypes.SYSTEM, indexedFile.getDetails("test").getFileType());
+
+    }
+
+    @Test
+    public void shouldUpdateFileType() throws Exception{
+        IndexedFile indexedFile = new IndexedFile(TestConstants.getTestFile("fileTypeTest"));
+        ArrayList<String> testStrings = new ArrayList<>(Arrays.asList("Larry", "Curly", "Moe"));
+
+        indexedFile.storeObject("test", testStrings);
+        indexedFile = new IndexedFile(TestConstants.getTestFile("fileTypeTest"));
+
+        indexedFile.setFileType("test", FileTypes.SYSTEM);
+        indexedFile = new IndexedFile(TestConstants.getTestFile("fileTypeTest"));
+        assertEquals("File Type", FileTypes.SYSTEM, indexedFile.getDetails("test").getFileType());
+
+        indexedFile.setFileType("test", FileTypes.DATA);
+        indexedFile = new IndexedFile(TestConstants.getTestFile("fileTypeTest"));
+        assertEquals("File Type", FileTypes.DATA, indexedFile.getDetails("test").getFileType());
     }
 
     @Test
