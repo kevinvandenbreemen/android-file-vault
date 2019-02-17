@@ -13,6 +13,7 @@ import java.util.function.Supplier
  * @deprecated  Please use sfs.setFileType()
  * Specificy metadata for the given file
  */
+@Deprecated(message = "Please use sfs.setFileType()")
 fun SecureFileSystem.setFileMetadata(fileName: String, metadata: FileMeta) {
     this.setFileType(fileName, metadata.getFileType())
 }

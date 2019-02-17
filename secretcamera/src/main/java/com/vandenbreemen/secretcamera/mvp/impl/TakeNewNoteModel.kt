@@ -9,7 +9,6 @@ import com.vandenbreemen.mobilesecurestorage.log.SystemLog
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
-import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
 import com.vandenbreemen.secretcamera.api.Note
 import com.vandenbreemen.secretcamera.api.SEC_CAM_BYTE
 import io.reactivex.Single
@@ -60,7 +59,7 @@ open class TakeNewNoteModel(private val credentials: SFSCredentials) : Model(cre
         fun storeNote(fileSystem: SecureFileSystem, title: String, content: String) {
             val fileName = "newnote_" + Date() + "_" + System.nanoTime() % 1000
             fileSystem.storeObject(fileName, Note(title, content))
-            fileSystem.setFileMetadata(fileName, FileMeta(NoteFileTypes.SIMPLE_NOTE))
+            fileSystem.setFileType(fileName, NoteFileTypes.SIMPLE_NOTE)
         }
     }
 

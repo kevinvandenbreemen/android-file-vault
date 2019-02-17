@@ -4,7 +4,6 @@ import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
-import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
 import com.vandenbreemen.secretcamera.api.Note
 import com.vandenbreemen.secretcamera.mvp.impl.NoteFileTypes
 import io.reactivex.Single
@@ -45,7 +44,7 @@ class NoteDetailsModel(credentials: SFSCredentials, private val noteFilename:Str
                 val newNote = Note(title, content)
                 val newNoteFileName = title + " " + Date() + "_" + System.nanoTime() % 1000
                 sfs.storeObject(newNoteFileName, newNote)
-                sfs.setFileMetadata(newNoteFileName, FileMeta(NoteFileTypes.SIMPLE_NOTE))
+                sfs.setFileType(newNoteFileName, NoteFileTypes.SIMPLE_NOTE)
                 sfs.deleteFile(noteFilename)
                 it.onSuccess(Unit)
             }
