@@ -36,7 +36,7 @@ private class SecureFileSystemInteractorImpl(private val secureFileSystem: Secur
 
     override fun save(obj: Serializable, fileName: String, fileTypes: FileType) {
         secureFileSystem.storeObject(fileName, obj)
-        secureFileSystem.setFileMetadata(fileName, FileMeta(fileTypes))
+        secureFileSystem.setFileType(fileName, fileTypes)
     }
 
     override fun load(fileName: String, fileTypes: FileType): Serializable? {
@@ -57,7 +57,7 @@ private class SecureFileSystemInteractorImpl(private val secureFileSystem: Secur
             return false
         }
         secureFileSystem.storeObject(fileName, fileDataToImport)
-        fileType?.let { type -> secureFileSystem.setFileMetadata(fileName, FileMeta(type)) }
+        fileType?.let { type -> secureFileSystem.setFileType(fileName, fileType) }
         return true
     }
 
