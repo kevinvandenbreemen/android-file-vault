@@ -282,6 +282,12 @@ public class FAT implements Serializable {
             List<Long> allocations = fileAllocations.remove(currentName);
             fileAllocations.put(newName, allocations);
 
+            //  Transfer file details over to the new filename!
+            FileDetails existingDetails = fileMetadata.remove(currentName);
+            if(existingDetails != null){
+                fileMetadata.put(newName, existingDetails);
+            }
+
         } finally {
             accessLock.writeLock().unlock();
         }
