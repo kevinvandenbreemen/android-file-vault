@@ -699,6 +699,40 @@ public class IndexedFileTest {
     }
 
     @Test
+    public void shouldRemoveUnAllocatedUnitsAfterDelete() throws Exception{
+        File tempFile = TestConstants.getTestFile("deleteFileResize" + System.currentTimeMillis() + ".dat");
+        tempFile.deleteOnExit();
+
+        IndexedFile idf = new IndexedFile(tempFile);
+        long currentLength = tempFile.length();
+
+        idf.storeObject("testDelete", "This is a test");
+        idf.deleteFile("testDelete");
+
+        assertEquals("Delete File reduce Length", currentLength, tempFile.length());
+    }
+
+    @Test
+    public void shouldBeAbleToLoadFileAfterDeletePrevAllocatedFile() throws Exception {
+
+        //  Arrange
+        File tempFile = TestConstants.getTestFile("deleteFileResize" + System.currentTimeMillis() + ".dat");
+        tempFile.deleteOnExit();
+        IndexedFile idf = new IndexedFile(tempFile);
+        idf.storeObject("testDelete", "This is a test");
+        long currentLengthAfterFirstFileSaved = tempFile.length();
+        idf.storeObject("testLoad", "Should Remain Intact");
+
+        //  Act
+        idf.deleteFile("testDelete");
+        idf = new IndexedFile(tempFile);
+
+        //  Assert
+        assertEquals("Length after delete", currentLengthAfterFirstFileSaved, tempFile.length());
+        assertEquals("Load Data for Next File", "Should Remain Intact", idf.loadFile("testLoad"));
+    }
+
+    @Test
     public void testDeleteMultipleFilesLoadOne() throws Exception {
 
         File tempFile = TestConstants.getTestFile("test_jpgimport" + System.currentTimeMillis() + ".dat");
