@@ -1,5 +1,6 @@
 package com.vandenbreemen.mobilesecurestorage.file;
 
+import com.vandenbreemen.mobilesecurestorage.data.Pair;
 import com.vandenbreemen.mobilesecurestorage.file.api.FileDetails;
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
 import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
@@ -240,13 +242,11 @@ public class FAT implements Serializable {
             throw new MSSRuntime("Unexpected:  No such file as '" + fileName + "' exists on the system!");
 
         //	Signal that all units from this file are available again
-        List<Long> allocatedUnits = fileAllocations.get(fileName);
+        List<Long> allocatedUnits = fileAllocations.remove(fileName);
         for (Long allocated : allocatedUnits) {
             freeUnitIndexes.add(allocated);
         }
 
-        //	Finally remove the allocated file
-        fileAllocations.remove(fileName);
         fileMetadata.remove(fileName);
     }
 
@@ -307,5 +307,29 @@ public class FAT implements Serializable {
     void setFileMeta(String fileName, FileMeta fileMeta) {
         FileDetails details = fileDetails(fileName);
         details.setFileMeta(fileMeta);
+    }
+
+    /**
+     * Gets ordered pairs of unit numbers for transferring allocated units back to un-allocated positions after
+     * a file deletion.
+     * @return
+     */
+    List<Pair<Long, Long>> _getUnitOptimizationInstructions() {
+        List<Pair<Long, Long>> ret = new ArrayList<>();
+
+        int unitsToMove = freeUnitIndexes.size();
+
+        Map<Long, String> unitAllocationsToFileNames = new TreeMap<>();
+        fileAllocations.entrySet().forEach(stringListEntry ->
+                stringListEntry.getValue().forEach(unit -> unitAllocationsToFileNames.put(unit, stringListEntry.getKey())));
+
+        int index;
+        List<Long> currentlyAllocated = new ArrayList<>(unitAllocationsToFileNames.keySet());
+        for(int i=0; i<unitsToMove; i++){
+            index = (unitAllocationsToFileNames.keySet().size()-1) - i;
+            ret.add(new Pair<>(currentlyAllocated.get(index), freeUnitIndexes.get(i)));
+        }
+
+        return ret;
     }
 }

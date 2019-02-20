@@ -1,5 +1,6 @@
 package com.vandenbreemen.mobilesecurestorage.file;
 
+import com.vandenbreemen.mobilesecurestorage.data.Pair;
 import com.vandenbreemen.mobilesecurestorage.file.api.FileDetails;
 import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes;
 
@@ -81,6 +82,24 @@ public class FATTest {
         sut._delete("test");
 
         assertEquals("next avail - after del", 1L, sut.nextAvailableUnitIndex());
+    }
+
+    @Test
+    public void shouldProvideOptimizationMovementsForUnallocatedUnits() {
+
+        //  Arrange
+        sut._addUnitFor("test", 1);
+        sut._addUnitFor("keep", 2);
+        sut._delete("test");
+
+        //  Act
+        List<Pair<Long, Long>> movements = sut._getUnitOptimizationInstructions();
+
+        //  Assert
+        assertEquals(1, movements.size());
+        assertEquals(2l, movements.get(0).first().longValue());
+        assertEquals(1l, movements.get(0).second().longValue());
+
     }
 
     @Test
