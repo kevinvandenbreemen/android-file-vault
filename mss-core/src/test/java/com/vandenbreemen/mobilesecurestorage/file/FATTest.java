@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Map;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
@@ -93,12 +94,12 @@ public class FATTest {
         sut._delete("test");
 
         //  Act
-        List<Pair<Long, Long>> movements = sut._getUnitOptimizationInstructions();
+        Pair<Map<Long, String>, List<Pair<Long, Long>>> movements = sut._getUnitOptimizationInstructions();
 
         //  Assert
-        assertEquals(1, movements.size());
-        assertEquals(2l, movements.get(0).first().longValue());
-        assertEquals(1l, movements.get(0).second().longValue());
+        assertEquals(1, movements.second().size());
+        assertEquals(2l, movements.second().get(0).first().longValue());
+        assertEquals(1l, movements.second().get(0).second().longValue());
 
     }
 

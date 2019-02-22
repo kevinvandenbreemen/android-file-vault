@@ -314,7 +314,7 @@ public class FAT implements Serializable {
      * a file deletion.
      * @return
      */
-    List<Pair<Long, Long>> _getUnitOptimizationInstructions() {
+    Pair<Map<Long, String>, List<Pair<Long, Long>>> _getUnitOptimizationInstructions() {
         List<Pair<Long, Long>> ret = new ArrayList<>();
 
         int unitsToMove = freeUnitIndexes.size();
@@ -330,6 +330,6 @@ public class FAT implements Serializable {
             ret.add(new Pair<>(currentlyAllocated.get(index), freeUnitIndexes.get(i)));
         }
 
-        return ret;
+        return new Pair<>(unitAllocationsToFileNames, ret);
     }
 }
