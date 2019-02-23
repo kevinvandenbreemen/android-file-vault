@@ -142,6 +142,14 @@ public class ChunkedFile {
         }
     }
 
+    void updateLength(long numBytes) {
+        try (RandomAccessFile raf = new RandomAccessFile(location, "rws")) {
+            raf.setLength(numBytes);
+        } catch (Exception ex) {
+            throw new MSSRuntime("Failed to update length");
+        }
+    }
+
     /**
      * Write the given bytes to the file
      *

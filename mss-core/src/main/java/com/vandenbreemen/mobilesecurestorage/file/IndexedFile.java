@@ -5,7 +5,6 @@ import com.vandenbreemen.mobilesecurestorage.data.Pair;
 import com.vandenbreemen.mobilesecurestorage.data.Serialization;
 import com.vandenbreemen.mobilesecurestorage.file.api.FileDetails;
 import com.vandenbreemen.mobilesecurestorage.file.api.FileType;
-import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes;
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
 import com.vandenbreemen.mobilesecurestorage.log.slf4j.MessageFormatter;
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError;
@@ -719,7 +718,11 @@ public class IndexedFile {
                 errorOutOnLockTimeout();
             fat.accessLock();
             Arrays.stream(fileNames).forEach(fat::_delete);
+
+            this.file.updateLength(fat.nextAvailableUnitIndex() * CHUNK_SIZE);
+
             storeFAT();
+
         } catch (InterruptedException e) {
             errorOutOnLockTimeout();
             Thread.currentThread().interrupt();
