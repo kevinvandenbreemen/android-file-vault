@@ -6,6 +6,7 @@ import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
 import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -251,15 +252,6 @@ public class FAT implements Serializable {
     }
 
     /**
-     * For testing only
-     *
-     * @return
-     */
-    final int numFreeAllocations() {
-        return freeUnitIndexes.size();
-    }
-
-    /**
      * Gets the total units in this FAT
      *
      * @return
@@ -320,16 +312,38 @@ public class FAT implements Serializable {
         int unitsToMove = freeUnitIndexes.size();
 
         Map<Long, String> unitAllocationsToFileNames = new TreeMap<>();
-        fileAllocations.entrySet().forEach(stringListEntry ->
+        fileAllocations.entrySet().stream().filter(e -> !FILENAME.equals(e.getKey())).forEach(stringListEntry ->
                 stringListEntry.getValue().forEach(unit -> unitAllocationsToFileNames.put(unit, stringListEntry.getKey())));
 
-        int index;
-        List<Long> currentlyAllocated = new ArrayList<>(unitAllocationsToFileNames.keySet());
-        for(int i=0; i<unitsToMove; i++){
-            index = (unitAllocationsToFileNames.keySet().size()-1) - i;
-            ret.add(new Pair<>(currentlyAllocated.get(index), freeUnitIndexes.get(i)));
+        if (!MapUtils.isEmpty(unitAllocationsToFileNames)) {
+            int index;
+            List<Long> currentlyAllocated = new ArrayList<>(unitAllocationsToFileNames.keySet());
+            for (int i = 0; i < unitsToMove; i++) {
+                index = (unitAllocationsToFileNames.keySet().size() - 1) - i;
+                ret.add(new Pair<>(currentlyAllocated.get(index), freeUnitIndexes.get(i)));
+            }
         }
 
         return new Pair<>(unitAllocationsToFileNames, ret);
+    }
+
+    void updateUnitPlacement(long currentPosition, long newPosition) {
+
+        List<Long> allocations;
+        for (String fileName : fileAllocations.keySet()) {
+
+            allocations = fileAllocations.get(fileName);
+
+            if (allocations.contains(currentPosition)) {
+                allocations.remove(currentPosition);
+                allocations.add(newPosition);
+                freeUnitIndexes.remove(newPosition);
+                totalUnits--;   //  Drop total units since we just pulled a unit back
+                break;
+            }
+        }
+
+        System.out.println("FREE IDXs:  " + freeUnitIndexes);
+
     }
 }
