@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -721,14 +721,14 @@ public class IndexedFile {
             Arrays.stream(fileNames).forEach(fat::_delete);
 
             //  Now optimize the file system!
-            Pair<Map<Long, String>, List<Pair<Long, Long>>> instructions = fat._getUnitOptimizationInstructions();
-
-            instructions.second().forEach(move -> {
-                ChainedUnit currentUnit = readDataUnit(move.first());
-                writeDataUnit(move.second(), currentUnit);
-                fat.updateUnitPlacement(move.first(), move.second());
+            Optional<FAT.UnitShuffle> optimization = fat._nextShuffle();
+            optimization.ifPresent(shuffle -> {
+               ChainedUnit from = readDataUnit(shuffle.getSourceIndex());
+               writeDataUnit(shuffle.getDestinationIndex(), from);
+               fat.updateUnitPlacement(shuffle.getSourceIndex(), shuffle.getDestinationIndex());
             });
 
+            this.fat.trim();
             this.file.updateLength(fat.nextAvailableUnitIndex() * CHUNK_SIZE);
 
             storeFAT();

@@ -695,7 +695,7 @@ public class IndexedFileTest {
     }
 
     @Test
-    public void shouldRemoveUnAllocatedUnitsAfterDelete() throws Exception{
+    public void shouldRemoveUnAllocatedUnitAfterDelete() throws Exception{
         File tempFile = TestConstants.getTestFile("deleteFileResize" + System.currentTimeMillis() + ".dat");
         tempFile.deleteOnExit();
 

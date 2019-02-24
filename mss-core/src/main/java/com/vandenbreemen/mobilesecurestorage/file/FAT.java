@@ -11,10 +11,13 @@ import org.apache.commons.collections4.MapUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
@@ -30,6 +33,28 @@ import java.util.stream.Collectors;
  * @author kevin
  */
 public class FAT implements Serializable {
+
+
+
+    static class UnitShuffle {
+
+        private final long sourceIndex;
+        private final long destinationIndex;
+
+        UnitShuffle(long sourceIndex, long destinationIndex) {
+            this.sourceIndex = sourceIndex;
+            this.destinationIndex = destinationIndex;
+        }
+
+
+        public long getSourceIndex() {
+            return sourceIndex;
+        }
+
+        public long getDestinationIndex() {
+            return destinationIndex;
+        }
+    }
 
     /**
      * Special reserved filename
@@ -327,6 +352,22 @@ public class FAT implements Serializable {
         return new Pair<>(unitAllocationsToFileNames, ret);
     }
 
+    Optional<UnitShuffle> _nextShuffle() {
+        if (!CollectionUtils.isEmpty(freeUnitIndexes) && !CollectionUtils.isEmpty(listFiles())) {
+            long destinationIndex = freeUnitIndexes.get(0);
+
+            Map<Long, String> unitAllocationsToFileNamesSortedByUnitIndex = new TreeMap<>();
+            fileAllocations.entrySet().stream().filter(e -> !FILENAME.equals(e.getKey())).forEach(stringListEntry ->
+                    stringListEntry.getValue().forEach(unit -> unitAllocationsToFileNamesSortedByUnitIndex.put(unit, stringListEntry.getKey())));
+            long fromIndex = ((TreeMap<Long, String>) unitAllocationsToFileNamesSortedByUnitIndex).lastKey();
+
+            return Optional.of(new UnitShuffle(fromIndex, destinationIndex));
+
+
+        }
+        return Optional.empty();
+    }
+
     void updateUnitPlacement(long currentPosition, long newPosition) {
 
         List<Long> allocations;
@@ -343,7 +384,37 @@ public class FAT implements Serializable {
             }
         }
 
-        System.out.println("FREE IDXs:  " + freeUnitIndexes);
+    }
 
+    /**
+     * Remove un-used units if they are beyond the max allocated unit
+     */
+    void trim() {
+
+        long maxIndex;
+        if(!CollectionUtils.isEmpty(listFiles())) {
+            Map<Long, String> unitAllocationsToFileNamesSortedByUnitIndex = new TreeMap<>();
+            fileAllocations.entrySet().stream().filter(e -> !FILENAME.equals(e.getKey())).forEach(stringListEntry ->
+                    stringListEntry.getValue().forEach(unit -> unitAllocationsToFileNamesSortedByUnitIndex.put(unit, stringListEntry.getKey())));
+            maxIndex = ((TreeMap<Long, String>) unitAllocationsToFileNamesSortedByUnitIndex).lastKey();
+        } else {
+            List<Long> unitsAllocatedToFAT = _unitsAllocated(FILENAME);
+            maxIndex = unitsAllocatedToFAT.get(unitsAllocatedToFAT.size()-1);
+        }
+
+        for(Iterator<Long> freeUnitIterator = freeUnitIndexes.iterator(); freeUnitIterator.hasNext();){
+            long nextFree = freeUnitIterator.next();
+            if(nextFree > maxIndex){
+                freeUnitIterator.remove();
+            }
+        }
+
+        if(CollectionUtils.isEmpty(freeUnitIndexes)){   //  Update total units to reflect the total actually allocated
+            this.totalUnits = maxIndex;
+        }
+    }
+
+    List<Long> getFreeUnitIndexesForTest() {
+        return Collections.unmodifiableList(this.freeUnitIndexes);
     }
 }
