@@ -333,9 +333,9 @@ public class IndexedFile {
             }
 
             //	Now that we've finished writing the data update the units that are usable in case the file was shortened
-            removeUnusedUnits(fileName, unitsToAllocate);
+            boolean removedUnitsFromFAT = removeUnusedUnits(fileName, unitsToAllocate);
 
-            if (!FAT.FILENAME.equals(fileName))    //	Write the updated FAT table now that everything has been written.
+            if (!FAT.FILENAME.equals(fileName) || removedUnitsFromFAT)    //	Write the updated FAT table now that everything has been written.
                 storeFAT();
 
         } catch (InterruptedException inter) {
@@ -413,16 +413,22 @@ public class IndexedFile {
      *
      * @param fileName
      * @param noLongerNeededUnits
+     * @return  true if unused units were removed from the FAT (thus necessitating storing FAT once again!)
      */
-    private void removeUnusedUnits(String fileName, List<Long> noLongerNeededUnits) {
+    private boolean removeUnusedUnits(String fileName, List<Long> noLongerNeededUnits) {
         if (!CollectionUtils.isEmpty(noLongerNeededUnits)) {
             try {
                 fat.accessLock();
                 noLongerNeededUnits.forEach(u -> fat._removeUnitFor(fileName, u));
+
+                return FAT.FILENAME.equals(fileName);
+
             } finally {
                 fat.releaseAccessLock();
             }
         }
+
+        return false;
     }
 
     /**
