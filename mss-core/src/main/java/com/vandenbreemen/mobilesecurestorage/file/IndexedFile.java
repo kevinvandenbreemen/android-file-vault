@@ -724,6 +724,11 @@ public class IndexedFile {
             Optional<FAT.UnitShuffle> optimization = fat._nextShuffle();
             optimization.ifPresent(shuffle -> {
                ChainedUnit from = readDataUnit(shuffle.getSourceIndex());
+               if(shuffle.getIncomingReferenceUnit() > -1) {
+                   ChainedUnit incomingReference = readDataUnit(shuffle.getIncomingReferenceUnit());
+                   incomingReference.setLocationOfNextUnit(shuffle.getDestinationIndex());
+                   writeDataUnit(shuffle.getIncomingReferenceUnit(), incomingReference);
+               }
                writeDataUnit(shuffle.getDestinationIndex(), from);
                fat.updateUnitPlacement(shuffle.getSourceIndex(), shuffle.getDestinationIndex());
             });

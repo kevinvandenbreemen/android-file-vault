@@ -40,6 +40,7 @@ public class FAT implements Serializable {
 
         private final long sourceIndex;
         private final long destinationIndex;
+        private long incomingReferenceUnit;
 
         UnitShuffle(long sourceIndex, long destinationIndex) {
             this.sourceIndex = sourceIndex;
@@ -53,6 +54,14 @@ public class FAT implements Serializable {
 
         public long getDestinationIndex() {
             return destinationIndex;
+        }
+
+        public long getIncomingReferenceUnit() {
+            return incomingReferenceUnit;
+        }
+
+        void setIncomingReferenceUnit(long incomingReferenceUnit) {
+            this.incomingReferenceUnit = incomingReferenceUnit;
         }
     }
 
@@ -361,7 +370,14 @@ public class FAT implements Serializable {
                     stringListEntry.getValue().forEach(unit -> unitAllocationsToFileNamesSortedByUnitIndex.put(unit, stringListEntry.getKey())));
             long fromIndex = ((TreeMap<Long, String>) unitAllocationsToFileNamesSortedByUnitIndex).lastKey();
 
-            return Optional.of(new UnitShuffle(fromIndex, destinationIndex));
+            UnitShuffle ret = new UnitShuffle(fromIndex, destinationIndex);
+            List<Long> allocationSetToWhichFromBelongs = fileAllocations.get(unitAllocationsToFileNamesSortedByUnitIndex.get(fromIndex));
+            if(allocationSetToWhichFromBelongs.indexOf(fromIndex) > 0){
+                int indexOfFrom = allocationSetToWhichFromBelongs.indexOf(fromIndex);
+                ret.setIncomingReferenceUnit(allocationSetToWhichFromBelongs.get(indexOfFrom-1));
+            }
+
+            return Optional.of(ret);
 
 
         }

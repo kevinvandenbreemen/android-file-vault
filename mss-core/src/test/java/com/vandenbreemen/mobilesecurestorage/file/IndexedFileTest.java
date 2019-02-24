@@ -570,7 +570,6 @@ public class IndexedFileTest {
                 }
             }
 
-            assertEquals("Next available index should be 11 since all units used", 3, idf.fat.nextAvailableUnitIndex());
 
         } catch (Exception ex) {
             ex.printStackTrace();
