@@ -1,12 +1,11 @@
 package com.vandenbreemen.mobilesecurestorage.file;
 
-import com.vandenbreemen.mobilesecurestorage.data.Pair;
 import com.vandenbreemen.mobilesecurestorage.file.api.FileDetails;
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
 import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -335,39 +334,11 @@ public class FAT implements Serializable {
         details.setFileMeta(fileMeta);
     }
 
-    /**
-     * Gets ordered pairs of unit numbers for transferring allocated units back to un-allocated positions after
-     * a file deletion.
-     * @return
-     */
-    Pair<Map<Long, String>, List<Pair<Long, Long>>> _getUnitOptimizationInstructions() {
-        List<Pair<Long, Long>> ret = new ArrayList<>();
-
-        int unitsToMove = freeUnitIndexes.size();
-
-        Map<Long, String> unitAllocationsToFileNames = new TreeMap<>();
-        fileAllocations.entrySet().stream().filter(e -> !FILENAME.equals(e.getKey())).forEach(stringListEntry ->
-                stringListEntry.getValue().forEach(unit -> unitAllocationsToFileNames.put(unit, stringListEntry.getKey())));
-
-        if (!MapUtils.isEmpty(unitAllocationsToFileNames)) {
-            int index;
-            List<Long> currentlyAllocated = new ArrayList<>(unitAllocationsToFileNames.keySet());
-            for (int i = 0; i < unitsToMove; i++) {
-                index = (unitAllocationsToFileNames.keySet().size() - 1) - i;
-                ret.add(new Pair<>(currentlyAllocated.get(index), freeUnitIndexes.get(i)));
-            }
-        }
-
-        return new Pair<>(unitAllocationsToFileNames, ret);
-    }
-
     Optional<UnitShuffle> _nextShuffle() {
         if (!CollectionUtils.isEmpty(freeUnitIndexes) && !CollectionUtils.isEmpty(listFiles())) {
             long destinationIndex = freeUnitIndexes.get(0);
 
-            Map<Long, String> unitAllocationsToFileNamesSortedByUnitIndex = new TreeMap<>();
-            fileAllocations.entrySet().stream().filter(e -> !FILENAME.equals(e.getKey())).forEach(stringListEntry ->
-                    stringListEntry.getValue().forEach(unit -> unitAllocationsToFileNamesSortedByUnitIndex.put(unit, stringListEntry.getKey())));
+            Map<Long, String> unitAllocationsToFileNamesSortedByUnitIndex = getUnitNumbersToFileNamesSortedByUnitNumbers();
             long fromIndex = ((TreeMap<Long, String>) unitAllocationsToFileNamesSortedByUnitIndex).lastKey();
 
             UnitShuffle ret = new UnitShuffle(fromIndex, destinationIndex);
@@ -382,6 +353,14 @@ public class FAT implements Serializable {
 
         }
         return Optional.empty();
+    }
+
+    @NotNull
+    private Map<Long, String> getUnitNumbersToFileNamesSortedByUnitNumbers() {
+        Map<Long, String> unitAllocationsToFileNamesSortedByUnitIndex = new TreeMap<>();
+        fileAllocations.entrySet().stream().forEach(stringListEntry ->
+                stringListEntry.getValue().forEach(unit -> unitAllocationsToFileNamesSortedByUnitIndex.put(unit, stringListEntry.getKey())));
+        return unitAllocationsToFileNamesSortedByUnitIndex;
     }
 
     void updateUnitPlacement(long currentPosition, long newPosition) {
@@ -409,9 +388,7 @@ public class FAT implements Serializable {
 
         long maxIndex;
         if(!CollectionUtils.isEmpty(listFiles())) {
-            Map<Long, String> unitAllocationsToFileNamesSortedByUnitIndex = new TreeMap<>();
-            fileAllocations.entrySet().stream().filter(e -> !FILENAME.equals(e.getKey())).forEach(stringListEntry ->
-                    stringListEntry.getValue().forEach(unit -> unitAllocationsToFileNamesSortedByUnitIndex.put(unit, stringListEntry.getKey())));
+            Map<Long, String> unitAllocationsToFileNamesSortedByUnitIndex = getUnitNumbersToFileNamesSortedByUnitNumbers();
             maxIndex = ((TreeMap<Long, String>) unitAllocationsToFileNamesSortedByUnitIndex).lastKey();
         } else {
             List<Long> unitsAllocatedToFAT = _unitsAllocated(FILENAME);
