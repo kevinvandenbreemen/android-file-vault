@@ -5,6 +5,7 @@ import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
 import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -39,13 +40,23 @@ public class FAT implements Serializable {
 
         private final long sourceIndex;
         private final long destinationIndex;
-        private long incomingReferenceUnit;
+        private long incomingReferenceUnit = -1;
 
         UnitShuffle(long sourceIndex, long destinationIndex) {
             this.sourceIndex = sourceIndex;
             this.destinationIndex = destinationIndex;
         }
 
+        @Override
+        public String toString() {
+            StringBuilder bld = new StringBuilder("UNIT SHUFFLE:  ");
+            bld.append("src=").append(sourceIndex).append(", dst=").append(destinationIndex);
+            if(incomingReferenceUnit > -1) {
+                bld.append(", refInc=").append(incomingReferenceUnit);
+
+            }
+            return bld.toString();
+        }
 
         public long getSourceIndex() {
             return sourceIndex;
@@ -361,6 +372,10 @@ public class FAT implements Serializable {
         fileAllocations.entrySet().stream().forEach(stringListEntry ->
                 stringListEntry.getValue().forEach(unit -> unitAllocationsToFileNamesSortedByUnitIndex.put(unit, stringListEntry.getKey())));
         return unitAllocationsToFileNamesSortedByUnitIndex;
+    }
+
+    long maxAllocatedIndex() {
+        return ObjectUtils.defaultIfNull(((TreeMap<Long, String>)getUnitNumbersToFileNamesSortedByUnitNumbers()).lastKey(), 0L);
     }
 
     void updateUnitPlacement(long currentPosition, long newPosition) {

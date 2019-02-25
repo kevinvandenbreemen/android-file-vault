@@ -150,6 +150,10 @@ public class ChunkedFile {
         }
     }
 
+    long length() {
+        return this.location.length();
+    }
+
     /**
      * Write the given bytes to the file
      *

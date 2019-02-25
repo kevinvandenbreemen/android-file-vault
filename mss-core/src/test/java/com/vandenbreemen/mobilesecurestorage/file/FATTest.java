@@ -127,6 +127,41 @@ public class FATTest {
     }
 
     @Test
+    public void shouldBeAbleToDetermineMaxAllocatedIndex() {
+
+        //  Arrange
+        sut._addUnitFor("test", 1);
+        sut._addUnitFor("test", 2);
+        sut._addUnitFor("test", 3);
+        sut._addUnitFor("test", 4);
+        sut._addUnitFor("test", 5);
+
+        sut._addUnitFor("next", 6);
+        sut._addUnitFor("next", 7);
+        sut._addUnitFor("next", 8);
+        sut._addUnitFor("next", 9);
+        sut._addUnitFor("next", 10);
+
+        sut._addUnitFor("bbb", 11);
+        sut._addUnitFor("bbb", 12);
+        sut._addUnitFor("bbb", 13);
+        sut._addUnitFor("bbb", 14);
+
+        sut._addUnitFor("aaa", 15);
+        sut._addUnitFor("aaa", 16);
+        sut._addUnitFor("aaa", 17);
+        sut._addUnitFor("aaa", 18);
+
+        //  Act
+        sut._delete("next");
+        sut._delete("aaa");
+        sut.trim();
+
+        //  Assert
+        assertEquals(14, sut.maxAllocatedIndex());
+    }
+
+    @Test
     public void shouldTrimUnusedUnitsInEmptyFileSystem() {
         sut._addUnitFor("test", 1);
         sut._delete("test");

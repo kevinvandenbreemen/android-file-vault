@@ -607,8 +607,18 @@ public class IndexedFile {
      * Reads the current chunk from the file
      */
     protected final Chunk readChunk(long chunkIndex) {
+
         byte[] bytes = file.readBytes(chunkIndex * unitSize, unitSize);
-        return new Chunk(this, readChunk(bytes));
+        try {
+            return new Chunk(this, readChunk(bytes));
+        } catch(MSSRuntime rex){
+            SystemLog.get().error("CHUNK DATA READ FAILURE:  chunkIdx={}, fileLocation={}, fileLen={}", rex, chunkIndex, ((chunkIndex * unitSize)+ChunkedFile.PREFIX_BYTE_LEN),
+                    file.length());
+            if(testMode) {
+                SystemLog.get().debug("RAW BYTES:\n{}", ArrayUtils.toString(bytes));
+            }
+            throw rex;
+        }
     }
 
     /**
@@ -729,9 +739,28 @@ public class IndexedFile {
             //  Now optimize the file system!
             Optional<FAT.UnitShuffle> optimization = fat._nextShuffle();
             optimization.ifPresent(shuffle -> {
+
+                if(testMode){
+                    SystemLog.get().debug("POST DELETE OPTIMIZATION:  {}", shuffle);
+                }
+
                ChainedUnit from = readDataUnit(shuffle.getSourceIndex());
+
+                if(testMode){
+                    SystemLog.get().debug("LOAD FROM - nxtUnit = {}", from.getLocationOfNextUnit());
+                }
+
                if(shuffle.getIncomingReferenceUnit() > -1) {
                    ChainedUnit incomingReference = readDataUnit(shuffle.getIncomingReferenceUnit());
+
+                   if(testMode){
+                       SystemLog.get().debug("Update Chain at {}, from {} to {}", shuffle.getIncomingReferenceUnit(), incomingReference.getLocationOfNextUnit(), shuffle.getDestinationIndex());
+                   }
+
+                    if(incomingReference.getLocationOfNextUnit() != shuffle.getSourceIndex()) {
+                        throw new MSSRuntime("Unexpected:  Incoming Ref Next = "+incomingReference.getLocationOfNextUnit() + ", expected "+shuffle.getSourceIndex());
+                    }
+
                    incomingReference.setLocationOfNextUnit(shuffle.getDestinationIndex());
                    writeDataUnit(shuffle.getIncomingReferenceUnit(), incomingReference);
                }
@@ -740,7 +769,11 @@ public class IndexedFile {
             });
 
             this.fat.trim();
-            this.file.updateLength(fat.nextAvailableUnitIndex() * CHUNK_SIZE);
+            long unitIndexToTrimTo = fat.maxAllocatedIndex()+1;
+            if(testMode){
+                SystemLog.get().debug("Trimming File Length to Max Idx = {}", unitIndexToTrimTo);
+            }
+            this.file.updateLength(unitIndexToTrimTo * CHUNK_SIZE);
 
             storeFAT();
 
@@ -1172,35 +1205,41 @@ public class IndexedFile {
 
         private final byte[] getData() {
 
-            List<ChainedUnit> units = new ArrayList<>();
-            ChainedUnit unit = fileSystem.readDataUnit(startChunk);
+            try {
+                List<ChainedUnit> units = new ArrayList<>();
+                ChainedUnit unit = fileSystem.readDataUnit(startChunk);
 
-            units.add(unit);
-
-            while (!NumberUtils.empty(unit.getLocationOfNextUnit())) {
-
-                if (fileSystem.testMode) {
-                    SystemLog.get().debug("File {}:  next chunk idx:  {}", fileName.toString(), unit.getLocationOfNextUnit());
-                }
-
-                unit = fileSystem.readDataUnit(unit.getLocationOfNextUnit());
                 units.add(unit);
-            }
 
+                while (!NumberUtils.empty(unit.getLocationOfNextUnit())) {
 
-            if (!NumberUtils.empty(units.get(units.size() - 1).getLocationOfNextUnit()))
-                throw new MSSRuntime("Unexpected.  Final unit for file '" + fileName + "' declares a next data unit!  Suspect corrupted file!");
+                    if (fileSystem.testMode) {
+                        SystemLog.get().debug("File {}:  next chunk idx:  {}", fileName.toString(), unit.getLocationOfNextUnit());
+                    }
 
-            SecureString byteBuffer = new SecureString();
-            for (ChainedUnit u : units) {
-                if (u.getData() == null) {
-                    SystemLog.get().error("One or more units are missing data");
-                    continue;
+                    unit = fileSystem.readDataUnit(unit.getLocationOfNextUnit());
+                    units.add(unit);
                 }
-                byteBuffer.addBytes(u.getData());
-            }
 
-            return byteBuffer.copyBytes();
+
+                if (!NumberUtils.empty(units.get(units.size() - 1).getLocationOfNextUnit()))
+                    throw new MSSRuntime("Unexpected.  Final unit for file '" + fileName + "' declares a next data unit!  Suspect corrupted file!");
+
+                SecureString byteBuffer = new SecureString();
+                for (ChainedUnit u : units) {
+                    if (u.getData() == null) {
+                        SystemLog.get().error("One or more units are missing data");
+                        continue;
+                    }
+                    byteBuffer.addBytes(u.getData());
+                }
+
+                return byteBuffer.copyBytes();
+            }
+            catch (MSSRuntime rex){
+                SystemLog.get().error("DATA LOAD FAILURE:  was loading {}", rex, this.fileName);
+                throw rex;
+            }
         }
     }
 

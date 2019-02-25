@@ -39,4 +39,28 @@ class IndexedFileStressTest {
 
     }
 
+    @Test
+    fun shouldHandleRemovalOfLargeFiles() {
+        //  Arrange
+        val giantAssedDataSet = Array<Byte>((IndexedFile.CHUNK_SIZE*3) + 4353){ 42 }
+        val smallerDataSet = Array<Byte>((IndexedFile.CHUNK_SIZE*2) + 21134) { 69 }
+
+        val tempFile = TestConstants.getTestFile("fillDaFile" + System.currentTimeMillis() + ".dat")
+        var idf = IndexedFile(tempFile)
+        idf.testMode = true
+
+        idf.storeObject("file1", giantAssedDataSet)
+        idf.storeObject("file2", giantAssedDataSet)
+        idf.storeObject("file3", smallerDataSet)
+        idf.storeObject("file4", giantAssedDataSet)
+
+        //  Act
+        idf.deleteFiles("file2", "file4")
+
+        //  Act
+        idf.loadFile("file1")
+        idf.loadFile("file3")
+
+    }
+
 }
