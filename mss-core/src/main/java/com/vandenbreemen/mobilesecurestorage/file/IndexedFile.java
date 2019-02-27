@@ -727,43 +727,7 @@ public class IndexedFile {
             Arrays.stream(fileNames).forEach(fat::_delete);
 
             //  Now optimize the file system!
-            Optional<FAT.UnitShuffle> optimization = fat._nextShuffle();
-            optimization.ifPresent(shuffle -> {
-
-                if(testMode){
-                    SystemLog.get().debug("POST DELETE OPTIMIZATION:  {}", shuffle);
-                }
-
-               ChainedUnit from = readDataUnit(shuffle.getSourceIndex());
-
-                if(testMode){
-                    SystemLog.get().debug("LOAD FROM - nxtUnit = {}", from.getLocationOfNextUnit());
-                }
-
-               if(shuffle.getIncomingReferenceUnit() > -1) {
-                   ChainedUnit incomingReference = readDataUnit(shuffle.getIncomingReferenceUnit());
-
-                   if(testMode){
-                       SystemLog.get().debug("Update Chain at {}, from {} to {}", shuffle.getIncomingReferenceUnit(), incomingReference.getLocationOfNextUnit(), shuffle.getDestinationIndex());
-                   }
-
-                    if(incomingReference.getLocationOfNextUnit() != shuffle.getSourceIndex()) {
-                        throw new MSSRuntime("Unexpected:  Incoming Ref Next = "+incomingReference.getLocationOfNextUnit() + ", expected "+shuffle.getSourceIndex());
-                    }
-
-                   incomingReference.setLocationOfNextUnit(shuffle.getDestinationIndex());
-                   writeDataUnit(shuffle.getIncomingReferenceUnit(), incomingReference);
-               }
-               writeDataUnit(shuffle.getDestinationIndex(), from);
-               fat.updateUnitPlacement(shuffle.getSourceIndex(), shuffle.getDestinationIndex());
-            });
-
-            this.fat.trim();
-            long unitIndexToTrimTo = fat.maxAllocatedIndex()+1;
-            if(testMode){
-                SystemLog.get().debug("Trimming File Length to Max Idx = {}", unitIndexToTrimTo);
-            }
-            this.file.updateLength(unitIndexToTrimTo * CHUNK_SIZE);
+            optimizeFileSystem();
 
             storeFAT();
 
@@ -775,6 +739,46 @@ public class IndexedFile {
             accessLock.writeLock().unlock();
         }
 
+    }
+
+    private void optimizeFileSystem() {
+        Optional<FAT.UnitShuffle> optimization = fat._nextShuffle();
+        optimization.ifPresent(shuffle -> {
+
+            if (testMode) {
+                SystemLog.get().debug("POST DELETE OPTIMIZATION:  {}", shuffle);
+            }
+
+            ChainedUnit from = readDataUnit(shuffle.getSourceIndex());
+
+            if (testMode) {
+                SystemLog.get().debug("LOAD FROM - nxtUnit = {}", from.getLocationOfNextUnit());
+            }
+
+            if (shuffle.getIncomingReferenceUnit() > -1) {
+                ChainedUnit incomingReference = readDataUnit(shuffle.getIncomingReferenceUnit());
+
+                if (testMode) {
+                    SystemLog.get().debug("Update Chain at {}, from {} to {}", shuffle.getIncomingReferenceUnit(), incomingReference.getLocationOfNextUnit(), shuffle.getDestinationIndex());
+                }
+
+                if (incomingReference.getLocationOfNextUnit() != shuffle.getSourceIndex()) {
+                    throw new MSSRuntime("Unexpected:  Incoming Ref Next = " + incomingReference.getLocationOfNextUnit() + ", expected " + shuffle.getSourceIndex());
+                }
+
+                incomingReference.setLocationOfNextUnit(shuffle.getDestinationIndex());
+                writeDataUnit(shuffle.getIncomingReferenceUnit(), incomingReference);
+            }
+            writeDataUnit(shuffle.getDestinationIndex(), from);
+            fat.updateUnitPlacement(shuffle.getSourceIndex(), shuffle.getDestinationIndex());
+        });
+
+        this.fat.trim();
+        long unitIndexToTrimTo = fat.maxAllocatedIndex() + 1;
+        if (testMode) {
+            SystemLog.get().debug("Trimming File Length to Max Idx = {}", unitIndexToTrimTo);
+        }
+        this.file.updateLength(unitIndexToTrimTo * CHUNK_SIZE);
     }
 
     /**
@@ -924,8 +928,7 @@ public class IndexedFile {
      * @return
      */
     public Object loadAndCacheFile(String fileName) {
-        Object ret = this.fileCache.computeIfAbsent(fileName, () -> Serialization.deserializeBytes(doGetBytesForObjectFile(fileName)));
-        return ret;
+        return this.fileCache.computeIfAbsent(fileName, () -> Serialization.deserializeBytes(doGetBytesForObjectFile(fileName)));
     }
 
     public byte[] loadAndCacheBytesFromFile(String fileName) throws ChunkedMediumException {
