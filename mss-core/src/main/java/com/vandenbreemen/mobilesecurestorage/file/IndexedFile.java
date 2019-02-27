@@ -62,6 +62,12 @@ public class IndexedFile {
      * Indicates that storage failed because unit size too large.  Offer client code option to ask for a new unit
      */
     private static final String ATTR_NEW_UNIT_RQD = "NewUnitRequired";
+
+    /**
+     * Minimum number of un-used units before we optimize more than one unit placement per delete!
+     */
+    private static final long BULK_OPTIMIZE_MIN = 10;
+
     /**
      * Measuring sticks for making sure too many bytes don't get stored!
      */
@@ -742,43 +748,47 @@ public class IndexedFile {
     }
 
     private void optimizeFileSystem() {
-        Optional<FAT.UnitShuffle> optimization = fat._nextShuffle();
-        optimization.ifPresent(shuffle -> {
 
-            if (testMode) {
-                SystemLog.get().debug("POST DELETE OPTIMIZATION:  {}", shuffle);
-            }
-
-            ChainedUnit from = readDataUnit(shuffle.getSourceIndex());
-
-            if (testMode) {
-                SystemLog.get().debug("LOAD FROM - nxtUnit = {}", from.getLocationOfNextUnit());
-            }
-
-            if (shuffle.getIncomingReferenceUnit() > -1) {
-                ChainedUnit incomingReference = readDataUnit(shuffle.getIncomingReferenceUnit());
+        long numOptimizations = fat._totalUnused();
+        for (int i = 0; i < numOptimizations; i++) {
+            Optional<FAT.UnitShuffle> optimization = fat._nextShuffle();
+            optimization.ifPresent(shuffle -> {
 
                 if (testMode) {
-                    SystemLog.get().debug("Update Chain at {}, from {} to {}", shuffle.getIncomingReferenceUnit(), incomingReference.getLocationOfNextUnit(), shuffle.getDestinationIndex());
+                    SystemLog.get().debug("POST DELETE OPTIMIZATION:  {}", shuffle);
                 }
 
-                if (incomingReference.getLocationOfNextUnit() != shuffle.getSourceIndex()) {
-                    throw new MSSRuntime("Unexpected:  Incoming Ref Next = " + incomingReference.getLocationOfNextUnit() + ", expected " + shuffle.getSourceIndex());
+                ChainedUnit from = readDataUnit(shuffle.getSourceIndex());
+
+                if (testMode) {
+                    SystemLog.get().debug("LOAD FROM - nxtUnit = {}", from.getLocationOfNextUnit());
                 }
 
-                incomingReference.setLocationOfNextUnit(shuffle.getDestinationIndex());
-                writeDataUnit(shuffle.getIncomingReferenceUnit(), incomingReference);
+                if (shuffle.getIncomingReferenceUnit() > -1) {
+                    ChainedUnit incomingReference = readDataUnit(shuffle.getIncomingReferenceUnit());
+
+                    if (testMode) {
+                        SystemLog.get().debug("Update Chain at {}, from {} to {}", shuffle.getIncomingReferenceUnit(), incomingReference.getLocationOfNextUnit(), shuffle.getDestinationIndex());
+                    }
+
+                    if (incomingReference.getLocationOfNextUnit() != shuffle.getSourceIndex()) {
+                        throw new MSSRuntime("Unexpected:  Incoming Ref Next = " + incomingReference.getLocationOfNextUnit() + ", expected " + shuffle.getSourceIndex());
+                    }
+
+                    incomingReference.setLocationOfNextUnit(shuffle.getDestinationIndex());
+                    writeDataUnit(shuffle.getIncomingReferenceUnit(), incomingReference);
+                }
+                writeDataUnit(shuffle.getDestinationIndex(), from);
+                fat.updateUnitPlacement(shuffle.getSourceIndex(), shuffle.getDestinationIndex());
+            });
+
+            this.fat.trim();
+            long unitIndexToTrimTo = fat.maxAllocatedIndex() + 1;
+            if (testMode) {
+                SystemLog.get().debug("Trimming File Length to Max Idx = {}", unitIndexToTrimTo);
             }
-            writeDataUnit(shuffle.getDestinationIndex(), from);
-            fat.updateUnitPlacement(shuffle.getSourceIndex(), shuffle.getDestinationIndex());
-        });
-
-        this.fat.trim();
-        long unitIndexToTrimTo = fat.maxAllocatedIndex() + 1;
-        if (testMode) {
-            SystemLog.get().debug("Trimming File Length to Max Idx = {}", unitIndexToTrimTo);
+            this.file.updateLength(unitIndexToTrimTo * CHUNK_SIZE);
         }
-        this.file.updateLength(unitIndexToTrimTo * CHUNK_SIZE);
     }
 
     /**

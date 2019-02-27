@@ -36,6 +36,7 @@ public class FAT implements Serializable {
 
 
 
+
     static class UnitShuffle {
 
         private final long sourceIndex;
@@ -424,5 +425,9 @@ public class FAT implements Serializable {
 
     List<Long> getFreeUnitIndexesForTest() {
         return Collections.unmodifiableList(this.freeUnitIndexes);
+    }
+
+    long _totalUnused() {
+        return this.freeUnitIndexes.size();
     }
 }
