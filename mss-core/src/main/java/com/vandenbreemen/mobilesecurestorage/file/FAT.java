@@ -348,8 +348,10 @@ public class FAT implements Serializable {
 
     Optional<UnitShuffle> _nextShuffle() {
         if (!CollectionUtils.isEmpty(freeUnitIndexes) && !CollectionUtils.isEmpty(listFiles())) {
-            long destinationIndex = freeUnitIndexes.get(0);
+            List<Long> indexesAvailableToMoveChunkTo = new ArrayList<>(freeUnitIndexes);
+            indexesAvailableToMoveChunkTo.sort((l1, l2) -> l1 > l2 ? 1 : (l1 == l2) ? 0 : -1);
 
+            long destinationIndex = indexesAvailableToMoveChunkTo.get(indexesAvailableToMoveChunkTo.size()-1);
             Map<Long, String> unitAllocationsToFileNamesSortedByUnitIndex = getUnitNumbersToFileNamesSortedByUnitNumbers();
             long fromIndex = ((TreeMap<Long, String>) unitAllocationsToFileNamesSortedByUnitIndex).lastKey();
 
@@ -387,8 +389,9 @@ public class FAT implements Serializable {
             allocations = fileAllocations.get(fileName);
 
             if (allocations.contains(currentPosition)) {
+                int index = allocations.indexOf(currentPosition);
                 allocations.remove(currentPosition);
-                allocations.add(newPosition);
+                allocations.add(index, newPosition);
                 freeUnitIndexes.remove(newPosition);
                 totalUnits--;   //  Drop total units since we just pulled a unit back
                 break;

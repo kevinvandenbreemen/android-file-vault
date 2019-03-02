@@ -1202,7 +1202,7 @@ public class IndexedFile {
             this.fileSystem = file;
             this.startChunk = startChunk;
             if (fileSystem.testMode) {
-                SystemLog.get().debug("File " + fileName.toString() + ":  start chunk idx:  " + startChunk);
+                SystemLog.get().debug("File {}:  Start chunk idx:  {}, indexes={}", fileName.toString(), startChunk, file.fat._unitsAllocated(fileName.toString()));
             }
         }
 
