@@ -755,6 +755,11 @@ public class IndexedFile {
                 SystemLog.get().debug("Trimming File Length to Max Idx = {}", unitIndexToTrimTo);
             }
             this.file.updateLength(unitIndexToTrimTo * CHUNK_SIZE);
+
+            //  Stop if no more free units
+            if (fat._totalUnused() == 0) {
+                break;
+            }
         }
     }
 
