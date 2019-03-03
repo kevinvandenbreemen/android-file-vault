@@ -5,7 +5,6 @@ import com.vandenbreemen.mobilesecurestorage.data.Pair;
 import com.vandenbreemen.mobilesecurestorage.data.Serialization;
 import com.vandenbreemen.mobilesecurestorage.file.api.FileDetails;
 import com.vandenbreemen.mobilesecurestorage.file.api.FileType;
-import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes;
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
 import com.vandenbreemen.mobilesecurestorage.log.slf4j.MessageFormatter;
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError;
@@ -30,6 +29,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -62,6 +62,7 @@ public class IndexedFile {
      * Indicates that storage failed because unit size too large.  Offer client code option to ask for a new unit
      */
     private static final String ATTR_NEW_UNIT_RQD = "NewUnitRequired";
+
     /**
      * Measuring sticks for making sure too many bytes don't get stored!
      */
@@ -333,9 +334,9 @@ public class IndexedFile {
             }
 
             //	Now that we've finished writing the data update the units that are usable in case the file was shortened
-            removeUnusedUnits(fileName, unitsToAllocate);
+            boolean removedUnitsFromFAT = removeUnusedUnits(fileName, unitsToAllocate);
 
-            if (!FAT.FILENAME.equals(fileName))    //	Write the updated FAT table now that everything has been written.
+            if (!FAT.FILENAME.equals(fileName) || removedUnitsFromFAT)    //	Write the updated FAT table now that everything has been written.
                 storeFAT();
 
         } catch (InterruptedException inter) {
@@ -413,16 +414,22 @@ public class IndexedFile {
      *
      * @param fileName
      * @param noLongerNeededUnits
+     * @return  true if unused units were removed from the FAT (thus necessitating storing FAT once again!)
      */
-    private void removeUnusedUnits(String fileName, List<Long> noLongerNeededUnits) {
+    private boolean removeUnusedUnits(String fileName, List<Long> noLongerNeededUnits) {
         if (!CollectionUtils.isEmpty(noLongerNeededUnits)) {
             try {
                 fat.accessLock();
                 noLongerNeededUnits.forEach(u -> fat._removeUnitFor(fileName, u));
+
+                return FAT.FILENAME.equals(fileName);
+
             } finally {
                 fat.releaseAccessLock();
             }
         }
+
+        return false;
     }
 
     /**
@@ -719,7 +726,12 @@ public class IndexedFile {
                 errorOutOnLockTimeout();
             fat.accessLock();
             Arrays.stream(fileNames).forEach(fat::_delete);
+
+            //  Now optimize the file system!
+            optimizeFileSystem();
+
             storeFAT();
+
         } catch (InterruptedException e) {
             errorOutOnLockTimeout();
             Thread.currentThread().interrupt();
@@ -728,6 +740,51 @@ public class IndexedFile {
             accessLock.writeLock().unlock();
         }
 
+    }
+
+    private void optimizeFileSystem() {
+
+        long numOptimizations = fat._totalUnused();
+        for (int i = 0; i < numOptimizations; i++) {
+            Optional<FAT.UnitShuffle> optimization = fat._nextShuffle();
+            optimization.ifPresent(this::reallocateUnit);
+
+            this.fat.trim();
+            long unitIndexToTrimTo = fat.maxAllocatedIndex() + 1;
+            if (testMode) {
+                SystemLog.get().debug("Trimming File Length to Max Idx = {}", unitIndexToTrimTo);
+            }
+            this.file.updateLength(unitIndexToTrimTo * CHUNK_SIZE);
+        }
+    }
+
+    private void reallocateUnit(FAT.UnitShuffle shuffle) {
+        if (testMode) {
+            SystemLog.get().debug("POST DELETE OPTIMIZATION:  {}", shuffle);
+        }
+
+        ChainedUnit from = readDataUnit(shuffle.getSourceIndex());
+
+        if (testMode) {
+            SystemLog.get().debug("LOAD FROM - nxtUnit = {}", from.getLocationOfNextUnit());
+        }
+
+        if (shuffle.getIncomingReferenceUnit() > -1) {
+            ChainedUnit incomingReference = readDataUnit(shuffle.getIncomingReferenceUnit());
+
+            if (testMode) {
+                SystemLog.get().debug("Update Chain at {}, from {} to {}", shuffle.getIncomingReferenceUnit(), incomingReference.getLocationOfNextUnit(), shuffle.getDestinationIndex());
+            }
+
+            if (incomingReference.getLocationOfNextUnit() != shuffle.getSourceIndex()) {
+                throw new MSSRuntime("Unexpected:  Incoming Ref Next = " + incomingReference.getLocationOfNextUnit() + ", expected " + shuffle.getSourceIndex());
+            }
+
+            incomingReference.setLocationOfNextUnit(shuffle.getDestinationIndex());
+            writeDataUnit(shuffle.getIncomingReferenceUnit(), incomingReference);
+        }
+        writeDataUnit(shuffle.getDestinationIndex(), from);
+        fat.updateUnitPlacement(shuffle.getSourceIndex(), shuffle.getDestinationIndex());
     }
 
     /**
@@ -877,8 +934,7 @@ public class IndexedFile {
      * @return
      */
     public Object loadAndCacheFile(String fileName) {
-        Object ret = this.fileCache.computeIfAbsent(fileName, () -> Serialization.deserializeBytes(doGetBytesForObjectFile(fileName)));
-        return ret;
+        return this.fileCache.computeIfAbsent(fileName, () -> Serialization.deserializeBytes(doGetBytesForObjectFile(fileName)));
     }
 
     public byte[] loadAndCacheBytesFromFile(String fileName) throws ChunkedMediumException {
@@ -1142,7 +1198,7 @@ public class IndexedFile {
             this.fileSystem = file;
             this.startChunk = startChunk;
             if (fileSystem.testMode) {
-                SystemLog.get().debug("File " + fileName.toString() + ":  start chunk idx:  " + startChunk);
+                SystemLog.get().debug("File {}:  Start chunk idx:  {}, indexes={}", fileName.toString(), startChunk, file.fat._unitsAllocated(fileName.toString()));
             }
         }
 

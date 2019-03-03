@@ -530,19 +530,18 @@ public class IndexedFileTest {
             idf.testMode = true;
 
             assertEquals("There should be 2 files in the system", 2, idf.listFiles().size());
-            assertEquals("No units should be available on the file (system should have to create new ones)", 0, idf.fat.numFreeAllocations());
 
             //	Delete the first file
             idf.deleteFile(file1);
 
-            assertTrue("Should be units available on the file system after deletion!", idf.fat.numFreeAllocations() > 0);
+
             assertEquals("Only 1 file expected now", 1, idf.listFiles().size());
 
             //	
             idf = new IndexedFile(tempFile);
             idf.testMode = true;
             assertEquals("Only 1 file expected now", 1, idf.listFiles().size());
-            assertTrue("Should be units available on the file system after deletion!", idf.fat.numFreeAllocations() > 0);
+
 
             //	Try and overwrite existing blocks with another full 20k items
             ArrayList<String> toUpdate = (ArrayList<String>) idf.loadFile(file2);
@@ -571,7 +570,6 @@ public class IndexedFileTest {
                 }
             }
 
-            assertEquals("Next available index should be 11 since all units used", 3, idf.fat.nextAvailableUnitIndex());
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -627,12 +625,10 @@ public class IndexedFileTest {
             idf.testMode = true;
             assertEquals("There should be 2 files in the system", 2, idf.listFiles().size());
 
-            assertEquals("No units should be available on the file (system should have to create new ones)", 0, idf.fat.numFreeAllocations());
 
             //	Shorten/truncate the first file
             idf.storeObject(file1, new ArrayList<String>());    //	Totally empty list this time
 
-            assertTrue("Should be units available on the file system after truncation!", idf.fat.numFreeAllocations() > 0);
 
             assertEquals(" 2 files still expected ", 2, idf.listFiles().size());
 
@@ -641,7 +637,6 @@ public class IndexedFileTest {
             idf.testMode = true;
             assertEquals(" 2 files still expected ", 2, idf.listFiles().size());
 
-            assertTrue("Should be units available on the file system after deletion!", idf.fat.numFreeAllocations() > 0);
 
             //	Try and overwrite existing blocks with another full 20k items
             ArrayList<String> toUpdate = (ArrayList<String>) idf.loadFile(file2);
@@ -699,7 +694,7 @@ public class IndexedFileTest {
     }
 
     @Test
-    public void shouldRemoveUnAllocatedUnitsAfterDelete() throws Exception{
+    public void shouldRemoveUnAllocatedUnitAfterDelete() throws Exception{
         File tempFile = TestConstants.getTestFile("deleteFileResize" + System.currentTimeMillis() + ".dat");
         tempFile.deleteOnExit();
 

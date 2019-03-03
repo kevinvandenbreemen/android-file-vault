@@ -1,19 +1,23 @@
 package com.vandenbreemen.mobilesecurestorage.file;
 
-import com.vandenbreemen.mobilesecurestorage.data.Pair;
 import com.vandenbreemen.mobilesecurestorage.file.api.FileDetails;
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
 import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
@@ -29,6 +33,48 @@ import java.util.stream.Collectors;
  * @author kevin
  */
 public class FAT implements Serializable {
+
+
+
+
+    static class UnitShuffle {
+
+        private final long sourceIndex;
+        private final long destinationIndex;
+        private long incomingReferenceUnit = -1;
+
+        UnitShuffle(long sourceIndex, long destinationIndex) {
+            this.sourceIndex = sourceIndex;
+            this.destinationIndex = destinationIndex;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder bld = new StringBuilder("UNIT SHUFFLE:  ");
+            bld.append("src=").append(sourceIndex).append(", dst=").append(destinationIndex);
+            if(incomingReferenceUnit > -1) {
+                bld.append(", refInc=").append(incomingReferenceUnit);
+
+            }
+            return bld.toString();
+        }
+
+        public long getSourceIndex() {
+            return sourceIndex;
+        }
+
+        public long getDestinationIndex() {
+            return destinationIndex;
+        }
+
+        public long getIncomingReferenceUnit() {
+            return incomingReferenceUnit;
+        }
+
+        void setIncomingReferenceUnit(long incomingReferenceUnit) {
+            this.incomingReferenceUnit = incomingReferenceUnit;
+        }
+    }
 
     /**
      * Special reserved filename
@@ -251,15 +297,6 @@ public class FAT implements Serializable {
     }
 
     /**
-     * For testing only
-     *
-     * @return
-     */
-    final int numFreeAllocations() {
-        return freeUnitIndexes.size();
-    }
-
-    /**
      * Gets the total units in this FAT
      *
      * @return
@@ -297,7 +334,7 @@ public class FAT implements Serializable {
      * Close the FAT
      */
     void close() {
-
+        //  Clear out an objects etc that should be wiped from mem..
     }
 
     FileDetails fileDetails(String fileName) {
@@ -309,27 +346,99 @@ public class FAT implements Serializable {
         details.setFileMeta(fileMeta);
     }
 
-    /**
-     * Gets ordered pairs of unit numbers for transferring allocated units back to un-allocated positions after
-     * a file deletion.
-     * @return
-     */
-    Pair<Map<Long, String>, List<Pair<Long, Long>>> _getUnitOptimizationInstructions() {
-        List<Pair<Long, Long>> ret = new ArrayList<>();
+    Optional<UnitShuffle> _nextShuffle() {
+        if (!CollectionUtils.isEmpty(freeUnitIndexes) && !CollectionUtils.isEmpty(listFiles())) {
+            List<Long> indexesAvailableToMoveChunkTo = new ArrayList<>(freeUnitIndexes);
+            indexesAvailableToMoveChunkTo.sort((l1, l2) -> {
+                if (l1 > l2) {
+                    return 1;
+                }
+                if (l1 == l2) {
+                    return 0;
+                }
+                return -1;
+            });
 
-        int unitsToMove = freeUnitIndexes.size();
+            long destinationIndex = indexesAvailableToMoveChunkTo.get(indexesAvailableToMoveChunkTo.size()-1);
+            Map<Long, String> unitAllocationsToFileNamesSortedByUnitIndex = getUnitNumbersToFileNamesSortedByUnitNumbers();
+            long fromIndex = ((TreeMap<Long, String>) unitAllocationsToFileNamesSortedByUnitIndex).lastKey();
 
-        Map<Long, String> unitAllocationsToFileNames = new TreeMap<>();
-        fileAllocations.entrySet().forEach(stringListEntry ->
-                stringListEntry.getValue().forEach(unit -> unitAllocationsToFileNames.put(unit, stringListEntry.getKey())));
+            UnitShuffle ret = new UnitShuffle(fromIndex, destinationIndex);
+            List<Long> allocationSetToWhichFromBelongs = fileAllocations.get(unitAllocationsToFileNamesSortedByUnitIndex.get(fromIndex));
+            if (allocationSetToWhichFromBelongs.get(0) != fromIndex) {                    //  If the from index is not the first chunk allocated
+                int indexOfFrom = allocationSetToWhichFromBelongs.indexOf(fromIndex);   //  to the file then prepare to update its incoming reference
+                ret.setIncomingReferenceUnit(allocationSetToWhichFromBelongs.get(indexOfFrom-1));
+            }
 
-        int index;
-        List<Long> currentlyAllocated = new ArrayList<>(unitAllocationsToFileNames.keySet());
-        for(int i=0; i<unitsToMove; i++){
-            index = (unitAllocationsToFileNames.keySet().size()-1) - i;
-            ret.add(new Pair<>(currentlyAllocated.get(index), freeUnitIndexes.get(i)));
+            return Optional.of(ret);
+
+
+        }
+        return Optional.empty();
+    }
+
+    @NotNull
+    private Map<Long, String> getUnitNumbersToFileNamesSortedByUnitNumbers() {
+        Map<Long, String> unitAllocationsToFileNamesSortedByUnitIndex = new TreeMap<>();
+        fileAllocations.entrySet().stream().forEach(stringListEntry ->
+                stringListEntry.getValue().forEach(unit -> unitAllocationsToFileNamesSortedByUnitIndex.put(unit, stringListEntry.getKey())));
+        return unitAllocationsToFileNamesSortedByUnitIndex;
+    }
+
+    long maxAllocatedIndex() {
+        return ObjectUtils.defaultIfNull(((TreeMap<Long, String>)getUnitNumbersToFileNamesSortedByUnitNumbers()).lastKey(), 0L);
+    }
+
+    void updateUnitPlacement(long currentPosition, long newPosition) {
+
+        List<Long> allocations;
+        for (Map.Entry<String, List<Long>> entry : fileAllocations.entrySet()) {
+
+            allocations = entry.getValue();
+
+            if (allocations.contains(currentPosition)) {
+                int index = allocations.indexOf(currentPosition);
+                allocations.remove(currentPosition);
+                allocations.add(index, newPosition);
+                freeUnitIndexes.remove(newPosition);
+                totalUnits--;   //  Drop total units since we just pulled a unit back
+                break;
+            }
         }
 
-        return new Pair<>(unitAllocationsToFileNames, ret);
+    }
+
+    /**
+     * Remove un-used units if they are beyond the max allocated unit
+     */
+    void trim() {
+
+        long maxIndex;
+        if(!CollectionUtils.isEmpty(listFiles())) {
+            Map<Long, String> unitAllocationsToFileNamesSortedByUnitIndex = getUnitNumbersToFileNamesSortedByUnitNumbers();
+            maxIndex = ((TreeMap<Long, String>) unitAllocationsToFileNamesSortedByUnitIndex).lastKey();
+        } else {
+            List<Long> unitsAllocatedToFAT = _unitsAllocated(FILENAME);
+            maxIndex = unitsAllocatedToFAT.get(unitsAllocatedToFAT.size()-1);
+        }
+
+        for(Iterator<Long> freeUnitIterator = freeUnitIndexes.iterator(); freeUnitIterator.hasNext();){
+            long nextFree = freeUnitIterator.next();
+            if(nextFree > maxIndex){
+                freeUnitIterator.remove();
+            }
+        }
+
+        if(CollectionUtils.isEmpty(freeUnitIndexes)){   //  Update total units to reflect the total actually allocated
+            this.totalUnits = maxIndex;
+        }
+    }
+
+    List<Long> getFreeUnitIndexesForTest() {
+        return Collections.unmodifiableList(this.freeUnitIndexes);
+    }
+
+    long _totalUnused() {
+        return this.freeUnitIndexes.size();
     }
 }
