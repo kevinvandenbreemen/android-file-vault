@@ -334,7 +334,7 @@ public class FAT implements Serializable {
      * Close the FAT
      */
     void close() {
-
+        //  Clear out an objects etc that should be wiped from mem..
     }
 
     FileDetails fileDetails(String fileName) {
@@ -349,7 +349,15 @@ public class FAT implements Serializable {
     Optional<UnitShuffle> _nextShuffle() {
         if (!CollectionUtils.isEmpty(freeUnitIndexes) && !CollectionUtils.isEmpty(listFiles())) {
             List<Long> indexesAvailableToMoveChunkTo = new ArrayList<>(freeUnitIndexes);
-            indexesAvailableToMoveChunkTo.sort((l1, l2) -> l1 > l2 ? 1 : (l1 == l2) ? 0 : -1);
+            indexesAvailableToMoveChunkTo.sort((l1, l2) -> {
+                if (l1 > l2) {
+                    return 1;
+                }
+                if (l1 == l2) {
+                    return 0;
+                }
+                return -1;
+            });
 
             long destinationIndex = indexesAvailableToMoveChunkTo.get(indexesAvailableToMoveChunkTo.size()-1);
             Map<Long, String> unitAllocationsToFileNamesSortedByUnitIndex = getUnitNumbersToFileNamesSortedByUnitNumbers();
@@ -357,8 +365,8 @@ public class FAT implements Serializable {
 
             UnitShuffle ret = new UnitShuffle(fromIndex, destinationIndex);
             List<Long> allocationSetToWhichFromBelongs = fileAllocations.get(unitAllocationsToFileNamesSortedByUnitIndex.get(fromIndex));
-            if(allocationSetToWhichFromBelongs.indexOf(fromIndex) > 0){
-                int indexOfFrom = allocationSetToWhichFromBelongs.indexOf(fromIndex);
+            if (allocationSetToWhichFromBelongs.get(0) != fromIndex) {                    //  If the from index is not the first chunk allocated
+                int indexOfFrom = allocationSetToWhichFromBelongs.indexOf(fromIndex);   //  to the file then prepare to update its incoming reference
                 ret.setIncomingReferenceUnit(allocationSetToWhichFromBelongs.get(indexOfFrom-1));
             }
 
@@ -384,9 +392,9 @@ public class FAT implements Serializable {
     void updateUnitPlacement(long currentPosition, long newPosition) {
 
         List<Long> allocations;
-        for (String fileName : fileAllocations.keySet()) {
+        for (Map.Entry<String, List<Long>> entry : fileAllocations.entrySet()) {
 
-            allocations = fileAllocations.get(fileName);
+            allocations = entry.getValue();
 
             if (allocations.contains(currentPosition)) {
                 int index = allocations.indexOf(currentPosition);

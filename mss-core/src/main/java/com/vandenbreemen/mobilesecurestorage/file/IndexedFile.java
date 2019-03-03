@@ -64,11 +64,6 @@ public class IndexedFile {
     private static final String ATTR_NEW_UNIT_RQD = "NewUnitRequired";
 
     /**
-     * Minimum number of un-used units before we optimize more than one unit placement per delete!
-     */
-    private static final long BULK_OPTIMIZE_MIN = 10;
-
-    /**
      * Measuring sticks for making sure too many bytes don't get stored!
      */
     private static SecureDataUnit secureMeasuringStick;
@@ -752,35 +747,7 @@ public class IndexedFile {
         long numOptimizations = fat._totalUnused();
         for (int i = 0; i < numOptimizations; i++) {
             Optional<FAT.UnitShuffle> optimization = fat._nextShuffle();
-            optimization.ifPresent(shuffle -> {
-
-                if (testMode) {
-                    SystemLog.get().debug("POST DELETE OPTIMIZATION:  {}", shuffle);
-                }
-
-                ChainedUnit from = readDataUnit(shuffle.getSourceIndex());
-
-                if (testMode) {
-                    SystemLog.get().debug("LOAD FROM - nxtUnit = {}", from.getLocationOfNextUnit());
-                }
-
-                if (shuffle.getIncomingReferenceUnit() > -1) {
-                    ChainedUnit incomingReference = readDataUnit(shuffle.getIncomingReferenceUnit());
-
-                    if (testMode) {
-                        SystemLog.get().debug("Update Chain at {}, from {} to {}", shuffle.getIncomingReferenceUnit(), incomingReference.getLocationOfNextUnit(), shuffle.getDestinationIndex());
-                    }
-
-                    if (incomingReference.getLocationOfNextUnit() != shuffle.getSourceIndex()) {
-                        throw new MSSRuntime("Unexpected:  Incoming Ref Next = " + incomingReference.getLocationOfNextUnit() + ", expected " + shuffle.getSourceIndex());
-                    }
-
-                    incomingReference.setLocationOfNextUnit(shuffle.getDestinationIndex());
-                    writeDataUnit(shuffle.getIncomingReferenceUnit(), incomingReference);
-                }
-                writeDataUnit(shuffle.getDestinationIndex(), from);
-                fat.updateUnitPlacement(shuffle.getSourceIndex(), shuffle.getDestinationIndex());
-            });
+            optimization.ifPresent(this::reallocateUnit);
 
             this.fat.trim();
             long unitIndexToTrimTo = fat.maxAllocatedIndex() + 1;
@@ -789,6 +756,35 @@ public class IndexedFile {
             }
             this.file.updateLength(unitIndexToTrimTo * CHUNK_SIZE);
         }
+    }
+
+    private void reallocateUnit(FAT.UnitShuffle shuffle) {
+        if (testMode) {
+            SystemLog.get().debug("POST DELETE OPTIMIZATION:  {}", shuffle);
+        }
+
+        ChainedUnit from = readDataUnit(shuffle.getSourceIndex());
+
+        if (testMode) {
+            SystemLog.get().debug("LOAD FROM - nxtUnit = {}", from.getLocationOfNextUnit());
+        }
+
+        if (shuffle.getIncomingReferenceUnit() > -1) {
+            ChainedUnit incomingReference = readDataUnit(shuffle.getIncomingReferenceUnit());
+
+            if (testMode) {
+                SystemLog.get().debug("Update Chain at {}, from {} to {}", shuffle.getIncomingReferenceUnit(), incomingReference.getLocationOfNextUnit(), shuffle.getDestinationIndex());
+            }
+
+            if (incomingReference.getLocationOfNextUnit() != shuffle.getSourceIndex()) {
+                throw new MSSRuntime("Unexpected:  Incoming Ref Next = " + incomingReference.getLocationOfNextUnit() + ", expected " + shuffle.getSourceIndex());
+            }
+
+            incomingReference.setLocationOfNextUnit(shuffle.getDestinationIndex());
+            writeDataUnit(shuffle.getIncomingReferenceUnit(), incomingReference);
+        }
+        writeDataUnit(shuffle.getDestinationIndex(), from);
+        fat.updateUnitPlacement(shuffle.getSourceIndex(), shuffle.getDestinationIndex());
     }
 
     /**
