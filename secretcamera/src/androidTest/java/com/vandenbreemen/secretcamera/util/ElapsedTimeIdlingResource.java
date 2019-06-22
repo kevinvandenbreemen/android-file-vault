@@ -1,6 +1,6 @@
 package com.vandenbreemen.secretcamera.util;
 
-import android.support.test.espresso.IdlingResource;
+import androidx.test.espresso.IdlingResource;
 
 //  Thanks to Chiuki
 //  https://github.com/chiuki/espresso-samples/blob/a70a343862a4199804f6fdffd9173cd453bb8d11/idling-resource-elapsed-time/app/build.gradle
@@ -14,7 +14,7 @@ import android.support.test.espresso.IdlingResource;
 public class ElapsedTimeIdlingResource implements IdlingResource {
     private final long startTime;
     private final long waitingTime;
-    private ResourceCallback resourceCallback;
+    private IdlingResource.ResourceCallback resourceCallback;
 
     public ElapsedTimeIdlingResource(long waitingTime) {
         this.startTime = System.currentTimeMillis();

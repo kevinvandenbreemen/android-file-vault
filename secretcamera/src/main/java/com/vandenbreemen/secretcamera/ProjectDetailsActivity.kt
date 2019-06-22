@@ -7,15 +7,16 @@ import android.app.Dialog
 import android.content.Intent
 import android.graphics.Point
 import android.os.Bundle
-import android.support.v7.widget.CardView
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.*
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.ItemTouchHelper.DOWN
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.api.Project
@@ -23,8 +24,6 @@ import com.vandenbreemen.secretcamera.api.Task
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsPresenter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsRouter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsView
-import com.vandenbreemen.secretcamera.ui.DragListener
-import com.vandenbreemen.secretcamera.ui.DragUpAndDownHelper
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_project_detail.*
 import javax.inject.Inject
@@ -269,14 +268,30 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
 
             val adapter = this.adapter as TaskAdapter
 
-            val touchHelper = ItemTouchHelper(DragUpAndDownHelper(object : DragListener {
-                override fun onViewMoved(oldPosition: Int, newPosition: Int) {
-                    val taskAtOldPosition = adapter.dataSet.removeAt(oldPosition)
-                    adapter.dataSet.add(newPosition, taskAtOldPosition)
-                    adapter.notifyItemMoved(oldPosition, newPosition)
-                    presenter.notifyItemMoved(oldPosition, newPosition)
+            val touchHelper = ItemTouchHelper(object: ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or DOWN, ItemTouchHelper.LEFT) {
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
                 }
-            }))
+
+                override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                    val taskOldPosition = viewHolder.adapterPosition
+                    val newPosition = target.adapterPosition
+                    adapter.notifyItemMoved(taskOldPosition, newPosition)
+                    presenter.notifyItemMoved(taskOldPosition, newPosition)
+
+                    return true
+                }
+
+            })
+
+//            val touchHelper = ItemTouchHelper(DragUpAndDownHelper(object : DragListener {
+//                override fun onViewMoved(oldPosition: Int, newPosition: Int) {
+//                    val taskAtOldPosition = adapter.dataSet.removeAt(oldPosition)
+//                    adapter.dataSet.add(newPosition, taskAtOldPosition)
+//                    adapter.notifyItemMoved(oldPosition, newPosition)
+//                    presenter.notifyItemMoved(oldPosition, newPosition)
+//                }
+//            }))
 
             touchHelper.attachToRecyclerView(this)
         }

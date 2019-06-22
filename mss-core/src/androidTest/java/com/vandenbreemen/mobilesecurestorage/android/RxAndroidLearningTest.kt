@@ -1,6 +1,6 @@
 package com.vandenbreemen.mobilesecurestorage.android
 
-import android.support.test.runner.AndroidJUnit4
+import androidx.test.runner.AndroidJUnit4
 import android.util.Log
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe

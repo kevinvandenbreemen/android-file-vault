@@ -1,11 +1,11 @@
 package com.vandenbreemen.secretcamera
 
 import android.os.Environment
-import android.support.test.InstrumentationRegistry
-import android.support.test.espresso.IdlingPolicies
-import android.support.test.espresso.IdlingRegistry
-import android.support.test.rule.ActivityTestRule
-import android.support.test.runner.AndroidJUnit4
+import androidx.test.InstrumentationRegistry
+import androidx.test.espresso.IdlingPolicies
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.rule.ActivityTestRule
+import androidx.test.runner.AndroidJUnit4
 import android.util.Log
 import com.vandenbreemen.AppsLoadingIdlingResource
 import com.vandenbreemen.mobilesecurestorage.android.CreateSecureFileSystem

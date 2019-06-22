@@ -2,9 +2,9 @@ package com.vandenbreemen.mobilesecurestorage.android
 
 import android.Manifest
 import android.os.Environment
-import android.support.test.InstrumentationRegistry.getInstrumentation
-import android.support.test.rule.GrantPermissionRule
-import android.support.test.runner.AndroidJUnit4
+import androidx.test.InstrumentationRegistry.getInstrumentation
+import androidx.test.rule.GrantPermissionRule
+import androidx.test.runner.AndroidJUnit4
 import android.util.Log
 import org.awaitility.Awaitility.await
 import org.hamcrest.CoreMatchers.`is`

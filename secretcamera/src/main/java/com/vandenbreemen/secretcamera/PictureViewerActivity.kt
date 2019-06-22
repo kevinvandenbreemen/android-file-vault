@@ -4,9 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -16,8 +13,11 @@ import android.view.WindowManager
 import android.widget.*
 import android.widget.LinearLayout.HORIZONTAL
 import android.widget.Toast.LENGTH_SHORT
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewRouter
@@ -168,8 +168,8 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter {
             this.adapter = adapter
 
             recyclerView.adapter = adapter
-            recyclerView.layoutManager.scrollToPosition(files.indexOf(currentImageFilename))
-            recyclerView.adapter.notifyDataSetChanged()
+            recyclerView.layoutManager?.scrollToPosition(files.indexOf(currentImageFilename))
+            (recyclerView.adapter as ThumbnailAdapter).notifyDataSetChanged()
             recyclerView.visibility = VISIBLE
         })
 

@@ -38,5 +38,6 @@ ext{
     cache2kVersion="1.0.2.Final"
     robolectricVersion="4.3"
     supportVersion="26.1.0"
-    androidTestVersion="1.0.0"
+    androidTestVersion="1.1.0"
+    androidXVersion="1.0.0"
 }

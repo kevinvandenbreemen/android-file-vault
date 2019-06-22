@@ -35,7 +35,7 @@ class Gallery : AppCompatActivity(), GalleryView {
 
     override fun onPause() {
         super.onPause()
-        findViewById<ViewGroup>(R.id.overlay).visibility = View.VISIBLE
+        findViewById(R.id.overlay).visibility = View.VISIBLE
         if (!presenter.isClosed()) {
             presenter.close()
         }

@@ -1,8 +1,8 @@
 package com.vandenbreemen.secretcamera.util
 
-import android.support.test.espresso.Espresso.onData
-import android.support.test.espresso.action.ViewActions.click
-import android.support.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.Espresso.onData
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.vandenbreemen.secretcamera.R
 import org.hamcrest.CoreMatchers.anything
 

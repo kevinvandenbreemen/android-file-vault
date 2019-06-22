@@ -61,13 +61,13 @@ configurations.all {
 }
 
 dependencies {
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestUtil 'com.android.support.test:orchestrator:1.0.1'
+    androidTestImplementation "androidx.test:runner:$rootProject.ext.androidTestVersion"
+    androidTestUtil "androidx.test:orchestrator:$rootProject.ext.androidTestVersion"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation "androidx.appcompat:appcompat:$rootProject.ext.androidXVersion"
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    implementation 'com.android.support:recyclerview-v7:26.1.0'
+    implementation "androidx.recyclerview:recyclerview:$rootProject.ext.androidXVersion"
     implementation "com.bcgdv.asia.lib:dots:$dots_version"
 
     //  Dagger
@@ -80,8 +80,8 @@ dependencies {
     implementation group: 'com.camerakit', name:'camerakit', version:'1.0.0-Snapshot', changing: true
 
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.ext.espressoVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$rootProject.ext.espressoVersion"
     implementation project(path: ':mss-core')
     kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVersion"
     kaptTest "com.google.dagger:dagger-compiler:$daggerVersion"
@@ -89,6 +89,7 @@ dependencies {
         exclude group: 'com.android.support'
         exclude group: 'org.jetbrains.kotlin'
     }
+    androidTestImplementation "androidx.test:rules:1.1.0"
     testImplementation 'junit:junit:4.12'
     testImplementation "androidx.test:core:$rootProject.ext.androidTestVersion"
     testImplementation "org.robolectric:robolectric:$rootProject.ext.robolectricVersion"
@@ -97,5 +98,5 @@ dependencies {
     testImplementation "org.mockito:mockito-inline:$mockitoVersion"
     androidTestImplementation "org.awaitility:awaitility:$rootProject.ext.awaitilityVersion"
 
-    implementation "com.android.support:design:$rootProject.ext.supportVersion"
+    implementation "com.google.android.material:material:1.0.0-rc01"
 }

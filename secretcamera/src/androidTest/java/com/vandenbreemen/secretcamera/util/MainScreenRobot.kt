@@ -2,10 +2,10 @@ package com.vandenbreemen.secretcamera.util
 
 import android.app.Activity
 import android.os.Environment
-import android.support.test.InstrumentationRegistry
-import android.support.test.InstrumentationRegistry.getInstrumentation
-import android.support.test.espresso.IdlingPolicies
-import android.support.test.uiautomator.UiDevice
+import androidx.test.InstrumentationRegistry
+import androidx.test.InstrumentationRegistry.getInstrumentation
+import androidx.test.espresso.IdlingPolicies
+import androidx.test.uiautomator.UiDevice
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotDisplayed
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotExist

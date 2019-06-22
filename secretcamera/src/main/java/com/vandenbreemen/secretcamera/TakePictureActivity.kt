@@ -3,10 +3,10 @@ package com.vandenbreemen.secretcamera
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.view.View
 import android.widget.Toast
 import com.camerakit.CameraKitView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.mvp.takepicture.TakePicturePresenter

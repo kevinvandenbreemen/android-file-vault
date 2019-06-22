@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
         setContentView(R.layout.activity_main)
 
         intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)?.let { credentials ->
-            findViewById<ViewGroup>(R.id.mainSection).addView(
+            findViewById(R.id.mainSection).addView(
                     layoutInflater.inflate(R.layout.main_screen_selections, findViewById(R.id.mainSection), false))
 
             mainMenuPresenter = SFSMainMenuPresenterImpl(SFSMainMenuModel(credentials), this)
