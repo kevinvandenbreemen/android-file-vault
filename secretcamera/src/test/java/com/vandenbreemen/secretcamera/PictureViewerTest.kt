@@ -23,8 +23,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric.buildActivity
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows
-import org.robolectric.shadows.ShadowApplication
 import org.robolectric.shadows.ShadowToast
 
 @RunWith(RobolectricTestRunner::class)
@@ -48,7 +48,7 @@ class PictureViewerTest {
             }
         }
 
-        intent = Intent(ShadowApplication.getInstance().applicationContext, PictureViewerActivity::class.java)
+        intent = Intent(RuntimeEnvironment.application.applicationContext, PictureViewerActivity::class.java)
         intent.putExtra(SFSCredentials.PARM_CREDENTIALS, sfsCredentials)
     }
 

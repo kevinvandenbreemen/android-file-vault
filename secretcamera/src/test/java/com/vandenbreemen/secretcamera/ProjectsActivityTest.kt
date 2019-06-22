@@ -25,8 +25,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric.buildActivity
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.shadows.ShadowApplication
 import org.robolectric.shadows.ShadowToast
 
 @RunWith(RobolectricTestRunner::class)
@@ -50,7 +50,7 @@ class ProjectsActivityTest {
             }
         }
 
-        intent = Intent(ShadowApplication.getInstance().applicationContext, ProjectsActivity::class.java)
+        intent = Intent(RuntimeEnvironment.application.applicationContext, ProjectsActivity::class.java)
         intent.putExtra(SFSCredentials.PARM_CREDENTIALS, sfsCredentials)
     }
 

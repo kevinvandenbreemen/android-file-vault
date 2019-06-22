@@ -37,4 +37,5 @@ ext{
     awaitilityVersion='3.0.0'
     cache2kVersion="1.0.2.Final"
     robolectricVersion="4.3"
+    supportVersion="26.1.0"
 }

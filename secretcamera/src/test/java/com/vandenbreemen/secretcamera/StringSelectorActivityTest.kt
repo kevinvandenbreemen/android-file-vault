@@ -20,8 +20,8 @@ import org.junit.rules.ErrorCollector
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric.buildActivity
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.shadows.ShadowApplication
 import java.util.*
 
 /**
@@ -43,7 +43,7 @@ class StringSelectorActivityTest {
 
     @Test
     fun shouldDisplaySelections() {
-        val intent = Intent(ShadowApplication.getInstance().applicationContext, StringSelectorActivity::class.java)
+        val intent = Intent(RuntimeEnvironment.application.applicationContext, StringSelectorActivity::class.java)
         val arrayList = ArrayList<String>(Arrays.asList("Larry", "Curly", "Moe"))
         intent.putExtra(WORKFLOW, StringSelectorWorkflow(StringSelectorActivity::class.java, arrayList))
 
@@ -64,7 +64,7 @@ class StringSelectorActivityTest {
 
     @Test
     fun shouldKickOffActivityWithSelection() {
-        val intent = Intent(ShadowApplication.getInstance().applicationContext, StringSelectorActivity::class.java)
+        val intent = Intent(RuntimeEnvironment.application.applicationContext, StringSelectorActivity::class.java)
         val arrayList = ArrayList<String>(Arrays.asList("Larry", "Curly", "Moe"))
         intent.putExtra(StringSelectorActivity.WORKFLOW, StringSelectorWorkflow(FileSelectActivity::class.java, arrayList))
 
@@ -99,7 +99,7 @@ class StringSelectorActivityTest {
 
         val credentials = SFSCredentials(testFile, SecureString.fromPassword("teest"))
 
-        val intent = Intent(ShadowApplication.getInstance().applicationContext, StringSelectorActivity::class.java)
+        val intent = Intent(RuntimeEnvironment.application.applicationContext, StringSelectorActivity::class.java)
         val arrayList = ArrayList<String>(Arrays.asList("Larry", "Curly", "Moe"))
         intent.putExtra(StringSelectorActivity.WORKFLOW, StringSelectorWorkflow(FileSelectActivity::class.java, arrayList, credentials))
 
@@ -133,7 +133,7 @@ class StringSelectorActivityTest {
 
         val credentials = SFSCredentials(testFile, SecureString.fromPassword("teest"))
 
-        val intent = Intent(ShadowApplication.getInstance().applicationContext, StringSelectorActivity::class.java)
+        val intent = Intent(RuntimeEnvironment.application.applicationContext, StringSelectorActivity::class.java)
         val arrayList = ArrayList<String>(Arrays.asList("Larry", "Curly", "Moe"))
         intent.putExtra(StringSelectorActivity.WORKFLOW, StringSelectorWorkflow(FileSelectActivity::class.java, arrayList, credentials).setOnCancelActivity(LoadSecureFileSystem::class.java))
 
@@ -160,7 +160,7 @@ class StringSelectorActivityTest {
 
         val credentials = SFSCredentials(testFile, SecureString.fromPassword("teest"))
 
-        val intent = Intent(ShadowApplication.getInstance().applicationContext, StringSelectorActivity::class.java)
+        val intent = Intent(RuntimeEnvironment.application.applicationContext, StringSelectorActivity::class.java)
         val arrayList = ArrayList<String>(Arrays.asList("Larry", "Curly", "Moe"))
         intent.putExtra(StringSelectorActivity.WORKFLOW, StringSelectorWorkflow(FileSelectActivity::class.java, arrayList, credentials).setOnCancelActivity(LoadSecureFileSystem::class.java))
 

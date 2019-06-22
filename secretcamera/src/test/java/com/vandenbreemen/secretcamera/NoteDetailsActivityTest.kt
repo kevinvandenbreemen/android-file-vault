@@ -11,7 +11,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.shadows.ShadowApplication
+import org.robolectric.RuntimeEnvironment
 
 /**
  * Created by kevin on 22/03/18.
@@ -38,7 +38,7 @@ class NoteDetailsActivityTest {
             }
         }
 
-        intent = Intent(ShadowApplication.getInstance().applicationContext, NoteDetailsActivity::class.java)
+        intent = Intent(RuntimeEnvironment.application.applicationContext, NoteDetailsActivity::class.java)
     }
 
     @Test

@@ -7,7 +7,7 @@ import org.junit.Test
 
 class IndexedFileStressTest {
 
-    @Test
+    //@Test
     fun shouldHandleReAllocationOfFATUnits() {
 
         //  Arrange

@@ -15,8 +15,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric.buildActivity
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.shadows.ShadowApplication
 import org.robolectric.shadows.ShadowLog
 import java.io.File
 
@@ -50,7 +50,7 @@ class TakeNoteActivityTest {
         //  Stand up SFS
 
 
-        intent = Intent(ShadowApplication.getInstance().applicationContext, TakeNoteActivity::class.java)
+        intent = Intent(RuntimeEnvironment.application.applicationContext, TakeNoteActivity::class.java)
         intent.putExtra(SFSCredentials.PARM_CREDENTIALS, SFSCredentials(sfsFile, testPassword))
     }
 

@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.shadows.ShadowApplication;
 
@@ -58,7 +59,7 @@ public class FileSelectModelTest {
         FileSelectActivity activity = Robolectric.buildActivity(FileSelectActivity.class).get();
         app = Shadows.shadowOf(activity.getApplication());
 
-        sut = new FileSelectModel(app.getApplicationContext());
+        sut = new FileSelectModel(RuntimeEnvironment.application);
 
         new File(Environment.getExternalStorageDirectory()+File.separator+"test").createNewFile();
         subDir = new File(Environment.getExternalStorageDirectory()+File.separator+"subdir");

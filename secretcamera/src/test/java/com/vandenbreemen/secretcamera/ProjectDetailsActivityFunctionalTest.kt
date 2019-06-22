@@ -28,7 +28,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.shadows.ShadowApplication
+import org.robolectric.RuntimeEnvironment
 import org.robolectric.shadows.ShadowDialog
 import org.robolectric.shadows.ShadowToast
 
@@ -62,7 +62,7 @@ class ProjectDetailsActivityFunctionalTest {
         sfs.storeObject(project.title, project)
         sfs.setFileMetadata(project.title, FileMeta(ProjectFileTypes.PROJECT))
 
-        intent = Intent(ShadowApplication.getInstance().applicationContext, ProjectDetailsActivity::class.java)
+        intent = Intent(RuntimeEnvironment.application.applicationContext, ProjectDetailsActivity::class.java)
         intent.putExtra(SFSCredentials.PARM_CREDENTIALS, sfsCredentials)
         intent.putExtra(ProjectDetailsActivity.PARM_PROJECT_NAME, "Project Detail Test")
 

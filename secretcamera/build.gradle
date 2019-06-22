@@ -6,7 +6,7 @@ apply plugin: 'kotlin-kapt'
 
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
 
 
 
@@ -91,5 +91,5 @@ dependencies {
     testImplementation "org.mockito:mockito-inline:$mockitoVersion"
     androidTestImplementation "org.awaitility:awaitility:$rootProject.ext.awaitilityVersion"
 
-    implementation 'com.android.support:design:26.1.0'
+    implementation "com.android.support:design:$rootProject.ext.supportVersion"
 }
