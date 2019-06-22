@@ -36,6 +36,11 @@ android {
         targetCompatibility 1.8
         sourceCompatibility 1.8
     }
+
+    // AndroidX Dependencies
+    useLibrary 'android.test.runner'
+    useLibrary 'android.test.base'
+    useLibrary 'android.test.mock'
 }
 
 dependencies {
@@ -55,9 +60,10 @@ dependencies {
     //  Testing dependencies
     testImplementation 'junit:junit:4.12'
     testImplementation "org.robolectric:robolectric:$rootProject.ext.robolectricVersion"
+    testImplementation "androidx.test:core:$rootProject.ext.androidTestVersion"
     testImplementation group: 'org.hamcrest', name: 'java-hamcrest', version: '2.0.0.0'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.ext.espressoVersion"
     androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
     androidTestUtil 'com.android.support.test:orchestrator:1.0.1'
     testImplementation "org.awaitility:awaitility:$rootProject.ext.awaitilityVersion"
@@ -65,6 +71,6 @@ dependencies {
     androidTestImplementation ('com.android.support.test.espresso:espresso-idling-resource:3.0.1') {
         exclude module: 'support-annotations'
     }
-    androidTestImplementation ("com.android.support.test.espresso:espresso-intents:$rootProject.ext.espressoVersion")
+    androidTestImplementation "androidx.test.espresso:espresso-intents:$rootProject.ext.espressoVersion"
 
 }

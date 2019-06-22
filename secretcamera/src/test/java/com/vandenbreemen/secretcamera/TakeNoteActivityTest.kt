@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Environment
 import android.widget.Button
 import android.widget.TextView
+import androidx.test.core.app.ApplicationProvider
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
@@ -15,7 +16,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric.buildActivity
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowLog
 import java.io.File
@@ -50,7 +50,7 @@ class TakeNoteActivityTest {
         //  Stand up SFS
 
 
-        intent = Intent(RuntimeEnvironment.application.applicationContext, TakeNoteActivity::class.java)
+        intent = Intent(ApplicationProvider.getApplicationContext(), TakeNoteActivity::class.java)
         intent.putExtra(SFSCredentials.PARM_CREDENTIALS, SFSCredentials(sfsFile, testPassword))
     }
 

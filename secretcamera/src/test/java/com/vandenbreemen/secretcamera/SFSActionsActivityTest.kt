@@ -7,20 +7,20 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
+import androidx.test.core.app.ApplicationProvider
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
-import junit.framework.TestCase.assertFalse
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric.buildActivity
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
-import org.robolectric.Shadows.shadowOf
+import org.robolectric.shadows.ShadowToast
 
 /**
  * @author kevin
@@ -46,7 +46,7 @@ class SFSActionsActivityTest {
             }
         }
 
-        intent = Intent(RuntimeEnvironment.application.applicationContext, SFSActionsActivity::class.java)
+        intent = Intent(ApplicationProvider.getApplicationContext(), SFSActionsActivity::class.java)
         intent.putExtra(SFSCredentials.PARM_CREDENTIALS, sfsCredentials)
     }
 
@@ -103,8 +103,7 @@ class SFSActionsActivityTest {
         activity.findViewById<Button>(R.id.ok).performClick()
 
         //  Assert
-        val toasts = shadowOf(RuntimeEnvironment.application).shownToasts
-        assertFalse(toasts.isEmpty())
+        assertTrue(ShadowToast.shownToastCount() > 0)
 
     }
 

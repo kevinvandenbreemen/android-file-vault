@@ -6,6 +6,8 @@ import android.os.Environment;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.test.core.app.ApplicationProvider;
+
 import com.vandenbreemen.mobilesecurestorage.R;
 import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow;
 
@@ -14,7 +16,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.ShadowListView;
@@ -106,7 +107,7 @@ public class FileSelectActivityFunctionalTest {
 
     @Test
     public void testSetTitle() {
-        Intent startListFile = new Intent(RuntimeEnvironment.application.getApplicationContext(), FileSelectActivity.class);
+        Intent startListFile = new Intent(ApplicationProvider.getApplicationContext(), FileSelectActivity.class);
         startListFile.putExtra(FileSelectActivity.PARM_TITLE, "This is a test");
 
         sut = Robolectric.buildActivity(FileSelectActivity.class, startListFile)
@@ -242,7 +243,7 @@ public class FileSelectActivityFunctionalTest {
     @Test
     public void testSelectAndConfirm() {
 
-        Intent startListFile = new Intent(RuntimeEnvironment.application.getApplicationContext(), FileSelectActivity.class);
+        Intent startListFile = new Intent(ApplicationProvider.getApplicationContext(), FileSelectActivity.class);
         startListFile.putExtra(FileSelectActivity.PARM_NO_CONFIRM_NEEDED, Boolean.TRUE);
 
         sut = Robolectric.buildActivity(FileSelectActivity.class, startListFile)

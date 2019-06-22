@@ -33,9 +33,10 @@ task clean(type: Delete) {
 }
 
 ext{
-    espressoVersion='3.0.1'
+    espressoVersion='3.1.0'
     awaitilityVersion='3.0.0'
     cache2kVersion="1.0.2.Final"
     robolectricVersion="4.3"
     supportVersion="26.1.0"
+    androidTestVersion="1.0.0"
 }

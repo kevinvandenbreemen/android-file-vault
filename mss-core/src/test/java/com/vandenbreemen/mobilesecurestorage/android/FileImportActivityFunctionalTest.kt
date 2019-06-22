@@ -3,6 +3,7 @@ package com.vandenbreemen.mobilesecurestorage.android
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Environment
+import androidx.test.core.app.ApplicationProvider
 import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
@@ -21,7 +22,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric.buildActivity
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import java.io.File
@@ -71,7 +71,7 @@ class FileImportActivityFunctionalTest {
         val workflow = FileWorkflow()
         workflow.fileOrDirectory = directoryToImport
 
-        val intent = Intent(RuntimeEnvironment.application, FileImportActivity::class.java)
+        val intent = Intent(ApplicationProvider.getApplicationContext(), FileImportActivity::class.java)
         intent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
         intent.putExtra(SFSCredentials.PARM_CREDENTIALS,
                 SFSCredentials(sfsFile, createPassword()))
@@ -104,7 +104,7 @@ class FileImportActivityFunctionalTest {
         val workflow = FileWorkflow()
         workflow.fileOrDirectory = directoryToImport
 
-        val intent = Intent(RuntimeEnvironment.application, FileImportActivity::class.java)
+        val intent = Intent(ApplicationProvider.getApplicationContext(), FileImportActivity::class.java)
         intent.putExtra(FileWorkflow.PARM_WORKFLOW_NAME, workflow)
         intent.putExtra(SFSCredentials.PARM_CREDENTIALS,
                 SFSCredentials(sfsFile, createPassword()))
@@ -137,7 +137,7 @@ class FileImportActivityFunctionalTest {
         val workflow = FileWorkflow()
         workflow.fileOrDirectory = directoryToImport
 
-        val intent = Intent(RuntimeEnvironment.application, FileImportActivity::class.java)
+        val intent = Intent(ApplicationProvider.getApplicationContext(), FileImportActivity::class.java)
         intent.putExtra(FileImportActivity.PARM_FILE_TYPE_BYTES, byteArrayOf(FileTypes.DATA.firstByte, FileTypes.DATA.secondByte!!))
         intent.putExtra(SFSCredentials.PARM_CREDENTIALS,
                 SFSCredentials(sfsFile, createPassword()))

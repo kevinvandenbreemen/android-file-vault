@@ -3,6 +3,8 @@ package com.vandenbreemen.mobilesecurestorage.android.mvp;
 import android.Manifest;
 import android.os.Environment;
 
+import androidx.test.core.app.ApplicationProvider;
+
 import com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity;
 import com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect.FileSelectModel;
 
@@ -12,7 +14,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.shadows.ShadowApplication;
 
@@ -59,7 +60,7 @@ public class FileSelectModelTest {
         FileSelectActivity activity = Robolectric.buildActivity(FileSelectActivity.class).get();
         app = Shadows.shadowOf(activity.getApplication());
 
-        sut = new FileSelectModel(RuntimeEnvironment.application);
+        sut = new FileSelectModel(ApplicationProvider.getApplicationContext());
 
         new File(Environment.getExternalStorageDirectory()+File.separator+"test").createNewFile();
         subDir = new File(Environment.getExternalStorageDirectory()+File.separator+"subdir");

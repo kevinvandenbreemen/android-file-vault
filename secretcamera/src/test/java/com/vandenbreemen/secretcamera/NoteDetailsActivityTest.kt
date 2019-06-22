@@ -1,6 +1,7 @@
 package com.vandenbreemen.secretcamera
 
 import android.content.Intent
+import androidx.test.core.app.ApplicationProvider
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
@@ -11,7 +12,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 
 /**
  * Created by kevin on 22/03/18.
@@ -38,7 +38,7 @@ class NoteDetailsActivityTest {
             }
         }
 
-        intent = Intent(RuntimeEnvironment.application.applicationContext, NoteDetailsActivity::class.java)
+        intent = Intent(ApplicationProvider.getApplicationContext(), NoteDetailsActivity::class.java)
     }
 
     @Test

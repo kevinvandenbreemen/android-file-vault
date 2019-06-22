@@ -3,10 +3,10 @@ package com.vandenbreemen.secretcamera.robot
 import android.app.Activity
 import android.content.Intent
 import android.os.Environment
+import androidx.test.core.app.ApplicationProvider
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
-import org.robolectric.RuntimeEnvironment
 import java.io.File
 
 /**
@@ -34,7 +34,7 @@ open class BaseRobot(private val activityClass:Class<out Activity>) {
     }
 
     fun intent():Intent{
-        val intent = Intent(RuntimeEnvironment.application.applicationContext, activityClass)
+        val intent = Intent(ApplicationProvider.getApplicationContext(), activityClass)
         intent.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials())
         return intent
     }

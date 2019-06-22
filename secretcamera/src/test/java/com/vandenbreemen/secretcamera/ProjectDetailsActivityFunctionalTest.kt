@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.test.core.app.ApplicationProvider
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
@@ -28,7 +29,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.shadows.ShadowDialog
 import org.robolectric.shadows.ShadowToast
 
@@ -62,7 +62,7 @@ class ProjectDetailsActivityFunctionalTest {
         sfs.storeObject(project.title, project)
         sfs.setFileMetadata(project.title, FileMeta(ProjectFileTypes.PROJECT))
 
-        intent = Intent(RuntimeEnvironment.application.applicationContext, ProjectDetailsActivity::class.java)
+        intent = Intent(ApplicationProvider.getApplicationContext(), ProjectDetailsActivity::class.java)
         intent.putExtra(SFSCredentials.PARM_CREDENTIALS, sfsCredentials)
         intent.putExtra(ProjectDetailsActivity.PARM_PROJECT_NAME, "Project Detail Test")
 

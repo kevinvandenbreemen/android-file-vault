@@ -38,6 +38,11 @@ android {
         targetCompatibility 1.8
     }
 
+    // AndroidX Dependencies
+    useLibrary 'android.test.runner'
+    useLibrary 'android.test.base'
+    useLibrary 'android.test.mock'
+
 }
 
 project.ext {
@@ -76,7 +81,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.ext.espressoVersion"
     implementation project(path: ':mss-core')
     kaptAndroidTest "com.google.dagger:dagger-compiler:$daggerVersion"
     kaptTest "com.google.dagger:dagger-compiler:$daggerVersion"
@@ -85,6 +90,7 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin'
     }
     testImplementation 'junit:junit:4.12'
+    testImplementation "androidx.test:core:$rootProject.ext.androidTestVersion"
     testImplementation "org.robolectric:robolectric:$rootProject.ext.robolectricVersion"
     testImplementation group: 'org.hamcrest', name: 'java-hamcrest', version: '2.0.0.0'
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
