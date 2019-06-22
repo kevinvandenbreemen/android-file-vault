@@ -43,7 +43,7 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:26.1.0'
     api 'org.apache.commons:commons-collections4:4.1'
     implementation 'com.android.support:support-v4:26.1.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     api group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
     api 'com.madgag.spongycastle:core:1.53.0.0'
@@ -54,7 +54,7 @@ dependencies {
 
     //  Testing dependencies
     testImplementation 'junit:junit:4.12'
-    testImplementation group: 'org.robolectric', name: 'robolectric', version: '3.6.1'
+    testImplementation "org.robolectric:robolectric:$rootProject.ext.robolectricVersion"
     testImplementation group: 'org.hamcrest', name: 'java-hamcrest', version: '2.0.0.0'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'

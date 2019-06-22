@@ -59,7 +59,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestUtil 'com.android.support.test:orchestrator:1.0.1'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.android.support:recyclerview-v7:26.1.0'
@@ -85,7 +85,7 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin'
     }
     testImplementation 'junit:junit:4.12'
-    testImplementation group: 'org.robolectric', name: 'robolectric', version: '3.6.1'
+    testImplementation "org.robolectric:robolectric:$rootProject.ext.robolectricVersion"
     testImplementation group: 'org.hamcrest', name: 'java-hamcrest', version: '2.0.0.0'
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
     testImplementation "org.mockito:mockito-inline:$mockitoVersion"
