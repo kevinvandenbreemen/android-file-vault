@@ -10,6 +10,7 @@
     <EditText
         android:id="@+id/password"
         style="@style/text_input"
+        android:importantForAutofill="no"
         android:textCursorDrawable="@null"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,6 +29,7 @@
         android:textCursorDrawable="@null"
         android:id="@+id/confirmPassword"
         style="@style/text_input"
+        android:importantForAutofill="no"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -75,6 +77,7 @@
 
     <EditText
         android:textCursorDrawable="@null"
+        android:importantForAutofill="no"
         android:id="@+id/fileName"
         style="@style/text_input"
         android:layout_width="match_parent"
