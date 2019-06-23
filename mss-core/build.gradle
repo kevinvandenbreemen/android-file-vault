@@ -47,9 +47,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "androidx.appcompat:appcompat:$rootProject.ext.androidXVersion"
     api 'org.apache.commons:commons-collections4:4.1'
-    implementation "androidx.legacy:legacy-support-v4:$rootProject.ext.androidXVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation "androidx.constraintlayout:constraintlayout:1.1.2"
     api group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
     api 'com.madgag.spongycastle:core:1.53.0.0'
     api 'com.madgag.spongycastle:prov:1.53.0.0'

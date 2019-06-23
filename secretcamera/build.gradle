@@ -4,7 +4,6 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
-
 android {
     compileSdkVersion 28
 
@@ -47,7 +46,7 @@ android {
 
 project.ext {
     supportLibraryVersion = "25.2.0"
-    daggerVersion = "2.11"
+    daggerVersion = "2.23.2"
     mockitoVersion = "2.18.0"
     dots_version = "1.0.1"
 }
@@ -66,7 +65,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "androidx.appcompat:appcompat:$rootProject.ext.androidXVersion"
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation "androidx.constraintlayout:constraintlayout:1.1.2"
     implementation "androidx.recyclerview:recyclerview:$rootProject.ext.androidXVersion"
     implementation "com.bcgdv.asia.lib:dots:$dots_version"
 
@@ -74,6 +73,8 @@ dependencies {
     implementation "com.google.dagger:dagger:$daggerVersion"
     implementation "com.google.dagger:dagger-android-support:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
+
     compileOnly 'javax.annotation:jsr250-api:1.0'
     kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
