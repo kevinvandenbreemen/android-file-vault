@@ -1,15 +1,15 @@
 package com.vandenbreemen.secretcamera
 
 import android.content.Intent
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.listFiles
@@ -112,7 +112,7 @@ class ProjectsActivityTest {
         projectList.measure(0,0)
         projectList.layout(0,0,100,1000)
 
-        assertEquals("Projects not listed", 2, projectList.adapter.itemCount)
+        assertEquals("Projects not listed", 2, projectList.adapter?.itemCount)
 
     }
 
@@ -133,7 +133,7 @@ class ProjectsActivityTest {
         projectList.measure(0,0)
         projectList.layout(0,0,100,1000)
 
-        projectList.findViewHolderForAdapterPosition(1).itemView.performClick()
+        projectList.findViewHolderForAdapterPosition(1)?.itemView?.performClick()
 
         //  Assert
         val nextActivity = shadowOf(activity).nextStartedActivity
