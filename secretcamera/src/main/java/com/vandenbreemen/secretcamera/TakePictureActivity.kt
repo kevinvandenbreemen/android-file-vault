@@ -9,6 +9,7 @@ import com.camerakit.CameraKitView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.secretcamera.di.injectTakePicture
 import com.vandenbreemen.secretcamera.mvp.takepicture.TakePicturePresenter
 import com.vandenbreemen.secretcamera.mvp.takepicture.TakePictureView
 import javax.inject.Inject
@@ -26,7 +27,7 @@ class TakePictureActivity : Activity(), TakePictureView {
     lateinit var presenter: TakePicturePresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Removed androidInjection stuff
+        injectTakePicture(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_take_picture)
         this.cameraView = findViewById(R.id.camera)
