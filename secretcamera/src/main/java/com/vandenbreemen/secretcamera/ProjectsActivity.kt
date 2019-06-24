@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.api.Project
+import com.vandenbreemen.secretcamera.di.injectProjectsActivithy
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListPresenter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListRouter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListView
@@ -65,7 +66,7 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter {
     lateinit var presenter: ProjectListPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Removed androidInjection stuff
+        injectProjectsActivithy(this)
         super.onCreate(savedInstanceState)
 
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)

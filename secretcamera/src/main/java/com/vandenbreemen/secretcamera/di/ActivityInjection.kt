@@ -40,3 +40,17 @@ fun injectSFSActions(activity: SFSActionsActivity) {
             SFSActionsModule()
     ).inject(activity)
 }
+
+fun injectProjectDetails(activity: ProjectDetailsActivity) {
+    DaggerProjectDetailsComponent.factory().create(
+            ProjectDetailsActivityModule(activity),
+            ProjectDetailsModule()
+    ).inject(activity)
+}
+
+fun injectProjectsActivithy(activity: ProjectsActivity) {
+    DaggerProjectsComponent.factory().create(
+            ProjectManagementModule(),
+            ProjectsActivityModule(activity)
+    ).inject(activity)
+}

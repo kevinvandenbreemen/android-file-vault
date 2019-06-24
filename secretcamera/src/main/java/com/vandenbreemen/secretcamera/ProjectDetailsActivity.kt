@@ -21,6 +21,7 @@ import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.api.Project
 import com.vandenbreemen.secretcamera.api.Task
+import com.vandenbreemen.secretcamera.di.injectProjectDetails
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsPresenter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsRouter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsView
@@ -89,7 +90,7 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
     lateinit var presenter: ProjectDetailsPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Removed androidInjection stuff
+        injectProjectDetails(this)
 
         super.onCreate(savedInstanceState)
 
