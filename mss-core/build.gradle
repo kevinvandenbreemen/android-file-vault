@@ -16,13 +16,13 @@ android {
         multiDexEnabled true
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     //  Test Orchestrator (TODO Keeping this inside this module for now but it sounds like
     //  it might be smart to use it in all modules?)
     testOptions {
-        execution 'ANDROID_TEST_ORCHESTRATOR'
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
         testOptions.unitTests.includeAndroidResources = true
     }
 
@@ -61,14 +61,14 @@ dependencies {
     testImplementation "org.robolectric:robolectric:$rootProject.ext.robolectricVersion"
     testImplementation "androidx.test:core:$rootProject.ext.androidTestVersion"
     testImplementation group: 'org.hamcrest', name: 'java-hamcrest', version: '2.0.0.0'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation "androidx.test:runner:$rootProject.ext.androidTestVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.ext.espressoVersion"
-    androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
+    androidTestImplementation "androidx.test.uiautomator:uiautomator:2.2.0"
     androidTestImplementation "androidx.test:rules:1.1.0"
-    androidTestUtil 'com.android.support.test:orchestrator:1.0.1'
+    androidTestUtil "androidx.test:orchestrator:$rootProject.ext.androidTestVersion"
     testImplementation "org.awaitility:awaitility:$rootProject.ext.awaitilityVersion"
     androidTestImplementation "org.awaitility:awaitility:$rootProject.ext.awaitilityVersion"
-    androidTestImplementation ('com.android.support.test.espresso:espresso-idling-resource:3.0.1') {
+    androidTestImplementation ('androidx.test.espresso:espresso-idling-resource:3.1.0') {
         exclude module: 'support-annotations'
     }
     androidTestImplementation "androidx.test.espresso:espresso-intents:$rootProject.ext.espressoVersion"
