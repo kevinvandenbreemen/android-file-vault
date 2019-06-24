@@ -24,7 +24,6 @@ import com.vandenbreemen.secretcamera.api.Task
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsPresenter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsRouter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectDetailsView
-import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_project_detail.*
 import javax.inject.Inject
 
@@ -90,7 +89,7 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
     lateinit var presenter: ProjectDetailsPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
+        // Removed androidInjection stuff
 
         super.onCreate(savedInstanceState)
 

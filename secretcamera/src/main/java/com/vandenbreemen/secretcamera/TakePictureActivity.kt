@@ -11,7 +11,6 @@ import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.mvp.takepicture.TakePicturePresenter
 import com.vandenbreemen.secretcamera.mvp.takepicture.TakePictureView
-import dagger.android.AndroidInjection
 import javax.inject.Inject
 
 class TakePictureActivity : Activity(), TakePictureView {
@@ -27,7 +26,7 @@ class TakePictureActivity : Activity(), TakePictureView {
     lateinit var presenter: TakePicturePresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
+        // Removed androidInjection stuff
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_take_picture)
         this.cameraView = findViewById(R.id.camera)

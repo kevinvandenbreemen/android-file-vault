@@ -14,7 +14,6 @@ import com.vandenbreemen.secretcamera.mvp.SFSMenuContract
 import com.vandenbreemen.secretcamera.mvp.impl.SFSMainMenuModel
 import com.vandenbreemen.secretcamera.mvp.impl.SFSMainMenuPresenterImpl
 import com.vandenbreemen.test.BackgroundCompletionCallback
-import dagger.android.AndroidInjection
 
 class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
 
@@ -41,7 +40,7 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
+        //// Removed androidInjection stuff
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)

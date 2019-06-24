@@ -18,7 +18,6 @@ import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.SFSActionsVi
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.test.BackgroundCompletionCallback
-import dagger.android.AndroidInjection
 import javax.inject.Inject
 
 /**
@@ -35,7 +34,7 @@ class SFSActionsActivity : Activity(), SFSActionsView, SFSActionsRouter {
     lateinit var presenter: SFSActionsPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
+        // Removed androidInjection stuff
         super.onCreate(savedInstanceState)
 
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)

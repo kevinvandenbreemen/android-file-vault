@@ -23,7 +23,6 @@ import com.vandenbreemen.secretcamera.api.Project
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListPresenter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListRouter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListView
-import dagger.android.AndroidInjection
 import javax.inject.Inject
 
 class ProjectViewHolder(val projectView: ViewGroup): RecyclerView.ViewHolder(projectView)
@@ -66,7 +65,7 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter {
     lateinit var presenter: ProjectListPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
+        // Removed androidInjection stuff
         super.onCreate(savedInstanceState)
 
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)

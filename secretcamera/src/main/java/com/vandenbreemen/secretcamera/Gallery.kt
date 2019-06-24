@@ -14,7 +14,6 @@ import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.mvp.gallery.GalleryPresenter
 import com.vandenbreemen.secretcamera.mvp.gallery.GalleryView
 import com.vandenbreemen.secretcamera.mvp.gallery.PicturesFileTypes
-import dagger.android.AndroidInjection
 import javax.inject.Inject
 
 class Gallery : AppCompatActivity(), GalleryView {
@@ -27,7 +26,7 @@ class Gallery : AppCompatActivity(), GalleryView {
     lateinit var presenter: GalleryPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
+        // Removed androidInjection stuff
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery)
     }

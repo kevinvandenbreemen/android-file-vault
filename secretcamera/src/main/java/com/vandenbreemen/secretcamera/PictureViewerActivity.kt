@@ -23,7 +23,6 @@ import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewRouter
 import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewerPresenter
 import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewerView
-import dagger.android.AndroidInjection
 import javax.inject.Inject
 
 class ThumbnailViewHolder(val view: ViewGroup) : RecyclerView.ViewHolder(view) {
@@ -86,7 +85,7 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter {
     private var adapter: ThumbnailAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
+        // Removed androidInjection stuff
         super.onCreate(savedInstanceState)
 
         //  See also https://developer.android.com/training/system-ui/status.html

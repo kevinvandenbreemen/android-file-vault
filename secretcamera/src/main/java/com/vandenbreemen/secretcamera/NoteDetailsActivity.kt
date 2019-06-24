@@ -20,7 +20,6 @@ import com.vandenbreemen.secretcamera.api.Note
 import com.vandenbreemen.secretcamera.di.ActivitySecurity
 import com.vandenbreemen.secretcamera.mvp.notes.NoteDetailsPresenter
 import com.vandenbreemen.secretcamera.mvp.notes.NoteDetailsView
-import dagger.android.AndroidInjection
 import javax.inject.Inject
 
 class NoteDetailsActivity : Activity(), NoteDetailsView {
@@ -39,7 +38,7 @@ class NoteDetailsActivity : Activity(), NoteDetailsView {
 
     @SuppressLint("WrongViewCast")
     override fun getNoteOnUI(): Note {
-        return Note(findViewById<EditText>(R.id.title).text.toString(),
+        return Note((findViewById(R.id.title) as EditText).text.toString(),
                 findViewById<EditText>(R.id.content).text.toString())
     }
 
@@ -74,7 +73,6 @@ class NoteDetailsActivity : Activity(), NoteDetailsView {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         ActivitySecurity.setSecurity(this)
         setContentView(R.layout.activity_note_details)
