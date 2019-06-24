@@ -1,7 +1,9 @@
 package com.vandenbreemen.secretcamera.di
 
+import android.app.Activity
 import android.content.Context
 import com.vandenbreemen.secretcamera.app.SecureCameraApp
+import com.vandenbreemen.secretcamera.di.mvp.TakeNotePresenterModule
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -12,13 +14,14 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [
     AppModule::class,
-    BuildersModule::class
+    BuildersModule::class,
+    TakeNotePresenterModule::class
 ])
 interface AppComponent {
 
     @Component.Factory
     interface Factory {
-        fun create(@BindsInstance applicationContext: Context): AppComponent
+        fun create(@BindsInstance takeNotePresenterModule: TakeNotePresenterModule, @BindsInstance applicationContext: Context): AppComponent
     }
 
     //@Component.Builder
@@ -30,4 +33,5 @@ interface AppComponent {
 
     fun inject(app:SecureCameraApp)
 
+    fun inject(activity: Activity)
 }
