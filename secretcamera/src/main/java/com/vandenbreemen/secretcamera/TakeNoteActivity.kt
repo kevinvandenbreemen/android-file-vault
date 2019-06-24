@@ -13,6 +13,8 @@ import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.secretcamera.di.DaggerActivityComponent
+import com.vandenbreemen.secretcamera.di.takeNote
 import com.vandenbreemen.secretcamera.mvp.notes.TakeNewNotePresenter
 import com.vandenbreemen.secretcamera.mvp.notes.TakeNewNoteView
 import javax.inject.Inject
@@ -48,7 +50,7 @@ class TakeNoteActivity : Activity(), TakeNewNoteView {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Removed androidInjection stuff
+        DaggerActivityComponent.factory().create(this).takeNote().inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_take_note)
 

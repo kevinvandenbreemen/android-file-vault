@@ -18,6 +18,6 @@ class SecureCameraApp:Application() {
 
         component = DaggerAppComponent
                 .factory()
-                .create(applicationContext)
+                .create(this)
     }
 }
