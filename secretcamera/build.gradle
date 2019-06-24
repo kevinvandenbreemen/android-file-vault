@@ -70,10 +70,9 @@ dependencies {
     implementation "com.bcgdv.asia.lib:dots:$dots_version"
 
     //  Dagger
-    implementation "com.google.dagger:dagger:$daggerVersion"
-    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
+    implementation "com.google.dagger:dagger-android:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
-    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-android-processor:$daggerVersion"
 
     compileOnly 'javax.annotation:jsr250-api:1.0'
     kapt "com.google.dagger:dagger-android-processor:$daggerVersion"

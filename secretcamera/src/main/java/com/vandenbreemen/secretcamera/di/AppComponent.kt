@@ -1,9 +1,9 @@
 package com.vandenbreemen.secretcamera.di
 
+import android.content.Context
 import com.vandenbreemen.secretcamera.app.SecureCameraApp
 import dagger.BindsInstance
 import dagger.Component
-import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
 /**
@@ -16,7 +16,12 @@ import javax.inject.Singleton
 ])
 interface AppComponent {
 
-    @Component.Builder
+    @Component.Factory
+    interface Factory {
+        fun create(@BindsInstance applicationContext: Context): AppComponent
+    }
+
+    //@Component.Builder
     interface Builder{
         @BindsInstance
         fun application(app:SecureCameraApp):Builder

@@ -3,9 +3,8 @@ package com.vandenbreemen.secretcamera
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import com.vandenbreemen.mobilesecurestorage.android.FileImportActivity
 import com.vandenbreemen.mobilesecurestorage.android.FileImportDataProvider
 import com.vandenbreemen.mobilesecurestorage.android.FileImportFutureIntent
@@ -35,7 +34,7 @@ class Gallery : AppCompatActivity(), GalleryView {
 
     override fun onPause() {
         super.onPause()
-        findViewById(R.id.overlay).visibility = View.VISIBLE
+        (findViewById(R.id.overlay) as View).visibility = View.VISIBLE
         if (!presenter.isClosed()) {
             presenter.close()
         }
