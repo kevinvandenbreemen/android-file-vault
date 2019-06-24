@@ -54,3 +54,10 @@ fun injectProjectsActivithy(activity: ProjectsActivity) {
             ProjectsActivityModule(activity)
     ).inject(activity)
 }
+
+fun injectGallery(activity: Gallery) {
+    DaggerGalleryComponent.factory().create(
+            GalleryActivityModule(activity),
+            GalleryPresenterModule()
+    ).inject(activity)
+}

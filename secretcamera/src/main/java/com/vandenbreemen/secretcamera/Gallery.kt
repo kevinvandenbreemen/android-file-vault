@@ -11,6 +11,7 @@ import com.vandenbreemen.mobilesecurestorage.android.FileImportFutureIntent
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.api.FileType
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.secretcamera.di.injectGallery
 import com.vandenbreemen.secretcamera.mvp.gallery.GalleryPresenter
 import com.vandenbreemen.secretcamera.mvp.gallery.GalleryView
 import com.vandenbreemen.secretcamera.mvp.gallery.PicturesFileTypes
@@ -26,7 +27,7 @@ class Gallery : AppCompatActivity(), GalleryView {
     lateinit var presenter: GalleryPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Removed androidInjection stuff
+        injectGallery(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery)
     }
