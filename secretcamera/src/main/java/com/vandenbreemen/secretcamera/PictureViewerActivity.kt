@@ -20,6 +20,7 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.secretcamera.di.injectPictureViewer
 import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewRouter
 import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewerPresenter
 import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewerView
@@ -85,7 +86,7 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter {
     private var adapter: ThumbnailAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Removed androidInjection stuff
+        injectPictureViewer(this)
         super.onCreate(savedInstanceState)
 
         //  See also https://developer.android.com/training/system-ui/status.html

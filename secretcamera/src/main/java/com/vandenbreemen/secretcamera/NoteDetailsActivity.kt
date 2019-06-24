@@ -18,6 +18,7 @@ import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.api.Note
 import com.vandenbreemen.secretcamera.di.ActivitySecurity
+import com.vandenbreemen.secretcamera.di.injectNoteDetails
 import com.vandenbreemen.secretcamera.mvp.notes.NoteDetailsPresenter
 import com.vandenbreemen.secretcamera.mvp.notes.NoteDetailsView
 import javax.inject.Inject
@@ -73,6 +74,7 @@ class NoteDetailsActivity : Activity(), NoteDetailsView {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        injectNoteDetails(this)
         super.onCreate(savedInstanceState)
         ActivitySecurity.setSecurity(this)
         setContentView(R.layout.activity_note_details)
