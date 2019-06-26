@@ -50,7 +50,7 @@
         android:background="@color/colorPrimary"
         android:buttonTint="@color/green"
         android:text="@string/select"
-        android:textColor="@color/black"
+        android:textColor="@color/colorPrimary"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
