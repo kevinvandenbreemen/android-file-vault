@@ -2,11 +2,11 @@ package com.vandenbreemen.secretcamera
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
+import androidx.appcompat.app.AppCompatActivity
 import com.vandenbreemen.mobilesecurestorage.android.fragment.SFSNavFragment
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
@@ -14,7 +14,6 @@ import com.vandenbreemen.secretcamera.mvp.SFSMenuContract
 import com.vandenbreemen.secretcamera.mvp.impl.SFSMainMenuModel
 import com.vandenbreemen.secretcamera.mvp.impl.SFSMainMenuPresenterImpl
 import com.vandenbreemen.test.BackgroundCompletionCallback
-import dagger.android.AndroidInjection
 
 class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
 
@@ -41,14 +40,15 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
+        //// Removed androidInjection stuff
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
 
         intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)?.let { credentials ->
-            findViewById<ViewGroup>(R.id.mainSection).addView(
-                    layoutInflater.inflate(R.layout.main_screen_selections, findViewById(R.id.mainSection), false))
+            val mainSection = findViewById(R.id.mainSection) as ViewGroup
+            mainSection.addView(
+                    layoutInflater.inflate(R.layout.main_screen_selections, mainSection, false))
 
             mainMenuPresenter = SFSMainMenuPresenterImpl(SFSMainMenuModel(credentials), this)
 
@@ -63,10 +63,11 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
         if (requestCode == SFSNavFragment.GET_CREDENTIALS_ACTION) {
             if (resultCode == RESULT_OK) {
                 val credentials = data!!.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)
-                findViewById<ViewGroup>(R.id.mainSection).addView(
-                        layoutInflater.inflate(R.layout.main_screen_selections, findViewById(R.id.mainSection), false))
+                val viewGroup = findViewById(R.id.mainSection) as ViewGroup
+                viewGroup.addView(
+                        layoutInflater.inflate(R.layout.main_screen_selections, viewGroup, false))
 
-                findViewById<ViewGroup>(R.id.upperSection).removeAllViews()
+                (findViewById(R.id.upperSection) as ViewGroup).removeAllViews()
 
                 mainMenuPresenter = SFSMainMenuPresenterImpl(SFSMainMenuModel(credentials), this)
                 mainMenuPresenter!!.start()

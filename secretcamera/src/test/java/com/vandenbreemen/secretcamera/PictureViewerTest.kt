@@ -1,14 +1,14 @@
 package com.vandenbreemen.secretcamera
 
 import android.content.Intent
-import android.support.design.widget.FloatingActionButton
-import android.support.v7.widget.RecyclerView
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
@@ -114,7 +114,7 @@ class PictureViewerTest {
         val recyclerView = activity.findViewById<RecyclerView>(R.id.pictureSelector)
         recyclerView.measure(0, 0)
         recyclerView.layout(0, 0, 100, 1000)
-        assertEquals("Image select items", 2, recyclerView.adapter.itemCount)
+        assertEquals("Image select items", 2, recyclerView.adapter?.itemCount)
     }
 
     //  TODO    This test doesn't work as the viewHolderForAdaptorAtPosition is always null...
@@ -139,7 +139,7 @@ class PictureViewerTest {
         val recyclerView = activity.findViewById<RecyclerView>(R.id.pictureSelector)
         recyclerView.measure(0, 0)
         recyclerView.layout(0, 0, 100, 1000)
-        recyclerView.findViewHolderForAdapterPosition(1).itemView.performClick()
+        recyclerView.findViewHolderForAdapterPosition(1)?.itemView?.performClick()
     }
 
     @Test

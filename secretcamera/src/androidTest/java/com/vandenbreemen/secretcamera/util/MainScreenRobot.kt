@@ -2,10 +2,9 @@ package com.vandenbreemen.secretcamera.util
 
 import android.app.Activity
 import android.os.Environment
-import android.support.test.InstrumentationRegistry
-import android.support.test.InstrumentationRegistry.getInstrumentation
-import android.support.test.espresso.IdlingPolicies
-import android.support.test.uiautomator.UiDevice
+import androidx.test.espresso.IdlingPolicies
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import androidx.test.uiautomator.UiDevice
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotDisplayed
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotExist
@@ -80,7 +79,7 @@ class MainScreenRobot(val activity: Activity) {
         val file = File(dir.absolutePath
                 + File.separator + DEFAULT_LOCATION
                 + File.separator + FILENAME)
-        InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(
+        getInstrumentation().getUiAutomation().executeShellCommand(
                 "rm -f " + file.absolutePath)
     }
 

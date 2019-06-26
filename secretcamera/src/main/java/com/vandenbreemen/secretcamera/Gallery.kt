@@ -3,19 +3,18 @@ package com.vandenbreemen.secretcamera
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import com.vandenbreemen.mobilesecurestorage.android.FileImportActivity
 import com.vandenbreemen.mobilesecurestorage.android.FileImportDataProvider
 import com.vandenbreemen.mobilesecurestorage.android.FileImportFutureIntent
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.api.FileType
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.secretcamera.di.injectGallery
 import com.vandenbreemen.secretcamera.mvp.gallery.GalleryPresenter
 import com.vandenbreemen.secretcamera.mvp.gallery.GalleryView
 import com.vandenbreemen.secretcamera.mvp.gallery.PicturesFileTypes
-import dagger.android.AndroidInjection
 import javax.inject.Inject
 
 class Gallery : AppCompatActivity(), GalleryView {
@@ -28,14 +27,14 @@ class Gallery : AppCompatActivity(), GalleryView {
     lateinit var presenter: GalleryPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
+        injectGallery(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery)
     }
 
     override fun onPause() {
         super.onPause()
-        findViewById<ViewGroup>(R.id.overlay).visibility = View.VISIBLE
+        (findViewById(R.id.overlay) as View).visibility = View.VISIBLE
         if (!presenter.isClosed()) {
             presenter.close()
         }

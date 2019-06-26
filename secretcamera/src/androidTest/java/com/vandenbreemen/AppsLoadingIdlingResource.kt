@@ -1,6 +1,6 @@
 package com.vandenbreemen
 
-import android.support.test.espresso.IdlingResource
+import androidx.test.espresso.IdlingResource
 
 /**
  * Simple custom idling resource to force tests to wait for screen transitions to actually finish!
