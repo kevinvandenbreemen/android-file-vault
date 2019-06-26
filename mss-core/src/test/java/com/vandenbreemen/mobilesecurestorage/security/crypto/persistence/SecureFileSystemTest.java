@@ -618,8 +618,14 @@ public class SecureFileSystemTest {
 
     }
 
+    /**
+     * Use this test to validate changes to the underlying SFS or even its crypto libs.  This test loads an existing SFS (legacy) and validates
+     * that it is properly loaded
+     *
+     * @throws Exception
+     */
     @Test
-    public void shouldLoadExistingImportedFile() throws Exception {
+    public void shouldLoadExistingSecureFileSystem() throws Exception {
         byte[] expectedBytes =
                 Bytes.loadBytesFromFile(TestConstants.TEST_RES_IMG_1);
         IndexedFile idf = getNewSecureFileSystem(TestConstants.IMPORTED_ENC_JPG_EX);
