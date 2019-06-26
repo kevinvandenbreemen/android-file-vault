@@ -108,23 +108,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-    <com.bcgdv.asia.lib.dots.DotsProgressIndicator
-        android:visibility="gone"
+    <androidx.core.widget.ContentLoadingProgressBar
         android:id="@+id/imageDisplayProgress"
-        app:visibilityChangeDelay="200"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:dotColors="@array/dot_colors"
-        app:dotsSpacing="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:numberOfDots="3" />
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scrollbarDefaultDelayBeforeFade="200"
+        app:layout_constraintBottom_toBottomOf="@+id/pictureSelector"
+        app:layout_constraintEnd_toEndOf="@+id/forward"
+        app:layout_constraintStart_toStartOf="@+id/backward"
+        app:layout_constraintTop_toTopOf="@+id/currentImage" />
 
     <include
         layout="@layout/actions_menu"

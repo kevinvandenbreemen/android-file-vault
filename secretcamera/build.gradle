@@ -47,7 +47,6 @@ project.ext {
     supportLibraryVersion = "25.2.0"
     daggerVersion = "2.23.2"
     mockitoVersion = "2.18.0"
-    dots_version = "1.0.1"
 }
 
 repositories {
@@ -66,7 +65,6 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$rootProject.ext.androidXVersion"
     implementation "androidx.constraintlayout:constraintlayout:1.1.2"
     implementation "androidx.recyclerview:recyclerview:$rootProject.ext.androidXVersion"
-    implementation "com.bcgdv.asia.lib:dots:$dots_version"
 
     //  Dagger
     implementation "com.google.dagger:dagger-android:$daggerVersion"
