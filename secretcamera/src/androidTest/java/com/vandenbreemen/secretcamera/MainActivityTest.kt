@@ -106,15 +106,6 @@ class MainActivityTest {
     }
 
     @Test
-    fun shouldShowTakePictureAfterOpening(){
-
-        MainScreenRobot(activityRule.activity).apply {
-            loadExistingSFS()
-            checkTakePictureDisplayed()
-        }
-    }
-
-    @Test
     fun shouldPreserveActionsAfterOpeningAndReorienting() {
 
         MainScreenRobot(activityRule.activity).apply {
@@ -122,25 +113,6 @@ class MainActivityTest {
             rotateToLandscape()
             checkTakeNoteDisplayed()
             checkNotesDisplayed()
-            checkTakePictureDisplayed()
-        }
-    }
-
-    @Test
-    fun shouldShowTakeNoteAfterOpening(){
-
-        MainScreenRobot(activityRule.activity).apply {
-            loadExistingSFS()
-            checkTakeNoteDisplayed()
-        }
-    }
-
-    @Test
-    fun shouldShowTakePictureAfterCreating(){
-
-        MainScreenRobot(activityRule.activity).apply {
-            deleteTestFile()
-            createNewSFS()
             checkTakePictureDisplayed()
         }
     }
