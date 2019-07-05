@@ -32,6 +32,7 @@ import org.robolectric.shadows.ShadowLog
 import java.io.File
 
 var generateThumbnailCalled = false
+var generateThumbnailSynchronousCalled = false
 
 @Implements(AndroidImageInteractor::class)
 class ShadowAndroidImageInteractor {
@@ -40,6 +41,17 @@ class ShadowAndroidImageInteractor {
     fun generateThumbnail(bitmap: Bitmap): Single<Bitmap> {
         generateThumbnailCalled = true
         return Single.just(mock(Bitmap::class.java))
+    }
+
+    @Implementation
+    fun generateThumbnailSynchronous(bitmap: Bitmap, width: Int, height: Int): Bitmap {
+        generateThumbnailSynchronousCalled = true
+        return mock(Bitmap::class.java)
+    }
+
+    @Implementation
+    fun convertByteArrayToBitmapSynchronous(imageBytes: ByteArray): Bitmap {
+        return mock(Bitmap::class.java)
     }
 }
 
