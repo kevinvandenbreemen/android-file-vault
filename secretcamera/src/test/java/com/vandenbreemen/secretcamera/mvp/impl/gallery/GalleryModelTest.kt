@@ -12,6 +12,7 @@ import com.vandenbreemen.secretcamera.shittySolutionPleaseDelete.TestConstants
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
+import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -73,6 +74,48 @@ class GalleryModelTest {
         test.assertComplete()
 
         assertTrue(generateThumbnailSynchronousCalled)
+
+
+    }
+
+    @Test
+    @Config(shadows = [ShadowAndroidImageInteractor::class])
+    fun `should handle small number of images`() {
+
+        //  Arrange
+        sfs.importFile(TestConstants.TEST_RES_IMG_1)
+        sfs.setFileType(TestConstants.TEST_RES_IMG_1.name, PicturesFileTypes.IMPORTED_IMAGE)
+        model = GalleryModel(credentials)
+        model.init().blockingGet()
+
+        //  Act
+        val thumbnails: Single<List<Bitmap>> = model.getImageThumbnails()
+
+        //  Assert
+        val test = thumbnails.test()
+        test.assertComplete()
+
+        assertTrue(generateThumbnailSynchronousCalled)
+
+
+    }
+
+    @Test
+    @Config(shadows = [ShadowAndroidImageInteractor::class])
+    fun `should handle no images in SFS`() {
+
+        //  Arrange
+        model = GalleryModel(credentials)
+        model.init().blockingGet()
+
+        //  Act
+        val thumbnails: Single<List<Bitmap>> = model.getImageThumbnails()
+
+        //  Assert
+        val test = thumbnails.test()
+        test.assertComplete()
+
+        assertFalse(generateThumbnailSynchronousCalled)
 
 
     }

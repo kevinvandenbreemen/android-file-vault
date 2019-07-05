@@ -26,9 +26,16 @@ class GalleryModel(credentials: SFSCredentials) : Model(credentials) {
     fun getImageThumbnails(): Single<List<Bitmap>> {
         return Single.create {
             val list = imageFilesInteractor.listImageFiles()
+
+            if (list.isEmpty()) {
+                it.onSuccess(emptyList())
+            }
+
+            val numImages = if (list.size >= 3) 3 else list.size
+
             val ret = mutableListOf<Bitmap>()
             var bitmap: Bitmap
-            for (i in 0 until 3) {
+            for (i in 0 until numImages) {
                 bitmap = androidImageInteractor.convertByteArrayToBitmapSynchronous(imageFilesInteractor.loadImageBytes(
                         list[i]
                 ))
@@ -54,7 +61,9 @@ class GalleryPresenterImpl(val model: GalleryModel, val view: GalleryView) : Pre
     }
 
     override fun setupView() {
-
+        model.getImageThumbnails().subscribe { thumbnails ->
+            view.showExamples(thumbnails)
+        }
     }
 
 }
