@@ -24,12 +24,13 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         app:cardBackgroundColor="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,24 +40,24 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/import_dir"
-                android:onClick="onImportDir"
                 android:id="@+id/importImages"
-                style="@style/ButtonAction" />
-
-            <Button
+                style="@style/ButtonAction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/view_pictures"
-                android:onClick="onViewPictures"
+                android:onClick="onImportDir"
+                android:text="@string/import_dir" />
+
+            <Button
                 android:id="@+id/view_pictures"
-                style="@style/ButtonAction" />
+                style="@style/ButtonAction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onViewPictures"
+                android:text="@string/view_pictures" />
         </LinearLayout>
 
 
@@ -66,6 +67,59 @@
         android:id="@+id/overlay"
         layout="@layout/layout_logo_screen"
         android:visibility="gone" />
+
+    <androidx.cardview.widget.CardView
+        app:cardBackgroundColor="@color/background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
+        app:layout_constraintEnd_toEndOf="@+id/cardView"
+        app:layout_constraintStart_toStartOf="@+id/cardView"
+        app:layout_constraintTop_toBottomOf="@+id/galleryTitle" >
+
+        <ImageView
+            tools:visibility="visible"
+            android:visibility="invisible"
+            android:id="@+id/preview_img_1"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:rotation="-22"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/logo"
+            android:elevation="3dp"
+            />
+
+        <ImageView
+            tools:visibility="visible"
+            android:visibility="invisible"
+            android:id="@+id/preview_img_2"
+            android:layout_gravity="center|center_vertical"
+            android:rotation="5"
+            android:elevation="2dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="10dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/logo"
+            />
+
+        <ImageView
+            tools:visibility="visible"
+            android:visibility="invisible"
+            android:id="@+id/preview_img_3"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="30dp"
+            android:rotation="29"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/logo"
+            android:elevation="1dp"
+            />
+
+    </androidx.cardview.widget.CardView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

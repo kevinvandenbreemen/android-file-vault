@@ -9,6 +9,9 @@ import com.vandenbreemen.secretcamera.mvp.gallery.GalleryPresenter
 import com.vandenbreemen.secretcamera.mvp.gallery.GalleryView
 import com.vandenbreemen.secretcamera.mvp.gallery.ImageFilesInteractor
 import io.reactivex.Single
+import io.reactivex.SingleOnSubscribe
+import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
+import io.reactivex.schedulers.Schedulers.computation
 
 class GalleryModel(credentials: SFSCredentials) : Model(credentials) {
 
@@ -24,7 +27,7 @@ class GalleryModel(credentials: SFSCredentials) : Model(credentials) {
     }
 
     fun getImageThumbnails(): Single<List<Bitmap>> {
-        return Single.create {
+        return Single.create(SingleOnSubscribe<List<Bitmap>> {
             val list = imageFilesInteractor.listImageFiles()
 
             if (list.isEmpty()) {
@@ -45,7 +48,7 @@ class GalleryModel(credentials: SFSCredentials) : Model(credentials) {
             }
 
             it.onSuccess(ret)
-        }
+        }).subscribeOn(computation())
 
     }
 
@@ -61,7 +64,7 @@ class GalleryPresenterImpl(val model: GalleryModel, val view: GalleryView) : Pre
     }
 
     override fun setupView() {
-        model.getImageThumbnails().subscribe { thumbnails ->
+        model.getImageThumbnails().observeOn(mainThread()).subscribe { thumbnails ->
             view.showExamples(thumbnails)
         }
     }

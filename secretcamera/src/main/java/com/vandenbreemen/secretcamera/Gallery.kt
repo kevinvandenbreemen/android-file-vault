@@ -2,8 +2,11 @@ package com.vandenbreemen.secretcamera
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
+import android.view.View.VISIBLE
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.vandenbreemen.mobilesecurestorage.android.FileImportActivity
 import com.vandenbreemen.mobilesecurestorage.android.FileImportDataProvider
@@ -78,6 +81,17 @@ class Gallery : AppCompatActivity(), GalleryView {
                 finish()
             } else {
                 finish()
+            }
+        }
+    }
+
+    override fun showExamples(thumbnails: List<Bitmap>) {
+        if(thumbnails.isNotEmpty()) {
+            for(i in 0 until thumbnails.size) {
+                val identifier = resources.getIdentifier("preview_img_${i+1}", "id", packageName)
+                val imageView = findViewById<ImageView>(identifier)
+                imageView.setImageBitmap(thumbnails[i])
+                imageView.visibility = VISIBLE
             }
         }
     }
