@@ -74,9 +74,9 @@ class GalleryPresenterImpl(val model: GalleryModel, val view: GalleryView) : Pre
     }
 
     override fun setupView() {
-        model.getImageThumbnails().observeOn(mainThread()).subscribe { thumbnails ->
+        addForDisposal(model.getImageThumbnails().observeOn(mainThread()).subscribe { thumbnails ->
             view.showExamples(thumbnails)
-        }
+        })
     }
 
 }
