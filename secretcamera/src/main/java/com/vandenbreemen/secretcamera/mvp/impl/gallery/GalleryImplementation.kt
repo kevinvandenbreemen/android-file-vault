@@ -15,6 +15,10 @@ import io.reactivex.schedulers.Schedulers.computation
 
 class GalleryModel(credentials: SFSCredentials) : Model(credentials) {
 
+    companion object {
+        val MAX_IMAGES = 3
+    }
+
     private var androidImageInteractor = AndroidImageInteractor()
     lateinit var imageFilesInteractor: ImageFilesInteractor
 
@@ -34,7 +38,7 @@ class GalleryModel(credentials: SFSCredentials) : Model(credentials) {
                 it.onSuccess(emptyList())
             }
 
-            val numImages = if (list.size >= 3) 3 else list.size
+            val numImages = if (list.size >= MAX_IMAGES) MAX_IMAGES else list.size
 
             val ret = mutableListOf<Bitmap>()
             var bitmap: Bitmap
