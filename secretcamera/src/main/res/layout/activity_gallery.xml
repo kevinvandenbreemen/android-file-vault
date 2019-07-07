@@ -50,14 +50,6 @@
                 android:layout_height="wrap_content"
                 android:onClick="onImportDir"
                 android:text="@string/import_dir" />
-
-            <Button
-                android:id="@+id/view_pictures"
-                style="@style/ButtonAction"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="onViewPictures"
-                android:text="@string/view_pictures" />
         </LinearLayout>
 
 
@@ -80,6 +72,7 @@
         app:layout_constraintTop_toBottomOf="@+id/galleryTitle" >
 
         <ImageView
+            android:onClick="onViewPictures"
             tools:visibility="visible"
             android:visibility="invisible"
             android:id="@+id/preview_img_1"
@@ -93,6 +86,7 @@
             />
 
         <ImageView
+            android:onClick="onViewPictures"
             tools:visibility="visible"
             android:visibility="invisible"
             android:id="@+id/preview_img_2"
@@ -107,6 +101,7 @@
             />
 
         <ImageView
+            android:onClick="onViewPictures"
             tools:visibility="visible"
             android:visibility="invisible"
             android:id="@+id/preview_img_3"
