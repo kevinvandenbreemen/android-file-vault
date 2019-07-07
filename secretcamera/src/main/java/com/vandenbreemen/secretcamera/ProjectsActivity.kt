@@ -46,6 +46,7 @@ class ProjectAdapter(private val dataSet: List<Project>, private val projectList
     override fun onBindViewHolder(holder: ProjectViewHolder, position: Int) {
         val viewGroup = holder.projectView
         viewGroup.findViewById<TextView>(R.id.projectName).text = dataSet[position].title
+        viewGroup.findViewById<TextView>(R.id.projectDescription).text = dataSet[position].details
 
         viewGroup.setOnClickListener{ v->
             projectListPresenter.viewProjectDetails(dataSet[position])
