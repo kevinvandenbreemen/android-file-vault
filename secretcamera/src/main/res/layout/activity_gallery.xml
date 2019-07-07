@@ -74,7 +74,7 @@
         <ImageView
             android:onClick="onViewPictures"
             tools:visibility="visible"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:id="@+id/preview_img_1"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
@@ -88,7 +88,7 @@
         <ImageView
             android:onClick="onViewPictures"
             tools:visibility="visible"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:id="@+id/preview_img_2"
             android:layout_gravity="center|center_vertical"
             android:rotation="5"
@@ -103,7 +103,7 @@
         <ImageView
             android:onClick="onViewPictures"
             tools:visibility="visible"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:id="@+id/preview_img_3"
             android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="30dp"
