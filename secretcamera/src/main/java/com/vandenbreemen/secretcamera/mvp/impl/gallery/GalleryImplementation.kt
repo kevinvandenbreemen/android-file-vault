@@ -2,6 +2,8 @@ package com.vandenbreemen.secretcamera.mvp.impl.gallery
 
 import android.graphics.Bitmap
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.log.SystemLog
+import com.vandenbreemen.mobilesecurestorage.log.e
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Presenter
 import com.vandenbreemen.secretcamera.mvp.gallery.AndroidImageInteractor
@@ -43,12 +45,16 @@ class GalleryModel(credentials: SFSCredentials) : Model(credentials) {
             val ret = mutableListOf<Bitmap>()
             var bitmap: Bitmap
             for (i in 0 until numImages) {
-                bitmap = androidImageInteractor.convertByteArrayToBitmapSynchronous(imageFilesInteractor.loadImageBytes(
-                        list[i]
-                ))
-                ret.add(
-                        androidImageInteractor.generateThumbnailSynchronous(bitmap, 150, 150)
-                )
+                try {
+                    bitmap = androidImageInteractor.convertByteArrayToBitmapSynchronous(imageFilesInteractor.loadImageBytes(
+                            list[i]
+                    ))
+                    ret.add(
+                            androidImageInteractor.generateThumbnailSynchronous(bitmap, 150, 150)
+                    )
+                } catch (ex: Exception) {
+                    SystemLog.get().e(AndroidImageInteractor::class.java.simpleName, "Failed to load or convert bitmap bytes", ex)
+                }
             }
 
             it.onSuccess(ret)

@@ -1,12 +1,12 @@
 package com.vandenbreemen.secretcamera
 
 import android.os.Environment
+import android.util.Log
 import androidx.test.InstrumentationRegistry
 import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
-import android.util.Log
 import com.vandenbreemen.AppsLoadingIdlingResource
 import com.vandenbreemen.mobilesecurestorage.android.CreateSecureFileSystem
 import com.vandenbreemen.mobilesecurestorage.android.LoadSecureFileSystem
@@ -95,19 +95,6 @@ class GalleryTest {
         MainScreenRobot(activityRule.activity).apply {
             loadExistingSFS(TESTDIR, fileName, PASSWORD)
             clickViewPictures().checkOnGalleryScreen()
-
-        }
-    }
-
-    @Test
-    fun shouldLoadGallery() {
-        MainScreenRobot(activityRule.activity).apply {
-            loadExistingSFS(TESTDIR, fileName, PASSWORD)
-            val robot = clickViewPictures()
-            robot.apply galleryRobot@{
-                this@galleryRobot.clickViewPictures()
-                this@galleryRobot.checkOnPictureViewerScreen()
-            }
 
         }
     }
