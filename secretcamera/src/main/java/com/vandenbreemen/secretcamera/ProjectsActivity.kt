@@ -15,6 +15,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
@@ -76,6 +78,10 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter {
         findViewById<RecyclerView>(R.id.projectList).apply {
 
             layoutManager = LinearLayoutManager(this@ProjectsActivity)
+            addItemDecoration(DividerItemDecoration(
+                    context,
+                    VERTICAL
+            ))
 
         }
     }
