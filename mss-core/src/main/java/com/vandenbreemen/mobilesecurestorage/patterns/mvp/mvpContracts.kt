@@ -92,7 +92,7 @@ abstract class Presenter<out M : Model, out V : View>(private val model: M, priv
 
     override fun pause() {
 
-        if(view is Pausable) {
+        if (view is Pausable && !model.isClosed()) {
 
             val fileLocation = model.copyCredentials().fileLocation
             view.pauseWithFileOpen(fileLocation)
@@ -145,6 +145,9 @@ abstract class Model(private val credentials: SFSCredentials) {
     }
 
     fun close() {
+        if (isClosed()) {
+            return
+        }
         credentials.finalize()
         sfs.close()
         onClose()
