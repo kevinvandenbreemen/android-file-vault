@@ -12,4 +12,5 @@
     <string name="select_file">Please select Secure File System file</string>
     <string name="actions">Main Menu</string>
     <string name="importing">Importing files...</string>
+    <string name="please_provide_password">Please specify password to reload the File</string>
 </resources>
