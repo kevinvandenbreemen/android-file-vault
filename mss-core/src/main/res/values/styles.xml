@@ -51,4 +51,9 @@
         <item name="android:colorActivatedHighlight">@color/colorPrimary</item>
     </style>
 
+    <style name="error" >
+        <item name="android:textColor">@color/red</item>
+        <item name="android:labelTextSize">18pt</item>
+    </style>
+
 </resources>
