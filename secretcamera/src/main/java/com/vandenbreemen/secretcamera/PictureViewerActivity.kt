@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.di.injectPictureViewer
@@ -111,9 +110,7 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter {
             presenter.deleteSelected()
         }
 
-        findViewById<FloatingActionButton>(R.id.actions).setOnClickListener { v ->
-            presenter.onSelectPictureViewerActions()
-        }
+        //  Actions button was here.  Need to re-create it sometime
 
         findViewById<Button>(R.id.deleteAllImages).setOnClickListener { v ->
             presenter.deleteAllImages()
