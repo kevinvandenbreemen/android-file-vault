@@ -9,13 +9,16 @@ import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AppCompatActivity
 import com.vandenbreemen.mobilesecurestorage.android.fragment.SFSNavFragment
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.android.view.EnterPasswordView
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Pausable
 import com.vandenbreemen.secretcamera.mvp.SFSMenuContract
 import com.vandenbreemen.secretcamera.mvp.impl.SFSMainMenuModel
 import com.vandenbreemen.secretcamera.mvp.impl.SFSMainMenuPresenterImpl
 import com.vandenbreemen.test.BackgroundCompletionCallback
+import java.io.File
 
-class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
+class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView, Pausable {
 
     companion object {
         var sfsLoadedCallback: BackgroundCompletionCallback? = null
@@ -34,8 +37,7 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
     override fun onPause() {
         super.onPause()
         mainMenuPresenter?.let {
-            it.close()
-            finish()
+            it.pause()
         }
     }
 
@@ -60,6 +62,7 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == SFSNavFragment.GET_CREDENTIALS_ACTION) {
             if (resultCode == RESULT_OK) {
                 val credentials = data!!.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)
@@ -75,6 +78,18 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView {
                 startActivity(intent)
             }
         }
+    }
+
+    override fun pauseWithFileOpen(fileLocation: File) {
+        val overlay = findViewById<ViewGroup>(R.id.overlay)
+        val enterPasswordView = overlay.findViewById<EnterPasswordView>(R.id.enter_password_view)
+        enterPasswordView.promptForPasswordOnResume(fileLocation, {sfsCredentials ->
+            val presenter = SFSMainMenuPresenterImpl(SFSMainMenuModel(sfsCredentials), this)
+            this.mainMenuPresenter = presenter
+            overlay.visibility = View.GONE
+            presenter.start()
+        }, {finish()})
+        overlay.visibility = View.VISIBLE
     }
 
     override fun onResume() {
