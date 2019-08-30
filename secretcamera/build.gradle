@@ -90,7 +90,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation "androidx.test:core:$rootProject.ext.androidTestVersion"
     testImplementation "org.robolectric:robolectric:$rootProject.ext.robolectricVersion"
-    testImplementation group: 'org.hamcrest', name: 'java-hamcrest', version: '2.0.0.0'
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
     testImplementation "org.mockito:mockito-inline:$mockitoVersion"
     androidTestImplementation "org.awaitility:awaitility:$rootProject.ext.awaitilityVersion"
