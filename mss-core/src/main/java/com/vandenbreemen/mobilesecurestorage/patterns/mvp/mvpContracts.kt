@@ -2,6 +2,7 @@ package com.vandenbreemen.mobilesecurestorage.patterns.mvp
 
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog
+import com.vandenbreemen.mobilesecurestorage.log.d
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
@@ -11,6 +12,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import java.io.File
 
 /*
 General contracts for anything implementing MVP pattern
@@ -31,11 +33,26 @@ interface View{
 }
 
 /**
+ * A view that knows how to resume the app when the user returns
+ */
+interface  Pausable {
+
+    fun pauseWithFileOpen(fileLocation: File)
+
+}
+
+/**
  * What every presenter should provide
  */
 interface PresenterContract {
     fun start()
     fun close()
+
+    /**
+     * Pause work.  This method will cause the program to resume when the user returns and enters their
+     * SFS password.  If the UI is not capable of pausing this method will simply close the presenter and exit.
+     */
+    fun pause()
     fun isClosed(): Boolean
 }
 
@@ -43,7 +60,15 @@ abstract class Presenter<out M : Model, out V : View>(private val model: M, priv
 
     private val disposal: CompositeDisposable = CompositeDisposable()
 
+    private var isPaused: Boolean = false
+
     override fun start() {
+
+        if(isPaused) {
+            SystemLog.get().d("Presenter", "Presenter is paused.  Will not attempt to start again.")
+            return
+        }
+
         model.init().subscribe(
                 {
                     view.onReadyToUse()
@@ -63,6 +88,24 @@ abstract class Presenter<out M : Model, out V : View>(private val model: M, priv
     override fun close() {
         model.close()
         disposal.dispose()
+    }
+
+    override fun pause() {
+
+        if(view is Pausable) {
+
+            val fileLocation = model.copyCredentials().fileLocation
+            view.pauseWithFileOpen(fileLocation)
+            isPaused = true
+
+            model.close()
+            disposal.dispose()
+
+            return
+        }
+
+        close()
+
     }
 
     override fun isClosed(): Boolean {
