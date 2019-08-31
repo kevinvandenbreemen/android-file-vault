@@ -139,31 +139,22 @@
 
     </androidx.cardview.widget.CardView>
 
-    <androidx.cardview.widget.CardView
+    <ImageView
         android:id="@+id/actionsButton"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        app:cardBackgroundColor="@color/green"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:src="@drawable/end_thumb"
+
+        app:layout_constraintBottom_toBottomOf="@+id/descriptionCard"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/descriptionCard"
-        app:layout_constraintTop_toBottomOf="@+id/titleCard"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toTopOf="@+id/descriptionCard">
 
-        <TextView
-
-            style="@style/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="ACTIONS"
-            android:textColor="@color/colorAccent" />
-
-    </androidx.cardview.widget.CardView>
+    </ImageView>
 
     <include
         android:id="@+id/overlay"
