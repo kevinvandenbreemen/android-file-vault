@@ -20,12 +20,17 @@ import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.android.view.EnterPasswordView
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Pausable
 import com.vandenbreemen.secretcamera.api.Project
 import com.vandenbreemen.secretcamera.di.injectProjectsActivithy
+import com.vandenbreemen.secretcamera.mvp.impl.projects.ProjectListModel
+import com.vandenbreemen.secretcamera.mvp.impl.projects.ProjectListPresenterImpl
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListPresenter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListRouter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListView
+import java.io.File
 import javax.inject.Inject
 
 class ProjectViewHolder(val projectView: ViewGroup): RecyclerView.ViewHolder(projectView)
@@ -63,7 +68,7 @@ class ProjectAdapter(private val dataSet: List<Project>, private val projectList
  *
  * @author kevin
  */
-class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter {
+class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter, Pausable {
 
     @Inject
     lateinit var presenter: ProjectListPresenter
@@ -104,8 +109,19 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter {
         super.onPause()
 
         findViewById<ViewGroup>(R.id.overlay).visibility = View.VISIBLE
-        presenter.close()
-        finish()
+        presenter.pause()
+    }
+
+    override fun pauseWithFileOpen(fileLocation: File) {
+        val overlay = findViewById<ViewGroup>(R.id.overlay)
+        overlay.visibility = VISIBLE
+        val enterPasswordView = overlay.findViewById<EnterPasswordView>(R.id.enter_password_view)
+        enterPasswordView.promptForPasswordOnResume(fileLocation, { sfsCredentials ->
+            presenter = ProjectListPresenterImpl(ProjectListModel(sfsCredentials), this, this)
+            overlay.visibility = GONE
+            presenter.start()
+        }, { finish() })
+
     }
 
     private fun onSubmitProjectDetails(dialog: View) {
@@ -116,7 +132,7 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter {
         presenter.addProject(newProject)
     }
 
-    fun showCreateProject() {
+    private fun showCreateProject() {
 
         val animation = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
         val dialog = findViewById<ViewGroup>(R.id.addProjectDialog)
