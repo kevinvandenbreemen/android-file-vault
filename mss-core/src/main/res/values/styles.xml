@@ -24,8 +24,8 @@
     <style name="SquareButton" parent="ButtonStyle"></style>
 
     <style name="ButtonCancel" parent="Base.Widget.AppCompat.Button.Colored">
-        <item name="android:colorAccent">@color/colorPrimary</item>
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:backgroundTint">@color/red</item>
+        <item name="android:textColor">@color/cardview_dark_background</item>
         <item name="colorControlHighlight">@color/colorAccent</item>
         <item name="android:colorButtonNormal">@color/colorPrimaryDark</item>
     </style>
