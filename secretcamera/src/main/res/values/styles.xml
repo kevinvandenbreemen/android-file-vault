@@ -18,4 +18,11 @@
         <item name="android:textSize">14pt</item>
     </style>
 
+    <style name="fab_add">
+        <item name="android:src">@android:drawable/ic_menu_add</item>
+        <item name="android:tint">@color/colorAccent</item>
+        <item name="android:backgroundTint">@color/cardview_dark_background</item>
+        <item name="android:scaleType">center</item>
+    </style>
+
 </resources>

@@ -27,12 +27,9 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:clickable="true"
-        android:backgroundTint="@color/cardview_dark_background"
-        android:scaleType="center"
-        android:src="@android:drawable/ic_menu_add"
+        style="@style/fab_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:tint="@color/colorAccent"
         app:borderWidth="2dp"
         android:onClick="onAddProject"
         app:fabSize="normal" />
