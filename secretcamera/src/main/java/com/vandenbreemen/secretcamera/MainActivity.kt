@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView, Pausa
 
         } ?: run {
             val frag = SFSNavFragment()
-            fragmentManager.beginTransaction().add(R.id.upperSection, frag).commit()
+            supportFragmentManager.beginTransaction().add(R.id.upperSection, frag).commit()
         }
     }
 
