@@ -26,6 +26,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"></LinearLayout>
 
+    <include
+        android:id="@+id/overlay"
+        layout="@layout/layout_logo_screen"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <LinearLayout
         android:id="@+id/mainSection"
         android:layout_width="0dp"
@@ -40,10 +46,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"></LinearLayout>
 
-    <include
-        android:id="@+id/overlay"
-        layout="@layout/layout_logo_screen"
-        tools:visibility="visible"
-        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

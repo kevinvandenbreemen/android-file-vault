@@ -3,6 +3,8 @@ package com.vandenbreemen.secretcamera
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
@@ -48,7 +50,7 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView, Pausa
         setContentView(R.layout.activity_main)
 
         intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)?.let { credentials ->
-            val mainSection = findViewById(R.id.mainSection) as ViewGroup
+            val mainSection = findViewById<ViewGroup>(R.id.mainSection)
             mainSection.addView(
                     layoutInflater.inflate(R.layout.main_screen_selections, mainSection, false))
 
@@ -87,9 +89,11 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView, Pausa
             val presenter = SFSMainMenuPresenterImpl(SFSMainMenuModel(sfsCredentials), this)
             this.mainMenuPresenter = presenter
             overlay.visibility = View.GONE
+            findViewById<ViewGroup>(R.id.mainSection).visibility = VISIBLE
             presenter.start()
         }, {finish()})
         overlay.visibility = View.VISIBLE
+        findViewById<ViewGroup>(R.id.mainSection).visibility = GONE
     }
 
     override fun onResume() {

@@ -56,7 +56,12 @@ class EnterPasswordView(context: Context?, attrs: AttributeSet?) : RelativeLayou
     override fun display(error: ApplicationError) {
         val errorTextView = findViewById<TextView>(R.id.errorMessage)
         errorTextView.text = error.localizedMessage
+
+        errorTextView.alpha = 0.0f
         errorTextView.visibility = View.VISIBLE
+        errorTextView.animate().alpha(1.0f).setDuration(200).start()
+
+
     }
 
 }
