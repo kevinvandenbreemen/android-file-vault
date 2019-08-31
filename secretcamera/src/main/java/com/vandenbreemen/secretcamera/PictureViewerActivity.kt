@@ -137,7 +137,10 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter, 
             overlay.visibility = GONE
             findViewById<SubsamplingScaleImageView>(R.id.currentImage).visibility = VISIBLE
             presenter.start()
-        }, { finish() })
+        }, {
+            finish()
+            startActivity(Intent(this, MainActivity::class.java))
+        })
 
         findViewById<SubsamplingScaleImageView>(R.id.currentImage).recycle()
     }

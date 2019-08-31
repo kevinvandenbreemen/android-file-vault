@@ -120,7 +120,10 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter, Pausabl
             presenter = ProjectListPresenterImpl(ProjectListModel(sfsCredentials), this, this)
             overlay.visibility = GONE
             presenter.start()
-        }, { finish() })
+        }, {
+            finish()
+            startActivity(Intent(this, MainActivity::class.java))
+        })
 
     }
 

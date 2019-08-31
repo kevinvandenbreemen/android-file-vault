@@ -91,7 +91,10 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView, Pausa
             overlay.visibility = View.GONE
             findViewById<ViewGroup>(R.id.mainSection).visibility = VISIBLE
             presenter.start()
-        }, {finish()})
+        }, {
+            finish()
+            startActivity(Intent(this, MainActivity::class.java))
+        })
         overlay.visibility = View.VISIBLE
         findViewById<ViewGroup>(R.id.mainSection).visibility = GONE
     }
