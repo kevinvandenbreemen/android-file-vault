@@ -11,7 +11,6 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.*
-import android.widget.LinearLayout.HORIZONTAL
 import android.widget.Toast.LENGTH_SHORT
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,10 +25,7 @@ import com.vandenbreemen.secretcamera.mvp.gallery.*
 import java.io.File
 import javax.inject.Inject
 
-class ThumbnailViewHolder(val view: ViewGroup) : RecyclerView.ViewHolder(view) {
-
-
-}
+class ThumbnailViewHolder(val view: ViewGroup) : RecyclerView.ViewHolder(view)
 
 class ThumbnailAdapter(private val fileNames: List<String>,
                        private val presenter: PictureViewerPresenter
@@ -50,7 +46,7 @@ class ThumbnailAdapter(private val fileNames: List<String>,
 
         presenter.thumbnail(fileNames[position]).subscribe ({ bitmap ->
             val imageView = holder.view.findViewById<ImageView>(R.id.preview)
-            imageView.setOnClickListener(View.OnClickListener { view -> presenter.selectImageToDisplay(fileNames[position]) })
+            imageView.setOnClickListener { presenter.selectImageToDisplay(fileNames[position]) }
             imageView.visibility = VISIBLE
             imageView.setImageBitmap(bitmap)
 
@@ -61,10 +57,10 @@ class ThumbnailAdapter(private val fileNames: List<String>,
                 checkbox.isChecked = presenter.selected(fileNames[position])
                 checkbox.setOnClickListener { v -> presenter.selectImage(fileNames[position]) }
             } else {   //  Allow turning on multiselect
-                imageView.setOnLongClickListener({ v ->
+                imageView.setOnLongClickListener {
                     presenter.toggleSelectImages()
                     true
-                })
+                }
             }
 
 
@@ -98,22 +94,22 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter, 
         setContentView(R.layout.activity_picture_viewer)
 
         val layoutManager = LinearLayoutManager(this)
-        layoutManager.orientation = HORIZONTAL
+        layoutManager.orientation = RecyclerView.HORIZONTAL
         val recyclerView = findViewById<RecyclerView>(R.id.pictureSelector)
         recyclerView.layoutManager = layoutManager
         recyclerView.visibility = GONE
 
         //  Set up the actions
-        findViewById<ViewGroup>(R.id.pictureViewerActions).findViewById<Button>(R.id.cancel).setOnClickListener { v ->
+        findViewById<ViewGroup>(R.id.pictureViewerActions).findViewById<Button>(R.id.cancel).setOnClickListener {
             presenter.toggleSelectImages()
         }
-        findViewById<ViewGroup>(R.id.pictureViewerActions).findViewById<Button>(R.id.delete).setOnClickListener { v ->
+        findViewById<ViewGroup>(R.id.pictureViewerActions).findViewById<Button>(R.id.delete).setOnClickListener {
             presenter.deleteSelected()
         }
 
         //  Actions button was here.  Need to re-create it sometime
 
-        findViewById<Button>(R.id.deleteAllImages).setOnClickListener { v ->
+        findViewById<Button>(R.id.deleteAllImages).setOnClickListener {
             presenter.deleteAllImages()
         }
 
@@ -126,7 +122,7 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter, 
 
     override fun onPause() {
         super.onPause()
-        findViewById<ViewGroup>(R.id.overlay).visibility = View.VISIBLE
+        findViewById<ViewGroup>(R.id.overlay).visibility = VISIBLE
         presenter.pause()
     }
 
@@ -147,7 +143,7 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter, 
     }
 
     override fun onReadyToUse() {
-        findViewById<ViewGroup>(R.id.overlay).visibility = View.GONE
+        findViewById<ViewGroup>(R.id.overlay).visibility = GONE
         presenter.displayCurrentImage()
     }
 
@@ -175,7 +171,7 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter, 
     }
 
     override fun showImageSelector(files: List<String>) {
-        presenter.currentImageFileName().subscribe({ currentImageFilename ->
+        presenter.currentImageFileName().subscribe { currentImageFilename ->
             val recyclerView = findViewById<RecyclerView>(R.id.pictureSelector)
             val adapter = ThumbnailAdapter(files, presenter)
             this.adapter = adapter
@@ -184,7 +180,7 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter, 
             recyclerView.layoutManager?.scrollToPosition(files.indexOf(currentImageFilename))
             (recyclerView.adapter as ThumbnailAdapter).notifyDataSetChanged()
             recyclerView.visibility = VISIBLE
-        })
+        }
 
 
     }
