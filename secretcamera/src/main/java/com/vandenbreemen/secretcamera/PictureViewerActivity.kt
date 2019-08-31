@@ -18,11 +18,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.android.view.EnterPasswordView
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Pausable
 import com.vandenbreemen.secretcamera.di.injectPictureViewer
-import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewRouter
-import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewerPresenter
-import com.vandenbreemen.secretcamera.mvp.gallery.PictureViewerView
+import com.vandenbreemen.secretcamera.mvp.gallery.*
+import java.io.File
 import javax.inject.Inject
 
 class ThumbnailViewHolder(val view: ViewGroup) : RecyclerView.ViewHolder(view) {
@@ -76,7 +77,7 @@ class ThumbnailAdapter(private val fileNames: List<String>,
 
 }
 
-class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter {
+class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter, Pausable {
 
 
     @Inject
@@ -126,8 +127,23 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter {
     override fun onPause() {
         super.onPause()
         findViewById<ViewGroup>(R.id.overlay).visibility = View.VISIBLE
-        presenter.close()
-        finish()
+        presenter.pause()
+    }
+
+    override fun pauseWithFileOpen(fileLocation: File) {
+
+        findViewById<SubsamplingScaleImageView>(R.id.currentImage).visibility = GONE
+        hideImageSelector()
+        val overlay = findViewById<ViewGroup>(R.id.overlay)
+        val enterPasswordView = overlay.findViewById<EnterPasswordView>(R.id.enter_password_view)
+        enterPasswordView.promptForPasswordOnResume(fileLocation, { sfsCredentials ->
+            presenter = PictureViewerPresenterImpl(PictureViewerModel(sfsCredentials), this, this)
+            overlay.visibility = GONE
+            findViewById<SubsamplingScaleImageView>(R.id.currentImage).visibility = VISIBLE
+            presenter.start()
+        }, { finish() })
+
+        findViewById<SubsamplingScaleImageView>(R.id.currentImage).recycle()
     }
 
     override fun onReadyToUse() {
