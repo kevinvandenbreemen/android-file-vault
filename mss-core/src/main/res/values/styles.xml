@@ -37,8 +37,8 @@
     </style>
 
     <style name="item_select">
-        <item name="android:textSize">12pt</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textSize">10pt</item>
+        <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
     <style name="fileselect_title">
@@ -47,8 +47,11 @@
     </style>
 
     <style name="text_input" parent="Base.Widget.AppCompat.EditText">
-        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textSize">12pt</item>
+        <item name="android:textColorHint">@color/cardview_light_background</item>
+        <item name="android:textColor">@color/colorAccent</item>
         <item name="android:colorActivatedHighlight">@color/colorPrimary</item>
+        <item name="android:backgroundTint">@color/cardview_light_background</item>
     </style>
 
     <style name="error" >

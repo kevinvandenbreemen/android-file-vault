@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_card"
+    android:background="@color/cardview_dark_background"
     tools:context="com.vandenbreemen.mobilesecurestorage.android.LoadSecureFileSystem">
 
     <EditText
         android:id="@+id/password"
+        style="@style/text_input"
         android:textCursorDrawable="@null"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
