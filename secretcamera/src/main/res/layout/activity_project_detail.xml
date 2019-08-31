@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent">
+    android:background="@color/black_background">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/titleCard"
@@ -29,14 +29,6 @@
             tools:text="Project Name" />
 
     </androidx.cardview.widget.CardView>
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:orientation="horizontal">
-
-    </LinearLayout>
 
 
 
@@ -92,6 +84,7 @@
         android:layout_height="100dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        app:cardBackgroundColor="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/actionsButton"
         app:layout_constraintHorizontal_bias="0.5"
@@ -109,7 +102,7 @@
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:onClick="onReturnToMain"
-                android:theme="@style/ButtonCancel"
+                android:theme="@style/ButtonAction"
                 app:layout_constraintBottom_toBottomOf="@+id/projectDescription"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
