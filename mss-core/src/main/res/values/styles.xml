@@ -52,7 +52,7 @@
     </style>
 
     <style name="text_input" parent="Base.Widget.AppCompat.EditText">
-        <item name="android:textSize">12pt</item>
+        <item name="android:textSize">10pt</item>
         <item name="android:textColorHint">@color/cardview_light_background</item>
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:colorActivatedHighlight">@color/colorPrimary</item>

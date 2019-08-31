@@ -5,7 +5,7 @@
     android:id="@+id/projectDetails"
     android:layout_width="match_parent"
     android:layout_height="400dp"
-    android:background="@color/cardview_dark_background"
+    android:background="@color/colorPrimaryDark"
     android:maxHeight="400dp"
     android:minHeight="400dp"
     android:orientation="vertical">
@@ -16,6 +16,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        app:cardBackgroundColor="@color/cardview_dark_background"
         app:layout_constraintBottom_toTopOf="@+id/topGuideLine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +34,7 @@
             android:hint="@string/specify_project_details"
             android:inputType="text"
             android:text=""
-            android:textColor="@color/cardview_dark_background"
+            style="@style/text_input"
             tools:text="@string/lorem_ipsum" />
 
     </androidx.cardview.widget.CardView>
@@ -68,7 +69,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:elevation="10dp"
-        app:cardBackgroundColor="@color/cardview_light_background"
+        app:cardBackgroundColor="@color/cardview_dark_background"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -82,11 +83,9 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:gravity="start|top"
+            style="@style/text_area"
             android:hint="@string/specify_project_details"
-            android:inputType="textMultiLine"
             android:text=""
-            android:textColor="@color/cardview_dark_background"
             tools:text="@string/lorem_ipsum" />
 
     </androidx.cardview.widget.CardView>

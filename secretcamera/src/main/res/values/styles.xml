@@ -25,4 +25,14 @@
         <item name="android:scaleType">center</item>
     </style>
 
+    <style name="text_area">
+        <item name="android:gravity">start|top</item>
+        <item name="android:inputType">textMultiLine</item>
+        <item name="android:textSize">10pt</item>
+        <item name="android:textColorHint">@color/cardview_light_background</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:colorActivatedHighlight">@color/colorPrimary</item>
+        <item name="android:backgroundTint">@color/cardview_light_background</item>
+    </style>
+
 </resources>
