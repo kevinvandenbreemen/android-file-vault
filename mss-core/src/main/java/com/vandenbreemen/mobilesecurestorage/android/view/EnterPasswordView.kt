@@ -44,13 +44,17 @@ class EnterPasswordView(context: Context?, attrs: AttributeSet?) : RelativeLayou
 
         }
 
-        findViewById<Button>(R.id.cancel).setOnClickListener { v->onCancel() }
+        findViewById<Button>(R.id.cancel).setOnClickListener { v ->
+            findViewById<EditText>(R.id.password).setText("")
+            onCancel()
+        }
 
         visibility = View.VISIBLE
     }
 
     override fun onLoadSuccess(credentials: SFSCredentials) {
-        successFullyEnteredPassword(credentials)
+        findViewById<EditText>(R.id.password).setText("")
+        successFullyEnteredPassword(credentials.copy())
     }
 
     override fun display(error: ApplicationError) {
