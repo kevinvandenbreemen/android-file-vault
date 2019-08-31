@@ -6,7 +6,6 @@ import com.vandenbreemen.mobilesecurestorage.security.BytesToBits;
 import com.vandenbreemen.mobilesecurestorage.security.SecureString;
 
 import org.spongycastle.crypto.engines.AESEngine;
-import org.spongycastle.crypto.engines.AESFastEngine;
 import org.spongycastle.crypto.modes.CBCBlockCipher;
 import org.spongycastle.crypto.paddings.PaddedBufferedBlockCipher;
 import org.spongycastle.crypto.params.KeyParameter;
@@ -42,7 +41,7 @@ public class AESEncryptionService implements EncryptionService, ObjectEncryptor 
         keyBuckets.add(new SecureString(key));
 
         try {
-            PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESFastEngine()));
+            PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESEngine()));
 
             byte[] ivBytes = new byte[16];
 
@@ -121,19 +120,12 @@ public class AESEncryptionService implements EncryptionService, ObjectEncryptor 
         return doEncryption(password.getBytes(), plaintext);
     }
 
-
-    /* (non-Javadoc)
-     * @see com.vandenbreemen.android.common.security.crypto.IObjectEncryptor#encryptObject(com.vandenbreemen.android.common.security.crypto.SecureString, java.io.Serializable)
-     */
     @Override
     public final byte[] encryptObject(SecureString password, Serializable object) {
         byte[] serialized = Serialization.toBytes(object);
         return encrypt(serialized, password);
     }
 
-    /* (non-Javadoc)
-     * @see com.vandenbreemen.android.common.security.crypto.IObjectEncryptor#decryptObject(byte[], com.vandenbreemen.android.common.security.crypto.SecureString)
-     */
     @Override
     public final Object decryptObject(byte[] ciphertext, SecureString password) {
         byte[] plaintext = decrypt(ciphertext, password);

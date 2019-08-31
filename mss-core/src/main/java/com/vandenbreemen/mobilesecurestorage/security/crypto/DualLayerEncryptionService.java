@@ -90,19 +90,12 @@ public class DualLayerEncryptionService implements EncryptionService, ObjectEncr
         return "Balance between security and performance";
     }
 
-
-    /* (non-Javadoc)
-     * @see com.vandenbreemen.android.common.security.crypto.IObjectEncryptor#encryptObject(com.vandenbreemen.android.common.security.crypto.SecureString, java.io.Serializable)
-     */
     @Override
     public final byte[] encryptObject(SecureString password, Serializable object) {
         byte[] serialized = Serialization.toBytes(object);
         return encrypt(serialized, password);
     }
 
-    /* (non-Javadoc)
-     * @see com.vandenbreemen.android.common.security.crypto.IObjectEncryptor#decryptObject(byte[], com.vandenbreemen.android.common.security.crypto.SecureString)
-     */
     @Override
     public final Object decryptObject(byte[] ciphertext, SecureString password) {
         byte[] plaintext = decrypt(ciphertext, password);

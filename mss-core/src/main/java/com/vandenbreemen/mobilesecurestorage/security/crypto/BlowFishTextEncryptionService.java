@@ -2,7 +2,6 @@ package com.vandenbreemen.mobilesecurestorage.security.crypto;
 
 import com.vandenbreemen.mobilesecurestorage.data.Serialization;
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
-import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime;
 import com.vandenbreemen.mobilesecurestorage.security.BytesToBits;
 import com.vandenbreemen.mobilesecurestorage.security.SecureString;
 
@@ -95,17 +94,6 @@ public class BlowFishTextEncryptionService implements EncryptionService, ObjectE
         return new byte[0];
     }
 
-    /**
-     * True by default, allows you to turn off randomized IV.  This is dangerous as it makes decryption
-     * easier.
-     *
-     * @param randomize
-     * @return
-     */
-    public BlowFishTextEncryptionService randomizeIV(boolean randomize) {
-        throw new MSSRuntime("Blowfish cipher does not support non-random IVs");
-    }
-
     @Override
     public String getName() {
         return "Twofish";
@@ -122,18 +110,12 @@ public class BlowFishTextEncryptionService implements EncryptionService, ObjectE
     }
 
 
-    /* (non-Javadoc)
-     * @see com.vandenbreemen.android.common.security.crypto.IObjectEncryptor#encryptObject(com.vandenbreemen.android.common.security.crypto.SecureString, java.io.Serializable)
-     */
     @Override
     public final byte[] encryptObject(SecureString password, Serializable object) {
         byte[] serialized = Serialization.toBytes(object);
         return encrypt(serialized, password);
     }
 
-    /* (non-Javadoc)
-     * @see com.vandenbreemen.android.common.security.crypto.IObjectEncryptor#decryptObject(byte[], com.vandenbreemen.android.common.security.crypto.SecureString)
-     */
     @Override
     public final Object decryptObject(byte[] ciphertext, SecureString password) {
         byte[] plaintext = decrypt(ciphertext, password);
