@@ -60,7 +60,7 @@
 
     <TextView
         android:id="@+id/textView"
-        style="@style/fileselect_title"
+        style="@style/section_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="128dp"

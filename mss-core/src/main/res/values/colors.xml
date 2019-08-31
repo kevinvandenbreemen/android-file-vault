@@ -7,4 +7,5 @@
     <color name="light_card">#FFFDFC</color>
     <color name="green">#26a69a</color>
     <color name="red">#FD8C8C</color>
+    <color name="black_background">#FF353535</color>
 </resources>

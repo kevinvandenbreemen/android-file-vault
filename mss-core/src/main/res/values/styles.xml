@@ -10,8 +10,8 @@
 
     <style name="ButtonStyle" parent="Base.Widget.AppCompat.Button.Colored">
         <item name="android:textColor">@color/colorAccent</item>
-        <item name="colorControlHighlight">@color/colorPrimary</item>
-        <item name="android:colorButtonNormal">@color/colorPrimaryDark</item>
+        <item name="colorControlHighlight">@color/colorPrimaryDark</item>
+        <item name="android:colorButtonNormal">@color/cardview_dark_background</item>
 
     </style>
 
@@ -21,7 +21,11 @@
         <item name="android:colorButtonNormal">@color/light_card</item>
     </style>
 
-    <style name="SquareButton" parent="ButtonStyle"></style>
+    <style name="SquareButton" parent="ButtonStyle">
+        <item name="android:colorButtonNormal">@color/cardview_dark_background</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:backgroundTint">@color/cardview_dark_background</item>
+    </style>
 
     <style name="ButtonCancel" parent="Base.Widget.AppCompat.Button.Colored">
         <item name="android:backgroundTint">@color/red</item>
@@ -42,8 +46,8 @@
         <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
-    <style name="fileselect_title">
-        <item name="android:textSize">16dp</item>
+    <style name="section_title">
+        <item name="android:textSize">10pt</item>
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 

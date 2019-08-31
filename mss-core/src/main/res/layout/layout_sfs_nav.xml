@@ -12,7 +12,7 @@
     android:maxHeight="300dp"
     android:paddingEnd="50dp"
     android:paddingStart="50dp"
-    app:cardBackgroundColor="@color/colorPrimary"
+    app:cardBackgroundColor="@color/colorPrimaryDark"
     app:cardElevation="@dimen/card_elevation">
 
 
@@ -25,11 +25,10 @@
         android:paddingStart="50dp">
 
         <TextView
-            style="@style/fileselect_title"
+            style="@style/section_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/actions"
-            android:textColor="@color/colorPrimaryDark" />
+            android:text="@string/actions" />
 
         <Button
             android:id="@+id/loadExisting"
