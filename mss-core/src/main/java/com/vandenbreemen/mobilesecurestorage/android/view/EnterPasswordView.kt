@@ -3,7 +3,6 @@ package com.vandenbreemen.mobilesecurestorage.android.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.RelativeLayout
@@ -40,20 +39,22 @@ class EnterPasswordView(context: Context?, attrs: AttributeSet?) : RelativeLayou
             controller.providePassword(passwordView.text.toString())
 
             val errorTextView = findViewById<TextView>(R.id.errorMessage)
-            errorTextView.visibility = View.GONE
+            errorTextView.visibility = GONE
 
         }
 
         findViewById<Button>(R.id.cancel).setOnClickListener { v ->
             findViewById<EditText>(R.id.password).setText("")
+            visibility = GONE
             onCancel()
         }
 
-        visibility = View.VISIBLE
+        visibility = VISIBLE
     }
 
     override fun onLoadSuccess(credentials: SFSCredentials) {
         findViewById<EditText>(R.id.password).setText("")
+        visibility = GONE
         successFullyEnteredPassword(credentials.copy())
     }
 
@@ -62,7 +63,7 @@ class EnterPasswordView(context: Context?, attrs: AttributeSet?) : RelativeLayou
         errorTextView.text = error.localizedMessage
 
         errorTextView.alpha = 0.0f
-        errorTextView.visibility = View.VISIBLE
+        errorTextView.visibility = VISIBLE
         errorTextView.animate().alpha(1.0f).setDuration(200).start()
 
 
