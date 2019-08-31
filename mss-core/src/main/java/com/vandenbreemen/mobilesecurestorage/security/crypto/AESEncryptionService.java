@@ -5,6 +5,7 @@ import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
 import com.vandenbreemen.mobilesecurestorage.security.BytesToBits;
 import com.vandenbreemen.mobilesecurestorage.security.SecureString;
 
+import org.spongycastle.crypto.engines.AESEngine;
 import org.spongycastle.crypto.engines.AESFastEngine;
 import org.spongycastle.crypto.modes.CBCBlockCipher;
 import org.spongycastle.crypto.paddings.PaddedBufferedBlockCipher;
@@ -82,7 +83,7 @@ public class AESEncryptionService implements EncryptionService, ObjectEncryptor 
         keyBuckets.add(new SecureString(key));
 
         try {
-            PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESFastEngine()));
+            PaddedBufferedBlockCipher cipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESEngine()));
             byte[] ivBytes = new byte[16];
             System.arraycopy(encrypted, 0, ivBytes, 0, ivBytes.length); // Get iv from data
             byte[] dataonly = new byte[encrypted.length - ivBytes.length];
