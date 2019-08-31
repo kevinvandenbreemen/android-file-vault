@@ -5,7 +5,7 @@
     android:id="@+id/pictureViewer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/cardview_dark_background"
+    android:background="@color/black_background"
     tools:context=".PictureViewerActivity">
 
     <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
