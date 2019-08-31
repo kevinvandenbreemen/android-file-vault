@@ -34,6 +34,7 @@
         <item name="android:textColor">@color/colorAccent</item>
         <item name="colorControlHighlight">@color/colorAccent</item>
         <item name="android:colorButtonNormal">@color/green</item>
+        <item name="android:textFontWeight">700</item>
     </style>
 
     <style name="item_select">
