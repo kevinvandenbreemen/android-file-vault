@@ -114,6 +114,7 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter, Pausabl
 
     override fun pauseWithFileOpen(fileLocation: File) {
         val overlay = findViewById<ViewGroup>(R.id.overlay)
+        showProjects(emptyList())
         overlay.visibility = VISIBLE
         val enterPasswordView = overlay.findViewById<EnterPasswordView>(R.id.enter_password_view)
         enterPasswordView.promptForPasswordOnResume(fileLocation, { sfsCredentials ->
