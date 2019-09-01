@@ -95,7 +95,15 @@ abstract class Presenter<out M : Model, out V : View>(private val model: M, priv
         if (view is Pausable && !model.isClosed()) {
 
             val fileLocation = model.copyCredentials().fileLocation
-            view.pauseWithFileOpen(fileLocation)
+
+            try {
+                view.pauseWithFileOpen(fileLocation)
+            } catch (exception: Exception) {
+                close() //  If pause fails then close
+                SystemLog.get().error(javaClass.simpleName, "Failed to pause SFS", exception)
+                return
+            }
+
             isPaused = true
 
             model.close()
