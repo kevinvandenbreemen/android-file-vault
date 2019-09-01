@@ -4,8 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/vault_closed"
     android:elevation="50dp">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_background"
+        android:clickable="false"
+        android:scaleType="center"
+        android:src="@drawable/vault_closed" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:background="@color/cardview_shadow_start_color"
