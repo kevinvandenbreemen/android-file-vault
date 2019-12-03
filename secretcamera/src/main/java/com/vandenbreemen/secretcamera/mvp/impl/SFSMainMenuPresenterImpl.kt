@@ -1,5 +1,6 @@
 package com.vandenbreemen.secretcamera.mvp.impl
 
+import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Presenter
 import com.vandenbreemen.secretcamera.mvp.SFSMenuContract
 
@@ -35,7 +36,12 @@ class SFSMainMenuPresenterImpl(val model:SFSMainMenuModel, val mainMenuView: SFS
     }
 
     override fun takePicture() {
-        mainMenuView.gotoTakePicture(model.copyCredentials())
+        mainMenuView.showError(ApplicationError("Currently not Supported"))
+        return
+
+        //  At the moment Camera Kit is having difficulty with race conditions.  Taking pictures is currently not the
+        //  core purpose of this app...
+        //mainMenuView.gotoTakePicture(model.copyCredentials())
     }
 
     override fun openGallery() {
