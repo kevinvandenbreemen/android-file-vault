@@ -1,6 +1,8 @@
 package com.vandenbreemen.secretcamera
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,8 +11,6 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -73,6 +73,8 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter, Pausabl
     @Inject
     lateinit var presenter: ProjectListPresenter
 
+    val dialogs = mutableListOf<Dialog>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         injectProjectsActivithy(this)
         super.onCreate(savedInstanceState)
@@ -91,6 +93,14 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter, Pausabl
         }
     }
 
+    private fun dismissAllDialogs() {
+        dialogs.forEach { dialog ->
+            dialog.dismiss()
+        }
+
+        dialogs.clear()
+    }
+
     override fun gotoProjectDetails(projectName: String, credentials: SFSCredentials) {
         val intent = Intent(this, ProjectDetailsActivity::class.java)
         intent.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
@@ -107,6 +117,8 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter, Pausabl
 
     override fun onPause() {
         super.onPause()
+
+        dismissAllDialogs()
 
         findViewById<ViewGroup>(R.id.overlay).visibility = View.VISIBLE
         presenter.pause()
@@ -128,34 +140,31 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter, Pausabl
 
     }
 
-    private fun onSubmitProjectDetails(dialog: View) {
-        val projectName = dialog.findViewById<EditText>(R.id.projectName)
-        val projectDescription = dialog.findViewById<EditText>(R.id.projectDescription)
-
-        val newProject = Project(projectName.text.toString(), projectDescription.text.toString())
-        presenter.addProject(newProject)
-    }
-
     private fun showCreateProject() {
 
-        val animation = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
-        val dialog = findViewById<ViewGroup>(R.id.addProjectDialog)
+        val builder = AlertDialog.Builder(this)
 
-        dialog.findViewById<EditText>(R.id.projectName).text.clear()
-        dialog.findViewById<EditText>(R.id.projectDescription).text.clear()
+        val projectDetailsView = layoutInflater.inflate(R.layout.layout_edit_project_details, null)
 
-        val okButton = dialog.findViewById<Button>(R.id.ok)
-        okButton.setOnClickListener { v ->
-            onSubmitProjectDetails(dialog)
+        projectDetailsView.findViewById<Button>(R.id.ok).setOnClickListener { v ->
+
+            val project = Project(projectDetailsView.findViewById<EditText>(R.id.projectNameForEdit).text.toString(),
+                    projectDetailsView.findViewById<EditText>(R.id.projectDescriptionForEdit).text.toString()
+            )
+
+            presenter.addProject(project)
         }
 
-        dialog.findViewById<Button>(R.id.cancel).setOnClickListener { v ->
-            hideCreateProject()
+        builder.setView(projectDetailsView)
+
+        val view: Dialog = builder.create()
+        dialogs.add(view)
+
+        projectDetailsView.findViewById<Button>(R.id.cancel).setOnClickListener { v ->
+            view.dismiss()
         }
 
-        dialog.visibility = VISIBLE
-        dialog.startAnimation(animation)
-
+        view.show()
     }
 
     fun onAddProject(view: View) {
@@ -170,27 +179,11 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter, Pausabl
     }
 
     private fun hideCreateProject() {
-        val dialog = findViewById<ViewGroup>(R.id.addProjectDialog)
-        if(dialog.visibility == GONE){
-            return
+
+        runOnUiThread {
+            dismissAllDialogs()
         }
 
-        val animation = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out)
-        animation.setAnimationListener(object : Animation.AnimationListener{
-            override fun onAnimationRepeat(animation: Animation?) {
-
-            }
-
-            override fun onAnimationEnd(animation: Animation?) {
-                dialog.visibility = GONE
-            }
-
-            override fun onAnimationStart(animation: Animation?) {
-
-            }
-        })
-
-        dialog.startAnimation(animation)
     }
 
     override fun onReadyToUse() {
