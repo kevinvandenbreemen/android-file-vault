@@ -109,4 +109,19 @@ class SecureFileSystemInteractorTest {
 
     }
 
+    @Test
+    fun `Generate info on a File in the SFS`() {
+
+        //  Arrange
+        sut.importToFile(getFileImporter().loadFile(TestConstants.TEST_RES_IMG_1), "1.jpg", null)
+
+        //  Act
+        val info = sut.info("1.jpg")
+
+        //  Assert
+        //assertNotNull(info, "System should have retrieved info")
+        assertEquals("1.jpg", info.fileName)
+        assertTrue(info.size > 0)
+    }
+
 }

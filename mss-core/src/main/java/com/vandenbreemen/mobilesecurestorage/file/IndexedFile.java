@@ -184,6 +184,10 @@ public class IndexedFile {
         //  To be executed by sub-types with security data
     }
 
+    public int size(String fileName) {
+        return fat._unitsAllocated(fileName).size();
+    }
+
     /**
      * Gets the maximum size (in bytes) of a single unit that can be stored to this file
      *

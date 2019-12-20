@@ -1,6 +1,5 @@
 package com.vandenbreemen.mobilesecurestorage.file.api
 
-import com.vandenbreemen.mobilesecurestorage.file.FileMeta
 import com.vandenbreemen.mobilesecurestorage.file.ImportedFileData
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog
 import com.vandenbreemen.mobilesecurestorage.log.e
@@ -25,6 +24,7 @@ interface SecureFileSystemInteractor {
     fun delete(fileName: String)
     fun delete(fileNames: List<String>)
     fun rename(originalName: String, newName: String)
+    fun info(fileName: String): FileInfo
 
 }
 
@@ -66,6 +66,10 @@ private class SecureFileSystemInteractorImpl(private val secureFileSystem: Secur
 
     override fun delete(fileNames: List<String>) {
         this.secureFileSystem.deleteFiles(*fileNames.toTypedArray())
+    }
+
+    override fun info(fileName: String): FileInfo {
+        return FileInfo(fileName, secureFileSystem.size(fileName))
     }
 }
 
