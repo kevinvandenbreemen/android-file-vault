@@ -3,6 +3,7 @@ package com.vandenbreemen.secretcamera.mvp.gallery
 import android.graphics.Bitmap
 import android.util.Log
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.file.api.FileInfo
 import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Presenter
@@ -63,6 +64,7 @@ interface PictureViewerView : View {
     fun hideLoadingSpinner()
     fun showPictureViewerActions()
     fun hidePictureViewerActions()
+    fun displayFileInfo(fileInfo: FileInfo)
 }
 
 interface PictureViewRouter {
@@ -87,6 +89,7 @@ interface PictureViewerPresenter : PresenterContract {
     fun selected(filename: String): Boolean
     fun onSelectPictureViewerActions()
     fun deleteAllImages()
+    fun showCurrentFileInfo()
 }
 
 class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: PictureViewerView, val router: PictureViewRouter) : Presenter<PictureViewerModel, PictureViewerView>(model, view), PictureViewerPresenter {
@@ -234,5 +237,12 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
                     router.navigateBack(model.copyCredentials())
                 }
         )
+    }
+
+    override fun showCurrentFileInfo() {
+        addForDisposal(model.currentFile().subscribe { fileName ->
+            val info = model.getFileInfo(fileName)
+            view.displayFileInfo(info)
+        })
     }
 }

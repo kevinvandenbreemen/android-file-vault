@@ -2,6 +2,7 @@ package com.vandenbreemen.secretcamera.mvp.gallery
 
 import android.graphics.Bitmap
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.file.api.FileInfo
 import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
 import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractor
 import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
@@ -121,6 +122,10 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
             saveGallerySettings(gallerySettings)
             emitter.onSuccess(gallerySettings.currentFile)
         }).subscribeOn(computation()).observeOn(mainThread())
+    }
+
+    fun getFileInfo(fileName: String): FileInfo {
+        return secureFileSystemInteractor.info(fileName)
     }
 
     fun nextFile(): Single<String> {

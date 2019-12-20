@@ -1,6 +1,8 @@
 package com.vandenbreemen.secretcamera
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -18,10 +20,12 @@ import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.android.view.EnterPasswordView
+import com.vandenbreemen.mobilesecurestorage.file.api.FileInfo
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Pausable
 import com.vandenbreemen.secretcamera.di.injectPictureViewer
 import com.vandenbreemen.secretcamera.mvp.gallery.*
+import kotlinx.android.synthetic.main.file_info_dialog.view.*
 import java.io.File
 import javax.inject.Inject
 
@@ -81,6 +85,8 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter, 
 
     private var adapter: ThumbnailAdapter? = null
 
+    val dialogs = mutableListOf<Dialog>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         injectPictureViewer(this)
         super.onCreate(savedInstanceState)
@@ -113,6 +119,12 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter, 
             presenter.deleteAllImages()
         }
 
+        //  Set up long-press
+        findViewById<SubsamplingScaleImageView>(R.id.currentImage).setOnLongClickListener { view ->
+            presenter.showCurrentFileInfo()
+            true
+        }
+
     }
 
     override fun onResume() {
@@ -120,11 +132,21 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter, 
         presenter.start()
     }
 
+    private fun dismissAllDialogs() {
+        dialogs.forEach { dialog ->
+            dialog.dismiss()
+        }
+
+        dialogs.clear()
+    }
+
+
     override fun onPause() {
         super.onPause()
 
         //  Force current image to be dropped
         findViewById<SubsamplingScaleImageView>(R.id.currentImage).setImage(ImageSource.resource(R.drawable.logo))
+        dismissAllDialogs()
 
         //  Proceed with standard cleanup etc.
         findViewById<ViewGroup>(R.id.overlay).visibility = VISIBLE
@@ -159,6 +181,22 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter, 
         runOnUiThread {
             Toast.makeText(this, error.localizedMessage, LENGTH_SHORT).show()
         }
+    }
+
+    override fun displayFileInfo(fileInfo: FileInfo) {
+
+        val builder = AlertDialog.Builder(this)
+        val detailView = layoutInflater.inflate(R.layout.file_info_dialog, null)
+        detailView.fileName.text = fileInfo.fileName
+        detailView.fileSize.text = fileInfo.size.toString()
+
+        builder.setView(detailView)
+
+        val view: Dialog = builder.create()
+        dialogs.add(view)
+        view.show()
+
+
     }
 
     override fun displayImage(imageToDisplay: Bitmap) {

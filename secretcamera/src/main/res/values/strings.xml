@@ -27,4 +27,6 @@
     <string name="task_description">Details</string>
     <string name="specify_task_details">Enter details on the task</string>
     <string name="specify_project_details">Enter project details/description</string>
+    <string name="detail_file_name">Filename</string>
+    <string name="detail_file_size">Size (chunks)</string>
 </resources>
