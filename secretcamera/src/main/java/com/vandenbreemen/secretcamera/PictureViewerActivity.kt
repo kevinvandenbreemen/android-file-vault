@@ -122,6 +122,11 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter, 
 
     override fun onPause() {
         super.onPause()
+
+        //  Force current image to be dropped
+        findViewById<SubsamplingScaleImageView>(R.id.currentImage).setImage(ImageSource.resource(R.drawable.logo))
+
+        //  Proceed with standard cleanup etc.
         findViewById<ViewGroup>(R.id.overlay).visibility = VISIBLE
         presenter.pause()
     }
