@@ -25,6 +25,7 @@ import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Pausable
 import com.vandenbreemen.secretcamera.di.injectPictureViewer
 import com.vandenbreemen.secretcamera.fragment.ThumbnailsFragment
 import com.vandenbreemen.secretcamera.mvp.gallery.*
+import kotlinx.android.synthetic.main.activity_picture_viewer.*
 import kotlinx.android.synthetic.main.file_info_dialog.view.*
 import java.io.File
 import javax.inject.Inject
@@ -77,7 +78,7 @@ class ThumbnailAdapter(private val fileNames: List<String>,
 
 }
 
-class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureViewRouter, Pausable {
+class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureViewRouter, Pausable, ThumbnailsFragment.ThumbnailScreenListener {
 
 
     @Inject
@@ -127,7 +128,14 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
         presenter.start()
     }
 
+    override fun onCancel() {
+        dismissAllDialogs()
+    }
+
     private fun dismissAllDialogs() {
+
+        dialog_container.visibility = GONE
+
         dialogs.forEach { dialog ->
             dialog.dismiss()
         }
@@ -214,7 +222,11 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
     override fun showImageSelector(files: List<String>) {
         presenter.currentImageFileName().subscribe { currentImageFilename ->
             val frag = ThumbnailsFragment(files, currentImageFilename, presenter)
-            frag.show(supportFragmentManager, "picSelect")
+            //frag.show(supportFragmentManager, "picSelect")
+
+            dialog_container.visibility = VISIBLE
+            supportFragmentManager.beginTransaction().add(R.id.dialog_container, frag).commit()
+
         }
 
 
