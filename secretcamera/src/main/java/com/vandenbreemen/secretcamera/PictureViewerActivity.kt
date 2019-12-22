@@ -86,6 +86,8 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
 
     private var adapter: ThumbnailAdapter? = null
 
+    private var pictureViewRouterDelegate: PictureViewRouter? = null
+
     val dialogs = mutableListOf<Dialog>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -135,6 +137,7 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
     private fun dismissAllDialogs() {
 
         dialog_container.removeAllViews()
+        pictureViewRouterDelegate = null
         dialog_container.visibility = GONE
         dialog_container.y = 10000f
 
@@ -257,14 +260,6 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
         findViewById<View>(R.id.imageDisplayProgress).visibility = GONE
     }
 
-    override fun showActions() {
-        findViewById<ViewGroup>(R.id.pictureViewerActions).visibility = VISIBLE
-    }
-
-    override fun hideActions() {
-        findViewById<ViewGroup>(R.id.pictureViewerActions).visibility = GONE
-    }
-
     override fun showPictureViewerActions() {
         findViewById<ViewGroup>(R.id.actionsWindow).visibility = VISIBLE
     }
@@ -273,13 +268,23 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
         findViewById<ViewGroup>(R.id.actionsWindow).visibility = GONE
     }
 
+    override fun showActions() {
+        pictureViewRouterDelegate?.let { it.showActions() }
+    }
+
+    override fun hideActions() {
+        pictureViewRouterDelegate?.let { it.hideActions() }
+    }
+
     override fun enableSelectMultiple() {
-        adapter!!.selectEnabled = true
-        adapter!!.notifyDataSetChanged()
+        pictureViewRouterDelegate?.let { it.enableSelectMultiple() }
     }
 
     override fun disableSelectMultiple() {
-        adapter!!.selectEnabled = false
-        adapter!!.notifyDataSetChanged()
+        pictureViewRouterDelegate?.let { it.disableSelectMultiple() }
+    }
+
+    override fun providePictureViewRouterDelegate(router: PictureViewRouter) {
+        this.pictureViewRouterDelegate = router
     }
 }
