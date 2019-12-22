@@ -134,7 +134,9 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
 
     private fun dismissAllDialogs() {
 
+        dialog_container.removeAllViews()
         dialog_container.visibility = GONE
+        dialog_container.y = 10000f
 
         dialogs.forEach { dialog ->
             dialog.dismiss()
@@ -225,6 +227,7 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
             //frag.show(supportFragmentManager, "picSelect")
 
             dialog_container.visibility = VISIBLE
+            dialog_container.animate().translationY(0f).setDuration(500).start()
             supportFragmentManager.beginTransaction().add(R.id.dialog_container, frag).commit()
 
         }
