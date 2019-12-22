@@ -1,6 +1,5 @@
 package com.vandenbreemen.secretcamera
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
@@ -14,7 +13,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.*
 import android.widget.Toast.LENGTH_SHORT
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
@@ -24,6 +23,7 @@ import com.vandenbreemen.mobilesecurestorage.file.api.FileInfo
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Pausable
 import com.vandenbreemen.secretcamera.di.injectPictureViewer
+import com.vandenbreemen.secretcamera.fragment.ThumbnailsFragment
 import com.vandenbreemen.secretcamera.mvp.gallery.*
 import kotlinx.android.synthetic.main.file_info_dialog.view.*
 import java.io.File
@@ -77,7 +77,7 @@ class ThumbnailAdapter(private val fileNames: List<String>,
 
 }
 
-class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter, Pausable {
+class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureViewRouter, Pausable {
 
 
     @Inject
@@ -99,11 +99,6 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter, 
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         setContentView(R.layout.activity_picture_viewer)
 
-        val layoutManager = LinearLayoutManager(this)
-        layoutManager.orientation = RecyclerView.HORIZONTAL
-        val recyclerView = findViewById<RecyclerView>(R.id.pictureSelector)
-        recyclerView.layoutManager = layoutManager
-        recyclerView.visibility = GONE
 
         //  Set up the actions
         findViewById<ViewGroup>(R.id.pictureViewerActions).findViewById<Button>(R.id.cancel).setOnClickListener {
@@ -218,24 +213,15 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter, 
 
     override fun showImageSelector(files: List<String>) {
         presenter.currentImageFileName().subscribe { currentImageFilename ->
-            val recyclerView = findViewById<RecyclerView>(R.id.pictureSelector)
-            val adapter = ThumbnailAdapter(files, presenter)
-            this.adapter = adapter
-
-            recyclerView.adapter = adapter
-            recyclerView.layoutManager?.scrollToPosition(files.indexOf(currentImageFilename))
-            (recyclerView.adapter as ThumbnailAdapter).notifyDataSetChanged()
-            recyclerView.visibility = VISIBLE
+            val frag = ThumbnailsFragment(files, currentImageFilename, presenter)
+            frag.show(supportFragmentManager, "picSelect")
         }
 
 
     }
 
     override fun hideImageSelector() {
-        val recyclerView = findViewById<RecyclerView>(R.id.pictureSelector)
-        recyclerView.removeAllViews()
-        recyclerView.visibility = GONE
-        adapter = null
+        dismissAllDialogs()
     }
 
     override fun navigateBack(sfsCredentials: SFSCredentials) {

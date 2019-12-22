@@ -66,6 +66,9 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:1.1.2"
     implementation "androidx.recyclerview:recyclerview:$rootProject.ext.androidXVersion"
 
+    //  Dialog fragment support.  See also https://developer.android.com/jetpack/androidx/releases/fragment
+    implementation "androidx.fragment:fragment-ktx:1.1.0"
+
     //  Dagger
     implementation "com.google.dagger:dagger-android:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
