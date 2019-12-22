@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,10 +32,24 @@ class ThumbnailsFragment(private val files: List<String>, private val currentIma
 
     var listener: ThumbnailScreenListener? = null
     lateinit var adapter: ThumbnailAdapter
+    lateinit var recycler: RecyclerView
 
     interface ThumbnailScreenListener {
         fun onCancel()
         fun providePictureViewRouterDelegate(router: PictureViewRouter)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            val layoutManager = GridLayoutManager(context, 5)
+            recycler.layoutManager = layoutManager
+            recycler.layoutManager?.scrollToPosition(files.indexOf(currentImageFileName))
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            val layoutManager = GridLayoutManager(context, 3)
+            recycler.layoutManager = layoutManager
+            recycler.layoutManager?.scrollToPosition(files.indexOf(currentImageFileName))
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -44,7 +59,7 @@ class ThumbnailsFragment(private val files: List<String>, private val currentIma
             return view
         }
 
-        val recycler = view.findViewById<RecyclerView>(R.id.imageRecyclerView)
+        recycler = view.findViewById<RecyclerView>(R.id.imageRecyclerView)
         adapter = ThumbnailAdapter(files, presenter)
         val layoutManager = GridLayoutManager(context, 3)
         recycler.layoutManager = layoutManager
