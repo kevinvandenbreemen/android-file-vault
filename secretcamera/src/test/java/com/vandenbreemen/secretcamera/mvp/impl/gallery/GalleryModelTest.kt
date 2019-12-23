@@ -3,8 +3,10 @@ package com.vandenbreemen.secretcamera.mvp.impl.gallery
 import android.graphics.Bitmap
 import android.os.Environment
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
+import com.vandenbreemen.secretcamera.mvp.gallery.GalleryCommonInteractor
 import com.vandenbreemen.secretcamera.mvp.gallery.PicturesFileTypes
 import com.vandenbreemen.secretcamera.mvp.gallery.ShadowAndroidImageInteractor
 import com.vandenbreemen.secretcamera.mvp.gallery.generateThumbnailSynchronousCalled
@@ -92,6 +94,36 @@ class GalleryModelTest {
         model.init().blockingGet()
 
         //  Act
+        val thumbnails: Single<List<Bitmap>> = model.getImageThumbnails()
+
+        //  Assert
+        val test = thumbnails.test()
+        test.assertComplete()
+        assertEquals(3, test.values().get(0).size)
+    }
+
+    @Test
+    fun `should display thumbnails starting with most recently viewed image`() {
+        //  Arrange
+
+        val commonInteractor = GalleryCommonInteractor(getSecureFileSystemInteractor(sfs))
+        var settings = commonInteractor.getGallerySettings()
+        settings.currentFile = TestConstants.TEST_RES_IMG_3.name
+        commonInteractor.saveGallerySettings(settings)
+
+        sfs.importFile(TestConstants.TEST_RES_IMG_1)
+        sfs.setFileType(TestConstants.TEST_RES_IMG_1.name, PicturesFileTypes.IMPORTED_IMAGE)
+        sfs.importFile(TestConstants.TEST_RES_IMG_2)
+        sfs.setFileType(TestConstants.TEST_RES_IMG_2.name, PicturesFileTypes.IMPORTED_IMAGE)
+        sfs.importFile(TestConstants.TEST_RES_IMG_3)
+        sfs.setFileType(TestConstants.TEST_RES_IMG_3.name, PicturesFileTypes.IMPORTED_IMAGE)
+        sfs.importFile(TestConstants.TEST_RES_IMG_4)
+        sfs.setFileType(TestConstants.TEST_RES_IMG_4.name, PicturesFileTypes.IMPORTED_IMAGE)
+        model = GalleryModel(credentials)
+        model.init().blockingGet()
+
+        //  Act
+
         val thumbnails: Single<List<Bitmap>> = model.getImageThumbnails()
 
         //  Assert

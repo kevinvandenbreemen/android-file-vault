@@ -1,6 +1,5 @@
 package com.vandenbreemen.secretcamera
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
@@ -14,7 +13,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.*
 import android.widget.Toast.LENGTH_SHORT
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
@@ -24,7 +23,9 @@ import com.vandenbreemen.mobilesecurestorage.file.api.FileInfo
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Pausable
 import com.vandenbreemen.secretcamera.di.injectPictureViewer
+import com.vandenbreemen.secretcamera.fragment.ThumbnailsFragment
 import com.vandenbreemen.secretcamera.mvp.gallery.*
+import kotlinx.android.synthetic.main.activity_picture_viewer.*
 import kotlinx.android.synthetic.main.file_info_dialog.view.*
 import java.io.File
 import javax.inject.Inject
@@ -77,13 +78,15 @@ class ThumbnailAdapter(private val fileNames: List<String>,
 
 }
 
-class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter, Pausable {
+class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureViewRouter, Pausable, ThumbnailsFragment.ThumbnailScreenListener {
 
 
     @Inject
     lateinit var presenter: PictureViewerPresenter
 
     private var adapter: ThumbnailAdapter? = null
+
+    private var pictureViewRouterDelegate: PictureViewRouter? = null
 
     val dialogs = mutableListOf<Dialog>()
 
@@ -99,11 +102,6 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter, 
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         setContentView(R.layout.activity_picture_viewer)
 
-        val layoutManager = LinearLayoutManager(this)
-        layoutManager.orientation = RecyclerView.HORIZONTAL
-        val recyclerView = findViewById<RecyclerView>(R.id.pictureSelector)
-        recyclerView.layoutManager = layoutManager
-        recyclerView.visibility = GONE
 
         //  Set up the actions
         findViewById<ViewGroup>(R.id.pictureViewerActions).findViewById<Button>(R.id.cancel).setOnClickListener {
@@ -132,7 +130,17 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter, 
         presenter.start()
     }
 
+    override fun onCancel() {
+        dismissAllDialogs()
+    }
+
     private fun dismissAllDialogs() {
+
+        dialog_container.removeAllViews()
+        pictureViewRouterDelegate = null
+        dialog_container.visibility = GONE
+        dialog_container.y = 10000f
+
         dialogs.forEach { dialog ->
             dialog.dismiss()
         }
@@ -218,24 +226,20 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter, 
 
     override fun showImageSelector(files: List<String>) {
         presenter.currentImageFileName().subscribe { currentImageFilename ->
-            val recyclerView = findViewById<RecyclerView>(R.id.pictureSelector)
-            val adapter = ThumbnailAdapter(files, presenter)
-            this.adapter = adapter
+            val frag = ThumbnailsFragment(files, currentImageFilename, presenter)
+            //frag.show(supportFragmentManager, "picSelect")
 
-            recyclerView.adapter = adapter
-            recyclerView.layoutManager?.scrollToPosition(files.indexOf(currentImageFilename))
-            (recyclerView.adapter as ThumbnailAdapter).notifyDataSetChanged()
-            recyclerView.visibility = VISIBLE
+            dialog_container.visibility = VISIBLE
+            dialog_container.animate().translationY(0f).setDuration(500).start()
+            supportFragmentManager.beginTransaction().add(R.id.dialog_container, frag).commit()
+
         }
 
 
     }
 
     override fun hideImageSelector() {
-        val recyclerView = findViewById<RecyclerView>(R.id.pictureSelector)
-        recyclerView.removeAllViews()
-        recyclerView.visibility = GONE
-        adapter = null
+        dismissAllDialogs()
     }
 
     override fun navigateBack(sfsCredentials: SFSCredentials) {
@@ -256,14 +260,6 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter, 
         findViewById<View>(R.id.imageDisplayProgress).visibility = GONE
     }
 
-    override fun showActions() {
-        findViewById<ViewGroup>(R.id.pictureViewerActions).visibility = VISIBLE
-    }
-
-    override fun hideActions() {
-        findViewById<ViewGroup>(R.id.pictureViewerActions).visibility = GONE
-    }
-
     override fun showPictureViewerActions() {
         findViewById<ViewGroup>(R.id.actionsWindow).visibility = VISIBLE
     }
@@ -272,13 +268,23 @@ class PictureViewerActivity : Activity(), PictureViewerView, PictureViewRouter, 
         findViewById<ViewGroup>(R.id.actionsWindow).visibility = GONE
     }
 
+    override fun showActions() {
+        pictureViewRouterDelegate?.let { it.showActions() }
+    }
+
+    override fun hideActions() {
+        pictureViewRouterDelegate?.let { it.hideActions() }
+    }
+
     override fun enableSelectMultiple() {
-        adapter!!.selectEnabled = true
-        adapter!!.notifyDataSetChanged()
+        pictureViewRouterDelegate?.let { it.enableSelectMultiple() }
     }
 
     override fun disableSelectMultiple() {
-        adapter!!.selectEnabled = false
-        adapter!!.notifyDataSetChanged()
+        pictureViewRouterDelegate?.let { it.disableSelectMultiple() }
+    }
+
+    override fun providePictureViewRouterDelegate(router: PictureViewRouter) {
+        this.pictureViewRouterDelegate = router
     }
 }

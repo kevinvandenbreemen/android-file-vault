@@ -3,7 +3,6 @@ package com.vandenbreemen.secretcamera.mvp.gallery
 import android.graphics.Bitmap
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.api.FileInfo
-import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
 import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractor
 import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
@@ -32,6 +31,7 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
     lateinit var imageFilesInteractor: ImageFilesInteractor
     lateinit var androidImageInteractor: AndroidImageInteractor
     lateinit var secureFileSystemInteractor: SecureFileSystemInteractor
+    lateinit var galleryCommonInteractor: GalleryCommonInteractor
 
     private var selectedFiles: MutableList<String>? = null
 
@@ -43,6 +43,7 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
         this.imageFilesInteractor = ImageFilesInteractor(sfs)
         this.androidImageInteractor = AndroidImageInteractor()
         this.secureFileSystemInteractor = getSecureFileSystemInteractor(sfs)
+        this.galleryCommonInteractor = GalleryCommonInteractor(this.secureFileSystemInteractor)
     }
 
     fun selectImage(fileName: String) {
@@ -95,13 +96,7 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
     }
 
     private fun getGallerySettings(): GallerySettings {
-        secureFileSystemInteractor.load(SETTINGS, FileTypes.DATA)?.let { loaded ->
-            val gallerySettings = loaded as GallerySettings
-            return gallerySettings
-        }
-        val gallerySettings = GallerySettings(null)
-        saveGallerySettings(gallerySettings)
-        return gallerySettings
+        return galleryCommonInteractor.getGallerySettings()
     }
 
     fun currentFile(): Single<String> {
@@ -164,7 +159,7 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
     }
 
     private fun saveGallerySettings(gallerySettings: GallerySettings) {
-        secureFileSystemInteractor.save(gallerySettings, SETTINGS, FileTypes.DATA)
+        galleryCommonInteractor.saveGallerySettings(gallerySettings)
     }
 
     private fun getPreviousFile(gallerySettings: GallerySettings): String {
