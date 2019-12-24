@@ -90,6 +90,7 @@ interface PictureViewerPresenter : PresenterContract {
     fun onSelectPictureViewerActions()
     fun deleteAllImages()
     fun showCurrentFileInfo()
+    fun returnToMain()
 }
 
 class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: PictureViewerView, val router: PictureViewRouter) : Presenter<PictureViewerModel, PictureViewerView>(model, view), PictureViewerPresenter {
@@ -122,6 +123,9 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
         view.hideLoadingSpinner()
     }
 
+    override fun returnToMain() {
+        router.navigateBack(model.copyCredentials())
+    }
 
     override fun displayCurrentImage() {
         view.showLoadingSpinner()
