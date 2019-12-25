@@ -15,6 +15,7 @@ VIPER-based pattern for managing projects
 interface ProjectListPresenter : PresenterContract {
     fun addProject(project: Project)
     fun viewProjectDetails(project: Project)
+    fun returnToMain()
 }
 
 interface ProjectListView : View {
@@ -23,6 +24,7 @@ interface ProjectListView : View {
 
 interface ProjectListRouter {
     fun gotoProjectDetails(projectName: String, credentials: SFSCredentials)
+    fun navigateBack(credentials: SFSCredentials)
 
 }
 

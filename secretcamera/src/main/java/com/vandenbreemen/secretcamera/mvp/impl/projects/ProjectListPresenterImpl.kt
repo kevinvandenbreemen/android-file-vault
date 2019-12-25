@@ -22,6 +22,10 @@ class ProjectListPresenterImpl(val model: ProjectListModel, val view: ProjectLis
         router.gotoProjectDetails(project.title, model.copyCredentials())
     }
 
+    override fun returnToMain() {
+        router.navigateBack(model.copyCredentials())
+    }
+
     override fun addProject(project: Project) {
         addForDisposal(model.addNewProject(project).subscribe({
             model.getProjects().subscribe { projects ->

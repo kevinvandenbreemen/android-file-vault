@@ -140,6 +140,16 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter, Pausabl
 
     }
 
+    override fun onBackPressed() {
+        presenter.returnToMain()
+    }
+
+    override fun navigateBack(credentials: SFSCredentials) {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
+        startActivity(intent)
+    }
+
     private fun showCreateProject() {
 
         val builder = AlertDialog.Builder(this)
