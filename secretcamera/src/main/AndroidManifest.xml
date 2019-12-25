@@ -60,6 +60,7 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".PictureViewerActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
             android:configChanges="orientation|screenSize"
             android:excludeFromRecents="true"
             android:parentActivityName=".MainActivity" />

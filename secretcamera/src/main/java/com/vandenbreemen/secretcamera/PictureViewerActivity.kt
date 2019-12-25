@@ -122,6 +122,10 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
 
     }
 
+    override fun onBackPressed() {
+        presenter.returnToMain()
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
             presenter.returnToMain()
