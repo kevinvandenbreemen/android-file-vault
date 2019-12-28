@@ -30,6 +30,11 @@ import kotlinx.android.synthetic.main.layout_gallery_selector.view.*
 class ThumbnailsFragment(private val files: List<String>, private val currentImageFileName: String,
                          private val presenter: PictureViewerPresenter) : DialogFragment(), PictureViewRouter {
 
+    companion object {
+        val COLUMNS_PORTRAIT = 3
+        val COLUMNS_LANDSCAPE = 5
+    }
+
     var listener: ThumbnailScreenListener? = null
     lateinit var adapter: ThumbnailAdapter
     lateinit var recycler: RecyclerView
@@ -42,11 +47,11 @@ class ThumbnailsFragment(private val files: List<String>, private val currentIma
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            val layoutManager = GridLayoutManager(context, 5)
+            val layoutManager = GridLayoutManager(context, COLUMNS_LANDSCAPE)
             recycler.layoutManager = layoutManager
             recycler.layoutManager?.scrollToPosition(files.indexOf(currentImageFileName))
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            val layoutManager = GridLayoutManager(context, 3)
+            val layoutManager = GridLayoutManager(context, COLUMNS_PORTRAIT)
             recycler.layoutManager = layoutManager
             recycler.layoutManager?.scrollToPosition(files.indexOf(currentImageFileName))
         }
@@ -61,7 +66,10 @@ class ThumbnailsFragment(private val files: List<String>, private val currentIma
 
         recycler = view.findViewById<RecyclerView>(R.id.imageRecyclerView)
         adapter = ThumbnailAdapter(files, presenter)
-        val layoutManager = GridLayoutManager(context, 3)
+
+        var numColumns = if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) COLUMNS_PORTRAIT else COLUMNS_LANDSCAPE
+
+        val layoutManager = GridLayoutManager(context, numColumns)
         recycler.layoutManager = layoutManager
         recycler.adapter = adapter
         recycler.layoutManager?.scrollToPosition(files.indexOf(currentImageFileName))
