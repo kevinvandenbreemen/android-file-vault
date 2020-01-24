@@ -21,12 +21,6 @@ Below you will find general designs as well as additional details on interesting
 <a name="general_design"></a>
 ## General Design
 
-<a name="containers"></a>
-### Containers
+### Persistence
 
-![](MSS&#32;C4&#32;Diagrams-Containers.svg)
-
-<a name="components"></a>
-### Components
-
-![](MSS&#32;C4&#32;Diagrams-Components.svg)
+![](./documentation/resource/SFS.svg)
