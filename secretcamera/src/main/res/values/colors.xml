@@ -5,6 +5,7 @@
     <color name="colorAccent">#F7EFED</color>
     <color name="shade">#1A000000</color>
     <color name="transparent">#00000000</color>
+    <color name="transparentShade">#33000000</color>
 
     <array name="dot_colors">
         <item>@color/colorPrimary</item>
