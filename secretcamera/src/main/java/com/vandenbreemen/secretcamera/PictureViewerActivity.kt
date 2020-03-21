@@ -236,7 +236,6 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
     override fun showImageSelector(files: List<String>) {
         presenter.currentImageFileName().subscribe { currentImageFilename ->
             val frag = ThumbnailsFragment(files, currentImageFilename, presenter)
-            //frag.show(supportFragmentManager, "picSelect")
 
             dialog_container.visibility = VISIBLE
             dialog_container.animate().translationY(0f).setDuration(500).start()

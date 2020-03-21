@@ -31,8 +31,8 @@ class ThumbnailsFragment(private val files: List<String>, private val currentIma
                          private val presenter: PictureViewerPresenter) : DialogFragment(), PictureViewRouter {
 
     companion object {
-        val COLUMNS_PORTRAIT = 3
-        val COLUMNS_LANDSCAPE = 5
+        const val COLUMNS_PORTRAIT = 3
+        const val COLUMNS_LANDSCAPE = 5
     }
 
     var listener: ThumbnailScreenListener? = null
