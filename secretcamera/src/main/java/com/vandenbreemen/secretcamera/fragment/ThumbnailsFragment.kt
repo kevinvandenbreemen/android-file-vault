@@ -1,6 +1,5 @@
 package com.vandenbreemen.secretcamera.fragment
 
-import android.animation.Animator
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
@@ -123,27 +122,7 @@ class ThumbnailsFragment(private val files: List<String>, private val currentIma
     }
 
     override fun hideActions() {
-        val actionButtons: List<View> = listOf(delete)
-        actionButtons.forEach { button ->
-            button.animate().alpha(0.0f).setDuration(300).setListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(animation: Animator?) {
-
-                }
-
-                override fun onAnimationEnd(animation: Animator?) {
-                    button.visibility = GONE
-                }
-
-                override fun onAnimationCancel(animation: Animator?) {
-
-                }
-
-                override fun onAnimationStart(animation: Animator?) {
-
-                }
-
-            }).start()
-        }
+        delete.visibility = GONE
     }
 
     override fun enableSelectMultiple() {
