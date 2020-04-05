@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/cardview_dark_background"
+    android:background="@color/kds_dark"
     tools:context="com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity">
 
     <TextView
@@ -16,8 +16,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:text="@string/select_file_folder"
-        android:textColor="@color/colorAccent"
-        android:textSize="10pt"
+        style="@style/kds_mainTitle"
         app:layout_constraintBottom_toBottomOf="@id/topBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +32,7 @@
         android:layout_marginTop="8dp"
         android:onClick="onCancel"
         android:text="@string/cancel"
-        android:theme="@style/ButtonCancel"
+        style="@style/kds_cancel_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.15"
@@ -50,7 +49,7 @@
         android:layout_marginTop="8dp"
         android:onClick="onOkay"
         android:text="@string/ok"
-        android:theme="@style/ButtonOK"
+        style="@style/kds_default_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.85"
@@ -64,13 +63,11 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.14" />
 
-    <androidx.cardview.widget.CardView
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        app:cardBackgroundColor="@color/cardview_shadow_start_color"
-        app:cardElevation="@dimen/card_elevation"
+        android:layout_margin="@dimen/margin"
+        android:background="@drawable/kds_attention_background"
         app:layout_constraintBottom_toTopOf="@id/bottomBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -80,14 +77,11 @@
             android:id="@+id/fileList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_margin="@dimen/margin"
             android:divider="@android:color/transparent"
             android:dividerHeight="8dp" />
 
-    </androidx.cardview.widget.CardView>
+    </LinearLayout>
 
 
     <androidx.constraintlayout.widget.Guideline
