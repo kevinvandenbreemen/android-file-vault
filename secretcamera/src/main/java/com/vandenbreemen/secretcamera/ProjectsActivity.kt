@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -165,9 +167,11 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter, Pausabl
             presenter.addProject(project)
         }
 
+
         builder.setView(projectDetailsView)
 
         val view: Dialog = builder.create()
+        view.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialogs.add(view)
 
         projectDetailsView.findViewById<Button>(R.id.cancel).setOnClickListener { v ->

@@ -5,7 +5,7 @@
     android:id="@+id/projectDetails"
     android:layout_width="match_parent"
     android:layout_height="400dp"
-    android:background="@color/colorPrimaryDark"
+    android:background="@drawable/kds_attention_background"
     android:maxHeight="400dp"
     android:minHeight="400dp"
     android:orientation="vertical">
@@ -48,7 +48,7 @@
 
     <TextView
         android:id="@+id/textView4"
-        style="@style/title"
+        style="@style/kds_instruction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -93,7 +93,7 @@
 
     <Button
         android:id="@+id/cancel"
-        style="@style/ButtonCancel"
+        style="@style/kds_cancel_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -109,7 +109,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="@string/ok"
-        android:theme="@style/ButtonOK"
+        style="@style/kds_default_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -124,7 +124,7 @@
 
     <TextView
         android:id="@+id/projectNameLabel"
-        style="@style/title"
+        style="@style/kds_instruction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
