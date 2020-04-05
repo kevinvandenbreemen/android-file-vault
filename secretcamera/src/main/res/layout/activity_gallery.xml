@@ -4,12 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/black_background"
+    android:background="@color/kds_dark"
     tools:context=".Gallery">
 
     <TextView
         android:id="@+id/galleryTitle"
-        style="@style/title"
+        style="@style/kds_mainTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -24,15 +24,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-    <androidx.cardview.widget.CardView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        app:cardBackgroundColor="@color/cardview_dark_background"
+        android:layout_margin="@dimen/margin"
+        android:background="@drawable/kds_attention_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +37,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -54,68 +51,70 @@
         </LinearLayout>
 
 
-    </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
         android:id="@+id/overlay"
         layout="@layout/layout_logo_screen"
         android:visibility="gone" />
 
-    <androidx.cardview.widget.CardView
-        app:cardBackgroundColor="@color/black_background"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_margin="@dimen/margin"
+        android:background="@drawable/kds_section_background"
         app:layout_constraintBottom_toTopOf="@+id/cardView"
-        app:layout_constraintEnd_toEndOf="@+id/cardView"
-        app:layout_constraintStart_toStartOf="@+id/cardView"
-        app:layout_constraintTop_toBottomOf="@+id/galleryTitle" >
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/galleryTitle">
 
         <ImageView
-            android:onClick="onViewPictures"
-            tools:visibility="visible"
-            android:visibility="gone"
             android:id="@+id/preview_img_1"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:rotation="-22"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:src="@drawable/logo"
             android:elevation="3dp"
-            />
+            android:onClick="onViewPictures"
+            android:rotation="-22"
+            android:src="@drawable/logo"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.26"
+            tools:visibility="visible" />
 
         <ImageView
-            android:onClick="onViewPictures"
-            tools:visibility="visible"
-            android:visibility="gone"
             android:id="@+id/preview_img_2"
-            android:layout_gravity="center|center_vertical"
-            android:rotation="5"
-            android:elevation="2dp"
-            android:layout_marginTop="25dp"
-            android:layout_marginEnd="10dp"
             android:layout_width="150dp"
             android:layout_height="150dp"
+            android:layout_gravity="center|center_vertical"
+            android:elevation="2dp"
+            android:onClick="onViewPictures"
+            android:rotation="5"
             android:src="@drawable/logo"
-            />
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/preview_img_1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.76"
+            tools:visibility="visible" />
 
         <ImageView
-            android:onClick="onViewPictures"
-            tools:visibility="visible"
-            android:visibility="gone"
             android:id="@+id/preview_img_3"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="30dp"
-            android:rotation="29"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:src="@drawable/logo"
+            android:layout_gravity="end|center_vertical"
             android:elevation="1dp"
-            />
+            android:onClick="onViewPictures"
+            android:rotation="29"
+            android:src="@drawable/logo"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/preview_img_2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.49"
+            tools:visibility="visible" />
 
-    </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
