@@ -105,4 +105,7 @@ dependencies {
     androidTestImplementation "androidx.annotation:annotation:1.0.0"
 
     implementation "com.google.android.material:material:1.1.0-alpha07"
+
+    //  KDS integration
+    implementation "com.github.kevinvandenbreemen:KevinDesignSystem:$rootProject.ext.kdsVersion"
 }

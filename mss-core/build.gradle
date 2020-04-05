@@ -77,4 +77,7 @@ dependencies {
     }
     androidTestImplementation "androidx.test.espresso:espresso-intents:$rootProject.ext.espressoVersion"
 
+    //  KDS integration
+    implementation "com.github.kevinvandenbreemen:KevinDesignSystem:$rootProject.ext.kdsVersion"
+
 }
