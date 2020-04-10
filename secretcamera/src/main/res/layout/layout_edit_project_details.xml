@@ -10,41 +10,25 @@
     android:minHeight="400dp"
     android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="0dp"
+    <EditText
+        android:id="@+id/projectNameForEdit"
+        style="@style/kds_textInput"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:cardBackgroundColor="@color/cardview_dark_background"
-        app:layout_constraintBottom_toTopOf="@+id/topGuideLine"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/projectNameLabel">
-
-        <EditText
-            android:id="@+id/projectNameForEdit"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="start|top"
-            android:hint="@string/specify_project_details"
-            android:inputType="text"
-            android:text=""
-            style="@style/text_input"
-            tools:text="@string/lorem_ipsum" />
-
-    </androidx.cardview.widget.CardView>
+        android:gravity="start|top"
+        android:hint="@string/specify_project_details"
+        android:inputType="text"
+        android:text=""
+        app:layout_constraintBottom_toTopOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@id/projectNameLabel"
+        tools:text="@string/lorem_ipsum" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/topGuideLine"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.24" />
+        app:layout_constraintGuide_percent="0.3" />
 
     <TextView
         android:id="@+id/textView4"
@@ -55,40 +39,25 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/task_description"
-        android:textColor="@color/cardview_light_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topGuideLine" />
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="0dp"
+    <EditText
+        android:id="@+id/projectDescriptionForEdit"
+        style="@style/kds_textInput"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:elevation="10dp"
-        app:cardBackgroundColor="@color/cardview_dark_background"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4">
-
-        <EditText
-            android:id="@+id/projectDescriptionForEdit"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            style="@style/text_area"
-            android:hint="@string/specify_project_details"
-            android:text=""
-            tools:text="@string/lorem_ipsum" />
-
-    </androidx.cardview.widget.CardView>
+        android:hint="@string/specify_project_details"
+        android:text=""
+        app:layout_constraintBottom_toTopOf="@+id/cancel"
+        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        tools:text="@string/lorem_ipsum" />
 
 
     <Button
@@ -131,7 +100,6 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         android:text="@string/project_name"
-        android:textColor="@color/cardview_light_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
