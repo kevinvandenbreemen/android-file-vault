@@ -75,7 +75,7 @@
             android:elevation="3dp"
             android:onClick="onViewPictures"
             android:rotation="-22"
-            android:src="@drawable/logo"
+
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -90,7 +90,7 @@
             android:elevation="2dp"
             android:onClick="onViewPictures"
             android:rotation="5"
-            android:src="@drawable/logo"
+
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/preview_img_1"
@@ -106,7 +106,7 @@
             android:elevation="1dp"
             android:onClick="onViewPictures"
             android:rotation="29"
-            android:src="@drawable/logo"
+
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/preview_img_2"

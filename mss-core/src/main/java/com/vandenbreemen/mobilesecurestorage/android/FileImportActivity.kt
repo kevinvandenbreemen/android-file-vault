@@ -1,10 +1,12 @@
 package com.vandenbreemen.mobilesecurestorage.android
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
+import com.vandenbreemen.kevindesignsystem.views.KDSSystemActivity
 import com.vandenbreemen.mobilesecurestorage.R
 import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow
 import com.vandenbreemen.mobilesecurestorage.android.api.FileWorkflow.PARM_WORKFLOW_NAME
@@ -41,7 +43,7 @@ class FileImportFutureIntent : FutureIntent<FileImportDataProvider> {
 
 }
 
-class FileImportActivity : Activity(), FileImportView {
+class FileImportActivity : KDSSystemActivity(), FileImportView {
 
     companion object {
         const val PARM_FILE_TYPE_BYTES = "__fileTypeBytes"
@@ -88,7 +90,12 @@ class FileImportActivity : Activity(), FileImportView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_file_import)
+
+        findViewById<View>(android.R.id.content)
+                .setBackgroundColor(getColor(R.color.kds_background_default))
+
+        findViewById<ViewGroup>(com.vandenbreemen.kevindesignsystem.R.id.mainContent)
+                .addView(layoutInflater.inflate(R.layout.activity_file_import, null, false))
 
         val selectDirIntent = Intent(this, FileSelectActivity::class.java)
         selectDirIntent.putExtra(FileSelectActivity.PARM_DIR_ONLY, true)

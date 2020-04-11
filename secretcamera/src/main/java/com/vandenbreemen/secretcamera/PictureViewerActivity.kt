@@ -162,7 +162,7 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
         super.onPause()
 
         //  Force current image to be dropped
-        findViewById<SubsamplingScaleImageView>(R.id.currentImage).setImage(ImageSource.resource(R.drawable.logo))
+        findViewById<SubsamplingScaleImageView>(R.id.currentImage).recycle()
         dismissAllDialogs()
 
         //  Proceed with standard cleanup etc.
