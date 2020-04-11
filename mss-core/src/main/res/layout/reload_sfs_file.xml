@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/view_border"
+    android:background="@color/kds_background_default"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout"
-    tools:background="@color/cardview_shadow_start_color"
     >
 
 
@@ -16,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="64dp"
         android:layout_marginRight="64dp"
-        android:background="@color/green"
+        style="@style/kds_ok_button"
         android:text="@string/ok"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="64dp"
         android:layout_marginLeft="64dp"
-        android:background="@color/red"
+        style="@style/kds_cancel_button"
         android:text="@string/cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ok"
@@ -48,6 +47,7 @@
         android:layout_marginRight="32dp"
         android:ems="10"
         android:hint="@string/password"
+        style="@style/kds_textInput"
         android:inputType="textPassword"
         android:textColor="@color/colorAccent"
         android:textColorHint="@color/colorAccent"
@@ -60,7 +60,7 @@
 
     <TextView
         android:id="@+id/textView"
-        style="@style/section_title"
+        style="@style/kds_instruction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="128dp"

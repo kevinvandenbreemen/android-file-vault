@@ -9,7 +9,7 @@
 
     <EditText
         android:id="@+id/password"
-        style="@style/text_input"
+        style="@style/kds_textInput"
         android:textCursorDrawable="@null"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
 
     <Button
         android:id="@+id/ok"
-        style="@style/kds_default_button"
+        style="@style/kds_ok_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"

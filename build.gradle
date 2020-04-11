@@ -41,5 +41,5 @@ ext{
     supportVersion="26.1.0"
     androidTestVersion="1.1.0"
     androidXVersion="1.0.0"
-    kdsVersion="1.0.520"
+    kdsVersion="1.0.521"
 }

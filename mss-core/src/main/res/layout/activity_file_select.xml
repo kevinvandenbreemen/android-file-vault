@@ -49,7 +49,7 @@
         android:layout_marginTop="8dp"
         android:onClick="onOkay"
         android:text="@string/ok"
-        style="@style/kds_default_button"
+        style="@style/kds_ok_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.85"
