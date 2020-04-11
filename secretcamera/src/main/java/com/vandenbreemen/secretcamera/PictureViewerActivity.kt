@@ -4,6 +4,8 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
 import android.view.View.GONE
@@ -210,6 +212,8 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
         builder.setView(detailView)
 
         val view: Dialog = builder.create()
+        view.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
         dialogs.add(view)
         view.show()
 
