@@ -127,26 +127,29 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
     }
 
     override fun listFiles(files: MutableList<File>?) {
-        val listView = findViewById<ListView>(R.id.fileList);
 
-        val adapter = object : ArrayAdapter<File>(this, android.R.layout.simple_list_item_1) {
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        files?.let { files ->
+            val listView = findViewById<ListView>(R.id.fileList);
 
-                val group = layoutInflater.inflate(R.layout.layout_file_item, parent, false)
-                group.findViewById<TextView>(R.id.itemLabel).text = (files!![position].name)
+            val adapter = object : ArrayAdapter<File>(this, android.R.layout.simple_list_item_1) {
+                override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 
-                return group
+                    val group = layoutInflater.inflate(R.layout.layout_file_item, parent, false)
+                    group.findViewById<TextView>(R.id.itemLabel).text = (files!![position].name)
+
+                    return group
+                }
             }
+
+            listView.setOnItemClickListener { parent, view, position, id ->
+                val selected = adapter.getItem(position)
+                controller.select(selected)
+            }
+
+            adapter.addAll(files)
+
+            listView.adapter = adapter
         }
-
-        listView.setOnItemClickListener { parent, view, position, id ->
-            val selected = adapter.getItem(position)
-            controller.select(selected)
-        }
-
-        adapter.addAll(files)
-
-        listView.adapter = adapter
 
     }
 
