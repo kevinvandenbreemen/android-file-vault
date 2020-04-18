@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_margin="@dimen/listMargin"
     android:background="@drawable/kds_clickable_item"
-    android:maxHeight="100dp">
+    android:maxHeight="75dp">
 
     <TextView
         android:id="@+id/fileName"

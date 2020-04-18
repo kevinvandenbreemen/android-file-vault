@@ -13,6 +13,7 @@ interface SFSActionsView : View {
 
     fun setProgressMax(max: Long)
     fun setCurrentProgress(currentProgress: Long)
+    fun displayFileList(files: List<FileListItemView>)
 
 }
 
@@ -29,5 +30,6 @@ interface SFSActionsPresenter : PresenterContract {
     fun selectChangePassword()
     fun changePassword(currentPassword: String, newPassword: String, reEnterNewPassword: String)
     fun cancelChangePassword()
+    fun listFiles()
 
 }

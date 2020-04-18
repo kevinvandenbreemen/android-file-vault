@@ -12,6 +12,8 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.FileListItemView
 import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.SFSActionsPresenter
 import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.SFSActionsRouter
 import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.SFSActionsView
@@ -19,6 +21,7 @@ import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.di.injectSFSActions
 import com.vandenbreemen.test.BackgroundCompletionCallback
+import kotlinx.android.synthetic.main.layout_sfs_list.*
 import javax.inject.Inject
 
 /**
@@ -34,12 +37,21 @@ class SFSActionsActivity : Activity(), SFSActionsView, SFSActionsRouter {
     @Inject
     lateinit var presenter: SFSActionsPresenter
 
+    lateinit var adapter: ListFilesAdapter
+
+    val filesList: MutableList<FileListItemView> = mutableListOf()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         injectSFSActions(this)
         super.onCreate(savedInstanceState)
 
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         setContentView(R.layout.activity_sfs_actions)
+
+        val viewManager = LinearLayoutManager(this)
+        this.adapter = ListFilesAdapter(filesList)
+        fileListRecyclerView.adapter = this.adapter
+        fileListRecyclerView.layoutManager = viewManager
     }
 
     fun onClickChangePassword(view: View) {
@@ -110,5 +122,11 @@ class SFSActionsActivity : Activity(), SFSActionsView, SFSActionsRouter {
         runOnUiThread {
             findViewById<ViewGroup>(R.id.progressContainer).findViewById<ProgressBar>(R.id.progressBar).progress = currentProgress.toInt()
         }
+    }
+
+    override fun displayFileList(files: List<FileListItemView>) {
+        filesList.clear()
+        filesList.addAll(files)
+        adapter.notifyDataSetChanged()
     }
 }

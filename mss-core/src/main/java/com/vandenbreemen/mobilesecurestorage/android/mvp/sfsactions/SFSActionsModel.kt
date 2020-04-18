@@ -8,16 +8,19 @@ import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
+import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.schedulers.Schedulers.computation
 
 class SFSActionsModel(credentials: SFSCredentials): Model(credentials) {
+
+    private lateinit var fileListInteractor: FileListInteractor
 
     override fun onClose() {
 
     }
 
     override fun setup() {
-
+        this.fileListInteractor = FileListInteractor(sfs)
     }
 
     fun changePassword(currentPassword: String, newPassword: String, reEnterNewPassword: String, progress: ProgressListener<Long>): Single<SecureString> {
@@ -54,5 +57,10 @@ class SFSActionsModel(credentials: SFSCredentials): Model(credentials) {
         return  ret
     }
 
-
+    fun listFiles(): Single<List<FileListItemView>> {
+        return Single.create(SingleOnSubscribe<List<FileListItemView>> { subscriber ->
+            subscriber.onSuccess(this.fileListInteractor.fileList)
+            return@SingleOnSubscribe
+        }).subscribeOn(computation()).observeOn(mainThread())
+    }
 }

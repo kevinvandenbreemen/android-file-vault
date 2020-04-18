@@ -31,6 +31,11 @@ class SFSActionsPresenterImpl(val view: SFSActionsView, private val router: SFSA
         router.openChangePassword()
     }
 
+    override fun start() {
+        super.start()
+
+    }
+
     override fun changePassword(currentPassword: String, newPassword: String, reEnterNewPassword: String) {
         addForDisposal(model.changePassword(currentPassword, newPassword, reEnterNewPassword, progress).subscribe({ newPass ->
             router.returnToMain(model.generateCredentials(newPass))
@@ -50,6 +55,12 @@ class SFSActionsPresenterImpl(val view: SFSActionsView, private val router: SFSA
 
 
     override fun setupView() {
+        listFiles()
+    }
 
+    override fun listFiles() {
+        model.listFiles().subscribe { files ->
+            view.displayFileList(files)
+        }
     }
 }

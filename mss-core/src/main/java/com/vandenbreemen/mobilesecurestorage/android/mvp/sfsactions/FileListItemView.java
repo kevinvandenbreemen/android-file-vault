@@ -9,7 +9,7 @@ import com.vandenbreemen.mobilesecurestorage.file.api.FileType;
  */
 public class FileListItemView {
 
-    final String name;
+    public final String name;
     final FileType fileType;
 
     FileListItemView(String name, FileType fileType) {
