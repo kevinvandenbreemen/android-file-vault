@@ -115,7 +115,11 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
 
             gallerySettings.currentFile = listOfFiles[0]
             saveGallerySettings(gallerySettings)
-            emitter.onSuccess(gallerySettings.currentFile)
+
+            gallerySettings.currentFile?.let { currentFile ->
+                emitter.onSuccess(currentFile)
+            }
+
         }).subscribeOn(computation()).observeOn(mainThread())
     }
 
@@ -129,7 +133,11 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
             val gallerySettings = getGallerySettings()
             val nextFile = getNextFile(gallerySettings)
             gallerySettings.currentFile = nextFile
-            it.onSuccess(gallerySettings.currentFile)
+
+            gallerySettings.currentFile?.let { currentFile ->
+                it.onSuccess(currentFile)
+            }
+
             saveGallerySettings(gallerySettings)
 
         }).subscribeOn(computation()).observeOn(mainThread())
@@ -153,7 +161,11 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
             val gallerySettings = getGallerySettings()
             val prevFile = getPreviousFile(gallerySettings)
             gallerySettings.currentFile = prevFile
-            it.onSuccess(gallerySettings.currentFile)
+
+            gallerySettings.currentFile?.let { currentFile ->
+                it.onSuccess(currentFile)
+            }
+
             saveGallerySettings(gallerySettings)
         }).subscribeOn(computation()).observeOn(mainThread())
     }

@@ -56,7 +56,7 @@ dependencies {
     api group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
     api "com.madgag.spongycastle:core:$spongyCastleVersion"
     api "com.madgag.spongycastle:prov:$spongyCastleVersion"
-    api group: 'io.reactivex.rxjava2', name: 'rxandroid', version: '2.0.1'
+    api "io.reactivex.rxjava2:rxandroid:$rootProject.ext.rxAndroidVersion"
     api "androidx.cardview:cardview:$rootProject.ext.androidXVersion"
     api "org.cache2k:cache2k-core:$rootProject.ext.cache2kVersion"
 
