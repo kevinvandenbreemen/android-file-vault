@@ -1,6 +1,5 @@
 package com.vandenbreemen.secretcamera
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -13,6 +12,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.vandenbreemen.kevindesignsystem.views.KDSSystemActivity
 import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.FileListItemView
 import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.SFSActionsPresenter
 import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.SFSActionsRouter
@@ -28,7 +28,7 @@ import javax.inject.Inject
  *
  * @author kevin
  */
-class SFSActionsActivity : Activity(), SFSActionsView, SFSActionsRouter {
+class SFSActionsActivity : KDSSystemActivity(), SFSActionsView, SFSActionsRouter {
 
     companion object {
         var loading: BackgroundCompletionCallback? = null
@@ -46,7 +46,14 @@ class SFSActionsActivity : Activity(), SFSActionsView, SFSActionsRouter {
         super.onCreate(savedInstanceState)
 
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
-        setContentView(R.layout.activity_sfs_actions)
+        findViewById<View>(android.R.id.content)
+                .setBackgroundColor(getColor(R.color.kds_background_default))
+
+        findViewById<ViewGroup>(com.vandenbreemen.kevindesignsystem.R.id.mainContent)
+                .addView(layoutInflater.inflate(R.layout.activity_sfs_actions,
+                        findViewById<ViewGroup>(com.vandenbreemen.kevindesignsystem.R.id.mainContent),
+                        false
+                ))
 
         val viewManager = LinearLayoutManager(this)
         this.adapter = ListFilesAdapter(filesList)
