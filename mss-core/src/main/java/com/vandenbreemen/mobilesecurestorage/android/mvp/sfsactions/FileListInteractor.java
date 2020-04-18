@@ -1,7 +1,6 @@
 package com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions;
 
 import com.vandenbreemen.mobilesecurestorage.file.api.FileType;
-import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes;
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem;
 
 import java.util.List;
@@ -21,7 +20,7 @@ public class FileListInteractor {
     public List<FileListItemView> getFileList() {
         return sfs.listFiles().stream().map((item) -> {
 
-            FileType fileType = FileTypes.UNKNOWN;
+            FileType fileType = null;
             try {
                 fileType = sfs.getDetails(item).getFileType();
             } catch (Exception cex) {

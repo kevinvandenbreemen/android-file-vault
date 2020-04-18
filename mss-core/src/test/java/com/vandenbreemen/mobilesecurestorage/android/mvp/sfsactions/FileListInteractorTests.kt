@@ -7,6 +7,7 @@ import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import junit.framework.TestCase
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNull
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -70,6 +71,20 @@ class FileListInteractorTests {
         //  Assert
         assertEquals("file1", item.name)
         assertEquals(FileTypes.DATA, item.fileType)
+    }
+
+    @Test
+    fun `If a file does not have a file type then the file type should be null`() {
+        //  Arrange
+        sfs.touch("file1")
+        val interactor = FileListInteractor(sfs)
+
+        //  Act
+        val list = interactor.getFileList()
+        val item = list[0]
+
+        //  Assert
+        assertNull(item.fileType)
     }
 
 }
