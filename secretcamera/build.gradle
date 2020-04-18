@@ -39,6 +39,12 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
+
+    lintOptions {
+        lintConfig file("../lint.xml")
+        abortOnError false
+    }
+
     // AndroidX Dependencies
     useLibrary 'android.test.runner'
     useLibrary 'android.test.base'

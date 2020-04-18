@@ -72,6 +72,9 @@ class Gallery : AppCompatActivity(), GalleryView {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        super.onActivityResult(requestCode, resultCode, data)
+
         if (requestCode == ACTION_IMPORT) {
             if (resultCode == Activity.RESULT_OK) {
                 val credentials = data!!.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)

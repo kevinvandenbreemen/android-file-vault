@@ -1,0 +1,6 @@
+<lint>
+    <issue id="InvalidPackage">
+        <ignore path="**/cache2k-core*.jar" />
+        <ignore path="**/com.madgag.spongycastle/**/prov*.jar" />
+    </issue>
+</lint>
