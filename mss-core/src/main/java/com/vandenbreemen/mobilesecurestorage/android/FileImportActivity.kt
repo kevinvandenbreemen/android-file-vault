@@ -106,6 +106,7 @@ class FileImportActivity : KDSSystemActivity(), FileImportView {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == SELECT_DIR) {
             if (resultCode == RESULT_OK) {
                 this.directoryToImport = data!!.getParcelableExtra<FileWorkflow>(PARM_WORKFLOW_NAME).fileOrDirectory
