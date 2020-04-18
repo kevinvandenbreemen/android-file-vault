@@ -3,10 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sfsActionsContainer"
+    android:background="@color/kds_background_default"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <Button
+        style="@style/kds_default_button"
         android:id="@+id/changePassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,7 +35,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <include
         layout="@layout/layout_progress_container"
@@ -41,6 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:visibility="gone"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
