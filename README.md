@@ -24,3 +24,34 @@ Below you will find general designs as well as additional details on interesting
 ### Persistence
 
 ![](./documentation/resource/SFS.svg)
+
+## Adding to the Project
+This project relies heavily on the MVP (Model View Presenter) design pattern.  This allows me to develop interactors for all workflows and use cases.  These
+interactors should be able to exist independently of the platform in which they are being used.
+
+### Defining a Use Case
+First develop interactors that will execute the business logic.  Ideally these should only be aware of the SFS technology and whatever types of data they need in order to function.  It would be preferable
+for interactors not to need to know about the Rx library.  This will let you more easily unit test them without needing to rely on complicated integration tests.
+
+### Calling the Interactors
+Because the system relies on the MVP design pattern you will need to define a model that will orchestrate the use of the interactors.  The model itself should be usable
+in an asynchronous manner.  Prefer using the computation threads for most work involving the model.
+
+For example, consider the picture viewer model below:
+
+```
+    fun loadImageForDisplay(fileName: String): Single<Bitmap> {
+        return Single.create(SingleOnSubscribe<ByteArray> {
+            val gallerySettings = getGallerySettings()
+            gallerySettings.currentFile = fileName
+            saveGallerySettings(gallerySettings)
+            it.onSuccess(imageFilesInteractor.loadImageBytes(gallerySettings.currentFile!!))
+        })
+                .subscribeOn(Schedulers.computation())
+                .flatMap { imageBytes ->
+                    androidImageInteractor.convertByteArrayToBitmap(imageBytes).observeOn(AndroidSchedulers.mainThread())
+                }
+    }
+```
+
+This method loads the image with the given filename for display.  It schedules the operation to run on the computation schedule.
