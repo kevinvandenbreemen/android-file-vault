@@ -43,4 +43,5 @@ ext{
     androidXVersion="1.0.0"
     kdsVersion="1.0.5231a"
     rxAndroidVersion="2.1.1"
+    junitVersion="5.6.2"
 }

@@ -5,7 +5,10 @@ import java.io.IOException;
 
 /**
  * <h2>Intro</h2>
- * <p>
+ * <p>Constants and utility functions for working with files in your tests
+ * <ul>
+ *     <li/>Use {@link #getTestFile(String, boolean)} to create a new file for testing
+ * </ul>
  * <h2>Other Details</h2>
  *
  * @author kevin
