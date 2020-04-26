@@ -25,6 +25,11 @@ Below you will find general designs as well as additional details on interesting
 
 ![](./documentation/resource/SFS.svg)
 
+### File Explorer
+This is the framework I hope to use/extend for defining a general purpose file explorer.  Eventually I want to do stuff like rename/delete files as well as possibly create directories for them.
+
+![](./documentation/resource/SFS-File%20Explorer%20Participants.svg)
+
 ## Adding to the Project
 This project relies heavily on the MVP (Model View Presenter) design pattern.  This allows me to develop interactors for all workflows and use cases.  These
 interactors should be able to exist independently of the platform in which they are being used.
