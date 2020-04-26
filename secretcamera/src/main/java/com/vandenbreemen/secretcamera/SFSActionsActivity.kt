@@ -56,7 +56,7 @@ class SFSActionsActivity : KDSSystemActivity(), SFSActionsView, SFSActionsRouter
                 ))
 
         val viewManager = LinearLayoutManager(this)
-        this.adapter = ListFilesAdapter(filesList)
+        this.adapter = ListFilesAdapter(filesList, FileTypeIconDrawableProvider(this))
         fileListRecyclerView.adapter = this.adapter
         fileListRecyclerView.layoutManager = viewManager
     }

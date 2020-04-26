@@ -5,19 +5,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/listMargin"
-    android:background="@drawable/kds_clickable_item"
+    android:background="@drawable/kds_progress_bar"
     android:maxHeight="75dp">
+
+    <ImageView
+        android:id="@+id/fileTypeIcon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/margin"
+        android:maxWidth="75dp"
+        android:maxHeight="75dp"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_icon_unknown" />
 
     <TextView
         android:id="@+id/fileName"
         style="@style/kds_text"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text=""
+        android:layout_margin="@dimen/margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/fileTypeIcon"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="file.dat" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

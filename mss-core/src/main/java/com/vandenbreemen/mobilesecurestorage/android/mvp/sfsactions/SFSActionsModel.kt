@@ -14,6 +14,7 @@ import io.reactivex.schedulers.Schedulers.computation
 class SFSActionsModel(credentials: SFSCredentials): Model(credentials) {
 
     private lateinit var fileListInteractor: FileListInteractor
+    private lateinit var fileTypeDisplayInteractor: FileTypeDisplayInteractor
 
     override fun onClose() {
 
@@ -21,6 +22,7 @@ class SFSActionsModel(credentials: SFSCredentials): Model(credentials) {
 
     override fun setup() {
         this.fileListInteractor = FileListInteractor(sfs)
+        this.fileTypeDisplayInteractor = FileTypeDisplayInteractor(sfs)
     }
 
     fun changePassword(currentPassword: String, newPassword: String, reEnterNewPassword: String, progress: ProgressListener<Long>): Single<SecureString> {
@@ -59,7 +61,10 @@ class SFSActionsModel(credentials: SFSCredentials): Model(credentials) {
 
     fun listFiles(): Single<List<FileListItemView>> {
         return Single.create(SingleOnSubscribe<List<FileListItemView>> { subscriber ->
-            subscriber.onSuccess(this.fileListInteractor.fileList)
+            subscriber.onSuccess(this.fileListInteractor.fileList.map { item ->
+                item.icon = fileTypeDisplayInteractor.iconFor(item.name)
+                item
+            })
             return@SingleOnSubscribe
         }).subscribeOn(computation()).observeOn(mainThread())
     }
