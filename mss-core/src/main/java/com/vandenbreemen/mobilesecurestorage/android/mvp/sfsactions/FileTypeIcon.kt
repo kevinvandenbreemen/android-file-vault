@@ -10,7 +10,9 @@ interface FileTypeIcon {
 
 enum class CoreFileTypeIcons : FileTypeIcon {
 
-    UNKNOWN
+    UNKNOWN,
+    SYSTEM,
+    DATA
     ;
 
 }

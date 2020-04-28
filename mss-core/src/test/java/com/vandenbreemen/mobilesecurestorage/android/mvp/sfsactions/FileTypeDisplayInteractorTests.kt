@@ -2,6 +2,7 @@ package com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions
 
 import com.vandenbreemen.mobilesecurestorage.TestConstants
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import junit.framework.TestCase.assertEquals
@@ -47,5 +48,35 @@ class FileTypeDisplayInteractorTests {
         assertEquals(CoreFileTypeIcons.UNKNOWN, icon)
 
     }
+
+    @Test
+    fun `get icon for system file should return system icon`() {
+        //  Arrange
+        sfs.touch("sys")
+        sfs.setFileType("sys", FileTypes.SYSTEM)
+        val interactor = FileTypeDisplayInteractor(sfs)
+
+
+        //  Act
+        val icon = interactor.iconFor("sys")
+
+        //  Assert
+        assertEquals(CoreFileTypeIcons.SYSTEM, icon)
+    }
+
+//    @Test
+//    fun `get icon for data file should return data icon`() {
+//        //  Arrange
+//        sfs.touch("sys")
+//        sfs.setFileType("sys", FileTypes.DATA)
+//        val interactor = FileTypeDisplayInteractor(sfs)
+//
+//
+//        //  Act
+//        val icon = interactor.iconFor("sys")
+//
+//        //  Assert
+//        assertEquals(CoreFileTypeIcons.DATA, icon)
+//    }
 
 }
