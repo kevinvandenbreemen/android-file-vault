@@ -16,6 +16,8 @@ class FileTypeDisplayInteractor(private val sfs: SecureFileSystem) {
                 metadata.getFileType()?.let { fileType ->
                     if (fileType == FileTypes.SYSTEM) {
                         fileTypeIcon = CoreFileTypeIcons.SYSTEM
+                    } else if (fileType == FileTypes.DATA) {
+                        fileTypeIcon = CoreFileTypeIcons.DATA
                     }
                 }
 

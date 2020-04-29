@@ -64,19 +64,19 @@ class FileTypeDisplayInteractorTests {
         assertEquals(CoreFileTypeIcons.SYSTEM, icon)
     }
 
-//    @Test
-//    fun `get icon for data file should return data icon`() {
-//        //  Arrange
-//        sfs.touch("sys")
-//        sfs.setFileType("sys", FileTypes.DATA)
-//        val interactor = FileTypeDisplayInteractor(sfs)
-//
-//
-//        //  Act
-//        val icon = interactor.iconFor("sys")
-//
-//        //  Assert
-//        assertEquals(CoreFileTypeIcons.DATA, icon)
-//    }
+    @Test
+    fun `get icon for data file should return data icon`() {
+        //  Arrange
+        sfs.touch("sys")
+        sfs.setFileType("sys", FileTypes.DATA)
+        val interactor = FileTypeDisplayInteractor(sfs)
+
+
+        //  Act
+        val icon = interactor.iconFor("sys")
+
+        //  Assert
+        assertEquals(CoreFileTypeIcons.DATA, icon)
+    }
 
 }

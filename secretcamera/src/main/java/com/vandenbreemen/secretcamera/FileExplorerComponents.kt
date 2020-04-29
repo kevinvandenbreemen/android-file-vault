@@ -7,12 +7,18 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.CoreFileTypeIcons
 import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.FileListItemView
 import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.FileTypeIcon
 
 class FileTypeIconDrawableProvider(private val context: Context) {
 
     fun getDrawableFor(fileType: FileTypeIcon): Drawable? {
+        if (fileType == CoreFileTypeIcons.DATA) {
+            return context.getDrawable(com.vandenbreemen.mobilesecurestorage.R.drawable.ic_icon_datafile)
+        } else if (fileType == CoreFileTypeIcons.SYSTEM) {
+            return context.getDrawable(com.vandenbreemen.mobilesecurestorage.R.drawable.ic_icon_systemfile)
+        }
         return context.getDrawable(com.vandenbreemen.mobilesecurestorage.R.drawable.ic_icon_unknown)
     }
 
