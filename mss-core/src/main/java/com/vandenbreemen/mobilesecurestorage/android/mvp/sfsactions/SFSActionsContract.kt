@@ -48,4 +48,6 @@ interface FileActionsPresenter : PresenterContract {
 
 interface FileActionsView : View {
 
+    fun fileRenameSuccess(newName: String)
+
 }

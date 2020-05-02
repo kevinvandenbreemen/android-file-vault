@@ -12,7 +12,9 @@ class FileActionsPresenterImpl(private val sfsPresenter: SFSActionsPresenter, pr
     private var view: FileActionsView? = null
 
     override fun rename(newName: String) {
-        model.rename(newName).observeOn(mainThread()).subscribe({ b -> }, { error ->
+        model.rename(newName).observeOn(mainThread()).subscribe({ b ->
+            view?.fileRenameSuccess(newName)
+        }, { error ->
             if (error is ApplicationError) {
                 view?.showError(error)
             } else {
