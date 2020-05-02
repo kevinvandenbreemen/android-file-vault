@@ -42,7 +42,7 @@ class FileItemViewHolder(val group: ViewGroup) : RecyclerView.ViewHolder(group)
  *
  * @author kevin
  */
-class ListFilesAdapter(private val sfsActionsPresenter: SFSActionsPresenter, private val files: List<FileListItemView>, private val drawableProvider: FileTypeIconDrawableProvider) : RecyclerView.Adapter<FileItemViewHolder>() {
+class ListFilesAdapter(private val recyclerView: RecyclerView, private val sfsActionsPresenter: SFSActionsPresenter, private val files: List<FileListItemView>, private val drawableProvider: FileTypeIconDrawableProvider) : RecyclerView.Adapter<FileItemViewHolder>() {
 
     private var fileActionsPresenter: FileActionsPresenter? = null
 
@@ -70,6 +70,7 @@ class ListFilesAdapter(private val sfsActionsPresenter: SFSActionsPresenter, pri
         holder.group.setOnLongClickListener { view ->
 
             //  Create dialog with actions
+            val savedState = recyclerView.layoutManager?.onSaveInstanceState()
 
             val builder = AlertDialog.Builder(view.context)
             val fileActionsView = LayoutInflater.from(view.context).inflate(com.vandenbreemen.mobilesecurestorage.R.layout.layout_file_actions, null)
@@ -110,6 +111,9 @@ class ListFilesAdapter(private val sfsActionsPresenter: SFSActionsPresenter, pri
 
                 override fun fileRenameSuccess(newName: String) {
                     sfsActionsPresenter.listFiles()
+                    savedState?.let { state ->
+                        recyclerView.layoutManager?.onRestoreInstanceState(state)
+                    }
                 }
 
                 override fun onReadyToUse() {
