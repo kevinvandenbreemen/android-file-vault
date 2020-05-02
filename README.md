@@ -26,9 +26,18 @@ Below you will find general designs as well as additional details on interesting
 ![](./documentation/resource/SFS.svg)
 
 ### File Explorer
-This is the framework I hope to use/extend for defining a general purpose file explorer.  Eventually I want to do stuff like rename/delete files as well as possibly create directories for them.
+This is the framework I hope to use/extend for defining a general purpose file explorer.  
+
+Currently the screen looks like this:
+![](./documentation/resource/filesListScreenshot.png)
+
+Eventually I want to do stuff like rename/delete files as well as possibly create directories for them.
 
 ![](./documentation/resource/SFS-File%20Explorer%20Participants.svg)
+
+
+#### Registering your Own Icons
+You can use the FileTypeDisplayExtender class to register icons for specific file types.  Generally you should add code to do this to your app's `onCreate()` method.
 
 ## Adding to the Project
 This project relies heavily on the MVP (Model View Presenter) design pattern.  This allows me to develop interactors for all workflows and use cases.  These

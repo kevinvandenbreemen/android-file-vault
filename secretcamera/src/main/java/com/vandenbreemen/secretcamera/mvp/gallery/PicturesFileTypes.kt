@@ -1,5 +1,6 @@
 package com.vandenbreemen.secretcamera.mvp.gallery
 
+import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.FileTypeIcon
 import com.vandenbreemen.mobilesecurestorage.file.api.FileType
 import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
 import com.vandenbreemen.secretcamera.api.SEC_CAM_BYTE
@@ -22,4 +23,8 @@ enum class PicturesFileTypes(override val firstByte: Byte, override val secondBy
         }
     }
 
+}
+
+enum class PictureFileIcons : FileTypeIcon {
+    IMAGE
 }
