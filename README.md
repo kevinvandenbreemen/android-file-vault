@@ -29,6 +29,7 @@ Below you will find general designs as well as additional details on interesting
 This is the framework I hope to use/extend for defining a general purpose file explorer.  
 
 Currently the screen looks like this:
+
 ![](./documentation/resource/filesListScreenshot.png)
 
 Eventually I want to do stuff like rename/delete files as well as possibly create directories for them.
