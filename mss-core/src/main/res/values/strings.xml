@@ -13,4 +13,7 @@
     <string name="actions">Main Menu</string>
     <string name="importing">Importing files...</string>
     <string name="please_provide_password">Please specify password to reload the File</string>
+    <string name="specify_file_name">Specify Filename</string>
+    <string name="rename">Rename</string>
+    <string name="rename_label">Filename</string>
 </resources>
