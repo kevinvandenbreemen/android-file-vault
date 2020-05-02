@@ -63,4 +63,10 @@ class SFSActionsPresenterImpl(val view: SFSActionsView, private val router: SFSA
             view.displayFileList(files)
         }
     }
+
+    override fun actionsFor(fileName: String, withView: FileActionsView): FileActionsPresenter {
+        val presenter = FileActionsPresenterImpl(this, model.fileActionsModel(fileName))
+        presenter.setView(withView)
+        return presenter
+    }
 }

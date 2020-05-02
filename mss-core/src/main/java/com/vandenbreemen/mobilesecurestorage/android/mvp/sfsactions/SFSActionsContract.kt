@@ -32,4 +32,20 @@ interface SFSActionsPresenter : PresenterContract {
     fun cancelChangePassword()
     fun listFiles()
 
+    /**
+     * Start workflow for performing actions on a specific file
+     */
+    fun actionsFor(fileName: String, withView: FileActionsView): FileActionsPresenter
+
+}
+
+interface FileActionsPresenter : PresenterContract {
+
+    fun rename(newName: String)
+    fun setView(view: FileActionsView)
+
+}
+
+interface FileActionsView : View {
+
 }

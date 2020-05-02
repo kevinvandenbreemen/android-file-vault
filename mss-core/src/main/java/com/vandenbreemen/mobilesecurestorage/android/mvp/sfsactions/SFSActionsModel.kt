@@ -2,6 +2,7 @@ package com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions
 
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
+import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime
 import com.vandenbreemen.mobilesecurestorage.patterns.ProgressListener
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
@@ -11,6 +12,9 @@ import io.reactivex.SingleOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.schedulers.Schedulers.computation
 
+/**
+ * Application logic for performing actions involving the entire file system
+ */
 class SFSActionsModel(credentials: SFSCredentials): Model(credentials) {
 
     private lateinit var fileListInteractor: FileListInteractor
@@ -26,8 +30,7 @@ class SFSActionsModel(credentials: SFSCredentials): Model(credentials) {
     }
 
     fun changePassword(currentPassword: String, newPassword: String, reEnterNewPassword: String, progress: ProgressListener<Long>): Single<SecureString> {
-        return Single.create(SingleOnSubscribe<SecureString> {
-            subscriber ->
+        return Single.create(SingleOnSubscribe<SecureString> { subscriber ->
 
             if (newPassword.isBlank()) {
                 subscriber.onError(ApplicationError("Please specify a new password"))
@@ -67,5 +70,16 @@ class SFSActionsModel(credentials: SFSCredentials): Model(credentials) {
             })
             return@SingleOnSubscribe
         }).subscribeOn(computation()).observeOn(mainThread())
+    }
+
+    /**
+     * Create file actions model for a specific file
+     */
+    fun fileActionsModel(fileName: String): FileActionsModel {
+        if (!sfs.exists(fileName)) {
+            throw MSSRuntime("File $fileName does not exist")
+        }
+
+        return FileActionsModel(FileActionsInteractor(sfs, fileName))
     }
 }
