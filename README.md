@@ -21,6 +21,11 @@ Below you will find general designs as well as additional details on interesting
 <a name="general_design"></a>
 ## General Design
 
+### Encryption
+android-file-vault uses the [SpongyCastle](https://rtyley.github.io/spongycastle/) (an Android version of [Bouncy Castle](https://www.bouncycastle.org/)) encryption library.  Encryption is handled by a few specialized classes that delegate to this library.
+
+![](./documentation/resource/SFS-Crypto.svg)
+
 ### Persistence
 
 ![](./documentation/resource/SFS.svg)
