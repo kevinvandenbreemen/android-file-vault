@@ -10,6 +10,9 @@
 
 [Components](#components)
 
+## IMPORTANT
+This library is still under heavy development.  It should not be used for any applications until that development is complete.  There are several outstanding tasks such as initialization vector generation, key derivation, hashing, etc. that need to be completed first.
+
 <a name="project_purposes"></a>
 ## Project Purposes
 This project allows me to investigate storing and working with encrypted data in a mobile environment.  It contains various simple demonstration applications, such as notes, projects, and a camera app.  The project utilizes RxJava to allow for asynchronous encryption and decryption of data.  It also makes use of simple MVP design patterns to allow me to create re-usable and testable software components.
