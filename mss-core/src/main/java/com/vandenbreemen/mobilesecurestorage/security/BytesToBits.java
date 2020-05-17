@@ -8,11 +8,6 @@ import org.spongycastle.jcajce.provider.digest.SHA256;
 import org.spongycastle.jcajce.provider.digest.SHA3;
 import org.spongycastle.util.Arrays;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.BitSet;
 
 /**
@@ -111,28 +106,21 @@ public class BytesToBits {
     }
 
     /**
-     * Generate a unique hash based on the encrypted key
-     *
-     * @param encryptedKey
+     * For debugging - Generates a string representing the bytes
+     * @param bytes
      * @return
      */
-    public static String hashKey(byte[] encryptedKey) {
-        try {
-            MessageDigest m = MessageDigest.getInstance("MD5");
-            m.reset();
-            m.update(encryptedKey);
-            byte[] digest = m.digest();
-            BigInteger bigInt = new BigInteger(1, digest);
-            String hashtext = bigInt.toString(16);
-            // Now we need to zero pad it if you actually want the full 32 chars.
-            while (hashtext.length() < 32) {
-                hashtext = "0" + hashtext;
-            }
-            return hashtext;
-        } catch (NoSuchAlgorithmException ne) {
-            ne.printStackTrace();
-            throw new MSSRuntime("Platform does not support MD5s...");
+    public static String toByteString(byte[] bytes) {
+        StringBuilder bld = new StringBuilder();
+        for (byte b : bytes) {
+
+            //  Convert to unsigned byte so it's easier to compare with C output
+            int uint = b & 0xFF;
+
+            bld.append("[" + uint + "] ");
         }
+
+        return bld.toString();
     }
 
     /**
@@ -198,33 +186,6 @@ public class BytesToBits {
     }
 
     /**
-     * Generates a secure salt using secure prng
-     *
-     * @return
-     */
-    public static byte[] generateSalt() {
-        byte[] salt = new byte[SALT_LENGTH];    //	Twice as long as regular hash output
-        //	See also https://crackstation.net/hashing-security.htm
-        Entropy.get().randomFillBytes(salt);
-        return salt;
-    }
-
-    /**
-     * Writes the byte array to the given file
-     *
-     * @param bytes
-     * @param file
-     */
-    public static void writeToFile(byte[] bytes, File file) {
-        try (FileOutputStream fos = new FileOutputStream(file)) {
-            fos.write(bytes);
-            fos.flush();
-        } catch (Exception ex) {
-            SystemLog.get().error("Could not write to file", ex);
-        }
-    }
-
-    /**
      * Gets appropriate bytes for use in encryption
      *
      * @param key
@@ -237,16 +198,6 @@ public class BytesToBits {
             SystemLog.get().error("Error getting bytes", ex);
             return null;
         }
-    }
-
-    /**
-     * Specify the bit generator you wish to use for padding
-     *
-     * @param generator
-     * @return
-     */
-    public void setBitGenerator(BitGenerator generator) {
-        this.bitGenerator = generator;
     }
 
     /**
