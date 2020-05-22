@@ -31,6 +31,7 @@ interface SFSActionsPresenter : PresenterContract {
     fun changePassword(currentPassword: String, newPassword: String, reEnterNewPassword: String)
     fun cancelChangePassword()
     fun listFiles()
+    fun sortFiles(ascending: Boolean)
 
     /**
      * Start workflow for performing actions on a specific file

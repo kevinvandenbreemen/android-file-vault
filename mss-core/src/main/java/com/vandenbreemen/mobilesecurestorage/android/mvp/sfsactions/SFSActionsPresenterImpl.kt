@@ -64,6 +64,12 @@ class SFSActionsPresenterImpl(val view: SFSActionsView, private val router: SFSA
         }
     }
 
+    override fun sortFiles(ascending: Boolean) {
+        model.sortFiles(ascending).subscribe { files ->
+            view.displayFileList(files)
+        }
+    }
+
     override fun actionsFor(fileName: String, withView: FileActionsView): FileActionsPresenter {
         val presenter = FileActionsPresenterImpl(this, model.fileActionsModel(fileName))
         presenter.setView(withView)

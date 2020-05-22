@@ -72,6 +72,16 @@ class SFSActionsModel(credentials: SFSCredentials): Model(credentials) {
         }).subscribeOn(computation()).observeOn(mainThread())
     }
 
+    fun sortFiles(ascending: Boolean): Single<List<FileListItemView>> {
+        return Single.create(SingleOnSubscribe<List<FileListItemView>> { subscriber ->
+            subscriber.onSuccess(this.fileListInteractor.sortByName(ascending).map { item ->
+                item.icon = fileTypeDisplayInteractor.iconFor(item.name)
+                item
+            })
+            return@SingleOnSubscribe
+        }).subscribeOn(computation()).observeOn(mainThread())
+    }
+
     /**
      * Create file actions model for a specific file
      */
