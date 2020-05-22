@@ -87,4 +87,40 @@ class FileListInteractorTests {
         assertNull(item.fileType)
     }
 
+    @Test
+    fun `sorts files alphabetically in ascending order`() {
+        //  Arrange
+        val interactor = FileListInteractor(sfs)
+        sfs.touch("a");
+        sfs.touch("c");
+        sfs.touch("b");
+
+
+        //  Act
+        val list = interactor.sortByName(true);
+
+        //  Assert
+        assertEquals(list[0].name, "a")
+        assertEquals(list[1].name, "b")
+        assertEquals(list[2].name, "c")
+    }
+
+    @Test
+    fun `sorts files alphabetically in descending order`() {
+        //  Arrange
+        val interactor = FileListInteractor(sfs)
+        sfs.touch("a");
+        sfs.touch("c");
+        sfs.touch("b");
+
+
+        //  Act
+        val list = interactor.sortByName(false);
+
+        //  Assert
+        assertEquals(list[0].name, "c")
+        assertEquals(list[1].name, "b")
+        assertEquals(list[2].name, "a")
+    }
+
 }
