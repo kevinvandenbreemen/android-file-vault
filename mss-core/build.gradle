@@ -68,6 +68,8 @@ dependencies {
     api "androidx.cardview:cardview:$rootProject.ext.androidXVersion"
     api "org.cache2k:cache2k-core:$rootProject.ext.cache2kVersion"
 
+    compileOnly 'com.github.pengrad:jdk9-deps:1.0'
+
     //  Testing dependencies
     testImplementation "org.junit.jupiter:junit-jupiter-api:$rootProject.ext.junitVersion"
     testImplementation "org.robolectric:robolectric:$rootProject.ext.robolectricVersion"
