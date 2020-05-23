@@ -21,6 +21,7 @@ import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.di.injectSFSActions
 import com.vandenbreemen.test.BackgroundCompletionCallback
+import kotlinx.android.synthetic.main.activity_sfs_actions.*
 import kotlinx.android.synthetic.main.layout_sfs_list.*
 import javax.inject.Inject
 
@@ -59,6 +60,15 @@ class SFSActionsActivity : KDSSystemActivity(), SFSActionsView, SFSActionsRouter
         this.adapter = ListFilesAdapter(fileListRecyclerView, presenter, filesList, FileTypeIconDrawableProvider(this))
         fileListRecyclerView.adapter = this.adapter
         fileListRecyclerView.layoutManager = viewManager
+
+        //  Actions
+        sortAscending.setOnClickListener { _ ->
+            presenter.sortFiles(true)
+        }
+
+        sortDescending.setOnClickListener { _ ->
+            presenter.sortFiles(false)
+        }
     }
 
     fun onClickChangePassword(view: View) {
