@@ -17,5 +17,5 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 9
-    - name: Build with Gradle
-      run: ./gradlew build
+    - name: Test with Gradle
+      run: ./gradlew test
