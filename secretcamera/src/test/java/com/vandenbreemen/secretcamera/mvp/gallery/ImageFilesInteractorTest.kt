@@ -3,7 +3,9 @@ package com.vandenbreemen.secretcamera.mvp.gallery
 import android.os.Environment
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.FileMeta
+import com.vandenbreemen.mobilesecurestorage.file.api.FileTypes
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
+import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -16,7 +18,6 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowLog
 import java.io.File
-import java.lang.Exception
 
 /**
  * <h2>Intro</h2>
@@ -102,6 +103,32 @@ class ImageFilesInteractorTest {
 
         imageFilesInteractor.listImageFiles()
 
+    }
+
+    @Test
+    fun `Should note delete non-image files`() {
+        //  Arrange
+        sfs().storeObject("NotAnImage", "This is a test")
+        sfs().setFileMetadata("NotAnImage", FileMeta(FileTypes.DATA))
+        sfs().storeObject("NoType", arrayListOf("Larry", "Curly", "Moe"))
+
+        imageFilesInteractor = ImageFilesInteractor(sfs())
+
+        //  Act
+        imageFilesInteractor.deleteImages(imageFilesInteractor.listImageFiles())
+
+        assertEquals(2, sfs().extListFiles().size)
+        assertEquals(arrayListOf("Larry", "Curly", "Moe"), sfs().loadFile("NoType"))
+    }
+
+    @Test
+    fun `should delete all image files`() {
+        imageFilesInteractor = ImageFilesInteractor(sfs())
+
+        //  Act
+        imageFilesInteractor.deleteImages(imageFilesInteractor.listImageFiles())
+
+        assertEquals(0, sfs().extListFiles().size)
     }
 
 }
