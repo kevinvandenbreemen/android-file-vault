@@ -18,7 +18,7 @@ const val SELECTED_STRING = "__SELECTED_STRING"
 class StringSelectorWorkflow() : Parcelable {
 
     constructor(activity: Class<out Activity>, items: ArrayList<String>) : this() {
-        this.activityClassStr = activity.canonicalName
+        this.activityClassStr = activity.canonicalName!!
         this.items = items
     }
 
@@ -34,14 +34,14 @@ class StringSelectorWorkflow() : Parcelable {
 
     lateinit var items: List<String>
 
-    var onCancel: String = MainActivity::class.java.canonicalName
+    var onCancel: String = MainActivity::class.java.canonicalName!!
 
     constructor(parcel: Parcel) : this() {
-        activityClassStr = parcel.readString()
-        selected = parcel.readString()
+        parcel.readString()?.let { activityClassStr = it }
+        parcel.readString()?.let { selected = it }
         credentials = parcel.readParcelable(SFSCredentials::class.java.classLoader)
-        items = parcel.createStringArrayList()
-        onCancel = parcel.readString()
+        parcel.createStringArrayList()?.let { items = it }
+        parcel.readString()?.let { onCancel = it }
     }
 
     fun getActivityClass(): Class<in Activity> = Class.forName(activityClassStr) as Class<in Activity>
@@ -49,7 +49,7 @@ class StringSelectorWorkflow() : Parcelable {
     fun getActivityOnCancel(): Class<in Activity> = Class.forName(onCancel) as Class<in Activity>
 
     fun setOnCancelActivity(cancelClass: Class<out Activity>): StringSelectorWorkflow {
-        this.onCancel = cancelClass.canonicalName
+        this.onCancel = cancelClass.canonicalName!!
         return this
     }
 
@@ -82,7 +82,7 @@ class StringSelection(val selectedString: String) : Parcelable {
 
     var credentials: SFSCredentials? = null
 
-    constructor(parcel: Parcel) : this(parcel.readString()) {
+    constructor(parcel: Parcel) : this(parcel.readString()!!) {
         credentials = parcel.readParcelable(SFSCredentials::class.java.classLoader)
     }
 
@@ -147,12 +147,15 @@ class StringSelectorActivity : Activity() {
             val selected = adapter.getItem(position)
             val intent = Intent(this, workflow.getActivityClass())
 
-            workflow.credentials?.let {
-                intent.putExtra(SELECTED_STRING, StringSelection(selected, it.copy()))
-                it.finalize()
-            } ?: run {
-                intent.putExtra(SELECTED_STRING, StringSelection(selected))
+            selected?.let {
+                workflow.credentials?.let {
+                    intent.putExtra(SELECTED_STRING, StringSelection(selected, it.copy()))
+                    it.finalize()
+                } ?: run {
+                    intent.putExtra(SELECTED_STRING, StringSelection(selected))
+                }
             }
+
 
 
             startActivity(intent)
