@@ -57,13 +57,4 @@ class FileLoaderTest {
         assertEquals("File name for import", expectedName, fileLoader.getFilenameToUseWhenImporting(TestConstants.TEST_RES_IMG_1))
     }
 
-    @Test
-    fun shouldSupportLoadingThreadOnIOScheduler() {
-        val expectedBytes = Bytes.loadBytesFromFile(TestConstants.TEST_RES_IMG_1)
-
-        fileLoader.loadFileReactive(TestConstants.TEST_RES_IMG_1).test()
-                .assertComplete()
-                .assertValue({ importedFileData: ImportedFileData? -> ByteUtils.equals(expectedBytes, importedFileData!!.fileData) })
-    }
-
 }

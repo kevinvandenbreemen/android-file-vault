@@ -141,8 +141,8 @@ class StringSelectorActivity : Activity() {
 
         val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items)
         val listView = findViewById<ListView>(R.id.itemList)
-        listView.setAdapter(adapter)
-        listView.onItemClickListener = AdapterView.OnItemClickListener({ parent, view, position, id ->
+        listView.adapter = adapter
+        listView.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
 
             val selected = adapter.getItem(position)
             val intent = Intent(this, workflow.getActivityClass())
@@ -159,7 +159,7 @@ class StringSelectorActivity : Activity() {
 
 
             startActivity(intent)
-        })
+        }
     }
 
     fun onCancel(view: View) {
