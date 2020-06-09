@@ -6,7 +6,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/colorPrimaryDark">
 
+
     <ImageView
+        tools:src="@drawable/ic_icon_picture"
+        tools:visibility="visible"
         android:minHeight="@dimen/img_select_item_height"
         android:minWidth="@dimen/img_select_item_width"
         android:id="@+id/preview"
@@ -31,7 +34,25 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/preview" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/fileName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/kds_section_background"
+        android:elevation="5dp"
+        android:maxLines="1"
+        android:minWidth="80dp"
+        android:minHeight="30dp"
+        android:padding="4dp"
+        android:textColor="@color/kds_text_color"
+        android:textSize="5pt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="image_with_long_name_and_shit.jpg" />
 
     <CheckBox
         android:id="@+id/checkBox"
