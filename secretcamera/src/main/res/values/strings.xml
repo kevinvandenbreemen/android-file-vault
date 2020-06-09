@@ -29,4 +29,5 @@
     <string name="specify_project_details">Enter project details/description</string>
     <string name="detail_file_name">Filename</string>
     <string name="detail_file_size">Size (chunks)</string>
+    <string name="files_will_be_deleted">The following Files will be Deleted</string>
 </resources>
