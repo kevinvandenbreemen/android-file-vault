@@ -3,10 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
     android:layout_width="match_parent"
-
     android:layout_height="match_parent"
     android:background="@drawable/kds_attention_background"
-    android:minHeight="250dp">
+    android:minHeight="350dp">
 
     <TextView
         android:id="@+id/header"
@@ -26,6 +25,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="@dimen/margin"
+        android:padding="@dimen/margin"
         android:background="@drawable/kds_section_background"
         app:layout_constraintBottom_toTopOf="@+id/cancel_button"
         app:layout_constraintEnd_toEndOf="parent"

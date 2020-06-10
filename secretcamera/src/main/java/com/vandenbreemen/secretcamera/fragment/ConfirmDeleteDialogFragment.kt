@@ -1,5 +1,7 @@
 package com.vandenbreemen.secretcamera.fragment
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -35,7 +37,7 @@ class ConfirmationAdapter(private val items: List<String>, private val parent: C
  *
  * @author kevin
  */
-class ConfirmDeleteDialogFragment(private val fileNames: List<String>) : DialogFragment() {
+class ConfirmDeleteDialogFragment(private val fileNames: List<String>, private val onConfirmationCallback: () -> Unit) : DialogFragment() {
 
     private lateinit var adapter: ConfirmationAdapter
 
@@ -45,12 +47,31 @@ class ConfirmDeleteDialogFragment(private val fileNames: List<String>) : DialogF
         this.adapter = ConfirmationAdapter(fileNames, this)
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        dialog?.apply {
+            window?.apply {
+                setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            }
+        }
+
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val dialogContent = inflater.inflate(R.layout.layout_delete_confirm, container, false)
         dialogContent.itemList.apply {
             adapter = this@ConfirmDeleteDialogFragment.adapter
             layoutManager = LinearLayoutManager(this@ConfirmDeleteDialogFragment.context)
+        }
+
+        dialogContent.ok_button.setOnClickListener {
+            onConfirmationCallback()
+        }
+
+        dialogContent.cancel_button.setOnClickListener {
+            dismiss()
         }
 
         return dialogContent
