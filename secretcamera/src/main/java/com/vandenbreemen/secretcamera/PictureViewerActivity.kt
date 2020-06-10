@@ -93,11 +93,9 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
     @Inject
     lateinit var presenter: PictureViewerPresenter
 
-    private var adapter: ThumbnailAdapter? = null
-
     private var pictureViewRouterDelegate: PictureViewRouter? = null
 
-    val dialogs = mutableListOf<Dialog>()
+    private val dialogs = mutableListOf<Dialog>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injectPictureViewer(this)
