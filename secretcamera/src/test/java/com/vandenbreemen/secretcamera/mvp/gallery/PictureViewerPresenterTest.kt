@@ -105,7 +105,7 @@ class PictureViewerPresenterTest {
         pictureViewerPresenter.selectImage("tractor.jpg")
 
         //  Act
-        pictureViewerPresenter.deleteSelected()
+        pictureViewerPresenter.confirmDeleteSelected()
 
         //  Assert
         verify(router).hideActions()
