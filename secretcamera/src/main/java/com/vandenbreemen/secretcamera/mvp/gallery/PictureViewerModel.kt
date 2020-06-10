@@ -15,6 +15,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.schedulers.Schedulers.computation
+import java.util.*
 
 /**
  * <h2>Intro</h2>
@@ -37,6 +38,10 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
 
     override fun onClose() {
         imageFilesInteractor.close()
+    }
+
+    fun getSelectedFileNames(): List<String> {
+        return Collections.unmodifiableList(selectedFiles)
     }
 
     override fun setup() {

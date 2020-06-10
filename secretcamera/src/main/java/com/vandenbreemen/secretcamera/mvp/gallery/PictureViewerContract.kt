@@ -65,6 +65,7 @@ interface PictureViewerView : View {
     fun showPictureViewerActions()
     fun hidePictureViewerActions()
     fun displayFileInfo(fileInfo: FileInfo)
+    fun confirmDeleteFiles(filesToDelete: List<String>)
 }
 
 interface PictureViewRouter {
@@ -85,7 +86,17 @@ interface PictureViewerPresenter : PresenterContract {
     fun currentImageFileName(): Single<String>
     fun toggleSelectImages()
     fun selectImage(fileName: String)
+
+    /**
+     * Prompt the user to confirm if deletion will be done
+     */
     fun deleteSelected()
+
+    /**
+     * Actually delete any selected files.  Do not call this unless it's in the context
+     * of a confirmation dialog callback
+     */
+    fun confirmDeleteSelected()
     fun selected(filename: String): Boolean
     fun onSelectPictureViewerActions()
     fun deleteAllImages()
@@ -193,23 +204,27 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
         }
     }
 
-    override fun deleteSelected() {
-        if (model.hasSelectedImages()) {
-            router.hideActions()
-            view.hideImageSelector()
-            view.showLoadingSpinner()
-            addForDisposal(
-                    model.deleteSelected().observeOn(mainThread()).subscribe {
-                        model.hasMoreImages().subscribe { hasMore ->
-                            if (!hasMore) {
-                                router.navigateBack(model.copyCredentials())
-                            } else {
-                                view.hideLoadingSpinner()
-                                displayCurrentImage()
-                            }
+    override fun confirmDeleteSelected() {
+        router.hideActions()
+        view.hideImageSelector()
+        view.showLoadingSpinner()
+        addForDisposal(
+                model.deleteSelected().observeOn(mainThread()).subscribe {
+                    model.hasMoreImages().subscribe { hasMore ->
+                        if (!hasMore) {
+                            router.navigateBack(model.copyCredentials())
+                        } else {
+                            view.hideLoadingSpinner()
+                            displayCurrentImage()
                         }
                     }
-            )
+                }
+        )
+    }
+
+    override fun deleteSelected() {
+        if (model.hasSelectedImages()) {
+            view.confirmDeleteFiles(model.getSelectedFileNames())
         } else {
             view.showError(ApplicationError("No Images Selected For Delete"))
         }

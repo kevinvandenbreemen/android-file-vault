@@ -68,6 +68,7 @@ class ConfirmDeleteDialogFragment(private val fileNames: List<String>, private v
 
         dialogContent.ok_button.setOnClickListener {
             onConfirmationCallback()
+            dismiss()
         }
 
         dialogContent.cancel_button.setOnClickListener {

@@ -13,6 +13,7 @@ import android.view.View.VISIBLE
 import android.widget.*
 import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
@@ -22,6 +23,7 @@ import com.vandenbreemen.mobilesecurestorage.file.api.FileInfo
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Pausable
 import com.vandenbreemen.secretcamera.di.injectPictureViewer
+import com.vandenbreemen.secretcamera.fragment.ConfirmDeleteDialogFragment
 import com.vandenbreemen.secretcamera.fragment.ThumbnailsFragment
 import com.vandenbreemen.secretcamera.mvp.gallery.*
 import kotlinx.android.synthetic.main.activity_picture_viewer.*
@@ -81,6 +83,12 @@ class ThumbnailAdapter(private val fileNames: List<String>,
 
 class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureViewRouter, Pausable, ThumbnailsFragment.ThumbnailScreenListener {
 
+    companion object {
+        /**
+         * Delete confirmation dialog tag
+         */
+        const val TAG_DELETE_DIALOG = "delete_confirmation"
+    }
 
     @Inject
     lateinit var presenter: PictureViewerPresenter
@@ -159,6 +167,10 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
         }
 
         dialogs.clear()
+
+        (supportFragmentManager.findFragmentByTag(TAG_DELETE_DIALOG) as? DialogFragment)?.apply {
+            dismiss()
+        }
     }
 
 
@@ -300,5 +312,14 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
 
     override fun providePictureViewRouterDelegate(router: PictureViewRouter) {
         this.pictureViewRouterDelegate = router
+    }
+
+    override fun confirmDeleteFiles(filesToDelete: List<String>) {
+
+        val dialog = ConfirmDeleteDialogFragment(fileNames = filesToDelete) {
+            presenter.confirmDeleteSelected()
+        }
+        dialog.show(supportFragmentManager, TAG_DELETE_DIALOG)
+
     }
 }
