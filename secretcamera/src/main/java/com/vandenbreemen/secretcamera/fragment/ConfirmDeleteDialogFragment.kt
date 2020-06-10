@@ -53,6 +53,7 @@ class ConfirmDeleteDialogFragment(private val fileNames: List<String>, private v
         dialog?.apply {
             window?.apply {
                 setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
             }
         }
 
