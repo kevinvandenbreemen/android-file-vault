@@ -4,8 +4,9 @@ import android.widget.Button
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.vandenbreemen.secretcamera.R
-import junit.framework.TestCase.assertFalse
-import junit.framework.TestCase.assertTrue
+import junit.framework.TestCase.*
+import kotlinx.android.synthetic.main.layout_delete_confirm.view.*
+import kotlinx.android.synthetic.main.layout_kds_info_item.view.*
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -41,6 +42,27 @@ class ConfirmDialogFragmentTest {
         }
 
         assertFalse(callBackCalled)
+    }
+
+    @Test
+    fun `Displays list of Files that will Be Deleted`() {
+        var validated = false
+        val factory = ConfirmDialogFragmentFactory(fileNames = listOf("A", "B"), callBack = {
+
+        })
+        launchFragmentInContainer<ConfirmDeleteDialogFragment>(null, factory = factory).onFragment { fragment ->
+            fragment.view?.apply {
+                assertEquals(2, itemList.childCount)
+
+                assertNotNull(itemList.getChildAt(0).textContent)
+                assertEquals("A", itemList.getChildAt(0).textContent.text)
+                assertEquals("B", itemList.getChildAt(1).textContent.text)
+
+                validated = true
+            }
+        }
+
+        assertTrue(validated)
     }
 
 }
