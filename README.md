@@ -2,13 +2,17 @@
 
 **Table of Contents**
 
-[Project Purposes](#project_purposes)
-
-[General Design](#general_design)
-
-[Containers](#containers)
-
-[Components](#components)
+- [Mobile Secure Storage](#mobile-secure-storage)
+  - [Project Purposes](#project-purposes)
+  - [General Design](#general-design)
+    - [Encryption](#encryption)
+    - [Persistence](#persistence)
+    - [File Explorer](#file-explorer)
+    - [Picture Viewer](#picture-viewer)
+      - [Registering your Own Icons](#registering-your-own-icons)
+  - [Adding to the Project](#adding-to-the-project)
+    - [Defining a Use Case](#defining-a-use-case)
+    - [Calling the Interactors](#calling-the-interactors)
 
 <a name="project_purposes"></a>
 ## Project Purposes
@@ -40,6 +44,11 @@ Currently the screen looks like this:
 Eventually I want to do stuff like rename/delete files as well as possibly create directories for them.
 
 ![](./documentation/resource/SFS-File%20Explorer%20Participants.svg)
+
+### Picture Viewer
+Core components that display images in a "gallery"
+
+![](./documentation/resource/SFS-Picture%20Viewer.svg)
 
 
 #### Registering your Own Icons
