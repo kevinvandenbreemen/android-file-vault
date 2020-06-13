@@ -19,7 +19,7 @@ class AndroidImageInteractor {
     fun convertByteArrayToBitmapRX(imageBytes: ByteArray): Single<Bitmap> {
         return Single.create(SingleOnSubscribe<Bitmap> {
             try {
-                val ret = convertByteArrayToBitmapSynchronous(imageBytes)
+                val ret = convertByteArrayToBitmap(imageBytes)
                 it.onSuccess(ret)
             } catch (ex: Exception) {
                 SystemLog.get().e(AndroidImageInteractor::class.java.simpleName, "Failed to convert bytes to bitmap", ex)
@@ -28,7 +28,7 @@ class AndroidImageInteractor {
         }).subscribeOn(computation())
     }
 
-    fun convertByteArrayToBitmapSynchronous(imageBytes: ByteArray) =
+    fun convertByteArrayToBitmap(imageBytes: ByteArray) =
             BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
                     ?: throw NullPointerException("Decoded bitmap was null")
 

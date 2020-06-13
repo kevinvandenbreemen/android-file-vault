@@ -54,7 +54,7 @@ class GalleryModel(credentials: SFSCredentials) : Model(credentials) {
 
                     val index = i % list.size
 
-                    bitmap = androidImageInteractor.convertByteArrayToBitmapSynchronous(imageFilesInteractor.loadImageBytes(
+                    bitmap = androidImageInteractor.convertByteArrayToBitmap(imageFilesInteractor.loadImageBytes(
                             list[index]
                     ))
                     ret.add(
