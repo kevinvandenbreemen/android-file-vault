@@ -11,7 +11,6 @@ import com.vandenbreemen.secretcamera.mvp.gallery.PicturesFileTypes
 import com.vandenbreemen.secretcamera.mvp.gallery.ShadowAndroidImageInteractor
 import com.vandenbreemen.secretcamera.mvp.gallery.generateThumbnailSynchronousCalled
 import com.vandenbreemen.secretcamera.shittySolutionPleaseDelete.TestConstants
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
 import junit.framework.TestCase.*
@@ -68,12 +67,9 @@ class GalleryModelTest {
         model.init().blockingGet()
 
         //  Act
-        val thumbnails: Single<List<Bitmap>> = model.getImageThumbnails()
+        val thumbnails: List<Bitmap> = model.getImageThumbnails()
 
         //  Assert
-        val test = thumbnails.test()
-        test.assertComplete()
-
         assertTrue(generateThumbnailSynchronousCalled)
 
 
@@ -94,12 +90,10 @@ class GalleryModelTest {
         model.init().blockingGet()
 
         //  Act
-        val thumbnails: Single<List<Bitmap>> = model.getImageThumbnails()
+        val thumbnails: List<Bitmap> = model.getImageThumbnails()
 
         //  Assert
-        val test = thumbnails.test()
-        test.assertComplete()
-        assertEquals(3, test.values().get(0).size)
+        assertEquals(3, thumbnails.size)
     }
 
     @Test
@@ -124,12 +118,10 @@ class GalleryModelTest {
 
         //  Act
 
-        val thumbnails: Single<List<Bitmap>> = model.getImageThumbnails()
+        val thumbnails: List<Bitmap> = model.getImageThumbnails()
 
         //  Assert
-        val test = thumbnails.test()
-        test.assertComplete()
-        assertEquals(3, test.values().get(0).size)
+        assertEquals(3, thumbnails.size)
     }
 
     @Test
@@ -143,11 +135,9 @@ class GalleryModelTest {
         model.init().blockingGet()
 
         //  Act
-        val thumbnails: Single<List<Bitmap>> = model.getImageThumbnails()
+        val thumbnails: List<Bitmap> = model.getImageThumbnails()
 
         //  Assert
-        val test = thumbnails.test()
-        test.assertComplete()
 
         assertTrue(generateThumbnailSynchronousCalled)
 
@@ -163,12 +153,9 @@ class GalleryModelTest {
         model.init().blockingGet()
 
         //  Act
-        val thumbnails: Single<List<Bitmap>> = model.getImageThumbnails()
+        val thumbnails: List<Bitmap> = model.getImageThumbnails()
 
         //  Assert
-        val test = thumbnails.test()
-        test.assertComplete()
-
         assertFalse(generateThumbnailSynchronousCalled)
 
 

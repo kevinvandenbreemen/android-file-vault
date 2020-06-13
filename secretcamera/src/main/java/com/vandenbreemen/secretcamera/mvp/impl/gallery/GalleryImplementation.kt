@@ -8,10 +8,9 @@ import com.vandenbreemen.mobilesecurestorage.log.e
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Presenter
 import com.vandenbreemen.secretcamera.mvp.gallery.*
-import io.reactivex.Single
-import io.reactivex.SingleOnSubscribe
-import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
-import io.reactivex.schedulers.Schedulers.computation
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class GalleryModel(credentials: SFSCredentials) : Model(credentials) {
 
@@ -32,41 +31,39 @@ class GalleryModel(credentials: SFSCredentials) : Model(credentials) {
         this.galleryCommonInteractor = GalleryCommonInteractor(getSecureFileSystemInteractor(sfs))
     }
 
-    fun getImageThumbnails(): Single<List<Bitmap>> {
-        return Single.create(SingleOnSubscribe<List<Bitmap>> {
-            val list = imageFilesInteractor.listImageFiles()
+    fun getImageThumbnails(): List<Bitmap> {
+        val list = imageFilesInteractor.listImageFiles()
 
-            if (list.isEmpty()) {
-                it.onSuccess(emptyList())
+        if (list.isEmpty()) {
+            return emptyList()
+        }
+
+        val numImages = if (list.size >= MAX_IMAGES) MAX_IMAGES else list.size
+        val startImage = galleryCommonInteractor.getGallerySettings().currentFile
+        var startIndex = 0
+        startImage?.let { imgName ->
+            startIndex = list.indexOf(imgName)
+        }
+
+        val ret = mutableListOf<Bitmap>()
+        var bitmap: Bitmap
+        for (i in startIndex until (startIndex + numImages)) {
+            try {
+
+                val index = i % list.size
+
+                bitmap = androidImageInteractor.convertByteArrayToBitmap(imageFilesInteractor.loadImageBytes(
+                        list[index]
+                ))
+                ret.add(
+                        androidImageInteractor.generateThumbnailSynchronous(bitmap, 150, 150)
+                )
+            } catch (ex: Exception) {
+                SystemLog.get().e(AndroidImageInteractor::class.java.simpleName, "Failed to load or convert bitmap bytes", ex)
             }
+        }
 
-            val numImages = if (list.size >= MAX_IMAGES) MAX_IMAGES else list.size
-            val startImage = galleryCommonInteractor.getGallerySettings().currentFile
-            var startIndex = 0
-            startImage?.let { imgName ->
-                startIndex = list.indexOf(imgName)
-            }
-
-            val ret = mutableListOf<Bitmap>()
-            var bitmap: Bitmap
-            for (i in startIndex until (startIndex + numImages)) {
-                try {
-
-                    val index = i % list.size
-
-                    bitmap = androidImageInteractor.convertByteArrayToBitmap(imageFilesInteractor.loadImageBytes(
-                            list[index]
-                    ))
-                    ret.add(
-                            androidImageInteractor.generateThumbnailSynchronous(bitmap, 150, 150)
-                    )
-                } catch (ex: Exception) {
-                    SystemLog.get().e(AndroidImageInteractor::class.java.simpleName, "Failed to load or convert bitmap bytes", ex)
-                }
-            }
-
-            it.onSuccess(ret)
-        }).subscribeOn(computation())
+        return ret
 
     }
 
@@ -82,9 +79,11 @@ class GalleryPresenterImpl(val model: GalleryModel, val view: GalleryView) : Pre
     }
 
     override fun setupView() {
-        addForDisposal(model.getImageThumbnails().observeOn(mainThread()).subscribe { thumbnails ->
+        CoroutineScope(Dispatchers.Default).launch {
+            val thumbnails = model.getImageThumbnails()
             view.showExamples(thumbnails)
-        })
+        }
+
     }
 
 }

@@ -7,7 +7,9 @@ import android.os.Bundle
 import android.view.View
 import android.view.View.VISIBLE
 import android.widget.ImageView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.vandenbreemen.mobilesecurestorage.android.FileImportActivity
 import com.vandenbreemen.mobilesecurestorage.android.FileImportDataProvider
 import com.vandenbreemen.mobilesecurestorage.android.FileImportFutureIntent
@@ -18,6 +20,8 @@ import com.vandenbreemen.secretcamera.di.injectGallery
 import com.vandenbreemen.secretcamera.mvp.gallery.GalleryPresenter
 import com.vandenbreemen.secretcamera.mvp.gallery.GalleryView
 import com.vandenbreemen.secretcamera.mvp.gallery.PicturesFileTypes
+import com.vandenbreemen.secretcamera.mvvm.GalleryOverviewModel
+import com.vandenbreemen.secretcamera.mvvm.GalleryOverviewViewModelFactory
 import javax.inject.Inject
 
 class Gallery : AppCompatActivity(), GalleryView {
@@ -29,10 +33,23 @@ class Gallery : AppCompatActivity(), GalleryView {
     @Inject
     lateinit var presenter: GalleryPresenter
 
+    val viewModel: GalleryOverviewModel by viewModels(factoryProducer = { GalleryOverviewViewModelFactory() })
+
     override fun onCreate(savedInstanceState: Bundle?) {
         injectGallery(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery)
+
+        viewModel.previewImages.observe(this, Observer { thumbnails ->
+            if (thumbnails.isNotEmpty()) {
+                for (i in thumbnails.indices) {
+                    val identifier = resources.getIdentifier("preview_img_${i + 1}", "id", packageName)
+                    val imageView = findViewById<ImageView>(identifier)
+                    imageView.setImageBitmap(thumbnails[i])
+                    imageView.visibility = VISIBLE
+                }
+            }
+        })
     }
 
     override fun onPause() {
@@ -89,14 +106,7 @@ class Gallery : AppCompatActivity(), GalleryView {
     }
 
     override fun showExamples(thumbnails: List<Bitmap>) {
-        if(thumbnails.isNotEmpty()) {
-            for(i in 0 until thumbnails.size) {
-                val identifier = resources.getIdentifier("preview_img_${i+1}", "id", packageName)
-                val imageView = findViewById<ImageView>(identifier)
-                imageView.setImageBitmap(thumbnails[i])
-                imageView.visibility = VISIBLE
-            }
-        }
+        viewModel.setBitmapData(thumbnails)
     }
 
     override fun onResume() {

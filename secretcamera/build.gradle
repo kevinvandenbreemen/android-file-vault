@@ -68,6 +68,9 @@ configurations.all {
 
 dependencies {
 
+    //  View Models and Such
+    implementation "androidx.activity:activity-ktx:$rootProject.ext.androidXVersion"
+
     //  Pull in New Crypto Fwk
     implementation "com.github.kevinvandenbreemen:NewCryptoFramework:$rootProject.ext.newCryptoVersion"
 
