@@ -7,6 +7,8 @@
   - [General Design](#general-design)
     - [Encryption](#encryption)
     - [Persistence](#persistence)
+    - [Model View Presenter Architecture](#model-view-presenter-architecture)
+      - [Presenters](#presenters)
     - [File Explorer](#file-explorer)
     - [Picture Viewer](#picture-viewer)
       - [Registering your Own Icons](#registering-your-own-icons)
@@ -33,6 +35,18 @@ android-file-vault uses the [SpongyCastle](https://rtyley.github.io/spongycastle
 ### Persistence
 
 ![](./documentation/resource/SFS.svg)
+
+### Model View Presenter Architecture
+All major workflows and components of this app are currently built in the Model View Presenter design pattern.  The codebase provides a framework that implements this pattern in a way that centres around the existing encryption and persistence code.
+
+![](./documentation/resource/SFS-MVP%20Contract.svg)
+
+#### Presenters
+Presenters orchestrate most of the work.  That is, they call models, which call interactors.  The presenter's job is to call into an object that does a bunch of business logic and then to forward the result to a View.
+
+As such, any asynchronous work (for example using rx, coroutines, etc) should be done at the presenter level, leaving models and interactors etc. to run synchronously.  This is better for testing and also better for modifying the libraries used in order to accomplish parallel computation later.
+
+Note:  Much of this codebase violates this rule but going forward I would much prefer that it be enforced.
 
 ### File Explorer
 This is the framework I hope to use/extend for defining a general purpose file explorer.  
