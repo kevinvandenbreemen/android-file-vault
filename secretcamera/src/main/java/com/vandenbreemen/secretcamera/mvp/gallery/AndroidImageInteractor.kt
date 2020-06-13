@@ -16,12 +16,12 @@ import io.reactivex.schedulers.Schedulers.computation
  * @author kevin
  */
 class AndroidImageInteractor {
-    fun convertByteArrayToBitmap(imageBytes: ByteArray): Single<Bitmap> {
+    fun convertByteArrayToBitmapRX(imageBytes: ByteArray): Single<Bitmap> {
         return Single.create(SingleOnSubscribe<Bitmap> {
             try {
                 val ret = convertByteArrayToBitmapSynchronous(imageBytes)
                 it.onSuccess(ret)
-            } catch (ex:Exception) {
+            } catch (ex: Exception) {
                 SystemLog.get().e(AndroidImageInteractor::class.java.simpleName, "Failed to convert bytes to bitmap", ex)
                 it.onError(ex)
             }

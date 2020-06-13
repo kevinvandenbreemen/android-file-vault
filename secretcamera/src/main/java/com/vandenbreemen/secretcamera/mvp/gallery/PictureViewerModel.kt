@@ -80,7 +80,7 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
         })
                 .subscribeOn(Schedulers.computation())
                 .flatMap { imageBytes ->
-                    androidImageInteractor.convertByteArrayToBitmap(imageBytes).observeOn(AndroidSchedulers.mainThread())
+                    androidImageInteractor.convertByteArrayToBitmapRX(imageBytes).observeOn(AndroidSchedulers.mainThread())
                 }
     }
 
@@ -90,7 +90,7 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
         })
                 .subscribeOn(Schedulers.computation())
                 .flatMap { imageBytes ->
-                    androidImageInteractor.convertByteArrayToBitmap(imageBytes).observeOn(AndroidSchedulers.mainThread())
+                    androidImageInteractor.convertByteArrayToBitmapRX(imageBytes).observeOn(AndroidSchedulers.mainThread())
                 }
     }
 

@@ -97,7 +97,7 @@ class PictureViewerFunctionalityTest {
         //  Act
         val interactor = ImageFilesInteractor(sfs)
         val bytes = interactor.loadImageBytes(TestConstants.TEST_RES_IMG_1.name)
-        val result: Single<Bitmap> = AndroidImageInteractor().convertByteArrayToBitmap(bytes)
+        val result: Single<Bitmap> = AndroidImageInteractor().convertByteArrayToBitmapRX(bytes)
 
         //  Assert
         errorCollector.checkThat("Single returns", result, notNullValue())
