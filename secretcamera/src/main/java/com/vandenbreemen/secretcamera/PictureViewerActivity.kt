@@ -20,7 +20,6 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.android.view.EnterPasswordView
 import com.vandenbreemen.mobilesecurestorage.file.api.FileInfo
-import com.vandenbreemen.mobilesecurestorage.log.SystemLog
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Pausable
 import com.vandenbreemen.secretcamera.di.injectPictureViewer
@@ -67,13 +66,7 @@ class ThumbnailAdapter(private val fileNames: List<String>,
         holder.thumbnailJob?.cancel()
         holder.thumbnailJob = null
 
-        SystemLog.get().debug("KevinRecycleDebug -- Recycle View for ${holder.view.tag}")
-
         holder.view.preview.setImageBitmap(null)
-    }
-
-    private suspend fun loadThumbnailImage(fileName: String): Bitmap? {
-        return presenter.fetchThumbnail(fileName)
     }
 
     override fun onBindViewHolder(holder: ThumbnailViewHolder, position: Int) {
@@ -83,10 +76,9 @@ class ThumbnailAdapter(private val fileNames: List<String>,
         holder.view.fileName.text = fileNames[position]
 
         holder.view.tag = fileNames[position]
-        SystemLog.get().debug("KevinRecycleDebug -- Bind View For ${fileNames[position]}")
 
         holder.thumbnailJob = CoroutineScope(Dispatchers.Default).launch {
-            val bitmap = loadThumbnailImage(fileNames[position]) ?: return@launch
+            val bitmap = presenter.fetchThumbnail(fileNames[position]) ?: return@launch
 
             withContext(Dispatchers.Main) {
 
@@ -100,7 +92,7 @@ class ThumbnailAdapter(private val fileNames: List<String>,
                 if (selectEnabled) {
                     val checkbox = holder.view.findViewById<CheckBox>(R.id.checkBox)
                     checkbox.isChecked = presenter.selected(fileNames[position])
-                    checkbox.setOnClickListener { v -> presenter.selectImage(fileNames[position]) }
+                    checkbox.setOnClickListener { _ -> presenter.selectImage(fileNames[position]) }
                 } else {   //  Allow turning on multiselect
                     imageView.setOnLongClickListener {
                         presenter.toggleSelectImages()
