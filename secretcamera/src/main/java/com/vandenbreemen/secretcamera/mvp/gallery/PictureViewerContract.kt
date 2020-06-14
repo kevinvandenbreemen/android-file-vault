@@ -81,7 +81,7 @@ interface PictureViewerPresenter : PresenterContract {
     fun nextImage()
     fun previousImage()
     fun showSelector()
-    fun thumbnail(fileName: String): Single<Bitmap>
+    fun fetchThumbnail(fileName: String): Bitmap?
     fun selectImageToDisplay(fileName: String)
     fun currentImageFileName(): Single<String>
     fun toggleSelectImages()
@@ -174,14 +174,8 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
         )
     }
 
-    override fun thumbnail(fileName: String): Single<Bitmap> {
-        addForDisposal(
-                return model.loadImage(fileName).observeOn(mainThread())
-                        .flatMap { bitmap ->
-                            model.getThumbnail(bitmap)
-                        }.observeOn(mainThread())
-                        .subscribeOn(computation())
-        )
+    override fun fetchThumbnail(fileName: String): Bitmap? {
+        return model.getThumbnailSync(fileName)
     }
 
     override fun showSelector() {

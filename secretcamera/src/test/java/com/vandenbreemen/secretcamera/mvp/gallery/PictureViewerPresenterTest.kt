@@ -77,7 +77,7 @@ class PictureViewerPresenterTest {
 
     @Test
     fun shouldNotSetCurrentImageWhenLoadingThumbnail() {
-        pictureViewerPresenter.thumbnail(TestConstants.TEST_RES_IMG_3.name).blockingGet()
+        pictureViewerPresenter.fetchThumbnail(TestConstants.TEST_RES_IMG_3.name)
         assertFalse("Current image", TestConstants.TEST_RES_IMG_3.name.equals(model.currentFile().blockingGet()))
     }
 

@@ -9,7 +9,8 @@ import com.vandenbreemen.mobilesecurestorage.security.crypto.setFileMetadata
 import com.vandenbreemen.secretcamera.shittySolutionPleaseDelete.TestConstants
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
-import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -66,24 +67,16 @@ class PictureViewerPresenterImplTest {
     @Test
     @Config(shadows = [FailingBitmapFactory::class])
     fun loadBitmapShouldGracefullyHandleFailingImageLoad() {
-        val result = sut.thumbnail(TestConstants.NON_IMAGE.name).test()
+        val result = sut.fetchThumbnail(TestConstants.NON_IMAGE.name)
 
-        assertEquals(1, result.errorCount())
-    }
-
-    @Test
-    @Config(shadows = [NullBitmapFactory::class])
-    fun shouldRaiseAnErrorOnFailingToLoadBitmapWithNull() {
-        val result = sut.thumbnail(TestConstants.NON_IMAGE.name).test()
-
-        assertEquals(1, result.errorCount())
+        assertNull(result)
     }
 
     @Test
     fun loadBitmapShouldWork() {
         //
-        val result = sut.thumbnail(TestConstants.TEST_RES_IMG_1.name).test()
-        result.assertComplete()
+        val result = sut.fetchThumbnail(TestConstants.TEST_RES_IMG_1.name)
+        assertNotNull(result)
     }
 
     private fun sfs(): SecureFileSystem {

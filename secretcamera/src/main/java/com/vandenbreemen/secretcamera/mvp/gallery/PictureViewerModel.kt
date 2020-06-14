@@ -5,6 +5,8 @@ import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.api.FileInfo
 import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractor
 import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
+import com.vandenbreemen.mobilesecurestorage.log.SystemLog
+import com.vandenbreemen.mobilesecurestorage.log.e
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.secretcamera.api.GallerySettings
@@ -92,6 +94,11 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
                 .flatMap { imageBytes ->
                     androidImageInteractor.convertByteArrayToBitmapRX(imageBytes).observeOn(AndroidSchedulers.mainThread())
                 }
+    }
+
+    fun loadImageSync(filename: String): Bitmap {
+        val bytes = imageFilesInteractor.loadImageBytes(filename)
+        return androidImageInteractor.convertByteArrayToBitmap(bytes)
     }
 
     fun listImages(): Single<List<String>> {
@@ -194,6 +201,15 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
 
     fun getThumbnail(imageBitmap: Bitmap): Single<Bitmap> {
         return androidImageInteractor.generateThumbnail(imageBitmap)
+    }
+
+    fun getThumbnailSync(fileName: String): Bitmap? {
+        try {
+            return androidImageInteractor.generateThumbnailSynchronous(loadImageSync(fileName), 150, 150)
+        } catch (e: Exception) {
+            SystemLog.get().e("PictureViewerModel", "Failed to load thumbnail", e)
+            return null
+        }
     }
 
     fun deleteSelected(): Completable {

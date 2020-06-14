@@ -28,10 +28,20 @@ import com.vandenbreemen.secretcamera.fragment.ThumbnailsFragment
 import com.vandenbreemen.secretcamera.mvp.gallery.*
 import kotlinx.android.synthetic.main.activity_picture_viewer.*
 import kotlinx.android.synthetic.main.file_info_dialog.view.*
+import kotlinx.android.synthetic.main.file_info_dialog.view.fileName
+import kotlinx.android.synthetic.main.image_select_item.view.*
+import kotlinx.coroutines.*
 import java.io.File
 import javax.inject.Inject
 
-class ThumbnailViewHolder(val view: ViewGroup) : RecyclerView.ViewHolder(view)
+class ThumbnailViewHolder(val view: ViewGroup) : RecyclerView.ViewHolder(view) {
+
+    /**
+     * Current running coroutine for fetching the thumbnail
+     */
+    var thumbnailJob: Job? = null
+
+}
 
 class ThumbnailAdapter(private val fileNames: List<String>,
                        private val presenter: PictureViewerPresenter
@@ -47,36 +57,49 @@ class ThumbnailAdapter(private val fileNames: List<String>,
         return fileNames.size
     }
 
+    override fun onViewRecycled(holder: ThumbnailViewHolder) {
+        super.onViewRecycled(holder)
+
+        val imageView = holder.view.findViewById<ImageView>(R.id.preview)
+        imageView.visibility = VISIBLE
+
+        holder.thumbnailJob?.cancel()
+        holder.thumbnailJob = null
+
+        holder.view.preview.setImageBitmap(null)
+    }
+
     override fun onBindViewHolder(holder: ThumbnailViewHolder, position: Int) {
         val loadingSpinner = holder.view.findViewById<ProgressBar>(R.id.loading)
 
         holder.view.fileName.text = fileNames[position]
 
-        presenter.thumbnail(fileNames[position]).subscribe({ bitmap ->
-            val imageView = holder.view.findViewById<ImageView>(R.id.preview)
-            imageView.setOnClickListener { presenter.selectImageToDisplay(fileNames[position]) }
-            imageView.visibility = VISIBLE
-            imageView.setImageBitmap(bitmap)
+        CoroutineScope(Dispatchers.Default).launch {
+            val bitmap = presenter.fetchThumbnail(fileNames[position]) ?: return@launch
 
-            //  Image select checkbox
-            holder.view.findViewById<CheckBox>(R.id.checkBox).visibility = if (selectEnabled) VISIBLE else GONE
-            if (selectEnabled) {
-                val checkbox = holder.view.findViewById<CheckBox>(R.id.checkBox)
-                checkbox.isChecked = presenter.selected(fileNames[position])
-                checkbox.setOnClickListener { v -> presenter.selectImage(fileNames[position]) }
-            } else {   //  Allow turning on multiselect
-                imageView.setOnLongClickListener {
-                    presenter.toggleSelectImages()
-                    true
+            withContext(Dispatchers.Main) {
+
+                val imageView = holder.view.findViewById<ImageView>(R.id.preview)
+                imageView.setOnClickListener { presenter.selectImageToDisplay(fileNames[position]) }
+                imageView.setImageBitmap(bitmap)
+
+                //  Image select checkbox
+                holder.view.findViewById<CheckBox>(R.id.checkBox).visibility = if (selectEnabled) VISIBLE else GONE
+                if (selectEnabled) {
+                    val checkbox = holder.view.findViewById<CheckBox>(R.id.checkBox)
+                    checkbox.isChecked = presenter.selected(fileNames[position])
+                    checkbox.setOnClickListener { v -> presenter.selectImage(fileNames[position]) }
+                } else {   //  Allow turning on multiselect
+                    imageView.setOnLongClickListener {
+                        presenter.toggleSelectImages()
+                        true
+                    }
                 }
+
+                loadingSpinner.visibility = GONE
             }
 
-
-            loadingSpinner.visibility = GONE
-        }, {error ->
-
-            loadingSpinner.visibility = GONE
-        })
+        }
     }
 
 }
