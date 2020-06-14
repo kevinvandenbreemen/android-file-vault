@@ -4,7 +4,7 @@
     android:layout_width="@dimen/img_select_item_width"
     android:layout_height="@dimen/img_select_item_height"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/colorPrimaryDark">
+    android:background="@color/kds_dark">
 
 
     <ImageView
@@ -24,6 +24,8 @@
     <ProgressBar
         android:id="@+id/loading"
         style="?android:attr/progressBarStyle"
+        android:indeterminateDrawable="@drawable/kds_intermediate_spinner"
+        android:indeterminateDuration="500"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
