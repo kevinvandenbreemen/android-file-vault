@@ -60,13 +60,12 @@ class ThumbnailAdapter(private val fileNames: List<String>,
     override fun onViewRecycled(holder: ThumbnailViewHolder) {
         super.onViewRecycled(holder)
 
-        val imageView = holder.view.findViewById<ImageView>(R.id.preview)
-        imageView.visibility = VISIBLE
+        holder.view.preview.setImageBitmap(null)
+        holder.view.preview.visibility = GONE
 
         holder.thumbnailJob?.cancel()
         holder.thumbnailJob = null
 
-        holder.view.preview.setImageBitmap(null)
     }
 
     override fun onBindViewHolder(holder: ThumbnailViewHolder, position: Int) {
