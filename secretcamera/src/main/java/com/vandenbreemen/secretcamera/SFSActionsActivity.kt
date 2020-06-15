@@ -11,15 +11,14 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.vandenbreemen.kevindesignsystem.views.KDSSystemActivity
-import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.FileListItemView
-import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.SFSActionsPresenter
-import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.SFSActionsRouter
-import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.SFSActionsView
+import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.*
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.di.injectSFSActions
+import com.vandenbreemen.secretcamera.mvvm.SFSDetailsViewModel
 import com.vandenbreemen.test.BackgroundCompletionCallback
 import kotlinx.android.synthetic.main.activity_sfs_actions.*
 import kotlinx.android.synthetic.main.layout_sfs_list.*
@@ -69,6 +68,11 @@ class SFSActionsActivity : KDSSystemActivity(), SFSActionsView, SFSActionsRouter
         sortDescending.setOnClickListener { _ ->
             presenter.sortFiles(false)
         }
+    }
+
+    override fun displaySFSDetails(details: SFSDetails) {
+        val detailsViewModel: SFSDetailsViewModel by viewModels<SFSDetailsViewModel>()
+        detailsViewModel.setDetails(details)
     }
 
     fun onClickChangePassword(view: View) {
