@@ -15,8 +15,10 @@ class SFSActionsPresenterImpl(val view: SFSActionsView, private val router: SFSA
 
     var progress: ProgressListener<Long>
 
+    var isChangingPassword: Boolean = false
+
     init {
-        progress = object: ProgressListener<Long> {
+        progress = object : ProgressListener<Long> {
             override fun setMax(progressMax: Long) {
                 view.setProgressMax(progressMax)
             }
@@ -37,9 +39,12 @@ class SFSActionsPresenterImpl(val view: SFSActionsView, private val router: SFSA
     }
 
     override fun changePassword(currentPassword: String, newPassword: String, reEnterNewPassword: String) {
+
+        isChangingPassword = true
+
         addForDisposal(model.changePassword(currentPassword, newPassword, reEnterNewPassword, progress).subscribe({ newPass ->
             router.returnToMain(model.generateCredentials(newPass))
-        }, {error ->
+        }, { error ->
             if (error is ApplicationError) {
                 view.showError(error)
             } else {
@@ -75,5 +80,14 @@ class SFSActionsPresenterImpl(val view: SFSActionsView, private val router: SFSA
         val presenter = FileActionsPresenterImpl(this, model.fileActionsModel(fileName))
         presenter.setView(withView)
         return presenter
+    }
+
+    override fun returnToMain() {
+        if (isChangingPassword) {
+            view.showError(ApplicationError("Cannot return to main while changing password"))
+            return
+        }
+
+        router.returnToMain(model.copyCredentials())
     }
 }

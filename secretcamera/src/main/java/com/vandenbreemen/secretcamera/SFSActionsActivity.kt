@@ -95,6 +95,10 @@ class SFSActionsActivity : KDSSystemActivity(), SFSActionsView, SFSActionsRouter
         presenter.start()
     }
 
+    override fun onBackPressed() {
+        presenter.returnToMain()
+    }
+
     override fun onReadyToUse() {
 
     }
@@ -109,6 +113,7 @@ class SFSActionsActivity : KDSSystemActivity(), SFSActionsView, SFSActionsRouter
 
         val intent = Intent(this, MainActivity::class.java)
         intent.putExtra(SFSCredentials.PARM_CREDENTIALS, sfsCredentials)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
         finish()
     }

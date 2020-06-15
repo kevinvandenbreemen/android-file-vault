@@ -43,6 +43,11 @@ interface SFSActionsPresenter : PresenterContract {
      */
     fun actionsFor(fileName: String, withView: FileActionsView): FileActionsPresenter
 
+    /**
+     * Attempt to return to main
+     */
+    fun returnToMain()
+
 }
 
 interface FileActionsPresenter : PresenterContract {
