@@ -56,6 +56,7 @@ class SFSActionsPresenterImpl(val view: SFSActionsView, private val router: SFSA
 
     override fun setupView() {
         listFiles()
+        view.displaySFSDetails(model.sfsDetails)
     }
 
     override fun listFiles() {

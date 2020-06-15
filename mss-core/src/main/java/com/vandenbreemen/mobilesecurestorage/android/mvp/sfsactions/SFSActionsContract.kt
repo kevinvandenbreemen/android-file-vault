@@ -9,11 +9,16 @@ import com.vandenbreemen.mobilesecurestorage.patterns.mvp.View
  * @author kevin
  */
 
+data class SFSDetails(val totalUnits: Int, val unitsUsed: Int) {
+
+}
+
 interface SFSActionsView : View {
 
     fun setProgressMax(max: Long)
     fun setCurrentProgress(currentProgress: Long)
     fun displayFileList(files: List<FileListItemView>)
+    fun displaySFSDetails(details: SFSDetails)
 
 }
 
