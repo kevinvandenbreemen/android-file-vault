@@ -369,6 +369,7 @@ class ProjectDetailsActivity: Activity(), ProjectDetailsView, ProjectDetailsRout
     override fun returnToMain(credentials: SFSCredentials) {
 
         val intent = Intent(this, ProjectsActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
         startActivity(intent)
 

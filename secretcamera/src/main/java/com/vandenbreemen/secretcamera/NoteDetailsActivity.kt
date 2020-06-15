@@ -109,6 +109,7 @@ class NoteDetailsActivity : Activity(), NoteDetailsView {
 
     override fun close(credentials: SFSCredentials) {
         val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
         startActivity(intent)
         finish()

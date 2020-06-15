@@ -223,7 +223,7 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
             presenter.start()
         }, {
             finish()
-            startActivity(Intent(this, MainActivity::class.java))
+            startActivity(Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
         })
 
         findViewById<SubsamplingScaleImageView>(R.id.currentImage).recycle()
@@ -294,6 +294,7 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
 
     override fun navigateBack(sfsCredentials: SFSCredentials) {
         val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtra(SFSCredentials.PARM_CREDENTIALS, sfsCredentials)
         startActivity(intent)
     }

@@ -38,6 +38,7 @@ class TakeNoteActivity : Activity(), TakeNewNoteView {
     override fun close(credentials: SFSCredentials) {
         val backToMain = Intent(this, MainActivity::class.java)
         backToMain.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
+        backToMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(backToMain)
         finish()
     }

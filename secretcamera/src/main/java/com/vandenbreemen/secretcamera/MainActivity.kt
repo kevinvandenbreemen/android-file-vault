@@ -146,21 +146,18 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView, Pausa
         val toActions = Intent(this, SFSActionsActivity::class.java)
         toActions.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
         startActivity(toActions)
-        finish()
     }
 
     override fun goToProjects(credentials: SFSCredentials) {
         val projects = Intent(this, ProjectsActivity::class.java)
         projects.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
         startActivity(projects)
-        finish()
     }
 
     override fun gotoTakeNote(credentials: SFSCredentials) {
         val takeNote = Intent(this, TakeNoteActivity::class.java)
         takeNote.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
         startActivity(takeNote)
-        finish()
     }
 
     override fun gotoTakePicture(credentials: SFSCredentials) {
@@ -174,6 +171,5 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView, Pausa
         val gallery = Intent(this, Gallery::class.java)
         gallery.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
         startActivity(gallery)
-        finish()
     }
 }

@@ -148,6 +148,7 @@ class ProjectsActivity : Activity(), ProjectListView, ProjectListRouter, Pausabl
 
     override fun navigateBack(credentials: SFSCredentials) {
         val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtra(SFSCredentials.PARM_CREDENTIALS, credentials)
         startActivity(intent)
     }
