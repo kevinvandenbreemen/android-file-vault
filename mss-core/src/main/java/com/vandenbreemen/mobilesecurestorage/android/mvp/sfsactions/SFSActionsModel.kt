@@ -20,6 +20,11 @@ class SFSActionsModel(credentials: SFSCredentials): Model(credentials) {
     private lateinit var fileListInteractor: FileListInteractor
     private lateinit var fileTypeDisplayInteractor: FileTypeDisplayInteractor
 
+    val sfsDetails: SFSDetails
+        get() {
+            return SFSDetails(sfs.totalUnits.toInt(), sfs.numUnitsUsed.toInt())
+        }
+
     override fun onClose() {
 
     }

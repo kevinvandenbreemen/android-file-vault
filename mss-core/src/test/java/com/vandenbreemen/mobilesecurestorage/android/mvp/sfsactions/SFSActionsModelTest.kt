@@ -9,6 +9,7 @@ import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
+import junit.framework.TestCase.assertEquals
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
@@ -46,12 +47,30 @@ class SFSActionsModelTest {
         val testPassword = SecureFileSystem.generatePassword(SecureString.fromPassword(tempPassword))
         credentials = SFSCredentials(sfsFile, testPassword)
 
-        sfs = object : SecureFileSystem(credentials.fileLocation){
+        sfs = object : SecureFileSystem(credentials.fileLocation) {
             override fun getPassword(): SecureString = credentials.password
         }
 
         model = SFSActionsModel(credentials)
         model.init().subscribe()
+    }
+
+    fun `Gets Details on Unit and Units Used Etc`() {
+
+        //  Arrange
+        sfs.touch("file1")
+        sfs.touch("file2")
+        sfs.deleteFile("file2")
+
+        model = SFSActionsModel(credentials)
+
+        //  Act
+        val details = model.sfsDetails
+
+        //  Assert
+        assertEquals(4, details.totalUnits)
+        assertEquals(3, details.unitsUsed)
+
     }
 
     @Test
