@@ -41,8 +41,8 @@ ext{
     supportVersion="26.1.0"
     androidTestVersion="1.1.0"
     androidXVersion="1.0.0"
-    kdsVersion="1.0.527"
+    kdsVersion="1.0.528a"
     rxAndroidVersion="2.1.1"
     junitVersion="5.6.2"
-    newCryptoVersion="-SNAPSHOT"
+    newCryptoVersion="1.0.0"
 }
