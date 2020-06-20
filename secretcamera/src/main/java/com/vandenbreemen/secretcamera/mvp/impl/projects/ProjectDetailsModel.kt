@@ -2,7 +2,7 @@ package com.vandenbreemen.secretcamera.mvp.impl.projects
 
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractor
-import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
+import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractorFactory
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
@@ -24,7 +24,7 @@ class ProjectDetailsModel(var projectName: String, credentials: SFSCredentials) 
     }
 
     override fun setup() {
-        sfsInteractor = getSecureFileSystemInteractor(sfs)
+        sfsInteractor = SecureFileSystemInteractorFactory.get(sfs)
         project = sfsInteractor.load(projectName, ProjectFileTypes.PROJECT) as Project
     }
 

@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.api.FileInfo
 import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractor
-import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
+import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractorFactory
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog
 import com.vandenbreemen.mobilesecurestorage.log.e
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
@@ -49,7 +49,7 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
     override fun setup() {
         this.imageFilesInteractor = ImageFilesInteractor(sfs)
         this.androidImageInteractor = AndroidImageInteractor()
-        this.secureFileSystemInteractor = getSecureFileSystemInteractor(sfs)
+        this.secureFileSystemInteractor = SecureFileSystemInteractorFactory.get(sfs)
         this.galleryCommonInteractor = GalleryCommonInteractor(this.secureFileSystemInteractor)
     }
 

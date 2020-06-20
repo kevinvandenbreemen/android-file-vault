@@ -3,7 +3,7 @@ package com.vandenbreemen.secretcamera.mvp.takepicture
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.ImportedFileData
 import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractor
-import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
+import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractorFactory
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.DateInteractor
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.secretcamera.mvp.gallery.PicturesFileTypes
@@ -31,7 +31,7 @@ class TakePictureModel(val dateInteractor: DateInteractor, sfsCredentials: SFSCr
     private lateinit var secureFileSystemInteractor: SecureFileSystemInteractor
 
     override fun setup() {
-        this.secureFileSystemInteractor = getSecureFileSystemInteractor(sfs)
+        this.secureFileSystemInteractor = SecureFileSystemInteractorFactory.get(sfs)
     }
 
     fun storePicture(pictureBytes: ByteArray): Single<Unit> {

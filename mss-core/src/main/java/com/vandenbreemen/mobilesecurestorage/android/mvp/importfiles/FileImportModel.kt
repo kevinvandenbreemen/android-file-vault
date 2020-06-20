@@ -3,7 +3,7 @@ package com.vandenbreemen.mobilesecurestorage.android.mvp.importfiles
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.api.FileType
 import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractor
-import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
+import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractorFactory
 import com.vandenbreemen.mobilesecurestorage.file.getFileImporter
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
@@ -32,7 +32,7 @@ class FileImportModel(credentials: SFSCredentials) : Model(credentials) {
     }
 
     override fun setup() {
-        this.secureFileSystemInteractor = getSecureFileSystemInteractor(sfs)
+        this.secureFileSystemInteractor = SecureFileSystemInteractorFactory.get(sfs)
     }
 
     fun importDir(directoryToImport: File, fileType: FileType?): Observable<Int> {

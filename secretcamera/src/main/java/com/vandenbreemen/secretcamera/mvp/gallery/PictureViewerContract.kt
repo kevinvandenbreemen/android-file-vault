@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.api.FileInfo
-import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
+import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractorFactory
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Presenter
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.PresenterContract
@@ -24,7 +24,7 @@ class ImageFilesInteractor(private val sfs: SecureFileSystem) {
         private const val FILES_LIST_KEY = "__FILES_LIST"
     }
 
-    private val sfsInteractor = getSecureFileSystemInteractor(sfs)
+    private val sfsInteractor = SecureFileSystemInteractorFactory.get(sfs)
     private val cache = object : Cache2kBuilder<String, Any>() {
 
     }.build()

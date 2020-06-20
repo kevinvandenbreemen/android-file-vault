@@ -3,7 +3,7 @@ package com.vandenbreemen.secretcamera.mvp.impl.gallery
 import android.graphics.Bitmap
 import android.os.Environment
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
-import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
+import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractorFactory
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.secretcamera.mvp.gallery.GalleryCommonInteractor
@@ -100,7 +100,7 @@ class GalleryModelTest {
     fun `should display thumbnails starting with most recently viewed image`() {
         //  Arrange
 
-        val commonInteractor = GalleryCommonInteractor(getSecureFileSystemInteractor(sfs))
+        val commonInteractor = GalleryCommonInteractor(SecureFileSystemInteractorFactory.get(sfs))
         var settings = commonInteractor.getGallerySettings()
         settings.currentFile = TestConstants.TEST_RES_IMG_3.name
         commonInteractor.saveGallerySettings(settings)

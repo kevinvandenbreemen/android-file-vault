@@ -31,7 +31,7 @@ class SecureFileSystemInteractorTest {
     @Before
     fun setup() {
         sfsFile = File(Environment.getExternalStorageDirectory().toString() + File.separator + "sfs")
-        sut = getSecureFileSystemInteractor(sfs())
+        sut = SecureFileSystemInteractorFactory.get(sfs())
     }
 
     fun createPassword(): SecureString {
@@ -75,14 +75,14 @@ class SecureFileSystemInteractorTest {
     @Test
     fun shouldNotOverwriteExistingFile() {
         sfs().storeObject("1.jpg", ArrayList<String>())
-        sut = getSecureFileSystemInteractor(sfs())
+        sut = SecureFileSystemInteractorFactory.get(sfs())
         sut.importToFile(getFileImporter().loadFile(TestConstants.TEST_RES_IMG_1), "1.jpg", null)
     }
 
     @Test
     fun shouldReturnFalseWhenUnsuccessfulAtImporting() {
         sfs().storeObject("1.jpg", ArrayList<String>())
-        sut = getSecureFileSystemInteractor(sfs())
+        sut = SecureFileSystemInteractorFactory.get(sfs())
         assertFalse("Expect false", sut.importToFile(getFileImporter().loadFile(TestConstants.TEST_RES_IMG_1), "1.jpg", null))
     }
 

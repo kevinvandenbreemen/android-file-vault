@@ -2,7 +2,7 @@ package com.vandenbreemen.secretcamera.mvp.impl.gallery
 
 import android.graphics.Bitmap
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
-import com.vandenbreemen.mobilesecurestorage.file.api.getSecureFileSystemInteractor
+import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractorFactory
 import com.vandenbreemen.mobilesecurestorage.log.SystemLog
 import com.vandenbreemen.mobilesecurestorage.log.e
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
@@ -28,7 +28,7 @@ class GalleryModel(credentials: SFSCredentials) : Model(credentials) {
 
     override fun setup() {
         imageFilesInteractor = ImageFilesInteractor(sfs)
-        this.galleryCommonInteractor = GalleryCommonInteractor(getSecureFileSystemInteractor(sfs))
+        this.galleryCommonInteractor = GalleryCommonInteractor(SecureFileSystemInteractorFactory.get(sfs))
     }
 
     fun getImageThumbnails(): List<Bitmap> {
