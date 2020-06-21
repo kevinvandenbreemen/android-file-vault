@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/kds_attention_background"
+    tools:background="@color/kds_dark">
+
+    <TextView
+        android:id="@+id/fileName"
+        style="@style/kds_mainTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        android:text=""
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="file.dat" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:maxWidth="100dp"
+        android:maxHeight="100dp"
+        android:scaleType="centerInside"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fileName"
+        tools:src="@drawable/end_thumb" />
+
+    <TextView
+        android:id="@+id/fileSizeLabel"
+        style="@style/kds_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        android:text="@string/fileSize"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/fileName" />
+
+    <TextView
+        android:id="@+id/fileSize"
+        style="@style/kds_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/listMargin"
+        android:text=""
+        app:layout_constraintStart_toStartOf="@+id/fileSizeLabel"
+        app:layout_constraintTop_toBottomOf="@+id/fileSizeLabel"
+        tools:text="42" />
+
+    <TextView
+        android:id="@+id/dateCreatedLabel"
+        style="@style/kds_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/createDate"
+        app:layout_constraintStart_toStartOf="@+id/fileSizeLabel"
+        app:layout_constraintTop_toBottomOf="@+id/fileSize" />
+
+    <TextView
+        android:id="@+id/createDate"
+        style="@style/kds_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/listMargin"
+        android:text=""
+        app:layout_constraintStart_toStartOf="@+id/fileSizeLabel"
+        app:layout_constraintTop_toBottomOf="@+id/dateCreatedLabel"
+        tools:text="June 1st, 2020" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

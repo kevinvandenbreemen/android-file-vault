@@ -33,4 +33,6 @@
     <string name="about_sfs">Secure File System Details</string>
     <string name="units">Units</string>
     <string name="used">used</string>
+    <string name="fileSize">File Size (units)</string>
+    <string name="createDate">Create Date</string>
 </resources>
