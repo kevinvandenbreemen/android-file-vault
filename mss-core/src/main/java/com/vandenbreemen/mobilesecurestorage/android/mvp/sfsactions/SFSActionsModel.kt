@@ -97,4 +97,15 @@ class SFSActionsModel(credentials: SFSCredentials): Model(credentials) {
 
         return FileActionsModel(FileActionsInteractor(sfs, fileName))
     }
+
+    /**
+     * Get File Details model for displaying info about a specific file
+     */
+    fun fileDetailsModel(fileName: String): FileDetailsModel {
+        if (!sfs.exists(fileName)) {
+            throw MSSRuntime("File $fileName does not exist")
+        }
+
+        return FileDetailsModel(FileDetailsInteractor(sfs, fileName))
+    }
 }
