@@ -12,13 +12,13 @@ import com.vandenbreemen.mobilesecurestorage.file.api.FileInfo
  */
 class FileDetailsViewModel : ViewModel() {
 
-    val fileUnits: LiveData<Int>
-        get() = fileUnitsLiveData
+    val fileInfo: LiveData<FileInfo>
+        get() = fileInfoLiveData
 
-    private val fileUnitsLiveData: MutableLiveData<Int> = MutableLiveData()
+    private val fileInfoLiveData: MutableLiveData<FileInfo> = MutableLiveData()
 
     fun update(data: FileInfo) {
-        fileUnitsLiveData.postValue(data.size)
+        fileInfoLiveData.postValue(data)
     }
 
 }
