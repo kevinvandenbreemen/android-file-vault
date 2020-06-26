@@ -44,5 +44,5 @@ ext{
     kdsVersion="1.0.528a"
     rxAndroidVersion="2.1.1"
     junitVersion="5.6.2"
-    newCryptoVersion="1.1.2"
+    newCryptoVersion="1.1.2.1001"
 }

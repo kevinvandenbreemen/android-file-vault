@@ -39,12 +39,22 @@ class FileTypeIconDrawableProvider(private val context: Context) {
 class FileItemViewHolder(val group: ViewGroup) : RecyclerView.ViewHolder(group)
 
 /**
+ * Detect that the user has tapped on a file item and to show its details
+ */
+interface FileSelectListener {
+
+    fun onTapFileItem(fileName: String)
+
+}
+
+/**
  *
  * @author kevin
  */
 class ListFilesAdapter(private val recyclerView: RecyclerView, private val sfsActionsPresenter: SFSActionsPresenter, private val files: List<FileListItemView>, private val drawableProvider: FileTypeIconDrawableProvider) : RecyclerView.Adapter<FileItemViewHolder>() {
 
     private var fileActionsPresenter: FileActionsPresenter? = null
+    var fileSelectListener: FileSelectListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileItemViewHolder {
         val container = LayoutInflater.from(parent.context).inflate(R.layout.layout_sfs_item, parent, false) as ViewGroup
@@ -65,6 +75,10 @@ class ListFilesAdapter(private val recyclerView: RecyclerView, private val sfsAc
                 holder.group.findViewById<ImageView>(R.id.fileTypeIcon).setImageDrawable(drawable)
             }
 
+        }
+
+        holder.group.setOnClickListener { _ ->
+            fileSelectListener?.onTapFileItem(file.name)
         }
 
         holder.group.setOnLongClickListener { view ->

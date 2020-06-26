@@ -1,6 +1,7 @@
 package com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions
 
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.file.api.FileInfo
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.PresenterContract
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.View
 
@@ -19,6 +20,11 @@ interface SFSActionsView : View {
     fun setCurrentProgress(currentProgress: Long)
     fun displayFileList(files: List<FileListItemView>)
     fun displaySFSDetails(details: SFSDetails)
+
+    /**
+     * Display details about a particular file
+     */
+    fun displayFileDetails(fileInfo: FileInfo)
 
 }
 
@@ -42,6 +48,11 @@ interface SFSActionsPresenter : PresenterContract {
      * Start workflow for performing actions on a specific file
      */
     fun actionsFor(fileName: String, withView: FileActionsView): FileActionsPresenter
+
+    /**
+     * Display read-only file information about a particular file
+     */
+    fun detailsFor(fileName: String)
 
     /**
      * Attempt to return to main

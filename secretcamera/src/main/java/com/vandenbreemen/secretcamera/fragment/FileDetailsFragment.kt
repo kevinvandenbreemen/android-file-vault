@@ -26,7 +26,10 @@ class FileDetailsFragment : DialogFragment() {
         viewModel.fileInfo.observe(viewLifecycleOwner, Observer { info ->
             view.fileName.text = info.fileName
             view.fileSize.text = info.size.toString()
-            view.createDate.text = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(info.createDate.time)
+
+            info.createDate?.let { createDate ->
+                view.createDate.text = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(createDate.time)
+            } ?: run { view.createDate.text = "unknown" }
         })
 
         return view

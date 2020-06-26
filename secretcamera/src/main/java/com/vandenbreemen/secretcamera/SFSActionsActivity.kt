@@ -1,6 +1,8 @@
 package com.vandenbreemen.secretcamera
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
@@ -16,22 +18,29 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.vandenbreemen.kevindesignsystem.views.KDSSystemActivity
 import com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions.*
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
+import com.vandenbreemen.mobilesecurestorage.file.api.FileInfo
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.secretcamera.di.injectSFSActions
+import com.vandenbreemen.secretcamera.fragment.FileDetailsFragment
+import com.vandenbreemen.secretcamera.mvvm.FileDetailsViewModel
 import com.vandenbreemen.secretcamera.mvvm.SFSDetailsViewModel
 import com.vandenbreemen.test.BackgroundCompletionCallback
 import kotlinx.android.synthetic.main.activity_sfs_actions.*
 import kotlinx.android.synthetic.main.layout_sfs_list.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
  *
  * @author kevin
  */
-class SFSActionsActivity : KDSSystemActivity(), SFSActionsView, SFSActionsRouter {
+class SFSActionsActivity : KDSSystemActivity(), SFSActionsView, SFSActionsRouter, FileSelectListener {
 
     companion object {
         var loading: BackgroundCompletionCallback? = null
+        const val FILE_INFO_FRAG = "__fragFileInfo"
     }
 
     @Inject
@@ -57,6 +66,7 @@ class SFSActionsActivity : KDSSystemActivity(), SFSActionsView, SFSActionsRouter
 
         val viewManager = LinearLayoutManager(this)
         this.adapter = ListFilesAdapter(fileListRecyclerView, presenter, filesList, FileTypeIconDrawableProvider(this))
+        this.adapter.fileSelectListener = this
         fileListRecyclerView.adapter = this.adapter
         fileListRecyclerView.layoutManager = viewManager
 
@@ -154,5 +164,20 @@ class SFSActionsActivity : KDSSystemActivity(), SFSActionsView, SFSActionsRouter
         filesList.clear()
         filesList.addAll(files)
         adapter.notifyDataSetChanged()
+    }
+
+    override fun onTapFileItem(fileName: String) {
+        val fileInfoDialog = FileDetailsFragment()
+        fileInfoDialog.show(supportFragmentManager, FILE_INFO_FRAG)
+        fileInfoDialog.dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        CoroutineScope(Dispatchers.Default).launch {
+            presenter.detailsFor(fileName)
+        }
+    }
+
+    override fun displayFileDetails(fileInfo: FileInfo) {
+        val fileDetailsViewModel: FileDetailsViewModel by viewModels()
+        fileDetailsViewModel.update(fileInfo)
     }
 }

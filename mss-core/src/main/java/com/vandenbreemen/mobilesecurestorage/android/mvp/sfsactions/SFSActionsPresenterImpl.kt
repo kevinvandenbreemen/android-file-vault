@@ -82,6 +82,11 @@ class SFSActionsPresenterImpl(val view: SFSActionsView, private val router: SFSA
         return presenter
     }
 
+    override fun detailsFor(fileName: String) {
+        val detailsModel = model.fileDetailsModel(fileName)
+        view.displayFileDetails(detailsModel.getFileInfo())
+    }
+
     override fun returnToMain() {
         if (isChangingPassword) {
             view.showError(ApplicationError("Cannot return to main while changing password"))
