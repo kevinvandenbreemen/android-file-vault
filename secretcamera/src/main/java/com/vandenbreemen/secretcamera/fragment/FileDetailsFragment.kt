@@ -1,5 +1,7 @@
 package com.vandenbreemen.secretcamera.fragment
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,6 +33,8 @@ class FileDetailsFragment : DialogFragment() {
                 view.createDate.text = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(createDate.time)
             } ?: run { view.createDate.text = "unknown" }
         })
+
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         return view
 
