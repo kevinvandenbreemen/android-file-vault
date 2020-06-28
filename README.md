@@ -57,6 +57,10 @@ Core components that display images in a "gallery"
 
 ![](./documentation/resource/SFS-Picture%20Viewer.svg)
 
+### Loading File Systems
+I have set up a set of standard activities for mounting a secure file system in Android:
+
+![SFS Loading](documentation/resource/SFS-File%20Loading%20UI.svg)
 
 #### Registering your Own Icons
 You can use the FileTypeDisplayExtender class to register icons for specific file types.  Generally you should add code to do this to your app's `onCreate()` method.
