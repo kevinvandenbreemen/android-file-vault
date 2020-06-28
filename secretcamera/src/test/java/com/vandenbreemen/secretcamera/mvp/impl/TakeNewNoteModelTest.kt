@@ -9,7 +9,7 @@ import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureF
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
 import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertNull
+import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -84,7 +84,7 @@ class TakeNewNoteModelTest {
         sut.submitNewNote("Test Title", "Content of the Note").subscribe()
         sut.close()
 
-        assertNull("Finalized", credentials.password)
+        assertTrue("Finalized", credentials.password.isFinalized)
     }
 
 }

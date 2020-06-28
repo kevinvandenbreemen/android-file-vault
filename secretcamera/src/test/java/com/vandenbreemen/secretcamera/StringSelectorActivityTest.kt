@@ -169,7 +169,7 @@ class StringSelectorActivityTest {
 
         activityController.pause()
 
-        assertTrue("Finalized credentials", credentials.finalized())
+        assertTrue("Finalized credentials", credentials.password.isFinalized)
     }
 
 }
