@@ -42,6 +42,7 @@ dependencies {
     def sfsAndroidIntegrationVersion = "1.0.0.1000"
     def androidxJUnitTestVersion = "1.1.1"
     def androidXTestCoreVersion = "1.2.0"
+    def robolectricVersion = "4.3.1"
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
@@ -63,6 +64,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation "androidx.test.ext:junit-ktx:$androidxJUnitTestVersion"
     testImplementation "androidx.test:core-ktx:$androidXTestCoreVersion"
+    testImplementation "org.robolectric:robolectric:$robolectricVersion"
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
