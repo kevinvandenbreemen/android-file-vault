@@ -18,4 +18,4 @@ jobs:
       with:
         java-version: 9
     - name: Test with Gradle
-      run: ./gradlew test -x :secretcamera:testReleaseUnitTest -x :mss-core:testReleaseUnitTest
+      run: ./gradlew test -x :secretcamera:testReleaseUnitTest -x :mss-core:testReleaseUnitTest -x :sfs-extendable:testReleaseUnitTest
