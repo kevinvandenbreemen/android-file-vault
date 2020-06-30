@@ -8,5 +8,6 @@ import com.vandenbreemen.mobilesecurestoragemvp.View
  */
 interface OverviewView : View {
 
+    fun showFilesCount(count: Int)
 
 }

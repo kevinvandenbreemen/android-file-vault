@@ -9,6 +9,10 @@ import com.vandenbreemen.mobilesecurestoragemvp.Model
  */
 class OverviewModel(credentials: SFSCredentials) : Model(credentials) {
 
+    fun getFilesCount(): Int {
+        return sfs.listFiles().size
+    }
+
     override fun onClose() {
 
     }

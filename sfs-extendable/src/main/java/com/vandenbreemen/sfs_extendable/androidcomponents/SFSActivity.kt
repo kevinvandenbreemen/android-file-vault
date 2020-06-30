@@ -1,6 +1,7 @@
 package com.vandenbreemen.sfs_extendable.androidcomponents
 
 import androidx.appcompat.app.AppCompatActivity
+import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestoragemvp.mgt.PresenterManager
 
 /**
@@ -17,5 +18,14 @@ abstract class SFSActivity : AppCompatActivity() {
     }
 
     protected abstract fun buildPresenterManager(): PresenterManager
+
+    /**
+     * Builds the presenter using the intent
+     */
+    protected fun buildPresenters() {
+        intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)?.let { credentials ->
+            presenterManager.buildPresenters(credentials)
+        }
+    }
 
 }
