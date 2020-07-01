@@ -3,9 +3,9 @@ package com.vandenbreemen.mobilesecurestorage.android.task;
 import android.os.AsyncTask;
 
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials;
-import com.vandenbreemen.mobilesecurestorage.log.SystemLog;
 import com.vandenbreemen.mobilesecurestorage.security.SecureString;
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem;
+import com.vandenbreemen.standardandroidlogging.log.SystemLog;
 
 /**
  * <h2>Intro

@@ -1,12 +1,11 @@
 package com.vandenbreemen.secretcamera.mvp.impl
 
 import android.util.Log
-import com.vandenbreemen.mobilesecurestorage.log.SystemLog
-import com.vandenbreemen.mobilesecurestorage.log.e
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Presenter
 import com.vandenbreemen.secretcamera.mvp.notes.TakeNewNotePresenter
 import com.vandenbreemen.secretcamera.mvp.notes.TakeNewNoteView
+import com.vandenbreemen.standardandroidlogging.log.SystemLog
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
 import io.reactivex.schedulers.Schedulers.computation
@@ -55,7 +54,7 @@ class TakeNewNotePresenterImpl(val view: TakeNewNoteView, val model: TakeNewNote
                         })
                     }.observeOn(computation()).subscribeOn(computation()))
         } catch (error: ApplicationError) {
-            SystemLog.get().e("TakeNotePresenterImpl", "Failed to save and close", error)
+            SystemLog.get().error("TakeNotePresenterImpl", "Failed to save and close", error)
             return Single.just(Unit)
         }
     }

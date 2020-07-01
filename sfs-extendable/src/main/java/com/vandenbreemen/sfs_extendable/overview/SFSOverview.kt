@@ -19,6 +19,8 @@ class SFSOverview : SFSActivity(), OverviewView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_s_f_s_overview)
+
+        setSupportActionBar(toolbar)
     }
 
     override fun onResume() {

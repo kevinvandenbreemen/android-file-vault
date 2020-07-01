@@ -3,8 +3,7 @@ package com.vandenbreemen.secretcamera.mvp.gallery
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.ThumbnailUtils
-import com.vandenbreemen.mobilesecurestorage.log.SystemLog
-import com.vandenbreemen.mobilesecurestorage.log.e
+import com.vandenbreemen.standardandroidlogging.log.SystemLog
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
 import io.reactivex.schedulers.Schedulers.computation
@@ -22,7 +21,7 @@ class AndroidImageInteractor {
                 val ret = convertByteArrayToBitmap(imageBytes)
                 it.onSuccess(ret)
             } catch (ex: Exception) {
-                SystemLog.get().e(AndroidImageInteractor::class.java.simpleName, "Failed to convert bytes to bitmap", ex)
+                SystemLog.get().error(AndroidImageInteractor::class.java.simpleName, "Failed to convert bytes to bitmap", ex)
                 it.onError(ex)
             }
         }).subscribeOn(computation())

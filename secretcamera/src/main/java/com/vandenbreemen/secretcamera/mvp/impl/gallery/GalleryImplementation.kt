@@ -3,11 +3,10 @@ package com.vandenbreemen.secretcamera.mvp.impl.gallery
 import android.graphics.Bitmap
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractorFactory
-import com.vandenbreemen.mobilesecurestorage.log.SystemLog
-import com.vandenbreemen.mobilesecurestorage.log.e
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Presenter
 import com.vandenbreemen.secretcamera.mvp.gallery.*
+import com.vandenbreemen.standardandroidlogging.log.SystemLog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -59,7 +58,7 @@ class GalleryModel(credentials: SFSCredentials) : Model(credentials) {
                         androidImageInteractor.generateThumbnailSynchronous(bitmap, 150, 150)
                 )
             } catch (ex: Exception) {
-                SystemLog.get().e(AndroidImageInteractor::class.java.simpleName, "Failed to load or convert bitmap bytes", ex)
+                SystemLog.get().error(AndroidImageInteractor::class.java.simpleName, "Failed to load or convert bitmap bytes", ex)
             }
         }
 

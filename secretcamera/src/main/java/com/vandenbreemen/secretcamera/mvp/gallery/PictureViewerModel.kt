@@ -5,11 +5,10 @@ import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.file.api.FileInfo
 import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractor
 import com.vandenbreemen.mobilesecurestorage.file.api.SecureFileSystemInteractorFactory
-import com.vandenbreemen.mobilesecurestorage.log.SystemLog
-import com.vandenbreemen.mobilesecurestorage.log.e
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.secretcamera.api.GallerySettings
+import com.vandenbreemen.standardandroidlogging.log.SystemLog
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
@@ -207,7 +206,7 @@ class PictureViewerModel(credentials: SFSCredentials) : Model(credentials) {
         try {
             return androidImageInteractor.generateThumbnailSynchronous(loadImageSync(fileName), 150, 150)
         } catch (e: Exception) {
-            SystemLog.get().e("PictureViewerModel", "Failed to load thumbnail", e)
+            SystemLog.get().error("PictureViewerModel", "Failed to load thumbnail", e)
             return null
         }
     }

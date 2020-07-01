@@ -1,7 +1,7 @@
 package com.vandenbreemen.mobilesecurestorage.file.api
 
-import com.vandenbreemen.mobilesecurestorage.log.SystemLog
 import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime
+import com.vandenbreemen.standardandroidlogging.log.SystemLog
 
 interface FileType{
     val firstByte:Byte

@@ -70,6 +70,7 @@ dependencies {
 
     //  View Models and Such
     implementation 'com.github.kevinvandenbreemen:sfs-android-integration:1.0.0.1000'
+    implementation "com.github.kevinvandenbreemen:standard-android-logging:$rootProject.ext.standardLoggingVersion"
     implementation "androidx.activity:activity-ktx:$rootProject.ext.androidXVersion"
 
     //  Pull in New Crypto Fwk

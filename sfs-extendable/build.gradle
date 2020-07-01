@@ -37,8 +37,6 @@ android {
 }
 
 dependencies {
-
-    def mvpVersion = "1.0.1.1100"
     def sfsAndroidIntegrationVersion = "1.0.0.1000"
     def androidxJUnitTestVersion = "1.1.1"
     def androidXTestCoreVersion = "1.2.0"
@@ -54,10 +52,7 @@ dependencies {
     implementation "com.github.kevinvandenbreemen:NewCryptoFramework:$rootProject.ext.newCryptoVersion"
 
     //  MVP
-    implementation "com.github.kevinvandenbreemen:sfs-mvp:$mvpVersion"
-
-    //  KDS integration
-    implementation "com.github.kevinvandenbreemen:KevinDesignSystem:$rootProject.ext.kdsVersion"
+    implementation "com.github.kevinvandenbreemen:sfs-mvp:$rootProject.ext.sfsMVPVersion"
 
     //  Android integration (credentials, etc)
     implementation "com.github.kevinvandenbreemen:sfs-android-integration:$sfsAndroidIntegrationVersion"

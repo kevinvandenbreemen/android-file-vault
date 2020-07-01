@@ -1,13 +1,13 @@
 package com.vandenbreemen.secretcamera.mvp.impl
 
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
-import com.vandenbreemen.mobilesecurestorage.log.SystemLog
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Model
 import com.vandenbreemen.mobilesecurestorage.security.crypto.extListFiles
 import com.vandenbreemen.mobilesecurestorage.security.crypto.getFileMeta
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
 import com.vandenbreemen.secretcamera.mvp.gallery.PicturesFileTypes
 import com.vandenbreemen.secretcamera.mvp.impl.projects.ProjectFileTypes
+import com.vandenbreemen.standardandroidlogging.log.SystemLog
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread

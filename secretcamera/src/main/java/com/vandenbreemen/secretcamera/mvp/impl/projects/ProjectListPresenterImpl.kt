@@ -1,13 +1,12 @@
 package com.vandenbreemen.secretcamera.mvp.impl.projects
 
-import com.vandenbreemen.mobilesecurestorage.log.SystemLog
-import com.vandenbreemen.mobilesecurestorage.log.e
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Presenter
 import com.vandenbreemen.secretcamera.api.Project
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListPresenter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListRouter
 import com.vandenbreemen.secretcamera.mvp.projects.ProjectListView
+import com.vandenbreemen.standardandroidlogging.log.SystemLog
 
 class ProjectListPresenterImpl(val model: ProjectListModel, val view: ProjectListView, val router: ProjectListRouter) : Presenter<ProjectListModel, ProjectListView>(model, view), ProjectListPresenter {
 
@@ -35,7 +34,7 @@ class ProjectListPresenterImpl(val model: ProjectListModel, val view: ProjectLis
             if (error is ApplicationError) {
                 view.showError(error)
             } else {
-                SystemLog.get().e("CreateProject", "Error adding project", error)
+                SystemLog.get().error("CreateProject", "Error adding project", error)
                 view.showError(ApplicationError("Unknown error occurred"))
             }
         }))

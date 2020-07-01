@@ -1,11 +1,10 @@
 @file:JvmName("FileImporterJavaInteractor")
 package com.vandenbreemen.mobilesecurestorage.file
 
-import com.vandenbreemen.mobilesecurestorage.log.SystemLog
-import com.vandenbreemen.mobilesecurestorage.log.e
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.message.MSSRuntime
 import com.vandenbreemen.mobilesecurestorage.security.Bytes
+import com.vandenbreemen.standardandroidlogging.log.SystemLog
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
@@ -55,7 +54,7 @@ private class FileLoaderImpl : FileLoader {
             try {
                 subscriber.onSuccess(loadFile(fileToImport))
             } catch (ex: ApplicationError) {
-                SystemLog.get().e("FileLoader", "Failed to get bytes for ${fileToImport.absolutePath}", ex)
+                SystemLog.get().error("FileLoader", "Failed to get bytes for ${fileToImport.absolutePath}", ex)
                 subscriber.onError(ex)
             }
         }).observeOn(io()).subscribeOn(mainThread())

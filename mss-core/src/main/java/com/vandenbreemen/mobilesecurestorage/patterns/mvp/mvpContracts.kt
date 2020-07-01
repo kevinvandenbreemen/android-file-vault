@@ -1,11 +1,10 @@
 package com.vandenbreemen.mobilesecurestorage.patterns.mvp
 
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
-import com.vandenbreemen.mobilesecurestorage.log.SystemLog
-import com.vandenbreemen.mobilesecurestorage.log.d
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
+import com.vandenbreemen.standardandroidlogging.log.SystemLog
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -65,7 +64,7 @@ abstract class Presenter<out M : Model, out V : View>(private val model: M, priv
     override fun start() {
 
         if(isPaused) {
-            SystemLog.get().d("Presenter", "Presenter is paused.  Will not attempt to start again.")
+            SystemLog.get().debug("Presenter", "Presenter is paused.  Will not attempt to start again.")
             return
         }
 

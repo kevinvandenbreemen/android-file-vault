@@ -3,10 +3,10 @@ package com.vandenbreemen.mobilesecurestorage.android.mvp.createfilesystem
 import android.util.Log
 import com.vandenbreemen.mobilesecurestorage.android.sfs.SFSCredentials
 import com.vandenbreemen.mobilesecurestorage.android.task.AsyncResult
-import com.vandenbreemen.mobilesecurestorage.log.SystemLog
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.security.SecureString
 import com.vandenbreemen.mobilesecurestorage.security.crypto.persistence.SecureFileSystem
+import com.vandenbreemen.standardandroidlogging.log.SystemLog
 import java.util.function.Consumer
 
 /**

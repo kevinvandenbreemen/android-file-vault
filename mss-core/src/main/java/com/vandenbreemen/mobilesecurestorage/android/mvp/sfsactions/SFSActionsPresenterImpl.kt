@@ -1,10 +1,9 @@
 package com.vandenbreemen.mobilesecurestorage.android.mvp.sfsactions
 
-import com.vandenbreemen.mobilesecurestorage.log.SystemLog
-import com.vandenbreemen.mobilesecurestorage.log.e
 import com.vandenbreemen.mobilesecurestorage.message.ApplicationError
 import com.vandenbreemen.mobilesecurestorage.patterns.ProgressListener
 import com.vandenbreemen.mobilesecurestorage.patterns.mvp.Presenter
+import com.vandenbreemen.standardandroidlogging.log.SystemLog
 
 /**
  *
@@ -48,7 +47,7 @@ class SFSActionsPresenterImpl(val view: SFSActionsView, private val router: SFSA
             if (error is ApplicationError) {
                 view.showError(error)
             } else {
-                SystemLog.get().e("SFSActions", "Error changing password", error)
+                SystemLog.get().error("SFSActions", "Error changing password", error)
                 view.showError(ApplicationError("Unknown error occurred"))
             }
         }))
