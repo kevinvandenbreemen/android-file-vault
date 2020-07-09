@@ -24,7 +24,7 @@ abstract class SFSActivity : AppCompatActivity() {
      */
     protected fun buildPresenters() {
         intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS)?.let { credentials ->
-            presenterManager.buildPresenters(credentials)
+            presenterManager.build(credentials)
         }
     }
 

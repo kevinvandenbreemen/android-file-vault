@@ -69,7 +69,6 @@ dependencies {
     testImplementation "com.github.kevinvandenbreemen:sfs-test-utils:$sfsTestUtilsVersion"
 
     //  Need direct access to SFS files in order to validate android activities that use them
-    testImplementation "com.github.kevinvandenbreemen:NewCryptoFramework:$rootProject.ext.newCryptoVersion"
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
