@@ -8,10 +8,21 @@
     tools:context=".overview.SFSOverview">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_margin="@dimen/margin"
+        android:background="@drawable/kds_section_background"
         android:layout_width="150dp"
         android:layout_height="100dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <TextView
+            android:id="@+id/textView5"
+            style="@style/kds_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/number_of_files"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/filesCount"
@@ -20,6 +31,7 @@
             android:layout_height="wrap_content"
             android:text=""
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="42" />
@@ -30,6 +42,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         style="@style/kds_mainTitle"
+        app:titleTextColor="@color/kds_blue"
         android:layout_height="?attr/actionBarSize"
         android:background="@drawable/kds_attention_background"
         android:minHeight="?attr/actionBarSize"
