@@ -47,6 +47,6 @@ class SFSOverview : SFSActivity(), OverviewView {
     }
 
     override fun showError(error: ApplicationError) {
-
+        //  Currently no actions show errors yet.
     }
 }
