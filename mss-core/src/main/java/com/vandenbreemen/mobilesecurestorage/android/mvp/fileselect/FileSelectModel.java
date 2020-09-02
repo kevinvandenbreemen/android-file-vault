@@ -3,6 +3,7 @@ package com.vandenbreemen.mobilesecurestorage.android.mvp.fileselect;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Environment;
 
 import androidx.core.content.ContextCompat;
@@ -65,7 +66,15 @@ public class FileSelectModel {
      * @return
      */
     public List<File> listFiles() {
-        if(ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && Environment.isExternalStorageManager()) {
+            File thePwd = pwd != null ? pwd : Environment.getExternalStorageDirectory();
+            return Arrays.asList(thePwd.listFiles(
+                    file -> isSelectDirectory ? file.isDirectory() : true
+            ));
+        }
+
+        else if(ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
             File thePwd = pwd != null ? pwd : Environment.getExternalStorageDirectory();
             return Arrays.asList(thePwd.listFiles(
                     file -> isSelectDirectory ? file.isDirectory() : true
