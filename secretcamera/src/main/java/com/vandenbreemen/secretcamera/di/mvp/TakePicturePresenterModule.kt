@@ -16,7 +16,7 @@ class TakePicturePresenterModule {
     @Provides
     fun providesTakePicturePresenter(activity: TakePictureActivity): TakePicturePresenter {
         return TakePicturePresenterImpl(
-                TakePictureModel(getDateInteractor(), activity.intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS)),
+                TakePictureModel(getDateInteractor(), activity.intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS)!!),
                 activity
         )
     }

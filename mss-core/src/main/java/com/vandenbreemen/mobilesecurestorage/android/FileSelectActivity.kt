@@ -2,9 +2,14 @@ package com.vandenbreemen.mobilesecurestorage.android
 
 import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -87,12 +92,38 @@ class FileSelectActivity : Activity(), FileSelectView, ActivityCompat.OnRequestP
         this.listener = listener;
     }
 
+    private fun requestExternalStorageManagementPermission() {
+        val intent = Intent(ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+        intent.data = Uri.parse("package:${applicationContext.packageName}")
+        startActivity(intent)
+    }
+
     override fun onResume() {
 
         super.onResume()
 
+        //  Android 11 and above
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if(!Environment.isExternalStorageManager()) {
+
+                AlertDialog.Builder(this).setTitle(R.string.ext_storage_rationale_title)
+                        .setMessage(R.string.ext_storage_rationale)
+                        .setPositiveButton(R.string.ok) {dialog,_ ->
+                            requestExternalStorageManagementPermission()
+                            dialog.dismiss()
+                        }
+                        .setNegativeButton(R.string.cancel) {d,_->d.dismiss()}
+                        .show()
+
+            } else {
+                controller.start()
+            }
+
+
+        }
+
         //  Check for file IO permissions
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+        else if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE),
                     PERM_REQUEST_ID)

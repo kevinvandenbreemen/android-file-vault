@@ -18,7 +18,7 @@ class SFSActionsModule {
     @Provides
     fun providesSFSActionsPresenter(activity: SFSActionsActivity): SFSActionsPresenter {
         return SFSActionsPresenterImpl(activity, activity,
-                SFSActionsModel( activity.intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS)))
+                SFSActionsModel( activity.intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS)!!))
     }
 
 }

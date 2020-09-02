@@ -100,7 +100,11 @@ class FileImportActivity : KDSSystemActivity(), FileImportView {
         val selectDirIntent = Intent(this, FileSelectActivity::class.java)
         selectDirIntent.putExtra(FileSelectActivity.PARM_DIR_ONLY, true)
         selectDirIntent.putExtra(FileSelectActivity.PARM_TITLE, resources.getText(com.vandenbreemen.mobilesecurestorage.R.string.loc_for_new_sfs))
-        selectDirIntent.putExtra(SFSCredentials.PARM_CREDENTIALS, intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS).copy())
+
+        (intent.getParcelableExtra<SFSCredentials>(SFSCredentials.PARM_CREDENTIALS) as? SFSCredentials)?.apply {
+            selectDirIntent.putExtra(SFSCredentials.PARM_CREDENTIALS, copy())
+        }
+
         startActivityForResult(selectDirIntent, SELECT_DIR)
 
     }
@@ -109,9 +113,19 @@ class FileImportActivity : KDSSystemActivity(), FileImportView {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == SELECT_DIR) {
             if (resultCode == RESULT_OK) {
-                this.directoryToImport = data!!.getParcelableExtra<FileWorkflow>(PARM_WORKFLOW_NAME).fileOrDirectory
-                this.fileImportPresenter = FileImportPresenterImpl(FileImportModel(intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS)), this)
-                fileImportPresenter.start()
+
+                data?.let { d->
+                    (d.getParcelableExtra<FileWorkflow>(PARM_WORKFLOW_NAME) as? FileWorkflow) ?.let { fileWorkflow ->
+                        this.directoryToImport = fileWorkflow.fileOrDirectory
+                    }
+
+                    (intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS) as? SFSCredentials)?.let {credentials->
+                        this.fileImportPresenter = FileImportPresenterImpl(FileImportModel(credentials), this)
+                        fileImportPresenter.start()
+                    }
+                }
+
+
             } else {
                 setResult(RESULT_CANCELED)
                 finish()

@@ -14,7 +14,7 @@ class ProjectManagementModule {
     @Provides
     fun providesProjectListPresenter(activity: ProjectsActivity): ProjectListPresenter{
         return ProjectListPresenterImpl(
-                ProjectListModel(activity.intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS)),
+                ProjectListModel(activity.intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS)!!),
                 activity,
                 activity
         )

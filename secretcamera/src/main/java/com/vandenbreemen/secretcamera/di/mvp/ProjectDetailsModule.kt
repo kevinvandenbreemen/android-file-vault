@@ -14,7 +14,7 @@ class ProjectDetailsModule {
     @Provides
     fun providesProjectDetailsPresenter(activity: ProjectDetailsActivity) : ProjectDetailsPresenter{
         return ProjectDetailsPresenterImpl(
-                ProjectDetailsModel(activity.intent.getStringExtra(ProjectDetailsActivity.PARM_PROJECT_NAME), activity.intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS)),
+                ProjectDetailsModel(activity.intent.getStringExtra(ProjectDetailsActivity.PARM_PROJECT_NAME)!!, activity.intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS)!!),
                 activity, activity
         )
     }

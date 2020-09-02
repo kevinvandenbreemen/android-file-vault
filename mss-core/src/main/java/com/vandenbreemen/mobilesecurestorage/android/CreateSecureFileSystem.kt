@@ -53,9 +53,15 @@ class CreateSecureFileSystem : Activity(), CreateSecureFileSystemView {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == SELECT_DIR) {
             if (resultCode == RESULT_OK) {
-                val tempWorkflow: FileWorkflow = data!!.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME)
-                val model = CreateSecureFileSystemModel(tempWorkflow.fileOrDirectory)
-                this.controller = CreateSecureFileSystemController(model, this)
+                data?.let { d->
+                    (d.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME) as? FileWorkflow)?.let { fileWorkflow ->
+                        val tempWorkflow: FileWorkflow = fileWorkflow
+                        val model = CreateSecureFileSystemModel(tempWorkflow.fileOrDirectory)
+                        this.controller = CreateSecureFileSystemController(model, this)
+                    }
+
+                }
+
             } else {
                 setResult(RESULT_CANCELED)
                 finish()

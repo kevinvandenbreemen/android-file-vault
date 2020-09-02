@@ -58,9 +58,16 @@ class LoadSecureFileSystem : Activity(), LoadFileSystemView {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (SELECT_FILE == requestCode) {
             if (resultCode == RESULT_OK) {
-                val tempWorkflow: FileWorkflow = data!!.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME)
-                this.fileToLoad = tempWorkflow.fileOrDirectory
-                controller = LoadFileSystemController(LoadFileSystemModel(this.fileToLoad), this)
+                data?.let { d->
+
+                    (d.getParcelableExtra<FileWorkflow>(FileWorkflow.PARM_WORKFLOW_NAME) as? FileWorkflow)?.let { tempWorkflow ->
+                        this.fileToLoad = tempWorkflow.fileOrDirectory
+                        controller = LoadFileSystemController(LoadFileSystemModel(this.fileToLoad), this)
+                    }
+
+
+                }
+
             } else {
                 setResult(RESULT_CANCELED)
                 finish()

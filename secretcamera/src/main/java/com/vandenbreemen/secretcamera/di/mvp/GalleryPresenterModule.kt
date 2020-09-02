@@ -13,7 +13,7 @@ class GalleryPresenterModule {
 
     @Provides
     fun providePresenter(activity: Gallery): GalleryPresenter {
-        val model = GalleryModel(activity.intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS))
+        val model = GalleryModel(activity.intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS)!!)
         return GalleryPresenterImpl(model, activity)
     }
 
