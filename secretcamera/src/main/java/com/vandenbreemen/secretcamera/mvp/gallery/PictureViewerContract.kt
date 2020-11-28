@@ -85,7 +85,7 @@ interface PictureViewerPresenter : PresenterContract {
     fun selectImageToDisplay(fileName: String)
     fun currentImageFileName(): Single<String>
     fun toggleSelectImages()
-    fun selectImage(fileName: String)
+    fun selectImage(fileName: String, onPostSelect: ((selected: Boolean)->Unit) )
 
     /**
      * Prompt the user to confirm if deletion will be done
@@ -190,11 +190,13 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
 
     }
 
-    override fun selectImage(fileName: String) {
+    override fun selectImage(fileName: String, onPostSelect: ((selected: Boolean)->Unit)) {
         if (model.isSelected(fileName)) {
             model.deselectImage(fileName)
+            onPostSelect(false)
         } else {
             model.selectImage(fileName)
+            onPostSelect(true)
         }
     }
 
