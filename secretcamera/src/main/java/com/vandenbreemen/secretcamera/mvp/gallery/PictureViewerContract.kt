@@ -62,8 +62,6 @@ interface PictureViewerView : View {
     fun hideImageSelector()
     fun showLoadingSpinner()
     fun hideLoadingSpinner()
-    fun showPictureViewerActions()
-    fun hidePictureViewerActions()
     fun displayFileInfo(fileInfo: FileInfo)
     fun confirmDeleteFiles(filesToDelete: List<String>)
 }
@@ -98,7 +96,6 @@ interface PictureViewerPresenter : PresenterContract {
      */
     fun confirmDeleteSelected()
     fun selected(filename: String): Boolean
-    fun onSelectPictureViewerActions()
     fun deleteAllImages()
     fun showCurrentFileInfo()
     fun returnToMain()
@@ -233,15 +230,6 @@ class PictureViewerPresenterImpl(val model: PictureViewerModel, val view: Pictur
     override fun close() {
         super.close()
         view.end()
-    }
-
-    override fun onSelectPictureViewerActions() {
-        if (!isShowingPictureViewerActions) {
-            view.showPictureViewerActions()
-        } else {
-            view.hidePictureViewerActions()
-        }
-        isShowingPictureViewerActions = !isShowingPictureViewerActions
     }
 
     override fun deleteAllImages() {

@@ -156,12 +156,6 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
             presenter.deleteSelected()
         }
 
-        //  Actions button was here.  Need to re-create it sometime
-
-        findViewById<Button>(R.id.deleteAllImages).setOnClickListener {
-            presenter.deleteAllImages()
-        }
-
         //  Set up long-press
         findViewById<SubsamplingScaleImageView>(R.id.currentImage).setOnLongClickListener { view ->
             presenter.showCurrentFileInfo()
@@ -321,14 +315,6 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
 
     override fun hideLoadingSpinner() {
         findViewById<View>(R.id.imageDisplayProgress).visibility = GONE
-    }
-
-    override fun showPictureViewerActions() {
-        findViewById<ViewGroup>(R.id.actionsWindow).visibility = VISIBLE
-    }
-
-    override fun hidePictureViewerActions() {
-        findViewById<ViewGroup>(R.id.actionsWindow).visibility = GONE
     }
 
     override fun showActions() {
