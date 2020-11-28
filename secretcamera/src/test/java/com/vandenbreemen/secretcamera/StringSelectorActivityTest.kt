@@ -87,7 +87,7 @@ class StringSelectorActivityTest {
         assertEquals("Next activity", FileSelectActivity::class.java, nextShadow.intentClass)
         errorCollector.checkThat(nextActivity.getParcelableExtra(SELECTED_STRING), notNullValue())
 
-        val stringSelection: StringSelection = nextActivity.getParcelableExtra(SELECTED_STRING)
+        val stringSelection: StringSelection = nextActivity.getParcelableExtra(SELECTED_STRING)!!
         errorCollector.checkThat(stringSelection.selectedString, `is`("Curly"))
 
     }
@@ -121,7 +121,7 @@ class StringSelectorActivityTest {
         val nextShadow = shadowOf(nextActivity)
         assertEquals("Next activity", FileSelectActivity::class.java, nextShadow.intentClass)
 
-        val stringSelection: StringSelection = nextActivity.getParcelableExtra(SELECTED_STRING)
+        val stringSelection: StringSelection = nextActivity.getParcelableExtra(SELECTED_STRING)!!
         errorCollector.checkThat(stringSelection.selectedString, `is`("Curly"))
         errorCollector.checkThat(stringSelection.credentials, notNullValue())
         assertTrue("Password persisted", SecureString.fromPassword("teest").equals(stringSelection.credentials!!.password))

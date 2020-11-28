@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity(), SFSMenuContract.SFSMainMenuView, Pausa
 
                 (findViewById(R.id.upperSection) as ViewGroup).removeAllViews()
 
-                mainMenuPresenter = SFSMainMenuPresenterImpl(SFSMainMenuModel(credentials), this)
+                mainMenuPresenter = credentials?.let { SFSMainMenuModel(it) }?.let { SFSMainMenuPresenterImpl(it, this) }
                 mainMenuPresenter!!.start()
             } else {
                 startActivity(intent)

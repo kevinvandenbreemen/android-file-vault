@@ -16,4 +16,6 @@
     <string name="specify_file_name">Specify Filename</string>
     <string name="rename">Rename</string>
     <string name="rename_label">Filename</string>
+    <string name="ext_storage_rationale">Android File Vault needs access to your file system to allow you to create and load secure file systems anywhere on your device</string>
+    <string name="ext_storage_rationale_title">Access to External Storage</string>
 </resources>

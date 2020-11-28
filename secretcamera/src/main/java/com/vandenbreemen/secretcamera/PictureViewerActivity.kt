@@ -82,7 +82,16 @@ class ThumbnailAdapter(private val fileNames: List<String>,
             withContext(Dispatchers.Main) {
 
                 val imageView = holder.view.findViewById<ImageView>(R.id.preview)
-                imageView.setOnClickListener { presenter.selectImageToDisplay(fileNames[position]) }
+                imageView.setOnClickListener {
+                    if(selectEnabled) {
+                        val checkbox = holder.view.findViewById<CheckBox>(R.id.checkBox)
+                        presenter.selectImage(fileNames[position]) { selected ->
+                            checkbox.isChecked = selected
+                        }
+                        return@setOnClickListener
+                    }
+                    presenter.selectImageToDisplay(fileNames[position])
+                }
                 imageView.setImageBitmap(bitmap)
                 imageView.visibility = VISIBLE
 
@@ -91,7 +100,10 @@ class ThumbnailAdapter(private val fileNames: List<String>,
                 if (selectEnabled) {
                     val checkbox = holder.view.findViewById<CheckBox>(R.id.checkBox)
                     checkbox.isChecked = presenter.selected(fileNames[position])
-                    checkbox.setOnClickListener { _ -> presenter.selectImage(fileNames[position]) }
+                    checkbox.setOnClickListener { _ -> presenter.selectImage(fileNames[position]) { selected ->
+                        checkbox.isChecked = selected
+                    }
+                    }
                 } else {   //  Allow turning on multiselect
                     imageView.setOnLongClickListener {
                         presenter.toggleSelectImages()

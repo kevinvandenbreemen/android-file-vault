@@ -18,7 +18,7 @@ class TakeNotePresenterModule {
     fun provideTakeNotePresenter(activity:TakeNoteActivity):TakeNewNotePresenter{
         return TakeNewNotePresenterImpl(
                 activity,
-                TakeNewNoteModel(activity.intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS))
+                TakeNewNoteModel(activity.intent.getParcelableExtra(SFSCredentials.PARM_CREDENTIALS)!!)
         )
     }
 
