@@ -3,8 +3,12 @@
     package="com.vandenbreemen.mobilesecurestorage">
 
     <application>
-        <activity android:name=".android.SecureFileSystemDetails" />
-        <activity android:name=".android.FileImportActivity"></activity>
+        <activity android:name=".android.SecureFileSystemDetails"
+            android:exported="false"
+            />
+        <activity android:name=".android.FileImportActivity"
+            android:exported="false"
+            ></activity>
     </application>
 
 </manifest>

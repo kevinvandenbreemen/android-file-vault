@@ -30,60 +30,72 @@
             </intent-filter>
         </activity>
         <activity
+            android:exported="false"
             android:name="com.vandenbreemen.mobilesecurestorage.android.FileSelectActivity"
             android:excludeFromRecents="true" />
         <activity
+            android:exported="false"
             android:name="com.vandenbreemen.mobilesecurestorage.android.CreateSecureFileSystem"
             android:excludeFromRecents="true"
             android:screenOrientation="portrait" />
         <activity
+            android:exported="false"
             android:name="com.vandenbreemen.mobilesecurestorage.android.LoadSecureFileSystem"
             android:excludeFromRecents="true"
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
         <activity
+            android:exported="false"
             android:name=".TakeNoteActivity"
             android:configChanges="orientation|screenSize"
             android:excludeFromRecents="true"
             android:parentActivityName=".MainActivity" />
         <activity
+            android:exported="false"
             android:name=".StringSelectorActivity"
             android:configChanges="orientation|screenSize"
             android:excludeFromRecents="true" />
         <activity
+            android:exported="false"
             android:name=".NoteDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:excludeFromRecents="true"
             android:parentActivityName=".MainActivity" />
         <activity
+            android:exported="false"
             android:name=".Gallery"
             android:configChanges="orientation|screenSize"
             android:excludeFromRecents="true"
             android:parentActivityName=".MainActivity" />
         <activity
+            android:exported="false"
             android:name=".PictureViewerActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
             android:configChanges="orientation|screenSize"
             android:excludeFromRecents="true"
             android:parentActivityName=".MainActivity" />
         <activity
+            android:exported="false"
             android:name=".TakePictureActivity"
             android:configChanges="orientation|screenSize"
             android:excludeFromRecents="true"
             android:parentActivityName=".MainActivity"></activity>
         <activity
+            android:exported="false"
             android:name=".ProjectsActivity"
             android:windowSoftInputMode="adjustNothing"
             android:screenOrientation="portrait"
             android:excludeFromRecents="true"
             android:parentActivityName=".MainActivity" />
         <activity
+            android:exported="false"
             android:name=".ProjectDetailsActivity"
             android:configChanges="orientation|screenSize"
             android:excludeFromRecents="true"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:exported="false"
             android:name=".SFSActionsActivity"
             android:configChanges="orientation|screenSize"
             android:excludeFromRecents="true"
