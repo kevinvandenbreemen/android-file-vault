@@ -35,4 +35,6 @@
     <string name="used">used</string>
     <string name="fileSize">File Size (units)</string>
     <string name="createDate">Create Date</string>
+    <string name="slide_show">Slide Show</string>
+    <string name="stop_slideshow">Stop Slideshow</string>
 </resources>

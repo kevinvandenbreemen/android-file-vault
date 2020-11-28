@@ -7,6 +7,9 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.TypedValue
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -26,6 +29,7 @@ import com.vandenbreemen.secretcamera.di.injectPictureViewer
 import com.vandenbreemen.secretcamera.fragment.ConfirmDeleteDialogFragment
 import com.vandenbreemen.secretcamera.fragment.ThumbnailsFragment
 import com.vandenbreemen.secretcamera.mvp.gallery.*
+import kotlinx.android.synthetic.main.actions_slide_in.view.*
 import kotlinx.android.synthetic.main.activity_picture_viewer.*
 import kotlinx.android.synthetic.main.file_info_dialog.view.*
 import kotlinx.android.synthetic.main.file_info_dialog.view.fileName
@@ -128,6 +132,11 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
         const val TAG_DELETE_DIALOG = "delete_confirmation"
     }
 
+    private val slideShowHandler = Handler(Looper.getMainLooper())
+    private lateinit var slideShowTask: Runnable
+
+    private var isActive: Boolean = false
+
     @Inject
     lateinit var presenter: PictureViewerPresenter
 
@@ -162,6 +171,35 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
             true
         }
 
+        actionsSection.translationY = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -80f, resources.displayMetrics)
+        var actionsSlidIn = false
+        actionsSection.slideIn.setOnClickListener { _->
+            val mult = if(actionsSlidIn) { -1f } else 1f
+            actionsSection.translationY += TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80f * mult, resources.displayMetrics)
+            actionsSlidIn = !actionsSlidIn
+        }
+
+        var slideShowRunning = false
+        actionsSection.startSlideShow.setOnClickListener { _->
+            if(!slideShowRunning) {
+                actionsSection.startSlideShow.isEnabled = false
+                actionsSection.stopSlideShow.isEnabled = true
+                slideShowRunning = true
+                slideShowTask = java.lang.Runnable {
+                    if (isActive && slideShowRunning) {
+                        presenter.nextImage()
+                        slideShowHandler.postDelayed(slideShowTask, 1000)
+                    }
+                }
+                slideShowHandler.postDelayed(slideShowTask, 1000)
+            }
+        }
+
+        actionsSection.stopSlideShow.setOnClickListener {
+            slideShowRunning = false
+            actionsSection.startSlideShow.isEnabled = true
+        }
+
     }
 
     override fun onBackPressed() {
@@ -178,6 +216,7 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
 
     override fun onResume() {
         super.onResume()
+        isActive = true
         presenter.start()
     }
 
@@ -205,6 +244,7 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
 
 
     override fun onPause() {
+        isActive = false
         super.onPause()
 
         //  Force current image to be dropped
