@@ -101,8 +101,12 @@ class PictureViewerPresenterTest {
         //  Arrange
         pictureViewerPresenter.toggleSelectImages()
         pictureViewerPresenter.selectImageToDisplay("bright-red-sunset.jpg")
-        pictureViewerPresenter.selectImage("bright-red-sunset.jpg")
-        pictureViewerPresenter.selectImage("tractor.jpg")
+        pictureViewerPresenter.selectImage("bright-red-sunset.jpg") { selected->
+
+        }
+        pictureViewerPresenter.selectImage("tractor.jpg"){ selected->
+
+        }
 
         //  Act
         pictureViewerPresenter.confirmDeleteSelected()
@@ -121,9 +125,15 @@ class PictureViewerPresenterTest {
         //  Arrange
         pictureViewerPresenter.toggleSelectImages()
         pictureViewerPresenter.selectImageToDisplay("bright-red-sunset.jpg")
-        pictureViewerPresenter.selectImage("bright-red-sunset.jpg")
-        pictureViewerPresenter.selectImage("tractor.jpg")
-        pictureViewerPresenter.selectImage("night-fog.jpg")
+        pictureViewerPresenter.selectImage("bright-red-sunset.jpg"){ selected->
+
+        }
+        pictureViewerPresenter.selectImage("tractor.jpg"){ selected->
+
+        }
+        pictureViewerPresenter.selectImage("night-fog.jpg"){ selected->
+
+        }
 
         //  Act
         pictureViewerPresenter.deleteSelected()
@@ -134,10 +144,14 @@ class PictureViewerPresenterTest {
     fun shouldDeselectImage() {
         //  Arrange
         pictureViewerPresenter.toggleSelectImages()
-        pictureViewerPresenter.selectImage("bright-red-sunset.jpg")
+        pictureViewerPresenter.selectImage("bright-red-sunset.jpg"){ selected->
+
+        }
 
         //  Act
-        pictureViewerPresenter.selectImage("bright-red-sunset.jpg")
+        pictureViewerPresenter.selectImage("bright-red-sunset.jpg"){ selected->
+
+        }
 
         //  Assert
         assertFalse("Selected", pictureViewerPresenter.selected("bright-red-sunset.jpg"))
@@ -147,7 +161,9 @@ class PictureViewerPresenterTest {
     fun shouldIndicateImageSelected() {
         //  Arrange
         pictureViewerPresenter.toggleSelectImages()
-        pictureViewerPresenter.selectImage("bright-red-sunset.jpg")
+        pictureViewerPresenter.selectImage("bright-red-sunset.jpg"){ selected->
+
+        }
 
         //  Assert
         assertTrue("Selected", pictureViewerPresenter.selected("bright-red-sunset.jpg"))
