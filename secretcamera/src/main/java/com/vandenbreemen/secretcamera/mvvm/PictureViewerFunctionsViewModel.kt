@@ -5,8 +5,12 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import java.util.concurrent.TimeUnit
 
 class PictureViewerFunctionsViewModel: ViewModel() {
+
+    private var slideShowDelaySeconds: Long = 1
+    val currentSlideshowDelaySeconds: Long get() = slideShowDelaySeconds
 
     private val slideShowHandler = Handler(Looper.getMainLooper())
     private lateinit var slideShowTask: Runnable
@@ -26,7 +30,7 @@ class PictureViewerFunctionsViewModel: ViewModel() {
         slideShowTask = java.lang.Runnable {
             if (slideShowRunning) {
                 nextImage.postValue(Unit)
-                slideShowHandler.postDelayed(slideShowTask, 1000)
+                slideShowHandler.postDelayed(slideShowTask, TimeUnit.MILLISECONDS.convert(slideShowDelaySeconds, TimeUnit.SECONDS))
             }
         }
     }
@@ -36,7 +40,7 @@ class PictureViewerFunctionsViewModel: ViewModel() {
             startSlideShowEnabled.postValue(false)
             stopSlideShowEnabled.postValue(true)
             slideShowRunning = true
-            slideShowHandler.postDelayed(slideShowTask, 1000)
+            slideShowHandler.postDelayed(slideShowTask, TimeUnit.MILLISECONDS.convert(slideShowDelaySeconds, TimeUnit.SECONDS))
         }
     }
 
@@ -56,6 +60,10 @@ class PictureViewerFunctionsViewModel: ViewModel() {
      */
     fun onPause() {
         stopSlideShow()
+    }
+
+    fun setSlideshowDelaySeconds(delay: Long) {
+        slideShowDelaySeconds = delay
     }
 
 }

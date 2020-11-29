@@ -37,4 +37,5 @@
     <string name="createDate">Create Date</string>
     <string name="slide_show">Slide Show</string>
     <string name="stop_slideshow">Stop Slideshow</string>
+    <string name="slide_show_delay">Slide Show Delay</string>
 </resources>

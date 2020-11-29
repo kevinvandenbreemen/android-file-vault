@@ -7,6 +7,9 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.View.GONE
@@ -189,6 +192,27 @@ class PictureViewerActivity : AppCompatActivity(), PictureViewerView, PictureVie
 
         pictureViewerFunctionsViewModel.nextImageLiveData.observe(this, Observer { _->
             presenter.nextImage()
+        })
+
+        actionsSection.slideShowDelay.setText(pictureViewerFunctionsViewModel.currentSlideshowDelaySeconds.toString())
+        actionsSection.slideShowDelay.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                s?.run {
+                    try {
+                        pictureViewerFunctionsViewModel.setSlideshowDelaySeconds(toString().toLong())
+                    } catch (err: Throwable) {
+                        Log.e(javaClass.simpleName, err.message, err)
+                    }
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+
         })
 
     }
